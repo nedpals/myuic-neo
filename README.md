@@ -17,25 +17,23 @@ Thanks to [CapacitorJS](https://capacitorjs.com), it is also an Android app prov
 ## Prerequisites
 ### Web
 - Node 16 or later
+- NPM
 
 ### Android
 > Android compilation is optional but is required if you want to compile it as an Android app.
 - Android SDK (30 and above)
 
 ## Installation
-To run the web app, try the following command:
+To run MyUIC Neo on your local computer, simply execute the following commands:
 
 ### npm
 ```
+git clone https://github.com/nedpals/myuic-neo.git
+cd myuic-neo
 npm install
 npm run dev
 ```
 
-### yarn
-```
-yarn
-yarn dev
-```
 This will start the Vite webserver at http://localhost:3000. You may login by typing `123456789012` as the student ID and `myuicneo` as the password.
 
 ## Connecting to the real API
