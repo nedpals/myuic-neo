@@ -27,7 +27,7 @@ To run the web app, try the following command:
 
 ### npm
 ```
-npm 
+npm install
 npm run dev
 ```
 

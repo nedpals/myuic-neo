@@ -33,7 +33,7 @@ jobs:
           rm -rf ./client-app/.git
           rm -rf ./client-app/.github
           git add .
-          git commit -m "[server] ${{ steps.short-sha.outputs.sha8 }} ${{ github.event.head_commit.message }}"
+          git commit -m "[client-app] ${{ steps.short-sha.outputs.sha8 }} ${{ github.event.head_commit.message }}"
           git push origin master
       - name: Push changes
         if: ${{ success() }}
