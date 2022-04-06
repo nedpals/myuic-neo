@@ -48,6 +48,16 @@ VITE_API_URL=https://pinkschool-api.herokuapp.com
 
 Paste the contents to `.env` file and restart the web server.
 
+## Additional Resources
+Wanna contribute? Here are the following resources you can use when working on the MyUIC Neo codebase:
+- Vue3 Docs: https://vuejs.org/guide/introduction.html
+- Pinia Docs: https://pinia.vuejs.org/core-concepts/
+- ViteJS Docs: https://vitejs.dev/guide/
+- Typescript Handbook: https://www.typescriptlang.org/docs/handbook/intro.html
+- WindiCSS Docs: https://windicss.org/guide/
+- TailwindCSS Docs (For additional information): https://tailwindcss.com/docs/aspect-ratio
+- CapacitorJS Android Docs: https://capacitorjs.com/docs/android
+
 ## Contributing
 1. Fork it (<https://github.com/nedpals/myuic-neo/fork>)
 2. Create your feature branch (`git checkout -b my-new-feature`)
