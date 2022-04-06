@@ -1,0 +1,150 @@
+<template>
+  <main class="flex flex-col space-y-4">
+    <div>
+      <div class="form-group-info">
+        <h2 class="title">Identifiers</h2>
+        <p class="description">Unique, computer-generated information used for reference.</p>
+      </div>
+      <div class="form-group">
+        <div class="form-control w-full md:w-1/2 lg:w-1/3">
+          <label for="lrn_number">LRN Number</label>
+          <input type="text" name="lrn_number" id="lrn_number" :value="studentStore.student.LRN" readonly />
+        </div>
+        <div class="form-control w-full md:w-1/2 lg:w-1/3">
+          <label for="id_number">ID Number</label>
+          <input type="text" name="id_number" id="id_number" :value="studentStore.student.number" readonly />
+        </div>
+        <div class="form-control w-full md:w-1/2 lg:w-1/3">
+          <label for="acr_number">ACR Number</label>
+          <input type="text" name="acr_number" id="acr_number" :value="studentStore.student.ACR" readonly />
+          <span class="hint-text">For foreign students only</span>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="form-group-info">
+        <h2 class="title">Personal Information</h2>
+        <p class="description">Information used for identification.</p>
+      </div>
+
+      <h3 class="sub-form-group-title">Name</h3>
+      <div class="form-group">
+        <div class="form-control w-full md:w-1/2">
+          <label for="last_name">Last Name</label>
+          <input type="text" name="last_name" id="last_name" :value="studentStore.student.lastName" />
+        </div>
+        <div class="form-control w-full md:w-1/2">
+          <label for="first_name">First Name</label>
+          <input type="text" name="first_name" id="first_name" :value="studentStore.student.firstName" />
+        </div>
+        <div class="form-control w-full md:w-1/2">
+          <label for="middle_name">Middle Name</label>
+          <input type="text" name="middle_name" id="middle_name" :value="studentStore.student.middleName" />
+          <span class="hint-text">The full version of your middle initial.</span>
+        </div>
+        <div class="form-control w-full md:w-1/2">
+          <label for="suffix">Suffix</label>
+          <input type="text" name="suffix" id="suffix" :value="studentStore.student.suffix" />
+        </div>
+      </div>
+
+      <h3 class="sub-form-group-title">Birth Information</h3>
+      <div class="form-group">
+        <div class="form-control w-full md:w-1/2">
+          <label for="gender">Gender</label>
+          <select name="gender" id="gender" :value="studentStore.student.gender">
+            <option v-for="g in formStore.genders" :key="g" :value="g">{{ g }}</option>
+          </select>
+        </div>
+        <div class="form-control w-full md:w-1/2">
+          <label for="birth_date">Birth Date</label>
+          <input type="text" name="birth_date" id="birth_date" :value="studentStore.student.birthDate" />
+        </div>
+        <div class="form-control w-full">
+          <label for="birth_place">Birth Place</label>
+          <input type="text" name="birth_place" id="birth_place" :value="studentStore.student.birthPlace" />
+        </div>
+      </div>
+
+      <h3 class="sub-form-group-title">Origin</h3>
+      <div class="form-group">
+        <div class="form-control w-full md:w-1/2">
+          <label for="nationality">Nationality</label>
+          <select name="nationality" id="nationality" :value="studentStore.student.nationality">
+            <option v-for="n in formStore.nationalities" :key="n" :value="n">{{ n }}</option>
+          </select>
+        </div>
+        <div class="form-control w-full md:w-1/2">
+          <label for="ethnic_group">Ethnic Group</label>
+          <select name="ethnic_group" id="ethnic_group" :value="studentStore.student.ethnicGroup">
+            <option v-for="eg in formStore.ethnicGroups" :key="eg" :value="eg">{{ eg }}</option>
+          </select>
+        </div>
+      </div>
+
+      <h3 class="sub-form-group-title">Religion / Beliefs</h3>
+      <div class="form-group">
+        <div class="form-control w-full">
+          <label for="religion">Religion</label>
+          <select name="religion" id="religion" :value="studentStore.student.religion">
+            <option v-for="r in formStore.religions" :key="r" :value="r">{{ r }}</option>
+          </select>
+        </div>
+
+        <div class="form-control is-horizontal w-full">
+          <input type="checkbox" name="has_baptized" id="has_baptized" :checked="studentStore.student.baptized">
+          <label for="has_baptized">I am baptized.</label>
+        </div>
+
+        <div class="form-control is-horizontal w-full">
+          <input type="checkbox" name="has_confirmed" id="has_confirmed" :checked="studentStore.student.confirmed">
+          <label for="has_confirmed">I am confirmed. (For Roman Catholics)</label>
+        </div>
+      </div>
+
+      <h3 class="sub-form-group-title">Contact Information</h3>
+      <div class="form-group">
+        <div class="form-control w-full md:w-1/2">
+          <label for="email_address">E-mail Address</label>
+          <input type="email" name="email_address" id="email_address" :value="studentStore.student.email" />
+        </div>
+        <div class="form-control w-full md:w-1/2">
+          <label for="contact_no">Contact Number</label>
+          <input type="text" name="contact_no" id="contact_no" :value="studentStore.student.contactNumber" />
+        </div>
+      </div>
+
+      <h3 class="sub-form-group-title">Address</h3>
+      <div class="form-group">
+        <div class="form-control w-full">
+          <label for="address">Full Address</label>
+          <input type="text" name="address" id="address" :value="studentStore.student.address.address" />
+        </div>
+        <div class="form-control w-full md:w-1/2">
+          <label for="city">City</label>
+          <input type="text" name="city" id="city" :value="studentStore.student.address.city" />
+        </div>
+        <div class="form-control w-full md:w-1/2">
+          <label for="Province">Province</label>
+          <input type="text" name="province" id="province" :value="studentStore.student.address.province" />
+        </div>
+        <div class="form-control w-full md:w-1/2">
+          <label for="region">Region</label>
+          <input type="text" name="region" id="region" :value="studentStore.student.address.region" />
+        </div>
+      </div>
+    </div>
+  </main>
+</template>
+
+<script>
+import { useFormStore } from '../../stores/formStore';
+import { useStudentStore } from '../../stores/studentStore'
+export default {
+  setup() {
+    const studentStore = useStudentStore();
+    const formStore = useFormStore();
+    return { studentStore, formStore }
+  }
+}
+</script>

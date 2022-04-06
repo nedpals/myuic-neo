@@ -1,0 +1,49 @@
+{
+  "name": "myuic-neo",
+  "author": "Ned Palacios <npdoesmc@gmail.com>",
+  "version": "1.0.0",
+  "license": "AGPL-3.0-or-later",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "start-android": "npm run build && cap run android"
+  },
+  "dependencies": {
+    "@capacitor/android": "^3.4.3",
+    "@capacitor/core": "^3.4.3",
+    "@capacitor/local-notifications": "^1.1.0",
+    "@capacitor/splash-screen": "^1.2.2",
+    "@foundernest/namecase": "^1.0.5",
+    "@headlessui/vue": "^1.5.0",
+    "@iconify-json/mdi": "^1.1.2",
+    "@myuic-api/client": "^1.1.1",
+    "@myuic-api/types": "^1.0.1",
+    "@vueuse/core": "^8.1.1",
+    "date-fns": "^2.28.0",
+    "floating-vue": "^2.0.0-beta.11",
+    "mitt": "^3.0.0",
+    "notiwind": "nedpals/notiwind",
+    "pdfvuer": "^2.0.1",
+    "pinia": "^2.0.11",
+    "vue": "^3.2.25",
+    "vue-router": "^4.0.12",
+    "vuex": "^4.0.2"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^3.4.3",
+    "@iconify-json/fluent": "^1.1.2",
+    "@iconify-json/ic": "^1.1.1",
+    "@iconify-json/ion": "^1.1.0",
+    "@vitejs/plugin-vue": "^2.2.0",
+    "miragejs": "^0.1.43",
+    "typescript": "^4.5.4",
+    "unplugin-icons": "^0.13.2",
+    "vite": "^2.8.0",
+    "vite-plugin-favicon": "^1.0.8",
+    "vite-plugin-pwa": "^0.11.13",
+    "vite-plugin-windicss": "^1.7.1",
+    "vue-tsc": "^0.29.8",
+    "windicss": "^3.4.4"
+  }
+}

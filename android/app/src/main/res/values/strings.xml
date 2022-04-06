@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">MyUIC Neo</string>
+    <string name="title_activity_main">MyUIC Neo</string>
+    <string name="package_name">xyz.nedpals.myuic</string>
+    <string name="custom_url_scheme">xyz.nedpals.myuic</string>
+</resources>
