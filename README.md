@@ -17,25 +17,23 @@ Thanks to [CapacitorJS](https://capacitorjs.com), it is also an Android app prov
 ## Prerequisites
 ### Web
 - Node 16 or later
+- NPM
 
 ### Android
 > Android compilation is optional but is required if you want to compile it as an Android app.
 - Android SDK (30 and above)
 
 ## Installation
-To run the web app, try the following command:
+To run MyUIC Neo on your local computer, simply execute the following commands:
 
 ### npm
 ```
+git clone https://github.com/nedpals/myuic-neo.git
+cd myuic-neo
 npm install
 npm run dev
 ```
 
-### yarn
-```
-yarn
-yarn dev
-```
 This will start the Vite webserver at http://localhost:3000. You may login by typing `123456789012` as the student ID and `myuicneo` as the password.
 
 ## Connecting to the real API
@@ -47,6 +45,16 @@ VITE_API_URL=https://pinkschool-api.herokuapp.com
 ```
 
 Paste the contents to `.env` file and restart the web server.
+
+## Additional Resources
+Wanna contribute? Here are the following resources you can use when working on the MyUIC Neo codebase:
+- Vue3 Docs: https://vuejs.org/guide/introduction.html
+- Pinia Docs: https://pinia.vuejs.org/core-concepts/
+- ViteJS Docs: https://vitejs.dev/guide/
+- Typescript Handbook: https://www.typescriptlang.org/docs/handbook/intro.html
+- WindiCSS Docs: https://windicss.org/guide/
+- TailwindCSS Docs (For additional information): https://tailwindcss.com/docs/aspect-ratio
+- CapacitorJS Android Docs: https://capacitorjs.com/docs/android
 
 ## Contributing
 1. Fork it (<https://github.com/nedpals/myuic-neo/fork>)
