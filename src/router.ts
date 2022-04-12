@@ -1,7 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
 import { client } from './client';
 import { useStudentStore } from './stores/studentStore';
-import { IS_ANDROID } from './utils';
+import { IS_NATIVE } from './utils';
 
 const router = createRouter({
   history: createWebHashHistory(),
@@ -142,7 +142,7 @@ const router = createRouter({
             pageTitle: 'Online Enrollment'
           }
         },
-        ...(IS_ANDROID ? [
+        ...(IS_NATIVE ? [
           {
             name: 'test-app',
             path: '/apps/test',

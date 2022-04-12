@@ -122,7 +122,7 @@ import { useStudentStore } from '../../stores/studentStore';
 import DarkModeToggle from './DarkModeToggle.vue';
 import LoadingContainer from './LoadingContainer.vue';
 import Skeleton from './Skeleton.vue';
-import { IS_ANDROID } from '../../utils';
+import { IS_NATIVE } from '../../utils';
 
 export default {
   components: {
@@ -220,7 +220,7 @@ export default {
               icon: IconOnlineEnrollment,
               activeIcon: IconOnlineEnrollment,
             },
-            ...(IS_ANDROID ? [
+            ...(IS_NATIVE ? [
               {
                 title: 'Test App',
                 to: { name: 'test-app' },

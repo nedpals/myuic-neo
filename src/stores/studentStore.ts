@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { compare12hTimesSort, formatDatetime, humanizeTime, IS_ANDROID } from '../utils';
+import { compare12hTimesSort, formatDatetime, humanizeTime, IS_NATIVE } from '../utils';
 import { client } from '../client';
 import { nameCase } from '@foundernest/namecase';
 import { destroy } from '../auth';
@@ -234,7 +234,7 @@ export const useClassScheduleStore = defineStore('class_schedule', {
         scheduleList[s].sort((a, b) => compare12hTimesSort(a.fromTime, b.fromTime));
       });
 
-      // if (IS_ANDROID) {
+      // if (IS_NATIVE) {
       //   const weekday: Weekday[] = [
       //     Weekday.Monday, 
       //     Weekday.Tuesday, 
