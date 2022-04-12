@@ -17,6 +17,7 @@ import { APP_PREFIX, IS_NATIVE } from './utils'
 import { Storage } from '@capacitor/storage'
 
 import { VueQueryPlugin } from 'vue-query'
+import { customClientOptions } from './client'
 
 Storage.configure({
   group: APP_PREFIX
@@ -30,7 +31,7 @@ async function startApp() {
     console.error(e);
   } finally {
     const app = createApp(App)
-      .use(VueQueryPlugin)
+      .use(VueQueryPlugin, customClientOptions)
       .use(createPinia())
       .use(router)
       .use(Notifications)

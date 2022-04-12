@@ -11,6 +11,7 @@ export const IS_NATIVE = Capacitor.isNativePlatform();
 
 // Time Utilities
 export const now = new Date();
+export const twentyFourHoursInMs = 1000 * 60 * 60 * 24;
 
 export function humanizeTime(dt: string | Date): string {
   return formatDistanceToNow(dt instanceof Date ? dt : new Date(dt), { addSuffix: true })
@@ -82,10 +83,10 @@ export function compare12hTimesSort(a: string, b: string) {
   const aTimeTotal = getTotal(aTime);
   const bTimeTotal = getTotal(bTime);
 
-  if (!import.meta.env.PROD) {
-    console.log(a, aTime, aTimeTotal);
-    console.log(b, bTime, bTimeTotal);
-  }
+  // if (!import.meta.env.PROD) {
+  //   console.log(a, aTime, aTimeTotal);
+  //   console.log(b, bTime, bTimeTotal);
+  // }
 
   if (aTimeTotal === bTimeTotal) {
     return 0;
