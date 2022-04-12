@@ -18,6 +18,8 @@ export const useMockServer = () => {
 
   createServer({
     routes() {
+      this.passthrough('/@windicss-devtools-update');
+
       this.urlPrefix = backendUrl;
       this.timing = 2000;
       
