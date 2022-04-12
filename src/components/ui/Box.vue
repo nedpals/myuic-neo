@@ -7,7 +7,6 @@
 
 <script>
 import LoadingContainer from './LoadingContainer.vue';
-import { computed } from 'vue';
 
 export default {
   inject: {
@@ -16,11 +15,6 @@ export default {
     }
   },
   components: { LoadingContainer },
-  provide() {
-    return {
-      __loadState: computed(() => this.__loadState.value || this.isLoading),
-    }
-  },
   props: {
     title: {
       type: String,

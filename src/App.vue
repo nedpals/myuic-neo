@@ -59,6 +59,7 @@ import { notify } from 'notiwind';
 import { client } from './client';
 import { eventbus } from '@myuic-api/client/lib/event';
 import { useStudentStore } from './stores/studentStore';
+import { useQueryClient } from 'vue-query';
 
 export default {
   components: { NotificationContainer, IconFeedback },
@@ -66,11 +67,13 @@ export default {
     const router = useRouter();
     const feedbackUrl = computed(() => import.meta.env.VITE_FEEDBACK_URL ?? null);
     const uiStore = useUIStore();
+    const queryClient = useQueryClient();
 
     eventbus.on('changeAuthenticatedStatus', ({ newStatus, oldStatus }) => {
       if (oldStatus && !newStatus) {
         router.replace({ name: 'login' });
         useStudentStore().fullReset();
+        queryClient.clear();
       }
     })
 

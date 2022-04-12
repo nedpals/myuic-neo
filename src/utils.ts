@@ -6,6 +6,12 @@ import { Capacitor } from '@capacitor/core'
 
 export const APP_PREFIX = '__myuic_neo__';
 
+// Currency
+export const pesoFormatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'PHP'
+});
+
 // Capacitor-related utils
 export const IS_NATIVE = Capacitor.isNativePlatform();
 

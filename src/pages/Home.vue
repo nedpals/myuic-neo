@@ -81,24 +81,7 @@
       <div class="flex flex-col md:flex-row <md:space-y-4 md:space-x-4">
         <div class="w-full md:w-1/2 flex flex-col space-y-4">
           <account-balance-widget />
-
-          <promise-loader :promise="financialStore.getFinancialRecords()" v-slot="{ isPending }">
-            <box title="Recent Payments" class="bg-white border px-6 py-4 shadow" :is-loading="isPending">
-              <div class="flex flex-col divide-y dark:divide-uic-400 pb-2">
-                <div :key="'payment_' + pi" v-for="(pEntry, pi) in financialStore.recentPaymentHistory" class="text-sm flex justify-between items-center py-3">
-                  <skeleton custom-class="bg-gray-200 h-3.5 w-24">
-                    <p class="font-semibold">{{ pEntry.amount }}</p>
-                  </skeleton>
-                  <skeleton custom-class="bg-gray-200 h-3.5 w-16">
-                    <p class="text-gray-600 dark:text-uic-50">{{ pEntry.formattedPaidAt }}</p>
-                  </skeleton>
-                </div>
-              </div>
-              <skeleton custom-class="h-4 w-26 bg-uic-400">
-                <router-link :to="{ name: 'finance' }" class="hover:underline text-uic-500 dark:text-uic-200">See full list</router-link>
-              </skeleton>
-            </box>
-          </promise-loader>
+          <payment-history is-short is-recent has-link />
         </div>
         <div class="w-full md:w-1/2 flex flex-col space-y-2 h-full">
           <promise-loader :promise="scheduleStore.getSchedule()" v-slot="{ isPending }">
@@ -154,19 +137,19 @@ import IconReceiptOutline from '~icons/ion/receipt-outline';
 import IconCashOutline from '~icons/ion/cash-outline';
 import IconGClassroom from '~icons/custom/google-classroom';
 
-import { useClassScheduleStore, useFinancialRecordStore, useStudentStore } from '../stores/studentStore';
+import { useClassScheduleStore, useStudentStore } from '../stores/studentStore';
 import SelfModal from '../components/ui/SelfModal.vue';
 import { formatDatetime, getPeriod, now } from '../utils';
 import DashboardHeader from '../components/ui/DashboardHeader.vue';
 import Skeleton from '../components/ui/Skeleton.vue';
 import AccountBalanceWidget from '../components/Finance/AccountBalanceWidget.vue';
 import { computed, ref } from 'vue';
+import PaymentHistory from '../components/Finance/PaymentHistory.vue';
 
 export default {
-  components: { PromiseLoader, Box, LoadingContainer, IconGClassroom, IconBookmarkOutline, IconMailOpenOutline, IconBookOutline, IconReceiptOutline, IconCashOutline, SelfModal, DashboardHeader, Skeleton, AccountBalanceWidget },
+  components: { PromiseLoader, Box, LoadingContainer, IconGClassroom, IconBookmarkOutline, IconMailOpenOutline, IconBookOutline, IconReceiptOutline, IconCashOutline, SelfModal, DashboardHeader, Skeleton, AccountBalanceWidget, PaymentHistory },
   setup() {
     const studentStore = useStudentStore();
-    const financialStore = useFinancialRecordStore();
     const scheduleStore = useClassScheduleStore();
     const currentScheduleDay = ref(formatDatetime(now, 'EEE'));
     const welcomeGreeting = computed(() => {
@@ -176,7 +159,6 @@ export default {
     });
     const todayDate = computed(() => formatDatetime(now, '\'Today is\' iiii, MMMM d, yyyy'));
     const loadData = () => Promise.all([
-      financialStore.getFinancialRecords(),
       scheduleStore.getSchedule()
     ]);
 
@@ -194,7 +176,6 @@ export default {
 
     return {
       studentStore,
-      financialStore,
       scheduleStore,
       currentScheduleDay,
       welcomeGreeting,

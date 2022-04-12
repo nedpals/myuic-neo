@@ -151,11 +151,9 @@ export const useStudentStore = defineStore('student', {
 
     fullReset(): void {
       const scheduleStore = useClassScheduleStore();
-      const financialStore = useFinancialRecordStore();
       const clearanceStore = useClearanceStore();
 
       this.$reset();
-      financialStore.$reset();
       scheduleStore.$reset();
       clearanceStore.$reset();
       destroy();
@@ -301,91 +299,6 @@ export const useClassScheduleStore = defineStore('class_schedule', {
         throw new Error('There was an error downloading the file.');
       }
     },
-  }
-});
-
-export const pesoFormatter = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'PHP'
-});
-
-export function getBreakdownSubtotal(entries: any[]) {
-  return entries.reduce((p, v) => p + v.amount, 0);
-};
-
-export const useFinancialRecordStore = defineStore('financial_records', {
-  state: () => ({
-    data: {} as Record<string, any>
-  }),
-
-  getters: {
-    isEmpty(state) {
-      return state.data == null || Object.keys(state.data).length == 0;
-    },
-
-    assessmentTotal(state) {
-      if (this.isEmpty) return pesoFormatter.format(0);
-      return pesoFormatter.format(
-        Object.values(state.data.assessments as any[])
-          .reduce((p, v) => p + getBreakdownSubtotal(v), 0)
-      );
-    },
-
-    accountBalance(state) {
-      if (this.isEmpty) return pesoFormatter.format(0);
-      return pesoFormatter
-        .format(state.data.monthlyDues
-            .map((md: any) => md.balance)
-            .reduce((p: number, v: any) => p + v, 0));
-    },
-
-    paidTotal(state) {
-      if (this.isEmpty) return pesoFormatter.format(0);
-      return pesoFormatter.format(
-        state.data.monthlyDues
-          .map((md: any) => md.amount - md.balance)
-          .reduce((p: number, v: any) => p + v, 0));
-    },
-
-    lastUpdated(state): string {
-      if (this.paymentHistory.length == 0) return '';
-      return this.recentPaymentHistory[0].humanizedPaidAt;
-    },
-
-    recentPaymentHistory(): any[] {
-      return this.paymentHistory.sort((a, b) => b.paidAt.localeCompare(a.paidAt));
-    },
-
-    paymentHistory(state): any[] {
-      if (this.isEmpty) return [...Array(3).keys()].map(i => ({
-        or: ``,
-        cashier: 'N/A',
-        amount: pesoFormatter.format(0),
-        humanizedPaidAt: '',
-        formattedPaidAt: '',
-        paidAt: ''
-      }));
-
-      return state.data.paymentHistory.map((ph: any) => ({
-        or: `${ph.orNo}-${ph.orSig}`,
-        cashier: ph.cashier,
-        amount: pesoFormatter.format(ph.amount),
-        humanizedPaidAt: humanizeTime(ph.paidAt),
-        formattedPaidAt: formatDatetime(ph.paidAt, 'MMMM d, yyyy'),
-        paidAt: ph.paidAt
-      }));
-    }
-  },
-
-  actions: {
-    async getFinancialRecords() {
-      if (this.isEmpty) {
-        const studentStore = useStudentStore();
-        const data = await client.financialRecord(studentStore.currentSemesterId.toString());
-        this.data = data
-      }
-      return this.data;
-    }
   }
 });
 
