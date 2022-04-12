@@ -12,8 +12,8 @@ export const IS_NATIVE = Capacitor.isNativePlatform();
 // Time Utilities
 export const now = new Date();
 
-export function humanizeTime(dt: string): string {
-  return formatDistanceToNow(new Date(dt), { addSuffix: true })
+export function humanizeTime(dt: string | Date): string {
+  return formatDistanceToNow(dt instanceof Date ? dt : new Date(dt), { addSuffix: true })
 }
 
 export function formatDatetime(dt: string | Date, formatStr: string): string {
