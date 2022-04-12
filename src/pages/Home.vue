@@ -108,7 +108,7 @@
                   v-if="isLoading" 
                   :key="'day_' + j" 
                   v-for="j in 6" 
-                  class="bg-gray-200 flex-1 px-3 py-1 rounded-full h-7 w-auto"></skeleton>
+                  custom-class="bg-gray-200 flex-1 px-3 py-1 rounded-full h-7 w-auto"></skeleton>
 
                 <button 
                   v-else

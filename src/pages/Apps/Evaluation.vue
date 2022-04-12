@@ -76,7 +76,7 @@
                   <div class="flex space-x-4 items-start">
                     <div class="h-13 w-13 flex-shrink-0">
                       <skeleton
-                        class="bg-gray-200 dark:bg-uic-500 rounded-full h-full w-full">
+                        custom-class="bg-gray-200 dark:bg-uic-500 rounded-full h-full w-full">
                       </skeleton>
                     </div>
                     <div>
