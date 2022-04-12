@@ -19,6 +19,10 @@ export const useStudentStore = defineStore('student', {
   }),
 
   getters: {
+    hasSemesterId(): boolean {
+      return this.currentSemesterId !== -1;
+    },
+
     isEmpty(state): boolean {
       return state.student == null || Object.keys(state.student).length == 0;
     },

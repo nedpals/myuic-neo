@@ -2,7 +2,7 @@
   <main class="max-w-7xl mx-auto w-full flex min-h-screen">
     <navbar />
     <section class="md:ml-24 lg:ml-64 md:w-[calc(100%-6rem)] lg:w-[calc(100%-16rem)] border-r border-gray-300 dark:border-uic-700 w-full">
-      <loading-container :is-loading="studentStore.currentSemesterId == -1" v-slot="{ isLoading }">
+      <loading-container :is-loading="!studentStore.hasSemesterId" v-slot="{ isLoading }">
         <div v-if="isLoading" class="h-full w-full flex items-center justify-center">
           <loader class="h-16 w-16" />
         </div>

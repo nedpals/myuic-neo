@@ -10,7 +10,7 @@
       <div class="p-4 max-w-4xl mx-auto">
         <div class="text-center py-8 md:py-8 flex flex-col items-center">
           <skeleton 
-            :is-loading="isResolved && studentStore.currentSemesterId === -1" 
+            :is-loading="isResolved && !studentStore.hasSemesterId" 
             class="h-4.5 md:h-5 w-72 rounded-lg mb-8">
             <span class="text-gray-600 dark:text-uic-200 text-lg md:text-xl mb-8">
               {{ studentStore.getSemesterInfoByID(studentStore.currentSemesterId - 1)?.label ?? 'Unknown Semester' }}
