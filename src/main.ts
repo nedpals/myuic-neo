@@ -15,6 +15,7 @@ import { SplashScreen } from '@capacitor/splash-screen'
 import { APP_PREFIX, IS_NATIVE } from './utils'
 import { Storage } from '@capacitor/storage'
 
+import { VueQueryPlugin } from 'vue-query'
 Storage.configure({
   group: APP_PREFIX
 });
@@ -27,6 +28,7 @@ async function startApp() {
     console.error(e);
   } finally {
     createApp(App)
+      .use(VueQueryPlugin)
       .use(createPinia())
       .use(router)
       .use(Notifications)
