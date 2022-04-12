@@ -27,21 +27,14 @@ import Loader from '../components/ui/Loader.vue';
 import IconSave from '~icons/ion/save';
 
 import { useStudentStore } from '../stores/studentStore';
-import { useFormStore } from '../stores/formStore';
 import DashboardHeader from '../components/ui/DashboardHeader.vue';
 
 export default {
   components: { LoadingContainer, PromiseLoader, Loader, IconSave, DashboardHeader },
   setup() {
     const studentStore = useStudentStore();
-    const formStore = useFormStore();
-
-    const loadData = () => Promise.all([
-      studentStore.getStudent(),
-      formStore.getFormInfos()
-    ]);
-
-    return { studentStore, loadData }
+    const loadData = () => studentStore.getStudent();
+    return { loadData }
   },
   mounted() {
     this.warnNotify();

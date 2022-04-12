@@ -52,9 +52,12 @@
       <div class="form-group">
         <div class="form-control w-full md:w-1/2">
           <label for="gender">Gender</label>
-          <select name="gender" id="gender" :value="studentStore.student.gender">
-            <option v-for="g in formStore.genders" :key="g" :value="g">{{ g }}</option>
-          </select>
+          <loading-container :is-loading="gendersQuery.isLoading" v-slot="{ isLoading }">
+            <select name="gender" id="gender" :value="studentStore.student.gender" :disabled="isLoading">
+              <option v-if="isLoading" selected>Loading...</option>
+              <option v-for="g in gendersQuery.data" :key="g" :value="g">{{ g }}</option>
+            </select>
+          </loading-container>
         </div>
         <div class="form-control w-full md:w-1/2">
           <label for="birth_date">Birth Date</label>
@@ -70,15 +73,21 @@
       <div class="form-group">
         <div class="form-control w-full md:w-1/2">
           <label for="nationality">Nationality</label>
-          <select name="nationality" id="nationality" :value="studentStore.student.nationality">
-            <option v-for="n in formStore.nationalities" :key="n" :value="n">{{ n }}</option>
-          </select>
+          <loading-container :is-loading="nationalitiesQuery.isLoading" v-slot="{ isLoading }">
+            <select name="nationality" id="nationality" :value="studentStore.student.nationality" :disabled="isLoading">
+              <option v-if="isLoading" selected>Loading...</option>
+              <option v-for="n in nationalitiesQuery.data" :key="n" :value="n">{{ n }}</option>
+            </select>
+          </loading-container>
         </div>
         <div class="form-control w-full md:w-1/2">
           <label for="ethnic_group">Ethnic Group</label>
-          <select name="ethnic_group" id="ethnic_group" :value="studentStore.student.ethnicGroup">
-            <option v-for="eg in formStore.ethnicGroups" :key="eg" :value="eg">{{ eg }}</option>
-          </select>
+          <loading-container :is-loading="ethnicGroupsQuery.isLoading" v-slot="{ isLoading }">
+            <select name="ethnic_group" id="ethnic_group" :value="studentStore.student.ethnicGroup" :disabled="isLoading">
+              <option v-if="isLoading" selected>Loading...</option>
+              <option v-for="eg in ethnicGroupsQuery.data" :key="eg" :value="eg">{{ eg }}</option>
+            </select>
+          </loading-container>
         </div>
       </div>
 
@@ -86,9 +95,12 @@
       <div class="form-group">
         <div class="form-control w-full">
           <label for="religion">Religion</label>
-          <select name="religion" id="religion" :value="studentStore.student.religion">
-            <option v-for="r in formStore.religions" :key="r" :value="r">{{ r }}</option>
-          </select>
+          <loading-container :is-loading="religionsQuery.isLoading" v-slot="{ isLoading }">
+            <select name="religion" id="religion" :value="studentStore.student.religion" :disabled="isLoading">
+              <option v-if="isLoading" selected>Loading...</option>
+              <option v-for="r in religionsQuery.data" :key="r" :value="r">{{ r }}</option>
+            </select>
+          </loading-container>
         </div>
 
         <div class="form-control is-horizontal w-full">
@@ -138,13 +150,25 @@
 </template>
 
 <script>
-import { useFormStore } from '../../stores/formStore';
+import LoadingContainer from '../../components/ui/LoadingContainer.vue';
+import { useGendersQuery, useNationalitiesQuery, useEthnicGroupsQuery, useReligionsQuery } from '../../stores/formStore';
 import { useStudentStore } from '../../stores/studentStore'
 export default {
+  components: { LoadingContainer },
   setup() {
     const studentStore = useStudentStore();
-    const formStore = useFormStore();
-    return { studentStore, formStore }
+    const gendersQuery = useGendersQuery();
+    const nationalitiesQuery = useNationalitiesQuery();
+    const ethnicGroupsQuery = useEthnicGroupsQuery();
+    const religionsQuery = useReligionsQuery();
+
+    return { 
+      studentStore,
+      gendersQuery,
+      nationalitiesQuery,
+      ethnicGroupsQuery,
+      religionsQuery
+    }
   }
 }
 </script>

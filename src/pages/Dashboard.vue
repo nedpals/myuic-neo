@@ -17,7 +17,6 @@
 <script>
 import Navbar from '../components/ui/Navbar.vue'
 import { useStudentStore } from '../stores/studentStore';
-import { useFormStore } from '../stores/formStore';
 import DashboardHeader from '../components/ui/DashboardHeader.vue';
 import LoadingContainer from '../components/ui/LoadingContainer.vue';
 import Loader from '../components/ui/Loader.vue';
@@ -26,11 +25,9 @@ export default {
   components: { Navbar, DashboardHeader, LoadingContainer, Loader },
   setup() {
     const studentStore = useStudentStore();
-    const formStore = useFormStore();
 
     return {
-      studentStore,
-      formStore
+      studentStore
     }
   },
   created() {
