@@ -93,7 +93,7 @@ export const useMockServer = () => {
             address: "BARANGAY PAGKAKAISA",
             city: "DAVAO CITY",
           },
-          incomeGroup: "less than 20,000 / month",
+          incomeGroup: "less than 10,000 / month",
           contactNumber: "09xxxxxxxx",
         },
         guardianInformation: {
