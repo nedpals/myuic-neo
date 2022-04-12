@@ -4,6 +4,8 @@ import mitt from 'mitt';
 import { notify } from 'notiwind';
 import { Capacitor } from '@capacitor/core'
 
+export const APP_PREFIX = '__myuic_neo__';
+
 // Capacitor-related utils
 export const IS_ANDROID = Capacitor.getPlatform() === 'android';
 

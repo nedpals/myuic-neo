@@ -1,13 +1,15 @@
 import { client } from './client';
+import { Storage } from '@capacitor/storage';
 
-const SESSION_NAME = '__myuic_session';
+const SESSION_NAME = 'session';
 const SESSION_SEP = '||-||';
 
 export function persistTokens(token: string, refreshToken: string) {
-  if (token && refreshToken && localStorage)
-    localStorage.setItem(
-      SESSION_NAME, token + SESSION_SEP + refreshToken
-    );
+  if (token && refreshToken)
+    Storage.set({
+      key: SESSION_NAME,
+      value: token + SESSION_SEP + refreshToken
+    });
 }
 
 export async function login(id: string, password: string) {
@@ -22,8 +24,8 @@ export async function refresh() {
 }
 
 export async function retrieve() {
-  if (client.isAuthenticated() || !localStorage) return;
-  const sessionCreds = localStorage.getItem(SESSION_NAME);
+  if (client.isAuthenticated()) return;
+  const { value: sessionCreds } = await Storage.get({ key: SESSION_NAME });
   
   if (!sessionCreds) return;
   const [accessToken, refreshToken] = sessionCreds.split(SESSION_SEP);
@@ -36,8 +38,6 @@ export async function destroy() {
   } catch(e) {
     console.error(e);
   } finally {
-    if (localStorage) {
-      localStorage.removeItem(SESSION_NAME);
-    }
+    Storage.remove({ key: SESSION_NAME });
   }
 }

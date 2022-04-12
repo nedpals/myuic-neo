@@ -1,6 +1,7 @@
+import { Storage } from '@capacitor/storage';
 import { defineStore } from 'pinia';
 
-export const DARK_MODE_KEY = 'darkMode';
+export const DARK_MODE_KEY = 'dark_mode';
 export const darkModeQuery = () => window.matchMedia('(prefers-color-scheme: dark)');
 
 export const  useUIStore = defineStore('ui', {
@@ -13,8 +14,11 @@ export const  useUIStore = defineStore('ui', {
       // 0 (off), 1 (on), or 2 (auto)
       const nextValue = parseInt(this.darkMode)+1;
       this.darkMode = (nextValue % 3).toString();
-      if (localStorage)
-        localStorage.setItem(DARK_MODE_KEY, this.darkMode);
+      
+      Storage.set({
+        key: DARK_MODE_KEY,
+        value: this.darkMode
+      })
     },
 
     toggleDarkModeCss(darkModeValue: string) {
@@ -30,9 +34,9 @@ export const  useUIStore = defineStore('ui', {
       }
     },
 
-    fetchDarkMode() {
-      if (localStorage && localStorage.getItem(DARK_MODE_KEY)) {
-        this.darkMode = localStorage.getItem(DARK_MODE_KEY) ?? '0';
+    async fetchDarkMode() {
+      if ((await Storage.keys()).keys.includes(DARK_MODE_KEY)) {
+        this.darkMode = (await Storage.get({ key: DARK_MODE_KEY })).value ?? '0';
       } else if (darkModeQuery().matches) {
         this.darkMode = '2';
       }

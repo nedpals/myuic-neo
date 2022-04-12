@@ -14,6 +14,7 @@
     "@capacitor/core": "^3.4.3",
     "@capacitor/local-notifications": "^1.1.0",
     "@capacitor/splash-screen": "^1.2.2",
+    "@capacitor/storage": "^1.2.5",
     "@foundernest/namecase": "^1.0.5",
     "@headlessui/vue": "^1.5.0",
     "@iconify-json/mdi": "^1.1.2",

@@ -12,13 +12,12 @@ import 'virtual:windi.css'
 import 'virtual:windi-devtools'
 import { registerSW } from 'virtual:pwa-register'
 import { SplashScreen } from '@capacitor/splash-screen'
-import { IS_ANDROID } from './utils'
+import { APP_PREFIX, IS_ANDROID } from './utils'
+import { Storage } from '@capacitor/storage'
 
-async function showSplashScreen() {
-  if (IS_ANDROID) {
-    await SplashScreen.show();
-  }
-}
+Storage.configure({
+  group: APP_PREFIX
+});
 
 async function startApp() {
   try {
