@@ -11,11 +11,13 @@ import 'floating-vue/dist/style.css'
 import 'virtual:windi.css'
 import 'virtual:windi-devtools'
 import { registerSW } from 'virtual:pwa-register'
+
 import { SplashScreen } from '@capacitor/splash-screen'
 import { APP_PREFIX, IS_NATIVE } from './utils'
 import { Storage } from '@capacitor/storage'
 
 import { VueQueryPlugin } from 'vue-query'
+
 Storage.configure({
   group: APP_PREFIX
 });
@@ -27,13 +29,15 @@ async function startApp() {
   } catch (e) {
     console.error(e);
   } finally {
-    createApp(App)
+    const app = createApp(App)
       .use(VueQueryPlugin)
       .use(createPinia())
       .use(router)
       .use(Notifications)
-      .use(FloatingVue)
-      .mount('#app');
+      .use(FloatingVue);
+
+    app.config.unwrapInjectedRef = true;
+    app.mount('#app');
   }
 }
 

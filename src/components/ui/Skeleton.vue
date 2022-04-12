@@ -1,5 +1,5 @@
 <template>
-  <div :class="customClass" class="skeleton" v-if="isLoading || __loadState.value"></div>
+  <div :class="customClass" class="skeleton" v-if="isLoading || __loadState"></div>
   <slot v-else></slot>
 </template>
 
