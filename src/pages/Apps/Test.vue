@@ -7,7 +7,6 @@
 <script lang="ts">
 import { notify } from 'notiwind';
 import DashboardHeader from '../../components/ui/DashboardHeader.vue';
-import { IS_NATIVE } from '../../utils';
 import { LocalNotifications } from '@capacitor/local-notifications';
 
 export default {
@@ -15,7 +14,6 @@ export default {
   setup() {
     const testNotify = async () => {
       try {
-        if (!IS_NATIVE) return;
         notify({ type: 'info', text: 'Creating test notification...' }, 5 * 1000);
         const { display: status } = await LocalNotifications.checkPermissions();
         notify({ type: 'info', text: 'Notif status: ' + status }, 5 * 1000);
