@@ -20,35 +20,33 @@ async function showSplashScreen() {
   }
 }
 
-
-
-function startApp() {
-  (async () => {
-    if (IS_ANDROID)
-      await SplashScreen.hide();
-  })().finally(() => {
-    registerSW({ immediate: true });
-  
+async function startApp() {
+  try {
+    await SplashScreen.hide();
+    await registerSW({ immediate: true })(true);
+  } catch (e) {
+    console.error(e);
+  } finally {
     createApp(App)
       .use(createPinia())
       .use(router)
       .use(Notifications)
       .use(FloatingVue)
       .mount('#app');
+  }
+}
+
+async function initializeServer() {
+  if (!import.meta.env.PROD || !import.meta.env.VITE_API_URL) {
+    (await import('./mockserver')).useMockServer();
+  } else if (IS_ANDROID) {
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  }
+}
+
+
+SplashScreen.show()
+  .then(initializeServer)
+  .finally(() => {
+    startApp();
   });
-}
-
-if (!import.meta.env.PROD || !import.meta.env.VITE_API_URL) {
-  showSplashScreen()
-    .then(() => import('./mockserver'))
-    .then(({ useMockServer }) => useMockServer())
-    .finally(startApp);
-} else {
-  showSplashScreen()
-    .then(() => {
-      if (IS_ANDROID)
-        return new Promise(resolve => setTimeout(resolve, 1000));
-    })
-    .finally(startApp);
-}
-
