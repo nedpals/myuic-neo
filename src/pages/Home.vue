@@ -79,25 +79,23 @@
       </div>
 
       <div class="w-full">
-        <promise-loader :promise="clearanceStore.getClearance()" v-slot="{ isPending, data: clearance }">
-          <loading-container :is-loading="isPending" v-slot="{ isLoading }">
-            <box
-              @click="$router.push({ name: 'clearance' })"
-              bg="bg-white hover:bg-gray-100 dark:bg-uic-800 dark:hover:bg-uic-900"
-              class="cursor-pointer">
-              <div class="flex items-center justify-between w-full">
-                <div class="flex items-center space-x-2">
-                  <clearance-status-icon 
-                    :status="isLoading ? 'unknown' : clearanceStore.isCleared ? 'cleared' : 'not_cleared'" class="text-xl" />
-                  <skeleton custom-class="h-4 w-48 bg-gray-200 dark:text-uic-700">
-                    <p>Clearance Status: <span class="font-bold">{{ clearanceStore.isCleared ? 'Cleared' : 'Not cleared' }}</span></p>
-                  </skeleton>
-                </div>
-                <icon-chevron-right class="text-lg text-gray-400 dark:text-uic-300" />
+        <loading-container :is-loading="isClearanceLoading" v-slot="{ isLoading }">
+          <box
+            @click="$router.push({ name: 'clearance' })"
+            bg="bg-white hover:bg-gray-100 dark:bg-uic-800 dark:hover:bg-uic-900"
+            class="cursor-pointer">
+            <div class="flex items-center justify-between w-full">
+              <div class="flex items-center space-x-2">
+                <clearance-status-icon 
+                  :status="isLoading ? 'unknown' : isClearanceCleared ? 'cleared' : 'not_cleared'" class="text-xl" />
+                <skeleton custom-class="h-4 w-48 bg-gray-200 dark:text-uic-700">
+                  <p>Clearance Status: <span class="font-bold">{{ isClearanceCleared ? 'Cleared' : 'Not cleared' }}</span></p>
+                </skeleton>
               </div>
-            </box>
-          </loading-container>
-        </promise-loader>
+              <icon-chevron-right class="text-lg text-gray-400 dark:text-uic-300" />
+            </div>
+          </box>
+        </loading-container>
       </div>
 
       <div class="flex flex-col md:flex-row <md:space-y-4 md:space-x-4">
@@ -124,7 +122,7 @@ import IconReceiptOutline from '~icons/ion/receipt-outline';
 import IconCashOutline from '~icons/ion/cash-outline';
 import IconGClassroom from '~icons/custom/google-classroom';
 
-import { useClearanceStore, useStudentStore } from '../stores/studentStore';
+import { useStudentStore } from '../stores/studentStore';
 import SelfModal from '../components/ui/SelfModal.vue';
 import { formatDatetime, getPeriod, now } from '../utils';
 import DashboardHeader from '../components/ui/DashboardHeader.vue';
@@ -135,12 +133,13 @@ import PaymentHistory from '../components/Finance/PaymentHistory.vue';
 import ScheduleList from '../components/Schedule/ScheduleList.vue';
 import ClearanceStatusIcon from '../components/Clearance/ClearanceStatusIcon.vue';
 import IconChevronRight from '~icons/ion/chevron-right';
+import { useClearanceQuery, useClearanceQueryUtilities } from '../stores/clearanceStore';
 
 export default {
   components: { PromiseLoader, Box, LoadingContainer, IconGClassroom, IconBookmarkOutline, IconMailOpenOutline, IconBookOutline, IconReceiptOutline, IconChevronRight, IconCashOutline, SelfModal, DashboardHeader, Skeleton, AccountBalanceWidget, PaymentHistory, ScheduleList, ClearanceStatusIcon },
   setup() {
     const studentStore = useStudentStore();
-    const clearanceStore = useClearanceStore();
+    const { isCleared: isClearanceCleared, isLoading: isClearanceLoading } = useClearanceQueryUtilities(useClearanceQuery());
 
     const welcomeGreeting = computed(() => {
       const twelveHr = formatDatetime(now, 'hh:mm aa');
@@ -150,7 +149,8 @@ export default {
     const todayDate = computed(() => formatDatetime(now, '\'Today is\' iiii, MMMM d, yyyy'));
 
     return {
-      clearanceStore,
+      isClearanceCleared,
+      isClearanceLoading,
       studentStore,
       welcomeGreeting,
       todayDate

@@ -148,55 +148,8 @@ export const useStudentStore = defineStore('student', {
     },
 
     fullReset(): void {
-      const clearanceStore = useClearanceStore();
-
       this.$reset();
-      clearanceStore.$reset();
       destroy();
     }
-  }
-});
-
-export const useClearanceStore = defineStore('student_clearance', {
-  state: () => ({
-    data: {} as Record<string, any>
-  }),
-
-  getters: {
-    isEmpty(state) {
-      return state.data == null || Object.keys(state.data).length == 0;
-    },
-
-    isCleared(state) {
-      if (this.isEmpty) return false;
-
-      for (const item of state.data.items) {
-        if (item.status === 'not_cleared') return false;
-      }
-
-      return true;
-    }
-  },
-
-  actions: {
-    async getClearance() {
-      if (this.isEmpty) {
-        const studentStore = useStudentStore();
-        const data = await client.clearance(studentStore.currentSemesterId.toString());
-        this.data = data;
-      }
-      return this.data;
-    },
-
-    async generatePDF(): Promise<string> {
-      const studentStore = useStudentStore();
-      const data = await client.clearancePermitPDF(studentStore.currentSemesterId.toString());
-      if (window.URL.createObjectURL) {
-        const fileUrl = window.URL.createObjectURL(data);
-        return fileUrl;
-      } else {
-        throw new Error('There was an error downloading the file.');
-      }
-    },
   }
 });
