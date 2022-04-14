@@ -38,5 +38,5 @@ export function useClientQuery<T>(
   queryFn: QueryFunction<APIResponse, QueryKey>, 
   config?: Omit<ClientConfig<T>, "queryKey" | "queryFn">
 ) {
-  return readonly(useQuery(queryKey, queryFn, queryConfig(config)));
+  return useQuery(queryKey, queryFn, queryConfig(config));
 }

@@ -1,4 +1,4 @@
-import { ethnicGroups, genders, incomeGroups, nationalities, Nationality, ParentRelationship, parentRelationshipStatus, Religion, religions, RoutePath } from "@myuic-api/types";
+import { CourseEvaluationEntry, ethnicGroups, genders, incomeGroups, nationalities, Nationality, ParentRelationship, parentRelationshipStatus, questionnaires, Religion, religions, RoutePath } from "@myuic-api/types";
 import { createServer, Response as MirageResponse } from "miragejs";
 import { backendUrl } from "./client";
 
@@ -21,7 +21,7 @@ export const useMockServer = () => {
       this.passthrough('/@windicss-devtools-update');
 
       this.urlPrefix = backendUrl;
-      this.timing = 2000;
+      // this.timing = 2000;
       
       this.post(RoutePath('login'), (schema, request) => {
         const creds = JSON.parse(request.requestBody);
@@ -1398,7 +1398,7 @@ export const useMockServer = () => {
           type: "Lec",
           instructor: "Alan Turing",
           instructorImageUrl: "http://www3.uic.edu.ph/images/100x102/648.jpg",
-          status: "not_open",
+          status: "open",
         },
         {
           code: "CS212",
@@ -1406,7 +1406,7 @@ export const useMockServer = () => {
           type: "Lab",
           instructor: "Alan Turing",
           instructorImageUrl: "http://www3.uic.edu.ph/images/100x102/648.jpg",
-          status: "not_open",
+          status: "open",
         },
         {
           code: "CS211",
@@ -1414,7 +1414,7 @@ export const useMockServer = () => {
           type: "Lec",
           instructor: "Alan Kay",
           instructorImageUrl: "http://www3.uic.edu.ph/images/100x102/270.jpg",
-          status: "not_open",
+          status: "open",
         },
         {
           code: "CS211",
@@ -1422,7 +1422,7 @@ export const useMockServer = () => {
           type: "Lab",
           instructor: "Alan Kay",
           instructorImageUrl: "http://www3.uic.edu.ph/images/100x102/270.jpg",
-          status: "not_open",
+          status: "open",
         },
         {
           code: "CS213",
@@ -1430,7 +1430,7 @@ export const useMockServer = () => {
           type: "Lec",
           instructor: "Donald Knuth",
           instructorImageUrl: "http://www3.uic.edu.ph/images/100x102/556.jpg",
-          status: "not_open",
+          status: "open",
         },
         {
           code: "GEC006",
@@ -1438,7 +1438,7 @@ export const useMockServer = () => {
           type: "Lec",
           instructor: "Carlos Celdran",
           instructorImageUrl: "http://www3.uic.edu.ph/images/100x102/.jpg",
-          status: "not_open",
+          status: "open",
         },
         {
           code: "CC214",
@@ -1446,7 +1446,7 @@ export const useMockServer = () => {
           type: "Lec",
           instructor: "Bill Gates",
           instructorImageUrl: "http://www3.uic.edu.ph/images/100x102/1679.jpg",
-          status: "not_open",
+          status: "open",
         },
         {
           code: "CC214",
@@ -1454,7 +1454,7 @@ export const useMockServer = () => {
           type: "Lab",
           instructor: "Bill Gates",
           instructorImageUrl: "http://www3.uic.edu.ph/images/100x102/1679.jpg",
-          status: "not_open",
+          status: "open",
         },
         {
           code: "CC211",
@@ -1462,7 +1462,7 @@ export const useMockServer = () => {
           type: "Lec",
           instructor: "Bill Gates",
           instructorImageUrl: "http://www3.uic.edu.ph/images/100x102/1679.jpg",
-          status: "not_open",
+          status: "open",
         },
         {
           code: "CC211",
@@ -1470,7 +1470,7 @@ export const useMockServer = () => {
           type: "Lab",
           instructor: "Bill Gates",
           instructorImageUrl: "http://www3.uic.edu.ph/images/100x102/1679.jpg",
-          status: "not_open",
+          status: "open",
         },
         {
           code: "CC213",
@@ -1478,7 +1478,7 @@ export const useMockServer = () => {
           type: "Lec",
           instructor: "Paul Rand",
           instructorImageUrl: "http://www3.uic.edu.ph/images/100x102/1546.jpg",
-          status: "not_open",
+          status: "open",
         },
         {
           code: "CC213",
@@ -1486,7 +1486,7 @@ export const useMockServer = () => {
           type: "Lab",
           instructor: "Paul Rand",
           instructorImageUrl: "http://www3.uic.edu.ph/images/100x102/1546.jpg",
-          status: "not_open",
+          status: "open",
         },
         {
           code: "PE211",
@@ -1494,7 +1494,7 @@ export const useMockServer = () => {
           type: "Lec",
           instructor: "Hidilyn Diaz",
           instructorImageUrl: "http://www3.uic.edu.ph/images/100x102/1503.jpg",
-          status: "not_open",
+          status: "open",
         },
         {
           code: "CC212",
@@ -1502,7 +1502,7 @@ export const useMockServer = () => {
           type: "Lec",
           instructor: "James Gosling",
           instructorImageUrl: "http://www3.uic.edu.ph/images/100x102/1734.jpg",
-          status: "not_open",
+          status: "open",
         },
         {
           code: "CC212",
@@ -1510,9 +1510,12 @@ export const useMockServer = () => {
           type: "Lab",
           instructor: "James Gosling",
           instructorImageUrl: "http://www3.uic.edu.ph/images/100x102/1734.jpg",
-          status: "not_open",
+          status: "open",
         },
-      ]);
+      ] as CourseEvaluationEntry[]);
+
+      this.get(RoutePath('facultyEvaluationQuestionnaires'), () => questionnaires);
+      // this.post(Route)
 
       this.get(RoutePath('ethnicGroupsList'), () => reduceKV(ethnicGroups));
       this.get(RoutePath('genderList'), () => reduceKV(genders));
