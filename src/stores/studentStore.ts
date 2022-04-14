@@ -182,7 +182,7 @@ export const useClearanceStore = defineStore('student_clearance', {
     async getClearance() {
       if (this.isEmpty) {
         const studentStore = useStudentStore();
-        const data = await client.clearance((studentStore.currentSemesterId - 1).toString());
+        const data = await client.clearance(studentStore.currentSemesterId.toString());
         this.data = data;
       }
       return this.data;
@@ -190,7 +190,7 @@ export const useClearanceStore = defineStore('student_clearance', {
 
     async generatePDF(): Promise<string> {
       const studentStore = useStudentStore();
-      const data = await client.clearancePermitPDF((studentStore.currentSemesterId - 1).toString());
+      const data = await client.clearancePermitPDF(studentStore.currentSemesterId.toString());
       if (window.URL.createObjectURL) {
         const fileUrl = window.URL.createObjectURL(data);
         return fileUrl;

@@ -13,7 +13,7 @@
             :is-loading="isResolved && !studentStore.hasSemesterId" 
             custom-class="h-4.5 md:h-5 w-72 rounded-lg mb-8">
             <span class="text-gray-600 dark:text-uic-200 text-lg md:text-xl mb-8">
-              {{ studentStore.getSemesterInfoByID(studentStore.currentSemesterId - 1)?.label ?? 'Unknown Semester' }}
+              {{ studentStore.getSemesterInfoByID(studentStore.currentSemesterId)?.label ?? 'Unknown Semester' }}
             </span>
           </skeleton>
 
