@@ -75,7 +75,7 @@
 import { useFinancialRecordQuery } from '../../stores/financialStore';
 import { formatDatetime, humanizeTime, pesoFormatter } from '../../utils';
 import { PaymentRecord } from '@myuic-api/types';
-import { computed } from 'vue-demi';
+import { computed } from 'vue';
 import Skeleton from '../ui/Skeleton.vue';
 import Box from '../ui/Box.vue';
 import SelfModal from '../ui/SelfModal.vue';
