@@ -47,7 +47,7 @@
 </template>
 
 <script lang="ts">
-import { ref } from 'vue-demi';
+import { ref } from 'vue';
 import { useScheduleQueryUtilities, useSchedulesQuery, days } from '../../stores/scheduleStore';
 import Box from '../ui/Box.vue';
 import LoadingContainer from '../ui/LoadingContainer.vue';
