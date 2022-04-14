@@ -38,7 +38,7 @@
                 {{
                   clearanceStore.isCleared
                   ? 'All of the requirements for this semester have been met.'
-                  : 'You need to comply first all of the requirements before you can proceed.'
+                  : 'Comply first all of the requirements before you proceed.'
                 }}
               </h2>
             </skeleton>
