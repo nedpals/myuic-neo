@@ -18,13 +18,8 @@
           </skeleton>
 
           <loading-container :is-loading="isPending" v-slot="{ isLoading }">
-            <component 
-              :is="isLoading 
-                ? 'icon-unknown-circle-outline' 
-                : clearanceStore.isCleared 
-                ? 'icon-checkmark-circle-outline' 
-                : 'icon-close-circle-outline'"
-              :class="[isLoading ? 'text-gray-400' : clearanceStore.isCleared ? 'text-green-400' : 'text-red-400']"
+            <clearance-status-icon
+              :status="isLoading ? 'unknown' : clearanceStore.isCleared ? 'cleared' : 'not_cleared'"
               class="h-42 w-42 md:h-48 md:w-48 mb-4" />
 
             <skeleton custom-class="h-7.5 md:h-9 w-96 mb-4">
@@ -72,9 +67,7 @@
                       </span>
                     </p>
 
-                    <component 
-                    :is="statusIcon(clearanceItem.status)" 
-                    :class="statusColor(clearanceItem.status)" class="text-xl" />
+                    <clearance-status-icon :status="clearanceItem.status" class="text-xl" />
                   </div>
                 </div>
               </template>
@@ -105,7 +98,7 @@
                       <p>{{ r.remarks }}</p>
                       <div class="flex space-x-2 items-center">
                         <p class="font-bold">{{ statusText(r.status) }}</p>
-                        <component :is="statusIcon(r.status)" :class="statusColor(r.status)" />
+                        <clearance-status-icon :status="r.status" />
                       </div>
                     </div>
                   </div>
@@ -121,9 +114,6 @@
 
 <script lang="ts">
 import { ClearanceItem } from '@myuic-api/types';
-import IconCheckmarkCircleOutline from '~icons/ion/ios-checkmark-circle-outline';
-import IconCloseCircleOutline from '~icons/ion/ios-close-circle-outline';
-import IconUnknownCircleOutline from '~icons/ion/remove-circle-outline';
 import DashboardHeader from '../components/ui/DashboardHeader.vue';
 import Loader from '../components/ui/Loader.vue';
 import LoadingContainer from '../components/ui/LoadingContainer.vue';
@@ -132,18 +122,17 @@ import SelfModal from '../components/ui/SelfModal.vue';
 import Skeleton from '../components/ui/Skeleton.vue';
 import { useClearanceStore, useStudentStore } from '../stores/studentStore';
 import { catchAndNotifyError } from '../utils';
+import ClearanceStatusIcon from '../components/Clearance/ClearanceStatusIcon.vue';
 
 export default {
   components: {
-    IconCheckmarkCircleOutline,
-    IconCloseCircleOutline,
-    IconUnknownCircleOutline,
     PromiseLoader,
     LoadingContainer,
     DashboardHeader,
     Skeleton,
     Loader,
     SelfModal,
+    ClearanceStatusIcon,
   },
   setup() {
     const clearanceStore = useClearanceStore();
@@ -155,15 +144,7 @@ export default {
         ? 'Not cleared'
         : 'Unknown';
     }
-
-    const statusIcon = (status: 'cleared' | 'not_cleared' | 'unknown') => {
-      return status == 'cleared' 
-        ? 'icon-checkmark-circle-outline'
-        : status == 'not_cleared'
-        ? 'icon-close-circle-outline'
-        : 'icon-unknown-circle-outline';
-    }
-
+  
     const statusColor = (status: 'cleared' | 'not_cleared' | 'unknown') => {
       return status == 'cleared' 
         ? 'text-green-600'
@@ -181,7 +162,6 @@ export default {
       clearanceStore,
       studentStore,
       clearedRequirementsCount,
-      statusIcon,
       statusColor,
       statusText
     }
