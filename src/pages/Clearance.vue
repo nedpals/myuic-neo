@@ -24,7 +24,7 @@
 
             <skeleton custom-class="h-7.5 md:h-9 w-96 mb-4">
               <h1 class="text-3xl md:text-4xl font-semibold mb-2">
-                {{ clearanceStore.isCleared ? 'You\'re cleared' : 'Not cleared yet' }}, {{ studentStore.normalizedFirstName }}!
+                {{ clearanceStore.isCleared ? 'You\'re cleared' : 'You\'re not cleared' }}, {{ studentStore.normalizedFirstName }}!
               </h1>
             </skeleton>
 
