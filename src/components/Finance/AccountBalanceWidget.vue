@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts">
-import { computed } from 'vue-demi';
+import { computed } from 'vue';
 import { useFinancialRecordQuery } from '../../stores/financialStore';
 import Box from '../ui/Box.vue';
 import LoadingContainer from '../ui/LoadingContainer.vue';
