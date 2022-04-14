@@ -84,42 +84,7 @@
           <payment-history is-short is-recent has-link />
         </div>
         <div class="w-full md:w-1/2 flex flex-col space-y-2 h-full">
-          <promise-loader :promise="scheduleStore.getSchedule()" v-slot="{ isPending }">
-            <box title="This week's class schedule" class="h-full" :is-loading="isPending" v-slot="{ isLoading }">
-              <div class="flex space-x-1 overflow-x-scroll disable-scrollbar">
-                <skeleton 
-                  v-if="isLoading" 
-                  :key="'day_' + j" 
-                  v-for="j in 6" 
-                  custom-class="bg-gray-200 flex-1 px-3 py-1 rounded-full h-7 w-auto"></skeleton>
-
-                <button 
-                  v-else
-                  :key="'day_' + shortDay" 
-                  v-for="(day, shortDay) in scheduleStore.days" 
-                  @click="currentScheduleDay = day" 
-                  :class="[currentScheduleDay === day ? 'bg-uic-400 dark:bg-uic-600 text-white' : 'bg-gray-200 dark:bg-uic-700']" 
-                  class="flex-1 px-3 py-1 rounded-full">{{ day }}</button>
-              </div>
-              <div class="flex flex-col divide-y dark:divide-uic-400 py-2">
-                <div 
-                  :key="'sched_' + si" v-for="(sub, si) in asyncCurrentSchedule(isLoading)" 
-                  :class="{ 'hover:bg-gray-100 dark:hover:bg-uic-700 transition-colors cursor-pointer': !isLoading }"
-                  class="flex-col rounded-lg -mx-3 px-4 py-3">
-                  <skeleton custom-class="h-4 w-32 bg-gray-200 mb-2">
-                    <p class="mb-2 font-semibold">{{ sub.name }}</p>
-                  </skeleton>
-                  <skeleton custom-class="h-3.5 w-24 bg-gray-200">
-                    <p class="text-gray-600 dark:text-uic-200 text-sm">{{ sub.fromTime }}-{{ sub.toTime }}</p>
-                  </skeleton>
-                </div>
-              </div>
-              
-              <skeleton custom-class="h-4 w-24 bg-uic-400">
-                <router-link :to="{ name: 'schedule' }" class="hover:underline text-uic-500 dark:text-uic-200">See full schedule</router-link>
-              </skeleton>
-            </box>
-          </promise-loader>
+          <schedule-list />
         </div>
       </div>
     </div>
@@ -137,51 +102,31 @@ import IconReceiptOutline from '~icons/ion/receipt-outline';
 import IconCashOutline from '~icons/ion/cash-outline';
 import IconGClassroom from '~icons/custom/google-classroom';
 
-import { useClassScheduleStore, useStudentStore } from '../stores/studentStore';
+import { useStudentStore } from '../stores/studentStore';
 import SelfModal from '../components/ui/SelfModal.vue';
 import { formatDatetime, getPeriod, now } from '../utils';
 import DashboardHeader from '../components/ui/DashboardHeader.vue';
 import Skeleton from '../components/ui/Skeleton.vue';
 import AccountBalanceWidget from '../components/Finance/AccountBalanceWidget.vue';
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import PaymentHistory from '../components/Finance/PaymentHistory.vue';
+import ScheduleList from '../components/Schedule/ScheduleList.vue';
 
 export default {
-  components: { PromiseLoader, Box, LoadingContainer, IconGClassroom, IconBookmarkOutline, IconMailOpenOutline, IconBookOutline, IconReceiptOutline, IconCashOutline, SelfModal, DashboardHeader, Skeleton, AccountBalanceWidget, PaymentHistory },
+  components: { PromiseLoader, Box, LoadingContainer, IconGClassroom, IconBookmarkOutline, IconMailOpenOutline, IconBookOutline, IconReceiptOutline, IconCashOutline, SelfModal, DashboardHeader, Skeleton, AccountBalanceWidget, PaymentHistory, ScheduleList },
   setup() {
     const studentStore = useStudentStore();
-    const scheduleStore = useClassScheduleStore();
-    const currentScheduleDay = ref(formatDatetime(now, 'EEE'));
     const welcomeGreeting = computed(() => {
       const twelveHr = formatDatetime(now, 'hh:mm aa');
       const period = getPeriod(twelveHr);
       return `Good ${period}`;
     });
     const todayDate = computed(() => formatDatetime(now, '\'Today is\' iiii, MMMM d, yyyy'));
-    const loadData = () => Promise.all([
-      scheduleStore.getSchedule()
-    ]);
-
-    const currentSchedule = computed(() => scheduleStore.getScheduleByDay(currentScheduleDay.value));
-    if (currentScheduleDay.value === 'Sun') {
-      currentScheduleDay.value = 'Mon';
-    }
-
-    const asyncCurrentSchedule = (isLoading: boolean) => {
-      if (isLoading) {
-        return [...Array(3).keys()];
-      } 
-      return currentSchedule.value;
-    }
 
     return {
       studentStore,
-      scheduleStore,
-      currentScheduleDay,
       welcomeGreeting,
-      todayDate,
-      asyncCurrentSchedule,
-      loadData
+      todayDate
     }
   }
 }
@@ -195,9 +140,5 @@ export default {
 .quick-link-item > svg,
 .quick-link-item > .icon {
   @apply h-12 w-12 p-1 text-uic-400;
-}
-
-.disable-scrollbar::-webkit-scrollbar {
-  display: none;
 }
 </style>

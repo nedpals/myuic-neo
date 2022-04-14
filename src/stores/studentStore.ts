@@ -1,10 +1,8 @@
 import { defineStore } from 'pinia';
-import { compare12hTimesSort, formatDatetime, humanizeTime, IS_NATIVE } from '../utils';
 import { client } from '../client';
 import { nameCase } from '@foundernest/namecase';
 import { destroy } from '../auth';
 import { RoutePath } from '@myuic-api/types';
-import { LocalNotifications, LocalNotificationSchema, Weekday } from '@capacitor/local-notifications';
 
 const semesterRegex = /((?:First|Second) Semester|Summer)\s(\d{4}-\d{4})/;
 
@@ -150,155 +148,12 @@ export const useStudentStore = defineStore('student', {
     },
 
     fullReset(): void {
-      const scheduleStore = useClassScheduleStore();
       const clearanceStore = useClearanceStore();
 
       this.$reset();
-      scheduleStore.$reset();
       clearanceStore.$reset();
       destroy();
     }
-  }
-});
-
-const roomRegex = /(?:OL-)?((?:2nd|1st)T)/;
-
-export const useClassScheduleStore = defineStore('class_schedule', {
-  state: () => ({
-    // TODO: amalgamate all data from schedule and records into single course store
-    rawCourses: [] as any[],
-    isAlternate: false,
-    hasAlternates: false
-  }),
-
-  getters: {
-    isEmpty(state): boolean {
-      return state.rawCourses == null || state.rawCourses.length == 0;
-    },
-
-    days(): Record<string, string> {
-      return {
-        'M': 'Mon',
-        'T': 'Tue',
-        'W': 'Wed',
-        'Th': 'Thu',
-        'F': 'Fri',
-        'S': 'Sat'
-      };
-    },
-
-    scheduleList(state): Record<string, any[]> | null {
-      if (state.rawCourses.length == 0) return null;
-      let scheduleList: Record<string, any[]> = {
-        'M': [],
-        'T': [],
-        'W': [],
-        'Th': [],
-        'F': [],
-        'S': []
-      }
-
-      state.rawCourses.forEach((c: any) => {
-        const { name, instructor, room } = c;
-        // TODO: remove code. check if term is in 2nd term or not
-        const termMatches = roomRegex.exec(room);
-        if (termMatches && termMatches[1] && termMatches[1] !== '2ndT') return;
-
-        const insertFn = (s: any) => {
-          if (scheduleList[s.day].findIndex((cc: any) => cc.name == name) !== -1) return;
-          scheduleList[s.day].push({
-            name,
-            instructor,
-            room,
-            fromTime: s.fromTime,
-            toTime: s.toTime,
-            day: s.day
-          });
-        }
-
-        const nonAlts: any[] = c.schedules.filter(cc => !cc.isAlternate);
-        const alts: any[] = c.schedules.filter(cc => cc.isAlternate);
-        if (!state.hasAlternates && alts.length !== 0) {
-          state.hasAlternates = true;
-        }
-        
-        if (this.isAlternate) {
-          nonAlts
-            .filter(cc => alts.findIndex(ss => ss.day === cc.day) === -1)
-            .forEach(insertFn);
-          alts.forEach(insertFn);
-        } else {
-          nonAlts.forEach(insertFn);
-        }
-      });
-
-      Object.keys(scheduleList).forEach(s => {
-        scheduleList[s].sort((a, b) => compare12hTimesSort(a.fromTime, b.fromTime));
-      });
-
-      // if (IS_NATIVE) {
-      //   const weekday: Weekday[] = [
-      //     Weekday.Monday, 
-      //     Weekday.Tuesday, 
-      //     Weekday.Wednesday, 
-      //     Weekday.Thursday, 
-      //     Weekday.Friday,
-      //     Weekday.Saturday
-      //   ];
-
-      //   Object.keys(scheduleList).forEach((s, i) => {
-      //     LocalNotifications.schedule({
-      //       notifications: scheduleList[s].map<LocalNotificationSchema>(c => ({
-      //         id: new Date().getTime(),
-      //         title: `Incoming: ${c.name}`,
-      //         body: `${c.fromTime}-${c.toTime}`,
-      //         schedule: {
-      //           on: {
-      //             weekday: weekday[i],
-
-      //           }
-      //         }
-      //       }))
-      //     })
-      //   });
-      // }
-
-      return scheduleList;
-    }
-  },
-
-  actions: {
-    getScheduleByDay(day: string): any[] {
-      if (!this.isEmpty && this.scheduleList) {
-        for (const shortDay in this.days) {
-          if (this.days[shortDay] === day) {
-            return this.scheduleList[shortDay];
-          }
-        }
-      }
-      return [];
-    },
-
-    async getSchedule() {
-      if (this.isEmpty) {
-        const studentStore = useStudentStore();
-        const data = await client.classSchedule(studentStore.currentSemesterId.toString());
-        const { courses } = data;
-        this.rawCourses = courses;
-      }
-      return this.scheduleList;
-    },
-
-    async generatePDF(): Promise<string> {
-      const studentStore = useStudentStore();
-      const data = await client.classSchedulePDF((studentStore.currentSemesterId - 1).toString());
-      if (data instanceof Blob && window.URL.createObjectURL) {
-        const fileUrl = window.URL.createObjectURL(data);
-        return fileUrl;
-      } else {
-        throw new Error('There was an error downloading the file.');
-      }
-    },
   }
 });
 

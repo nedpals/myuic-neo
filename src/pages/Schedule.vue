@@ -19,34 +19,23 @@
       </div>
     </div>
 
-    <promise-loader 
-      :promise="scheduleStore.getSchedule()" 
-      :default-data="{
-        'M': [...Array(3).keys()],
-        'T': [...Array(3).keys()],
-        'W': [...Array(3).keys()],
-        'Th': [...Array(3).keys()],
-        'F': [...Array(3).keys()],
-        'S': [...Array(3).keys()]
-      }"
-      v-slot="{ isResolved, isPending, data: schedule }">
+    <loading-container :is-loading="isIdle || isFetching" v-slot="{ isLoading }">
       <button 
-        :disabled="!scheduleStore.hasAlternates || isPending"
-        v-tooltip="!scheduleStore.hasAlternates ? 'All of your courses does not have alternate class times.' : null"
-        @click="scheduleStore.isAlternate = !scheduleStore.isAlternate"
+        :disabled="!hasAlternates || isLoading"
+        v-tooltip="!hasAlternates ? 'All of your courses does not have alternate class times.' : null"
+        @click="isAlternate = !isAlternate"
         class="mb-4 self-end button"
-        :class="[scheduleStore.isAlternate ? 'is-primary' : 'is-light']">Alternate Schedule</button>
+        :class="[isAlternate ? 'is-primary' : 'is-light']">Alternate Schedule</button>
       
       <div class="flex flex-col space-y-4">
-        <loading-container :is-loading="isPending" v-slot="{ isLoading }">
           <div
             class="w-full flex flex-col md:flex-row <md:space-y-2 md:space-x-2"
-            v-for="(courses, day) in schedule" :key="'sched_' + day">
+            v-for="(courses, day) in scheduleList" :key="'sched_' + day">
 
             <span 
-              :class="[scheduleStore.days[day] === currentDay ? 'bg-uic-500 dark:bg-uic-700 text-white' : 'bg-gray-200 dark:bg-uic-800']"
+              :class="[days[day] === currentDay ? 'bg-uic-500 dark:bg-uic-700 text-white' : 'bg-gray-200 dark:bg-uic-800']"
               class="flex items-start px-3 py-1 rounded-full md:rounded-xl w-full md:w-1/5">
-              {{ scheduleStore.days[day] }}
+              {{ days[day] }}
             </span>
             <div class="flex flex-col w-full md:w-4/5 space-y-2">
               <box 
@@ -68,9 +57,8 @@
               </box>
             </div>
           </div>
-        </loading-container>
-      </div>
-    </promise-loader>
+        </div>
+      </loading-container>
   </dashboard-header>
 </template>
 
@@ -78,26 +66,35 @@
 import Box from '../components/ui/Box.vue';
 import LoadingContainer from '../components/ui/LoadingContainer.vue';
 import PromiseLoader from '../components/ui/PromiseLoader.vue';
-import { useClassScheduleStore, useStudentStore } from '../stores/studentStore';
+import { useStudentStore } from '../stores/studentStore';
 import { formatDatetime, now } from '../utils';
 import DashboardHeader from '../components/ui/DashboardHeader.vue';
 import Skeleton from '../components/ui/Skeleton.vue';
 import { ref } from 'vue';
 import { catchAndNotifyError } from '../utils';
 import IconPrint from '~icons/ion/print';
+import { generateSchedulePDF, useScheduleQueryUtilities, useSchedulesQuery, days } from '../stores/scheduleStore';
 
 export default {
   components: { PromiseLoader, Box, LoadingContainer, DashboardHeader, Skeleton, IconPrint },
   setup() {
-    const scheduleStore = useClassScheduleStore();
+    const schedulesQuery = useSchedulesQuery();
+    const { isFetching, isIdle } = schedulesQuery;
+    const { scheduleList, hasAlternates, isAlternate } = useScheduleQueryUtilities(schedulesQuery);
+
     const studentStore = useStudentStore();
     const currentDay = ref(formatDatetime(now, 'EEE'));
     const currentDate = ref(formatDatetime(now, 'MMMM d, yyyy'));
     const formattedDate = ref(formatDatetime(now, 'yyyy-MM-d'));
 
     return {
-      scheduleStore,
+      days,
+      scheduleList,
+      hasAlternates,
+      isAlternate,
       studentStore,
+      isIdle,
+      isFetching,
       currentDay,
       currentDate,
       formattedDate
@@ -108,7 +105,7 @@ export default {
       try {
         // TODO: unified component for fetching and previewing PDFs
         this.$notify({ type: 'info', text: 'Downloading PDF...' }, 10 * 1000);
-        const fileUrl = await this.scheduleStore.generatePDF();
+        const fileUrl = await generateSchedulePDF();
         const pdfPreviewTab = window.open(fileUrl, '_blank');
         if (pdfPreviewTab) {
           pdfPreviewTab.focus();

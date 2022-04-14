@@ -101,7 +101,8 @@ import Loader from '../../components/ui/Loader.vue';
 import LoadingContainer from '../../components/ui/LoadingContainer.vue';
 import PromiseLoader from '../../components/ui/PromiseLoader.vue';
 import IconChevronRight from '~icons/ion/chevron-right'
-import { useClassScheduleStore, useStudentStore } from '../../stores/studentStore';
+import { useSchedulesQuery } from '../../stores/scheduleStore';
+import { useStudentStore } from '../../stores/studentStore';
 import SelfModal from '../../components/ui/SelfModal.vue';
 import DashboardHeader from '../../components/ui/DashboardHeader.vue';
 import Skeleton from '../../components/ui/Skeleton.vue';
@@ -110,14 +111,15 @@ export default {
   components: { PromiseLoader, LoadingContainer, Loader, Box, IconChevronRight, SelfModal, DashboardHeader, Skeleton },
   setup() {
     const studentStore = useStudentStore();
-    const scheduleStore = useClassScheduleStore();
+    const schedulesQuery = useSchedulesQuery();
+    
     const getInstructorNameByCode = (code: string) => {
-      return scheduleStore.rawCourses.find(c => c.code === code).instructor ?? 'Unknown';
+      if (!schedulesQuery.data.value) return 'Unknown';
+      return schedulesQuery.data.value.courses.find(c => c.code === code)?.instructor ?? 'Unknown';
     }
 
     return {
       studentStore,
-      scheduleStore,
       getInstructorNameByCode
     }
   },
