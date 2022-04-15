@@ -7,7 +7,7 @@
       <box class="flex flex-col <md:w-screen <md:rounded-none <md:h-full max-h-screen !shadow-lg" :class="modalClass" no-padding>
         <div class="md:px-6">
           <div class="py-3 md:py-4 border-b dark:border-uic-600 relative flex items-center md:justify-center">
-            <h2 class="text-xl font-bold <md:ml-12 text-left md:text-center">{{ title }}</h2>
+            <h2 class="text-xl font-bold <md:ml-12 text-left md:text-center overflow-ellipsis whitespace-nowrap <md:w-3/4 overflow-hidden">{{ title }}</h2>
             <button 
               @click="$emit('update:open', false)" 
               class="absolute <md:left-2 md:right-0 md:bg-gray-200 md:dark:bg-uic-600 hover:bg-gray-200 md:hover:bg-gray-300 dark:hover:bg-uic-600 md:dark:hover:bg-uic-700 rounded-full p-2">

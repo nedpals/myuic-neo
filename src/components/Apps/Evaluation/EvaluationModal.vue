@@ -1,7 +1,7 @@
 <template>
   <self-modal 
     :title="course.name + ' / ' + course.code" 
-    content-class="px-6 pb-8 min-h-[60vh] max-h-[80vh] flex overflow-y-hidden"
+    content-class="flex overflow-hidden"
     modal-class="max-w-4xl w-full">
     <template #default="{ openModal }">
       <slot :openModal="openModal" />
@@ -9,39 +9,53 @@
 
     <template #modal-content>
       <loading-container :is-loading="isFetching || isIdle" v-slot="{ isLoading }">
-        <div v-if="isLoading" class="flex justify-center items-center py-8">
+        <div v-if="isLoading" class="sticky left-0 inset-y-0 flex justify-center items-center py-8">
           <loader class="h-14 w-14" />
         </div>
 
-        <div class="flex h-full" v-else>
-          <tab-group vertical :selected-index="step" @change="step = $event">
-            <tab-list class="w-1/3 flex flex-col">
-              <tab v-slot="{ selected }" class="border-r-2">
-                Welcome
+        <div class="flex h-full" v-if="!isLoading">
+          <tab-group vertical manual :selected-index="step" @change="step = $event">
+            <tab-list class="w-1/4 flex flex-col border-r <md:hidden">
+              <tab v-slot="{ selected }" as="div" class="w-full">
+                <button 
+                  :class="{ 'text-uic-500 bg-gradient-to-r from-transparent to-uic-100': selected }" 
+                  class="w-full px-6 py-4 hover:bg-gray-100 font-semibold text-left">
+                  Instructions
+                </button>
               </tab>
-              <tab v-slot="{ selected }" class="border-r-2" :key="cat.title" v-for="cat in data.categories">
-                {{ cat.title }}
+              <tab v-slot="{ selected }" as="div" class="w-full" :key="cat.title" v-for="(cat, ci) in data.categories">
+                <button 
+                  :disabled="ci + 1 > step"
+                  :class="{ 'text-uic-500 bg-gradient-to-r from-transparent to-uic-100': selected }" 
+                  class="w-full px-6 py-4 disabled:cursor-default disabled:text-gray-300 not-disabled:hover:bg-gray-100 font-semibold text-left">
+                  {{ cat.title }}
+                </button>
               </tab>
             </tab-list>
-            <tab-panels>
-              <tab-panel class="text-center">
+            <tab-panels class="w-full lg:w-3/4 md:min-h-[60vh] md:max-h-[60vh] pt-3 pb-6 overflow-y-auto">
+              <tab-panel class="text-center px-6">
                 <p v-html="data.instructions"></p>
               </tab-panel>
           
-              <tab-panel :key="cat.title" v-for="cat in data.categories" class="w-2/3 flex flex-col divide divide-y">
-                <div class="flex flex-col py-3 space-y-4">
-                  <div>
-                    <h3 class="text-lg font-semibold">{{ cat.title }}</h3>
-                    <p class="text-gray-600 dark:text-uic-200">{{ cat.description }}</p>
+              <tab-panel :key="cat.title" v-for="(cat, i) in data.categories" class="flex flex-col divide divide-y">
+                <div class="flex flex-col">
+                  <div class="mb-3 text-center px-3 md:px-6">
+                    <h3 class="text-2xl font-semibold">{{ cat.title }}</h3>
+                    <p class="text-lg text-gray-600 dark:text-uic-200">{{ cat.description }}</p>
                   </div>
-                  <div class="flex flex-col space-y-2" :key="'q_' + i + '_' + qi" v-for="(q, qi) in cat.questions">
-                    <div class="flex justify-between items-center">
-                      <p class="w-2/3">{{ q }}</p>
-                      <select>
-                        <option
-                          :key="'r_' + r"
-                          v-for="(rLabel, r) in ratings" :value="r">{{ rLabel }}</option>
-                      </select>
+                  <div class="border-t flex" :class="{ 'border-b': qi == cat.questions.length - 1 }" :key="'q_' + i + '_' + qi" v-for="(q, qi) in cat.questions">
+                    <div class="flex items-center justify-center border-r px-3 md:px-6 py-3 w-1/8">
+                      <span>{{ qi + 1 }}</span>
+                    </div>
+                    
+                    <div class="flex flex-col w-7/8 px-3 md:px-6 py-2 md:py-4">
+                      <p class="pb-3">{{ q }}</p>
+                      
+                      <div class="w-full flex md:space-x-2 <sm:space-y-2 <sm:flex-wrap">
+                        <button v-for="(rLabel, r) in ratings" :key="'r_' + r" class="button is-light w-full md:flex-1">
+                          {{ rLabel }}
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -54,11 +68,14 @@
 
     <template #modal-footer>
       <div class="flex justify-end space-x-2">
-        <button class="button is-default" :disabled="step < 0">
+        <button @click="step--" class="button is-light" v-if="step > 0">
           Previous
         </button>
 
+        <button @click="step++" v-if="step < 4" class="button is-primary px-6 py-2">Next</button>
+
         <button 
+          v-else
           @click="$notify({ type: 'info', text: 'Evaluation is read-only.' })" 
           class="button is-primary px-6 py-2">Submit</button>
       </div>
