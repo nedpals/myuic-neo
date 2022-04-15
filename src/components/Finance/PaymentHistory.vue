@@ -72,14 +72,12 @@
 </template>
 
 <script lang="ts">
-import { useFinancialRecordQuery } from '../../stores/financialStore';
-import { formatDatetime, humanizeTime, pesoFormatter } from '../../utils';
-import { PaymentRecord } from '@myuic-api/types';
-import { computed } from 'vue';
+import { useFinancialRecordQuery, useFinancialRecordQueryUtilities } from '../../stores/financialStore';
 import Skeleton from '../ui/Skeleton.vue';
 import Box from '../ui/Box.vue';
 import SelfModal from '../ui/SelfModal.vue';
 import LoadingContainer from '../ui/LoadingContainer.vue';
+import { computed } from 'vue';
 
 export default {
   components: { Skeleton, Box, SelfModal, LoadingContainer },
@@ -102,22 +100,11 @@ export default {
   },
 
   setup({ isRecent, limit }) {
-    const { isFetching, isIdle, data } = useFinancialRecordQuery();
-    const paymentOr = (pr: PaymentRecord) => `${pr.orNo}-${pr.orSig}`;
-    const humanizedPaidAt = (pr: PaymentRecord) => humanizeTime(pr.paidAt);
-    const formattedPaidAt = (pr: PaymentRecord) => formatDatetime(pr.paidAt, 'MMMM d, yyyy');
-    const formattedAmount = (pr: PaymentRecord) => pesoFormatter.format(pr.amount);
-    const paymentHistory = computed(() => {
-      if (!(isFetching || isIdle) && isRecent) {
-        return data.value?.paymentHistory.sort((a, b) => {
-          console.log(a, b);
-          return (<string> <unknown> b.paidAt).localeCompare(<string> <unknown> a.paidAt);
-        }).slice(0, limit ?? data.value?.paymentHistory.length);
-      }
-      return data.value?.paymentHistory.slice(0, limit ?? data.value?.paymentHistory.length);
-    });
+    const financialRecordQuery = useFinancialRecordQuery();
+    const { isFetching, isIdle } = financialRecordQuery;
+    const { humanizedPaidAt, paymentOr, formattedAmount, formattedPaidAt, getPaymentHistory } = useFinancialRecordQueryUtilities(financialRecordQuery);
+    const paymentHistory = computed(() => getPaymentHistory(isRecent, limit));
     
-
     return {
       humanizedPaidAt,
       paymentOr,

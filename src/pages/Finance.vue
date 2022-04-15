@@ -194,7 +194,7 @@ import IconPending from '~icons/ion/ios-circle-outline';
 import Loader from '../components/ui/Loader.vue';
 import { computed, ref } from 'vue';
 import PaymentHistory from '../components/Finance/PaymentHistory.vue';
-import { getBreakdownSubtotal, useFinancialRecordQuery } from '../stores/financialStore';
+import { getBreakdownSubtotal, useFinancialRecordQuery, useFinancialRecordQueryUtilities } from '../stores/financialStore';
 import { pesoFormatter } from '../utils';
 
 export default {
@@ -214,7 +214,10 @@ export default {
     PaymentHistory 
   },
   setup() {
-    const { data, isFetching, isIdle } = useFinancialRecordQuery();
+    const financialRecordQuery = useFinancialRecordQuery();
+    const { data, isFetching, isIdle } = financialRecordQuery;
+    const { paidTotal, assessmentTotal } = useFinancialRecordQueryUtilities(financialRecordQuery);
+
     const formKey = ref(0);
     const breakdownKeys = computed(() => ['tuition', 'misc', 'others', 'receivables']);
     const breakdownLabels = computed(() => ['Tuition', 'Miscellanous', 'Other Fees', 'Back Account']);
@@ -224,20 +227,6 @@ export default {
         formKey.value++;
       }
     }
-
-    const paidTotal = computed(() => {
-      return pesoFormatter.format(
-        data.value?.monthlyDues
-          .map((md: any) => md.amount - md.balance)
-          .reduce((p: number, v: any) => p + v, 0) ?? 0);
-    });
-
-    const assessmentTotal = computed(() => {
-      return pesoFormatter.format(
-        Object.values(data.value?.assessments ?? {})
-          .reduce((p, v) => p + getBreakdownSubtotal(v), 0)
-      );
-    });
 
     return {
       moneyFormatter: pesoFormatter,

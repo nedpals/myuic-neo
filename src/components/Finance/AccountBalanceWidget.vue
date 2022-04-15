@@ -17,30 +17,17 @@
 </template>
 
 <script lang="ts">
-import { computed } from 'vue';
-import { useFinancialRecordQuery } from '../../stores/financialStore';
+import { useFinancialRecordQuery, useFinancialRecordQueryUtilities } from '../../stores/financialStore';
 import Box from '../ui/Box.vue';
 import LoadingContainer from '../ui/LoadingContainer.vue';
 import Skeleton from '../ui/Skeleton.vue';
-import { humanizeTime, pesoFormatter } from '../../utils';
 
 export default {
   components: { Box, Skeleton, LoadingContainer },
   setup() {
     const financialRecordQuery = useFinancialRecordQuery();
     const { isIdle, isFetching } = financialRecordQuery;
-
-    const accountBalance = computed(() => pesoFormatter.format(
-      financialRecordQuery.data.value?.monthlyDues
-        .map((md) => md.balance)
-      . reduce((p, v) => p + v, 0) ?? 0
-    ));
-
-    const lastUpdated = computed(() => {
-      const record = financialRecordQuery.data.value;
-      if (!record || record.paymentHistory.length === 0) return '';
-      return humanizeTime(record.paymentHistory[record.paymentHistory.length - 1].paidAt);
-    });
+    const { accountBalance, lastUpdated } = useFinancialRecordQueryUtilities(financialRecordQuery);
 
     return { 
       accountBalance,
