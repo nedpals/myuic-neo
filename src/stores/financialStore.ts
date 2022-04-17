@@ -103,7 +103,7 @@ export const useFinancialRecordQueryUtilities = ({ data, isFetching, isIdle }: R
   });
 
   const getPaymentHistory = (isRecent: boolean, limit?: number) => computed(() => {
-    let history = data.value?.paymentHistory ?? [];
+    let history = data.value?.paymentHistory.slice() ?? [];
     if (!isLoading.value && isRecent) {
       history = history.sort((a, b) => {
         return (<string> <unknown> b.paidAt).localeCompare(<string> <unknown> a.paidAt);
