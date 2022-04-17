@@ -28,8 +28,12 @@
   </main>
 </template>
 
-<script>
+<script lang="ts">
 import { useTitle } from '@vueuse/core';
+import { useDrag } from '@vueuse/gesture';
+import { computed, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+
 export default {
   emits: ['reload'],
   props: {
@@ -40,31 +44,38 @@ export default {
       type: String
     }
   },
-  watch: {
-    '$route': {
-      handler() {
-        useTitle(`${this.pageTitle} | MyUIC`);
-      },
-      immediate: true
-    }
-  },
-  computed: {
-    pageTitle() {
-      if (this.title) return this.title;
-      if (this.$route.matched.length < 3) return this.$route.meta.pageTitle;
-      const routes = this.$router.getRoutes();
-      const currentRouteData = routes.find(r => r.name === this.$route.matched[this.$route.matched.length - 2].name);
-      if (!currentRouteData) return this.$route.meta.pageTitle;
-      return currentRouteData.meta.pageTitle;
-    },
-    childRouteLinks() {
-      if (this.$route.matched.length < 3) return [];
-      const routes = this.$router.getRoutes();
-      const currentRouteData = routes.find(r => r.name === this.$route.matched[this.$route.matched.length - 2].name);
+  setup({ title }) {
+    const route = useRoute();
+    const router = useRouter();
+
+    const childRouteLinks = computed(() => {
+      if (route.matched.length < 3) return [];
+      const routes = router.getRoutes();
+      const currentRouteData = routes.find(r => r.name === route.matched[route.matched.length - 2].name);
       if (!currentRouteData) return [];
       return currentRouteData.children;
+    })
+
+    const pageTitle = computed(() => {
+      if (title) return title;
+      if (route.matched.length < 3) return route.meta.pageTitle;
+      const routes = router.getRoutes();
+      const currentRouteData = routes.find(r => r.name === route.matched[route.matched.length - 2].name);
+      if (!currentRouteData) return route.meta.pageTitle;
+      return currentRouteData.meta.pageTitle;
+    })
+
+    watch(() => route.fullPath, () => {
+      useTitle(`${pageTitle.value} | MyUIC`);
+    }, {
+      immediate: true
+    });
+
+    return {
+      pageTitle,
+      childRouteLinks
     }
-  }
+  },
 }
 </script>
 
