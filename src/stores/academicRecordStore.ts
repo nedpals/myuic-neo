@@ -1,4 +1,4 @@
-import { SemesterReport } from "@myuic-api/types";
+import { CourseReport, SemesterReport } from "@myuic-api/types";
 import { computed } from "vue";
 import { useQuery } from "vue-query"
 import { client } from "../client";
@@ -8,7 +8,29 @@ export const useAcademicRecordQuery = () => {
   return useQuery(
     'academic_records',
     () => client.academicRecords(),
-
+    {
+      placeholderData: {
+        reports: [...Array(3).keys()].map<SemesterReport>(() => ({
+          label: 'Semester 0000',
+          reports: [...Array(6).keys()].map<CourseReport>(() => ({
+            code: '',
+            finalsGrade: 90,
+            midtermGrade: 90,
+            name: '',
+            overallGrade: 90,
+            prelimGrade: 90,
+            school: '',
+            section: '',
+            type: 'Lab',
+            units: 1
+          }))
+        })),
+        studentDegree: '',
+        studentName: '',
+        studentNumber: '',
+        studentPermanentRecordId: ''
+      }
+    }
   );
 }
 
@@ -24,7 +46,8 @@ export const useAcademicRecordQueryUtilities = ({ isFetching, isIdle, data }: Re
   }
 
   const latestAcademicRecords = computed(() => {
-    return data.value?.reports.reverse() ?? [];
+    if (!data.value) return [];
+    return data.value.reports.slice().reverse();
   })
 
   const overallAverages = computed(() => {
