@@ -1,6 +1,6 @@
 <template>
   <div class="sticky inset-x-0 top-0">
-    <div class="bg-white dark:bg-uic-900 border-b border-gray-300 dark:border-uic-700 px-3 md:px-5 md:py-0" v-if="title ? true : $route.meta.useHeader ?? true">
+    <div class="bg-white dark:bg-primary-900 border-b border-gray-300 dark:border-primary-700 px-3 md:px-5 md:py-0" v-if="title ? true : $route.meta.useHeader ?? true">
       <div class="flex justify-between py-3 md:py-5">
         <span class="text-xl font-bold block">{{ pageTitle ?? 'Unknown page name' }}</span>
         <div class="dashboard-header-actions">
@@ -13,8 +13,8 @@
             <router-link
               :to="r"
               style="transition: ease 150ms background-color "
-              exact-active-class="bg-uic-100 dark:bg-uic-700 !border-uic-500 !dark:border-uic-600 hover:bg-uic-200 dark:hover:bg-uic-800"
-              class="px-4 py-2 md:py-3 hover:bg-uic-100 dark:hover:bg-uic-800 rounded-t-lg border-b-4 border-transparent">
+              exact-active-class="bg-primary-100 dark:bg-primary-700 !border-primary-500 !dark:border-primary-600 hover:bg-primary-200 dark:hover:bg-primary-800"
+              class="px-4 py-2 md:py-3 hover:bg-primary-100 dark:hover:bg-primary-800 rounded-t-lg border-b-4 border-transparent">
               {{ r.meta.pageTitle ?? r.name }}
             </router-link>
           </li>
@@ -70,6 +70,6 @@ export default {
 
 <style lang="postcss">
 .dashboard-header-actions .button {
-  @apply text-uic-400 hover:text-uic-500 flex items-center space-x-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-900 px-3 py-3 -my-3 -mx-3 dark:hover:bg-opacity-20;
+  @apply text-primary-400 hover:text-primary-500 flex items-center space-x-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-900 px-3 py-3 -my-3 -mx-3 dark:hover:bg-opacity-20;
 }
 </style>

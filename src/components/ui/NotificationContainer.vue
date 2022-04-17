@@ -1,10 +1,10 @@
 <template>
   <div
     :class="{
-      'bg-red-400 border-red-500': type == 'error',
-      'bg-green-500 border-green-600': type == 'success',
-      'bg-orange-400 border-orange-500': type == 'warning',
-      'bg-uic-400 border-uic-500': type == 'info'
+      'bg-danger-400 border-danger-500': type == 'error',
+      'bg-success-500 border-success-600': type == 'success',
+      'bg-warning-400 border-warning-500': type == 'warning',
+      'bg-info-400 border-info-500': type == 'info'
     }"
     class="py-2 px-2 lg:px-8 text-white border-b origin-top">
     <slot>

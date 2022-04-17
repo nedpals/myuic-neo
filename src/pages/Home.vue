@@ -4,7 +4,7 @@
       <loading-container :is-loading="studentStore.isEmpty" v-slot="{ isLoading }">
         <div
           :style="isLoading ? {} : {backgroundImage: 'url(./default_avatar.png)'}"
-          :class="[isLoading ? 'animate-pulse bg-gray-200' : 'bg-uic-200']"
+          :class="[isLoading ? 'animate-pulse bg-gray-200' : 'bg-primary-200']"
           class="h-32 w-32 md:h-42 md:w-42 rounded-full mb-4 md:mb-8 bg-cover"></div>
         <skeleton custom-class="h-9 min-w-64 max-w-90 w-full bg-gray-200 mb-5 rounded-2xl">
           <h1 class="text-4xl font-semibold mb-2">
@@ -12,7 +12,7 @@
           </h1>
         </skeleton>
         <skeleton custom-class="h-6 min-w-48 max-w-64 w-full bg-gray-200 rounded-xl">
-          <p class="text-2xl text-gray-600 dark:text-uic-200">{{ todayDate }}</p>
+          <p class="text-2xl text-gray-600 dark:text-primary-200">{{ todayDate }}</p>
         </skeleton>
       </loading-container>
     </div>
@@ -58,7 +58,7 @@
                         :href="link.href"
                         :key="'link_' + li" v-for="(link, li) in studentStore.resourceLinks"
                         target="_blank"
-                        class="p-3 flex flex-col text-center justify-center items-center w-1/4 space-y-4 hover:bg-gray-200 dark:hover:bg-uic-900 rounded-lg">
+                        class="p-3 flex flex-col text-center justify-center items-center w-1/4 space-y-4 hover:bg-gray-200 dark:hover:bg-primary-900 rounded-lg">
                         <div class="max-w-10">
                           <img :src="link.iconUrl" class="h-auto w-full" :alt="link.label" />
                         </div>
@@ -70,7 +70,7 @@
                 </self-modal>
               </template>
               <div v-else :key="i" v-for="i in 6" class="quick-link-item text-center">
-                <div class="h-12 w-12 rounded-full bg-uic-400 mb-2"></div>
+                <div class="h-12 w-12 rounded-full bg-primary-400 mb-2"></div>
                 <div class="h-4 w-20 bg-gray-200 rounded-lg"></div>
               </div>
             </div>
@@ -82,17 +82,17 @@
         <loading-container :is-loading="isClearanceLoading" v-slot="{ isLoading }">
           <box
             @click="$router.push({ name: 'clearance' })"
-            bg="bg-white hover:bg-gray-100 dark:bg-uic-800 dark:hover:bg-uic-900"
+            bg="bg-white hover:bg-gray-100 dark:bg-primary-800 dark:hover:bg-primary-900"
             class="cursor-pointer">
             <div class="flex items-center justify-between w-full">
               <div class="flex items-center space-x-2">
                 <clearance-status-icon 
                   :status="isLoading ? 'unknown' : isClearanceCleared ? 'cleared' : 'not_cleared'" class="text-xl" />
-                <skeleton custom-class="h-4 w-48 bg-gray-200 dark:text-uic-700">
+                <skeleton custom-class="h-4 w-48 bg-gray-200 dark:text-primary-700">
                   <p>Clearance Status: <span class="font-bold">{{ isClearanceCleared ? 'Cleared' : 'Not cleared' }}</span></p>
                 </skeleton>
               </div>
-              <icon-chevron-right class="text-lg text-gray-400 dark:text-uic-300" />
+              <icon-chevron-right class="text-lg text-gray-400 dark:text-primary-300" />
             </div>
           </box>
         </loading-container>
@@ -161,11 +161,11 @@ export default {
 
 <style lang="postcss" scoped>
 .quick-link-item {
-  @apply w-1/4 md:w-1/6 cursor-pointer hover:bg-gray-100 dark:hover:bg-uic-800 rounded-lg p-3 flex flex-col items-center space-y-2;
+  @apply w-1/4 md:w-1/6 cursor-pointer hover:bg-gray-100 dark:hover:bg-primary-800 rounded-lg p-3 flex flex-col items-center space-y-2;
 }
 
 .quick-link-item > svg,
 .quick-link-item > .icon {
-  @apply h-12 w-12 p-1 text-uic-400;
+  @apply h-12 w-12 p-1 text-primary-400;
 }
 </style>

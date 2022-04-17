@@ -2,9 +2,9 @@
   <component 
     :is="statusIcon(status)" 
     :class="[status == 'cleared' 
-      ? 'text-green-600'
+      ? 'text-success-600'
       : status == 'not_cleared'
-      ? 'text-red-400'
+      ? 'text-danger-400'
       : 'text-gray-400']" />
 </template>
 

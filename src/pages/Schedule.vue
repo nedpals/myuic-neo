@@ -33,7 +33,7 @@
             v-for="(courses, day) in scheduleList" :key="'sched_' + day">
 
             <span 
-              :class="[days[day] === currentDay ? 'bg-uic-500 dark:bg-uic-700 text-white' : 'bg-gray-200 dark:bg-uic-800']"
+              :class="[days[day] === currentDay ? 'bg-primary-500 dark:bg-primary-700 text-white' : 'bg-gray-200 dark:bg-primary-800']"
               class="flex items-start px-3 py-1 rounded-full md:rounded-xl w-full md:w-1/5">
               {{ days[day] }}
             </span>

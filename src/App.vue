@@ -39,7 +39,7 @@
       </notification>
     </div>
   </notification-group>
-  <main class="dark:bg-uic-900">
+  <main class="dark:bg-primary-900">
     <router-view></router-view>
   </main>
 </template>
@@ -183,7 +183,7 @@ body {
 
 .button.is-primary,
 .dark .button.dark\:is-primary {
-  @apply bg-gradient-to-tr border-uic-500 hover:border-uic-700 text-white from-uic-500 to-uic-400 hover:from-uic-700 hover:to-uic-700;
+  @apply bg-gradient-to-tr border-primary-500 hover:border-primary-700 text-white from-primary-500 to-primary-400 hover:from-primary-700 hover:to-primary-700;
 }
 
 .button.is-light {
@@ -212,7 +212,7 @@ body {
 }
 
 .form-group-info > .description {
-  @apply text-gray-600 dark:text-uic-400;
+  @apply text-gray-600 dark:text-primary-400;
 }
 
 .form-control {
@@ -220,11 +220,11 @@ body {
 }
 
 .form-control > label {
-  @apply mb-2 text-gray-600 dark:text-uic-400;
+  @apply mb-2 text-gray-600 dark:text-primary-400;
 }
 
 .form-control > .hint-text {
-  @apply text-gray-500 dark:text-uic-300 text-sm mt-2 inline-block;
+  @apply text-gray-500 dark:text-primary-300 text-sm mt-2 inline-block;
 }
 
 .form-control.is-horizontal {
@@ -240,14 +240,14 @@ input[type='password'],
 input[type='email'],
 input[type='number'],
 input[type='url'] {
-  @apply !px-4 rounded-lg border border-gray-300 dark:border-uic-500 dark:bg-uic-900;
+  @apply !px-4 rounded-lg border border-gray-300 dark:border-primary-500 dark:bg-primary-900;
 }
 
 textarea {
-  @apply !px-4 !rounded-lg border !border-gray-300 !dark:border-uic-500 dark:bg-uic-900; 
+  @apply !px-4 !rounded-lg border !border-gray-300 !dark:border-primary-500 dark:bg-primary-900; 
 }
 
 select {
-  @apply !px-4 !py-2 !rounded-lg border !border-gray-300 !dark:border-uic-500 dark:bg-uic-900;
+  @apply !px-4 !py-2 !rounded-lg border !border-gray-300 !dark:border-primary-500 dark:bg-primary-900;
 }
 </style>

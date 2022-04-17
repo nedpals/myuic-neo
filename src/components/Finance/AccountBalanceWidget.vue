@@ -3,14 +3,14 @@
     <box
       title="Account Balance"
       title-class="text-white"
-      bg="bg-gradient-to-tr from-uic-500 to-uic-300 dark:from-uic-700 dark:to-uic-500"
+      bg="bg-gradient-to-tr from-primary-500 to-primary-300 dark:from-primary-700 dark:to-primary-500"
       class="transition-colors text-white">
       <skeleton custom-class="h-9 w-48 rounded-xl mb-6 bg-white">
         <h2 class="font-bold text-4xl pb-4">{{ accountBalance }}</h2>
       </skeleton>
 
-      <skeleton custom-class="h-3.5 w-32 bg-uic-100 rounded-lg">
-        <span class="text-sm font-semibold text-uic-100">Updated: {{ lastUpdated }}</span>
+      <skeleton custom-class="h-3.5 w-32 bg-primary-100 rounded-lg">
+        <span class="text-sm font-semibold text-primary-100">Updated: {{ lastUpdated }}</span>
       </skeleton>
     </box>
   </loading-container>

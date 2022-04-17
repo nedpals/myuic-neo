@@ -12,7 +12,7 @@
           <div class="flex flex-col items-center text-center pb-8">
             <component
               :is="formState == 'success' ? 'icon-checkmark-circle-outline' : 'icon-close-circle-outline'"
-              :class="[formState == 'success' ? 'text-green-400' : 'text-red-400']"
+              :class="[formState == 'success' ? 'text-success-400' : 'text-danger-400']"
               class="h-42 w-42 mb-2" />
             
             <h2 class="font-semibold text-4xl mb-3">{{ formState == 'success' ? 'Success!' : 'Something went wrong.' }}</h2>
@@ -61,12 +61,12 @@
                   :value="pc"
                   v-slot="{ checked }">
                   <div 
-                    :class="[checked ? 'border-uic-400 hover:border-uic-500' : 'hover:border-uic-400']" 
+                    :class="[checked ? 'border-primary-400 hover:border-primary-500' : 'hover:border-primary-400']" 
                     class="border-2 rounded-lg px-2 py-3 cursor-pointer flex flex-row md:flex-col items-center justify-center">
                     <component 
                       :is="paymentCenterIcons[pc]" 
                       class="text-xl <md:mr-2 md:text-3xl md:mb-2 md:mt-1"
-                      :class="{ 'text-uic-600': checked }" />
+                      :class="{ 'text-primary-600': checked }" />
                     <span class="text-center font-semibold text-sm block">{{ pc }}</span>
                   </div>
                 </radio-group-option>
@@ -99,7 +99,7 @@
             <input type="hidden" name="department" :value="higherEducationDepartmentId" />
             <input type="hidden" name="payment_center" :value="miscData.paymentMethod" />
             <div class="form-control pt-8">
-              <p class="text-gray-500 dark:text-uic-200">
+              <p class="text-gray-500 dark:text-primary-200">
                 By clicking "Submit", I acknowledge that I have read, understood, and agreed to the terms and conditions for the processing of my payment.
               </p>
             </div>

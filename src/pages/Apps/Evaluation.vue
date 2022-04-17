@@ -17,14 +17,14 @@
                 v-for="(sub, si) in studentStore.courseEvaluationList">
                 <template #default="{ openModal }">
                   <box 
-                    class="hover:bg-gray-100 dark:hover:bg-uic-900 hover:border-uic-500 dark:hover:border-uic-700 cursor-pointer" 
+                    class="hover:bg-gray-100 dark:hover:bg-primary-900 hover:border-primary-500 dark:hover:border-primary-700 cursor-pointer" 
                     @click="">
                     <div class="flex flex-row justify-between items-center">
                       <div class="flex space-x-4 items-start">
                         <div class="h-13 w-13 flex-shrink-0">
                           <div 
                             :style="{ backgroundImage: `url(${sub.instructorImageUrl})` }"
-                            class="bg-gray-200 dark:bg-uic-500 rounded-full h-full w-full bg-cover bg-center"></div>
+                            class="bg-gray-200 dark:bg-primary-500 rounded-full h-full w-full bg-cover bg-center"></div>
                         </div>
                         <div>
                           <h3 class="text-xl font-semibold">{{ sub.name }}</h3>
@@ -41,7 +41,7 @@
                     <div :key="'rating_cat_' + i" v-for="i in 2" class="flex flex-col py-3 space-y-4">
                       <div>
                         <h3 class="text-lg font-semibold">Category {{ i }}</h3>
-                        <p class="text-gray-600 dark:text-uic-200">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quas, voluptates.</p>
+                        <p class="text-gray-600 dark:text-primary-200">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quas, voluptates.</p>
                       </div>
                       <div class="flex flex-col space-y-2" :key="'q_' + i + '_' + jj" v-for="jj in 10">
                         <div class="flex justify-between">
@@ -76,7 +76,7 @@
                   <div class="flex space-x-4 items-start">
                     <div class="h-13 w-13 flex-shrink-0">
                       <skeleton
-                        custom-class="bg-gray-200 dark:bg-uic-500 rounded-full h-full w-full">
+                        custom-class="bg-gray-200 dark:bg-primary-500 rounded-full h-full w-full">
                       </skeleton>
                     </div>
                     <div>

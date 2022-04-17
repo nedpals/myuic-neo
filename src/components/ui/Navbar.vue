@@ -1,13 +1,13 @@
 <template>
   <aside 
     :class="[isMenuOpen ? '<md:block w-full' : '<md:hidden']" 
-    class="main-navbar md:border-l md:border-r border-gray-300 dark:border-uic-700 md:h-full md:w-24 lg:w-64 fixed h-screen z-40 transition pt-2 bg-white dark:bg-uic-900 overflow-y-auto scrollbar-thin">
+    class="main-navbar md:border-l md:border-r border-gray-300 dark:border-primary-700 md:h-full md:w-24 lg:w-64 fixed h-screen z-40 transition pt-2 bg-white dark:bg-primary-900 overflow-y-auto scrollbar-thin">
     <div class="flex flex-row md:flex-col lg:flex-row justify-between px-2 w-full">
       <div class="flex flex-col space-y-2 py-2 pl-4 pr-2">
         <loading-container :is-loading="studentStore.isEmpty" v-slot="{ isLoading }">
           <div class="w-full flex flex-row space-x-2 md:flex-col md:space-y-2 md:space-x-0 lg:flex-row lg:space-y-0 lg:space-x-2">
             <div class="h-12 w-12 lg:h-13 lg:w-13">
-              <icon-logo class="w-full h-full text-uic-500 dark:text-uic-600" />
+              <icon-logo class="w-full h-full text-primary-500 dark:text-primary-600" />
             </div>
             <div
               class="h-12 w-12 lg:h-13 lg:w-13 rounded-full bg-gray-200 bg-cover"
@@ -33,7 +33,7 @@
 
     <nav class="pt-6 md:pt-12 pb-24 md:pb-8 pl-4 md:h-[87%] flex flex-col">
       <div :key="'links_' + j" v-for="(linkGroup, j) in linkGroups" :class="{ 'mt-10': j > 0 }">
-        <span class="uppercase text-sm font-bold pb-4 block pl-2 text-gray-500 dark:text-uic-200 md:hidden lg:block">{{ linkGroup.name }}</span>
+        <span class="uppercase text-sm font-bold pb-4 block pl-2 text-gray-500 dark:text-primary-200 md:hidden lg:block">{{ linkGroup.name }}</span>
         <div class="space-y-3">
           <router-link
             :key="'link_' + (j + i)"
@@ -42,14 +42,14 @@
             @click="isMenuOpen = false"
             :class="[
               link.to.name === currentRouteName
-              ?  'text-white bg-uic-500 hover:bg-uic-600 dark:bg-uic-700 dark:hover:bg-uic-800'
-              :  'hover:bg-uic-100 dark:hover:bg-uic-800'
+              ?  'text-white bg-primary-500 hover:bg-primary-600 dark:bg-primary-700 dark:hover:bg-primary-800'
+              :  'hover:bg-primary-100 dark:hover:bg-primary-800'
             ]"
             class="py-2 px-4 flex items-center max-h-12 space-x-4 rounded-l-full" 
             style="transition: ease 150ms background-color">
             <component 
               :is="link.to.name === currentRouteName ? link.activeIcon : link.icon" 
-              :class="[link.to.name !== currentRouteName ? 'text-uic-500' : 'dark:text-uic-300']" 
+              :class="[link.to.name !== currentRouteName ? 'text-primary-500' : 'dark:text-primary-300']" 
               class="text-[1.3rem]" />
             <span class="md:hidden lg:block">{{ link.title }}</span>
           </router-link>
@@ -61,36 +61,36 @@
       <div class="pb-4">
         <button
           @click="logout"
-          class="w-full hover:bg-red-100 dark:hover:bg-red-900 bg-red-50 dark:bg-red-800 py-2 px-4 flex items-center max-h-12 space-x-4 rounded-l-full" 
+          class="w-full hover:bg-danger-100 dark:hover:bg-danger-900 bg-danger-50 dark:bg-danger-800 py-2 px-4 flex items-center max-h-12 space-x-4 rounded-l-full" 
           style="transition: ease 150ms background-color">
-            <icon-logout-outline class="text-red-500 dark:text-white text-[1.3rem]" />
+            <icon-logout-outline class="text-danger-500 dark:text-white text-[1.3rem]" />
             <span class="md:hidden lg:block">Logout</span>
         </button>
       </div>
     </nav>
   </aside>
 
-  <div class="bg-white dark:bg-uic-900 flex border-t dark:border-uic-700 fixed bottom-0 inset-x-0 md:hidden z-50">
+  <div class="bg-white dark:bg-primary-900 flex border-t dark:border-primary-700 fixed bottom-0 inset-x-0 md:hidden z-50">
     <router-link 
       :key="'link_' + i"
       v-for="(link, i) in mobileMenuLinks"
       :to="link.to" 
       @click="isMenuOpen = false"
       v-slot="{ isExactActive }"
-      exact-active-class="text-uic-600 dark:text-white bg-uic-100 !hover:bg-uic-200 dark:bg-uic-700 !dark:hover:bg-uic-800"
-      class="flex-1 px-4 py-2 flex flex-col items-center space-y-1 hover:bg-uic-100 dark:hover:bg-uic-600 text-sm">
-      <component :is="isExactActive ? link.activeIcon : link.icon" class="text-uic-600 dark:text-uic-200 text-[1.15rem]" />
+      exact-active-class="text-primary-600 dark:text-white bg-primary-100 !hover:bg-primary-200 dark:bg-primary-700 !dark:hover:bg-primary-800"
+      class="flex-1 px-4 py-2 flex flex-col items-center space-y-1 hover:bg-primary-100 dark:hover:bg-primary-600 text-sm">
+      <component :is="isExactActive ? link.activeIcon : link.icon" class="text-primary-600 dark:text-primary-200 text-[1.15rem]" />
       <span class="text-xs">{{ link.title }}</span>
     </router-link>
     <button 
       @click="isMenuOpen = !isMenuOpen"
       :class="[
         isMenuOpen
-        ?  'text-uic-600 dark:text-white bg-uic-100 dark:bg-uic-600 hover:bg-uic-200 dark:hover:bg-uic-800'
-        :  'hover:bg-uic-100 dark:hover:bg-uic-600'
+        ?  'text-primary-600 dark:text-white bg-primary-100 dark:bg-primary-600 hover:bg-primary-200 dark:hover:bg-primary-800'
+        :  'hover:bg-primary-100 dark:hover:bg-primary-600'
       ]"
       class="flex-1 px-4 py-2 flex flex-col items-center space-y-1 text-sm">
-      <icon-menu class="text-uic-600 dark:text-uic-200 text-[1.15rem]" />
+      <icon-menu class="text-primary-600 dark:text-primary-200 text-[1.15rem]" />
       <span class="text-xs">Menu</span>
     </button>
   </div>

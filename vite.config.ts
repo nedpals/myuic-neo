@@ -40,9 +40,9 @@ export default defineConfig({
       includeManifestIcons: true,
       manifest: {
         //@ts-ignore
-        background_color: config.theme.extend.colors.uic["DEFAULT"],
+        background_color: config.theme.colors.primary["500"],
         //@ts-ignore
-        theme_color: config.theme.extend.colors.uic["DEFAULT"],
+        theme_color: config.theme.colors.primary["500"],
         name: "MyUIC Concept",
         short_name: 'MyUIC Concept',
         display: "standalone",

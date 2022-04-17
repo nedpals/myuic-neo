@@ -1,10 +1,10 @@
 <template>
   <button 
     @click="uiStore.toggleDarkMode" 
-    class="rounded-full p-2 hover:bg-uic-100 dark:hover:bg-uic-800">
+    class="rounded-full p-2 hover:bg-primary-100 dark:hover:bg-primary-800">
     <component 
       :is="uiStore.darkMode === '1' ? 'icon-sun' : uiStore.darkMode === '2' ? 'icon-sun-moon' : 'icon-moon'"
-      class="h-6 w-6 text-uic-500 dark:text-uic-300" />
+      class="h-6 w-6 text-primary-500 dark:text-primary-300" />
   </button>
 </template>
 

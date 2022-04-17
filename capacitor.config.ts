@@ -12,7 +12,7 @@ const config: CapacitorConfig = {
     LocalNotifications: {
       smallIcon: "ic_stat_icon",
       //@ts-ignore
-      iconColor: windiConfig.theme.extend.colors.uic["DEFAULT"]
+      iconColor: windiConfig.theme.colors.primary["500"]
     },
     SplashScreen: {
       launchAutoHide: false,
@@ -20,7 +20,7 @@ const config: CapacitorConfig = {
       splashFullScreen: true,
       splashImmersive: false,
       //@ts-ignore
-      backgroundColor: windiConfig.theme.extend.colors.uic["DEFAULT"]
+      backgroundColor: windiConfig.theme.colors.primary["500"]
     }
   },
 };

@@ -4,7 +4,7 @@
       <div class="relative">
         <div 
           style="z-index:-1; opacity: 0.2;" 
-          :class="[isLoading ? 'from-transparent' : isCleared ? 'from-green-400' : 'from-red-400']"
+          :class="[isLoading ? 'from-transparent' : isCleared ? 'from-success-400' : 'from-danger-400']"
           class="bg-gradient-to-b to-transparent h-[40vh] absolute inset-x-0 top-0"></div>
 
         <section class="p-4 max-w-4xl mx-auto">
@@ -12,7 +12,7 @@
             <skeleton 
               :is-loading="!studentStore.hasSemesterId" 
               custom-class="h-4.5 md:h-5 w-72 rounded-lg mb-8">
-              <span class="text-gray-600 dark:text-uic-200 text-lg md:text-xl mb-8">
+              <span class="text-gray-600 dark:text-primary-200 text-lg md:text-xl mb-8">
                 {{ studentStore.getSemesterInfoByID(studentStore.currentSemesterId)?.label ?? 'Unknown Semester' }}
               </span>
             </skeleton>
@@ -29,7 +29,7 @@
             </skeleton>
 
             <skeleton custom-class="h-5 md:h-6 w-72">
-              <h2 class="text-xl md:text-2xl text-gray-600 dark:text-uic-200 mb-8">
+              <h2 class="text-xl md:text-2xl text-gray-600 dark:text-primary-200 mb-8">
                 {{
                   isCleared
                   ? 'All of the requirements for this semester have been met.'
@@ -46,15 +46,15 @@
             </button>
           </div>
 
-          <div v-if="!isLoading && data.items.length" class="bg-gray-50 dark:bg-uic-800 shadow border dark:border-uic-600 rounded-lg">
-            <div class="flex flex-col divide-y dark:divide-uic-600">
+          <div v-if="!isLoading && data.items.length" class="bg-gray-50 dark:bg-primary-800 shadow border dark:border-primary-600 rounded-lg">
+            <div class="flex flex-col divide-y dark:divide-primary-600">
               <self-modal 
                 :key="'item_' + i" v-for="(clearanceItem, i) in data.items"
                 :title="clearanceItem.label + ' Requirements'">
                 <template #default="{ openModal }">
                   <div
                     @click="openModal"
-                    class="flex justify-between cursor-pointer px-6 py-4 transition-colors hover:bg-gray-100 dark:hover:bg-uic-700">
+                    class="flex justify-between cursor-pointer px-6 py-4 transition-colors hover:bg-gray-100 dark:hover:bg-primary-700">
                     <p>{{ clearanceItem.label }}</p>
                     <div class="flex space-x-2 items-center">
                       <p class="font-bold">
@@ -151,9 +151,9 @@ export default {
   
     const statusColor = (status: 'cleared' | 'not_cleared' | 'unknown') => {
       return status == 'cleared' 
-        ? 'text-green-600'
+        ? 'text-success-600'
         : status == 'not_cleared'
-        ? 'text-red-400'
+        ? 'text-danger-400'
         : 'text-gray-600';
     }
 

@@ -1,14 +1,14 @@
 <template>
   <main :style="backgroundImageCss" class="h-screen w-screen !md:bg-cover bg-no-repeat !md:bg-center overflow-hidden">
     <div class="max-w-[1920px] mx-auto h-full relative flex flex-col md:flex-row">
-      <div class="bg-gradient-to-r md:bg-gradient-to-b from-uic-500 to-transparent h-18 md:h-full w-full md:w-18">
+      <div class="bg-gradient-to-r md:bg-gradient-to-b from-primary-500 to-transparent h-18 md:h-full w-full md:w-18">
 
       </div>
-      <div class="relative flex md:items-center bg-white dark:bg-uic-800 <md:h-full w-full md:w-100 shadow-lg p-8 z-10">
+      <div class="relative flex md:items-center bg-white dark:bg-primary-800 <md:h-full w-full md:w-100 shadow-lg p-8 z-10">
         <loading-container :is-loading="isAuthProcessing" v-slot="{ isLoading }">
           <div 
             v-if="isLoading" 
-            class="bg-white dark:bg-uic-800 bg-opacity-50 dark:bg-opacity-50 h-full w-full absolute inset-0 rounded-lg flex items-center justify-center">
+            class="bg-white dark:bg-primary-800 bg-opacity-50 dark:bg-opacity-50 h-full w-full absolute inset-0 rounded-lg flex items-center justify-center">
             <loader class="h-16 w-16" />
           </div>
         </loading-container>
@@ -16,7 +16,7 @@
         <div class="md:mb-48 w-full flex flex-col">
           <div class="flex justify-between mb-4">
             <div class="h-14 w-14">
-              <icon-logo class="w-full h-full text-uic-500 dark:text-uic-400" />
+              <icon-logo class="w-full h-full text-primary-500 dark:text-primary-400" />
             </div>
 
             <dark-mode-toggle class="self-start" />
@@ -33,8 +33,8 @@
             </div>
             <div class="flex flex-col-reverse md:flex-row justify-between pt-4">
               <div class="flex flex-col <md:mt-8 space-y-1">
-                <a href="#" class="hover:underline text-uic-600 dark:text-uic-200">Forgot password?</a>
-                <a href="#" class="hover:underline text-uic-600 dark:text-uic-200">Open a Support Ticket</a>
+                <a href="#" class="hover:underline text-primary-600 dark:text-primary-200">Forgot password?</a>
+                <a href="#" class="hover:underline text-primary-600 dark:text-primary-200">Open a Support Ticket</a>
               </div>
               <button type="submit" class="button is-primary is-medium">Login</button>
             </div>
