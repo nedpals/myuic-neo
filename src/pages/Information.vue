@@ -1,5 +1,5 @@
 <template>
-  <dashboard-header>
+  <dashboard-scaffold>
     <template #actions>
       <button @click="saveInformation" class="button">
         <icon-save />
@@ -17,7 +17,7 @@
         </div>
       </loading-container>
     </promise-loader>
-  </dashboard-header>
+  </dashboard-scaffold>
 </template>
 
 <script lang="ts">
@@ -27,10 +27,10 @@ import Loader from '../components/ui/Loader.vue';
 import IconSave from '~icons/ion/save';
 
 import { useStudentStore } from '../stores/studentStore';
-import DashboardHeader from '../components/ui/DashboardHeader.vue';
+import DashboardScaffold from '../components/ui/DashboardScaffold.vue';
 
 export default {
-  components: { LoadingContainer, PromiseLoader, Loader, IconSave, DashboardHeader },
+  components: { LoadingContainer, PromiseLoader, Loader, IconSave, DashboardScaffold },
   setup() {
     const studentStore = useStudentStore();
     const loadData = () => studentStore.getStudent();

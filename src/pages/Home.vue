@@ -1,5 +1,5 @@
 <template>
-  <dashboard-header container-class="max-w-3xl mx-auto w-full <md:px-4 <lg:px-2">
+  <dashboard-scaffold container-class="max-w-3xl mx-auto w-full <md:px-4 <lg:px-2">
     <div class="text-center py-8 md:py-12 flex flex-col items-center">
       <loading-container :is-loading="studentStore.isEmpty" v-slot="{ isLoading }">
         <div
@@ -108,7 +108,7 @@
         </div>
       </div>
     </div>
-  </dashboard-header>
+  </dashboard-scaffold>
 </template>
 
 <script lang="ts">
@@ -125,7 +125,7 @@ import IconGClassroom from '~icons/custom/google-classroom';
 import { useStudentStore } from '../stores/studentStore';
 import SelfModal from '../components/ui/SelfModal.vue';
 import { formatDatetime, getPeriod, now } from '../utils';
-import DashboardHeader from '../components/ui/DashboardHeader.vue';
+import DashboardScaffold from '../components/ui/DashboardScaffold.vue';
 import Skeleton from '../components/ui/Skeleton.vue';
 import AccountBalanceWidget from '../components/Finance/AccountBalanceWidget.vue';
 import { computed } from 'vue';
@@ -136,7 +136,7 @@ import IconChevronRight from '~icons/ion/chevron-right';
 import { useClearanceQuery, useClearanceQueryUtilities } from '../stores/clearanceStore';
 
 export default {
-  components: { PromiseLoader, Box, LoadingContainer, IconGClassroom, IconBookmarkOutline, IconMailOpenOutline, IconBookOutline, IconReceiptOutline, IconChevronRight, IconCashOutline, SelfModal, DashboardHeader, Skeleton, AccountBalanceWidget, PaymentHistory, ScheduleList, ClearanceStatusIcon },
+  components: { PromiseLoader, Box, LoadingContainer, IconGClassroom, IconBookmarkOutline, IconMailOpenOutline, IconBookOutline, IconReceiptOutline, IconChevronRight, IconCashOutline, SelfModal, DashboardScaffold, Skeleton, AccountBalanceWidget, PaymentHistory, ScheduleList, ClearanceStatusIcon },
   setup() {
     const studentStore = useStudentStore();
     const { isCleared: isClearanceCleared, isLoading: isClearanceLoading } = useClearanceQueryUtilities(useClearanceQuery());

@@ -1,13 +1,13 @@
 <template>
-  <dashboard-header container-class="p-4">
+  <dashboard-scaffold container-class="p-4">
     <p class="text-2xl text-center">Coming Soon!</p>
-  </dashboard-header>
+  </dashboard-scaffold>
 </template>
 
 <script>
-import DashboardHeader from '../components/ui/DashboardHeader.vue'
+import DashboardScaffold from '../components/ui/DashboardScaffold.vue'
 export default {
-  components: { DashboardHeader },
+  components: { DashboardScaffold },
 
 }
 </script>

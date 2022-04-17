@@ -1,5 +1,5 @@
 <template>
-  <dashboard-header>
+  <dashboard-scaffold>
     <main class="max-w-2xl mx-auto px-6 md:px-2 py-4 md:py-8">
       <!-- TODO: skeleton -->
       <promise-loader 
@@ -92,7 +92,7 @@
         </loading-container>
       </promise-loader>
     </main>
-  </dashboard-header>
+  </dashboard-scaffold>
 </template>
 
 <script lang="ts">
@@ -104,11 +104,11 @@ import IconChevronRight from '~icons/ion/chevron-right'
 import { useSchedulesQuery } from '../../stores/scheduleStore';
 import { useStudentStore } from '../../stores/studentStore';
 import SelfModal from '../../components/ui/SelfModal.vue';
-import DashboardHeader from '../../components/ui/DashboardHeader.vue';
+import DashboardScaffold from '../../components/ui/DashboardScaffold.vue';
 import Skeleton from '../../components/ui/Skeleton.vue';
 
 export default {
-  components: { PromiseLoader, LoadingContainer, Loader, Box, IconChevronRight, SelfModal, DashboardHeader, Skeleton },
+  components: { PromiseLoader, LoadingContainer, Loader, Box, IconChevronRight, SelfModal, DashboardScaffold, Skeleton },
   setup() {
     const studentStore = useStudentStore();
     const schedulesQuery = useSchedulesQuery();

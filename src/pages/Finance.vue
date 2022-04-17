@@ -1,5 +1,5 @@
 <template>
-  <dashboard-header container-class="px-4 mx-auto w-full md:px-8 md:pt-8">
+  <dashboard-scaffold container-class="px-4 mx-auto w-full md:px-8 md:pt-8">
     <loading-container :is-loading="isFetching || isIdle" v-slot="{ isLoading }">
       <div class="flex flex-col-reverse lg:flex-row <lg:space-y-4 lg:space-x-4">
         <div class="w-full lg:w-2/3 flex flex-col space-y-2">
@@ -176,12 +176,12 @@
         </div>
       </div>
     </loading-container>
-  </dashboard-header>
+  </dashboard-scaffold>
 </template>
 
 <script lang="ts">
 import Box from '../components/ui/Box.vue';
-import DashboardHeader from '../components/ui/DashboardHeader.vue';
+import DashboardScaffold from '../components/ui/DashboardScaffold.vue';
 import NewPaymentModal from '../components/Finance/NewPaymentModal.vue';
 import LoadingContainer from '../components/ui/LoadingContainer.vue';
 import PromiseLoader from '../components/ui/PromiseLoader.vue';
@@ -207,7 +207,7 @@ export default {
     LoadingContainer, 
     NewPaymentModal, 
     SelfModal,
-    DashboardHeader,
+    DashboardScaffold,
     Skeleton,
     AccountBalanceWidget,
     Loader,

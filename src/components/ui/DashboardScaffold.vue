@@ -3,7 +3,7 @@
     <div class="bg-white dark:bg-primary-900 border-b border-gray-300 dark:border-primary-700 px-3 md:px-5 md:py-0" v-if="title ? true : $route.meta.useHeader ?? true">
       <div class="flex justify-between py-3 md:py-5">
         <span class="text-xl font-bold block">{{ pageTitle ?? 'Unknown page name' }}</span>
-        <div class="dashboard-header-actions">
+        <div class="dashboard-scaffold-actions">
           <slot name="actions"></slot>
         </div>
       </div>
@@ -69,7 +69,7 @@ export default {
 </script>
 
 <style lang="postcss">
-.dashboard-header-actions .button {
+.dashboard-scaffold-actions .button {
   @apply text-primary-400 hover:text-primary-500 flex items-center space-x-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-900 px-3 py-3 -my-3 -mx-3 dark:hover:bg-opacity-20;
 }
 </style>

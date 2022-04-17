@@ -1,5 +1,5 @@
 <template>
-  <dashboard-header>
+  <dashboard-scaffold>
     <loading-container :is-loading="isFetching || isIdle" v-slot="{ isLoading }">
       <div class="relative">
         <div 
@@ -109,12 +109,12 @@
         </section>
       </div>
     </loading-container>
-  </dashboard-header>
+  </dashboard-scaffold>
 </template>
 
 <script lang="ts">
 import { ClearanceItem } from '@myuic-api/types';
-import DashboardHeader from '../components/ui/DashboardHeader.vue';
+import DashboardScaffold from '../components/ui/DashboardScaffold.vue';
 import Loader from '../components/ui/Loader.vue';
 import LoadingContainer from '../components/ui/LoadingContainer.vue';
 import PromiseLoader from '../components/ui/PromiseLoader.vue';
@@ -129,7 +129,7 @@ export default {
   components: {
     PromiseLoader,
     LoadingContainer,
-    DashboardHeader,
+    DashboardScaffold,
     Skeleton,
     Loader,
     SelfModal,

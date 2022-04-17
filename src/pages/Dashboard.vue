@@ -17,12 +17,12 @@
 <script>
 import Navbar from '../components/ui/Navbar.vue'
 import { useStudentStore } from '../stores/studentStore';
-import DashboardHeader from '../components/ui/DashboardHeader.vue';
+import DashboardScaffold from '../components/ui/DashboardScaffold.vue';
 import LoadingContainer from '../components/ui/LoadingContainer.vue';
 import Loader from '../components/ui/Loader.vue';
 
 export default {
-  components: { Navbar, DashboardHeader, LoadingContainer, Loader },
+  components: { Navbar, DashboardScaffold, LoadingContainer, Loader },
   setup() {
     const studentStore = useStudentStore();
 

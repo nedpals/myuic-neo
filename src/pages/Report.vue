@@ -1,5 +1,5 @@
 <template>
-  <dashboard-header container-class="p-4 md:p-8 space-y-12">
+  <dashboard-scaffold container-class="p-4 md:p-8 space-y-12">
     <template #actions>
       <button @click="printPdf" class="button">
         <icon-print />
@@ -107,11 +107,11 @@
         </div>
       </section>
     </loading-container>
-  </dashboard-header>
+  </dashboard-scaffold>
 </template>
 
 <script lang="ts">
-import DashboardHeader from '../components/ui/DashboardHeader.vue';
+import DashboardScaffold from '../components/ui/DashboardScaffold.vue';
 import LoadingContainer from '../components/ui/LoadingContainer.vue';
 import PromiseLoader from '../components/ui/PromiseLoader.vue';
 import { generateAcademicRecordsPDF, useAcademicRecordQuery, useAcademicRecordQueryUtilities } from '../stores/academicRecordStore';
@@ -124,7 +124,7 @@ import computationFormulaImg from '../assets/computation-formula.png';
 import Skeleton from '../components/ui/Skeleton.vue';
 
 export default {
-  components: { PromiseLoader, LoadingContainer, DashboardHeader, IconPrint, SelfModal, Skeleton },
+  components: { PromiseLoader, LoadingContainer, DashboardScaffold, IconPrint, SelfModal, Skeleton },
   setup() {
     const { 
       isLoading, 

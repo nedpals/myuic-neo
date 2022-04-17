@@ -1,16 +1,16 @@
 <template>
-  <dashboard-header title="Test Page" class="p-4">
+  <dashboard-scaffold title="Test Page" class="p-4">
     <button class="button is-primary" @click="testNotify">Test Notification</button>
-  </dashboard-header>
+  </dashboard-scaffold>
 </template>
 
 <script lang="ts">
 import { notify } from 'notiwind';
-import DashboardHeader from '../../components/ui/DashboardHeader.vue';
+import DashboardScaffold from '../../components/ui/DashboardScaffold.vue';
 import { LocalNotifications } from '@capacitor/local-notifications';
 
 export default {
-  components: { DashboardHeader },
+  components: { DashboardScaffold },
   setup() {
     const testNotify = async () => {
       try {
