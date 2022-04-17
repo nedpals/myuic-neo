@@ -74,6 +74,8 @@ export function getBreakdownSubtotal(entries: Assessment[]) {
 };
 
 export const useFinancialRecordQueryUtilities = ({ data, isFetching, isIdle }: ReturnType<typeof useFinancialRecordQuery>) => {
+  const isLoading = computed(() => isFetching.value || isIdle.value);
+
   const accountBalance = computed(() => pesoFormatter.format(
     data.value?.monthlyDues
       .map((md) => md.balance)
@@ -101,14 +103,13 @@ export const useFinancialRecordQueryUtilities = ({ data, isFetching, isIdle }: R
   });
 
   const getPaymentHistory = (isRecent: boolean, limit?: number) => computed(() => {
-    const isLoading = isFetching.value || isIdle.value;
-    if (!isLoading && isRecent) {
-      return data.value?.paymentHistory.sort((a, b) => {
-        console.log(a, b);
+    let history = data.value?.paymentHistory ?? [];
+    if (!isLoading.value && isRecent) {
+      history = history.sort((a, b) => {
         return (<string> <unknown> b.paidAt).localeCompare(<string> <unknown> a.paidAt);
-      }).slice(0, limit ?? data.value?.paymentHistory.length);
+      });
     }
-    return data.value?.paymentHistory.slice(0, limit ?? data.value?.paymentHistory.length);
+    return history.slice(0, limit ?? history.length) ?? [];
   });
 
   const paymentOr = (pr: PaymentRecord) => `${pr.orNo}-${pr.orSig}`;
@@ -125,6 +126,7 @@ export const useFinancialRecordQueryUtilities = ({ data, isFetching, isIdle }: R
     paymentOr,
     humanizedPaidAt,
     formattedPaidAt,
-    formattedAmount
+    formattedAmount,
+    isLoading
   }
 }

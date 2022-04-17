@@ -1,5 +1,5 @@
 <template>
-  <loading-container :is-loading="isFetching || isIdle" v-slot="{ isLoading }">
+  <loading-container :is-loading="isLoading" v-slot="{ isLoading }">
     <box :title="!isRecent ? 'Payment History' : 'Recent Payments'">
       <div class="flex flex-col divide-y dark:divide-primary-300" :class="{ 'pb-2': hasLink }">
         <self-modal
@@ -77,7 +77,6 @@ import Skeleton from '../ui/Skeleton.vue';
 import Box from '../ui/Box.vue';
 import SelfModal from '../ui/SelfModal.vue';
 import LoadingContainer from '../ui/LoadingContainer.vue';
-import { computed } from 'vue';
 
 export default {
   components: { Skeleton, Box, SelfModal, LoadingContainer },
@@ -100,18 +99,15 @@ export default {
   },
 
   setup({ isRecent, limit }) {
-    const financialRecordQuery = useFinancialRecordQuery();
-    const { isFetching, isIdle } = financialRecordQuery;
-    const { humanizedPaidAt, paymentOr, formattedAmount, formattedPaidAt, getPaymentHistory } = useFinancialRecordQueryUtilities(financialRecordQuery);
-    const paymentHistory = computed(() => getPaymentHistory(isRecent, limit));
+    const { isLoading, humanizedPaidAt, paymentOr, formattedAmount, formattedPaidAt, getPaymentHistory } = useFinancialRecordQueryUtilities(useFinancialRecordQuery());
+    const paymentHistory = getPaymentHistory(isRecent, limit);
     
     return {
       humanizedPaidAt,
       paymentOr,
       formattedAmount,
       formattedPaidAt,
-      isFetching,
-      isIdle,
+      isLoading,
       paymentHistory
     }
   }

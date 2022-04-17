@@ -20,11 +20,19 @@ export const now = new Date();
 export const twentyFourHoursInMs = 1000 * 60 * 60 * 24;
 
 export function humanizeTime(dt: string | Date): string {
-  return formatDistanceToNow(dt instanceof Date ? dt : new Date(dt), { addSuffix: true })
+  const input = dt instanceof Date ? dt : new Date(dt);
+  if (import.meta.env.DEV) {
+    console.log('[humanizeTime] input', dt, input);
+  }
+  return formatDistanceToNow(input, { addSuffix: true })
 }
 
 export function formatDatetime(dt: string | Date, formatStr: string): string {
-  return format(dt instanceof Date ? dt : new Date(dt), formatStr);
+  const input = dt instanceof Date ? dt : new Date(dt);
+  if (import.meta.env.DEV) {
+    console.log('[formatDateTime] input', dt, input);
+  }
+  return format(input, formatStr);
 }
 
 const twelveHourTimeRegex = /(\d{1,}):(\d{2,}):?(\d{2,})?\W*((?:A|P|a|p)(?:M|m))/;
