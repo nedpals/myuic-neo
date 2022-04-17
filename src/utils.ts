@@ -6,6 +6,9 @@ import { Capacitor } from '@capacitor/core'
 
 export const APP_PREFIX = '__myuic_neo__';
 
+// Regex
+export const semesterRegex = /((?:First|Second) Semester)\s(\d{4}-\d{4})|(Summer)\s(\d{4})/;
+
 // Currency
 export const pesoFormatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
