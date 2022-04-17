@@ -1,7 +1,7 @@
 <template>
   <div
     :class="{
-      'bg-danger-400 border-danger-500': type == 'error',
+      'bg-danger-500 border-danger-600': type == 'error',
       'bg-success-500 border-success-600': type == 'success',
       'bg-warning-400 border-warning-500': type == 'warning',
       'bg-info-400 border-info-500': type == 'info'
