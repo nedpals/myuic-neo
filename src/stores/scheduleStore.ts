@@ -37,6 +37,15 @@ export const days = {
   'S': 'Sat'
 };
 
+const weekday: Weekday[] = [
+  Weekday.Monday, 
+  Weekday.Tuesday, 
+  Weekday.Wednesday, 
+  Weekday.Thursday, 
+  Weekday.Friday,
+  Weekday.Saturday
+];
+
 export const useScheduleQueryUtilities = ({ data, isFetching, isIdle }: ReturnType<typeof useSchedulesQuery>) => {
   const isAlternate = ref(false);
   const hasAlternates = ref(false);  
@@ -114,31 +123,24 @@ export const useScheduleQueryUtilities = ({ data, isFetching, isIdle }: ReturnTy
   });
   
   const activateNotifications = () => {
-    if (IS_NATIVE) {
-      const weekday: Weekday[] = [
-        Weekday.Monday, 
-        Weekday.Tuesday, 
-        Weekday.Wednesday, 
-        Weekday.Thursday, 
-        Weekday.Friday,
-        Weekday.Saturday
-      ];
+    if (!IS_NATIVE || !scheduleList.value) return;
 
-      Object.keys(scheduleList).forEach((s, i) => {
-        LocalNotifications.schedule({
-          notifications: scheduleList[s].map<LocalNotificationSchema>(c => ({
-            id: new Date().getTime(),
-            title: `Incoming: ${c.name}`,
-            body: `${c.fromTime}-${c.toTime}`,
-            schedule: {
-              on: {
-                weekday: weekday[i],
-              }
-            }
-          }))
-        })
-      });
-    }
+    Object.values(scheduleList.value).forEach((s, i) => {
+      LocalNotifications.schedule({
+        notifications: s.map<LocalNotificationSchema>(c => ({
+          id: new Date().getTime(),
+          title: `Incoming: ${c.name}`,
+          body: `${c.fromTime}-${c.toTime}`,
+          schedule: {
+            every: 'week',
+            on: {
+              day: weekday[i],
+            },
+            allowWhileIdle: true,
+          }
+        }))
+      })
+    });
   }
 
   const getScheduleByDay = (dayRef: string | Ref<string>) => {
