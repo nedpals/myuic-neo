@@ -17,8 +17,6 @@ const config: CapacitorConfig = {
     SplashScreen: {
       launchAutoHide: false,
       androidScaleType: 'CENTER_CROP',
-      splashFullScreen: true,
-      splashImmersive: false,
       //@ts-ignore
       backgroundColor: windiConfig.theme.colors.primary["500"]
     }
