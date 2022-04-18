@@ -7,8 +7,9 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "start-android": "npm run build && cap run android",
-    "start-ios": "npm run build && cap run ios"
+    "start-android": "npm run build && npm run build-app-assets && cap run android",
+    "start-ios": "npm run build && npm run build-app-assets && cap run ios",
+    "build-app-assets": "node build-assets.js"
   },
   "dependencies": {
     "@capacitor/android": "^3.4.3",
