@@ -1,0 +1,19 @@
+{
+	"appId": "xyz.nedpals.myuic",
+	"appName": "MyUIC Neo",
+	"webDir": "dist",
+	"bundledWebRuntime": false,
+	"plugins": {
+		"LocalNotifications": {
+			"smallIcon": "ic_stat_icon",
+			"iconColor": "#dc3858"
+		},
+		"SplashScreen": {
+			"launchAutoHide": false,
+			"androidScaleType": "CENTER_CROP",
+			"splashFullScreen": true,
+			"splashImmersive": false,
+			"backgroundColor": "#dc3858"
+		}
+	}
+}

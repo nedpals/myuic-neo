@@ -7,11 +7,13 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "start-android": "npm run build && cap run android"
+    "start-android": "npm run build && cap run android",
+    "start-ios": "npm run build && cap run ios"
   },
   "dependencies": {
     "@capacitor/android": "^3.4.3",
     "@capacitor/core": "^3.4.3",
+    "@capacitor/ios": "^3.4.3",
     "@capacitor/local-notifications": "^1.1.0",
     "@capacitor/splash-screen": "^1.2.2",
     "@capacitor/storage": "^1.2.5",
@@ -38,6 +40,7 @@
     "@iconify-json/ic": "^1.1.1",
     "@iconify-json/ion": "^1.1.0",
     "@vitejs/plugin-vue": "^2.2.0",
+    "cordova-res": "^0.15.4",
     "miragejs": "^0.1.43",
     "typescript": "^4.5.4",
     "unplugin-icons": "^0.13.2",

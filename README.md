@@ -18,7 +18,7 @@
 ## Description
 MyUIC Neo is a Single-Page Application (SPA) and a Progressive Web App (PWA) version of MyUIC, a student portal website by the [University of the Immaculate Conception](https://uic.edu.ph). Not only it improves the user interface and user experience but it also provides additional features that fully utilizes different types of information only few can access prior to it.
 
-Thanks to [CapacitorJS](https://capacitorjs.com), it is also an Android app providing another set of features that cannot be achieved with just the web app.
+Thanks to [CapacitorJS](https://capacitorjs.com), it is also a mobile app providing another set of features that cannot be achieved with just the web app.
 
 ## Prerequisites
 ### Web
@@ -28,6 +28,13 @@ Thanks to [CapacitorJS](https://capacitorjs.com), it is also an Android app prov
 ### Android
 > Android compilation is optional but is required if you want to compile it as an Android app.
 - Android SDK (30 and above)
+
+### iOS
+- Xcode 13 or later
+- iDevice or Simulator
+- Cocoapod
+- CapacitorJS `$ sudo gem install cocoapods`
+  - FOR APPLE SILICON MACS ONLY: `$ sudo arch -x86_64 gem install ffi`
 
 ## Installation
 To run MyUIC Neo on your local computer, simply execute the following commands:
@@ -41,6 +48,17 @@ npm run dev
 ```
 
 This will start the Vite webserver at http://localhost:3000. You may login by typing `123456789012` as the student ID and `myuicneo` as the password.
+
+
+#### Run as iOS App
+> See the [iOS](#ios) prequisites for requirements on how to build the iOS app.
+
+To run the app, simply run:
+```
+npm run start-ios
+```
+
+This will build the web app, inject it's contents, and install the app to your simulator or your device.
 
 ## Connecting to the real API
 By default, the web server will load the mock server. The mock server is a fake "server" that emulates the real API for development and in order to avoid unnecessary load to the real server when trying out for the first time.
@@ -74,3 +92,4 @@ Wanna contribute? Here are the following resources you can use when working on t
 
 ## Contributors
 - [Ned Palacios](https://github.com/nedpals) - creator and maintainer
+- [Al Gabriel Orig](https://github.com/aaalgieee) - iOS Port
