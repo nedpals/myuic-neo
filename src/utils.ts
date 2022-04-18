@@ -62,9 +62,10 @@ export function getPeriod(time: string) {
     return 'morning';
   } else if (hours >= 1 && hours <= 6 && amPm === 'pm') {
     return 'afternoon';
-  } else {
+  } else if (amPm === 'pm') {
     return hours === 12 ? 'noon' : 'evening';
   }
+  return 'day';
 }
 
 export function compare12hTimes(fromTimeInput: string | ParsedTime, toTimeInput: string | ParsedTime): number {
