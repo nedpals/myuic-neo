@@ -25,9 +25,6 @@ jobs:
         with:
           node-version: 16.x
 
-      - name: Install zipalign
-        run: sudo apt-get install zipalign -y
-
       - name: Install app dependencies
         run: npm install
 
@@ -50,10 +47,20 @@ jobs:
           base64 -d android/release.jks.base64 > android/release.decrypted.jks
 
       - name: Sign build
-        run: |
-          jarsigner -keystore android/release.decrypted.jks -storepass "${{ secrets.RELEASE_KEYSTORE_PASSWORD }}" -signedjar ./android/app/build/outputs/apk/release/app-release-signed-unaligned.apk ./android/app/build/outputs/apk/release/app-release-unsigned.apk release
-          zipalign 4 ./android/app/build/outputs/apk/release/app-release-signed-unaligned.apk ./android/app/build/outputs/apk/release/app-release.apk
+        uses: r0adkll/sign-android-release@v1
+        id: sign_apk
+        with:
+          releaseDirectory: android/app/build/outputs/apk/release
+          signingKeyBase64: ${{ secrets.RELEASE_KEYSTORE }}
+          alias: release
+          keyStorePassword: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
+        env:
+          # override default build-tools version (29.0.3) -- optional
+          BUILD_TOOLS_VERSION: "30.0.2"
 
+      - name: Copy and rename signed build
+        run: |
+          cp ${{steps.sign_apk.outputs.signedReleaseFile}} android/app/build/outputs/apk/release/app-release.apk
       - name: Upload release APK
         uses: actions/upload-artifact@v2
         with:
