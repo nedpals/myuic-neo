@@ -30,7 +30,6 @@
 
 <script lang="ts">
 import { useTitle } from '@vueuse/core';
-import { useDrag } from '@vueuse/gesture';
 import { computed, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
