@@ -25,7 +25,7 @@ run({
     },
     ios: {
       icon: {
-        sources: ['resources/icon-square.png']
+        sources: ['resources/icon-square.jpg']
       },
       splash: {
         sources: ['resources/splash.jpg']
