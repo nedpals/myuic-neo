@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "start-android": "npm run build && npm run build-app-assets && cap run android",
     "start-ios": "npm run build && npm run build-app-assets && cap run ios",
-    "build-app-assets": "node build-assets.js"
+    "build-app-assets": "capacitor-assets generate --android --ios"
   },
   "dependencies": {
     "@capacitor/android": "^3.4.3",
@@ -37,12 +37,12 @@
     "vuex": "^4.0.2"
   },
   "devDependencies": {
+    "@capacitor/assets": "^1.0.0-next.5",
     "@capacitor/cli": "^3.4.3",
     "@iconify-json/fluent": "^1.1.2",
     "@iconify-json/ic": "^1.1.1",
     "@iconify-json/ion": "^1.1.0",
     "@vitejs/plugin-vue": "^2.2.0",
-    "cordova-res": "^0.15.4",
     "miragejs": "^0.1.43",
     "typescript": "^4.5.4",
     "unplugin-icons": "^0.13.2",
