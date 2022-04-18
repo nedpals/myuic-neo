@@ -7,6 +7,12 @@
 [Demo](https://myuic.nedpals.xyz) |
 [Twitter Thread](https://twitter.com/npned/status/1508455998234587140?s=20&t=_ApTg0r4DMKFbSM8QWeqnA) |
 [Feedback Form](https://forms.gle/XnE2XuEGi9FdcYt5A)
+
+
+![Vercel](https://vercelbadge.vercel.app/api/nedpals/myuic-neo)
+[![mirror](https://github.com/nedpals/myuic-neo/actions/workflows/ci.yml/badge.svg)](https://github.com/nedpals/myuic-neo/actions/workflows/ci.yml)
+[![Twitter Follow](https://img.shields.io/twitter/follow/npned?style=social&logo=twitter)](https://twitter.com/npned) 
+[![GitHub Follow](https://img.shields.io/github/followers/nedpals?style=social&logo=github)](https://github.com/nedpals)
 </div>
 
 ## Description
