@@ -25,6 +25,9 @@ jobs:
         with:
           node-version: 16.x
 
+      - name: Install zipalign
+        run: sudo apt-get install zipalign -y
+
       - name: Install app dependencies
         run: npm install
 
