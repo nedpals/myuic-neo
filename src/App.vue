@@ -47,9 +47,8 @@
 <script lang="ts">
 import * as auth from './auth';
 import { useTitle } from '@vueuse/core';
-import { darkModeQuery, useUIStore } from './stores/uiStore';
-import { MutationType } from 'pinia';
-import { computed, onBeforeUnmount, ref } from 'vue';
+import { useDarkMode } from './stores/uiStore';
+import { computed, onBeforeUnmount } from 'vue';
 import useReloadPrompt from './sw';
 import NotificationContainer from './components/ui/NotificationContainer.vue';
 import { IS_NATIVE } from './utils';
@@ -69,7 +68,8 @@ export default {
   setup() {
     const router = useRouter();
     const feedbackUrl = computed(() => import.meta.env.VITE_FEEDBACK_URL ?? null);
-    const uiStore = useUIStore();
+    const { subscribeDarkMode } = useDarkMode();
+    const unsubscribeDarkMode = subscribeDarkMode();
     const queryClient = useQueryClient();
 
     eventbus.on('changeAuthenticatedStatus', ({ newStatus, oldStatus }) => {
@@ -102,23 +102,6 @@ export default {
       auth.refresh();    
     }
 
-    uiStore.fetchDarkMode();
-    uiStore.toggleDarkModeCss(uiStore.darkMode);
-
-    const uiStoreUnsubscribe = uiStore.$subscribe((mutation, state) => {
-      if (mutation.type === MutationType.direct && mutation.storeId === uiStore.$id) {
-        uiStore.toggleDarkModeCss(state.darkMode);
-      }
-    });
-
-    const handleDarkModeChange = (ev: MediaQueryListEvent) => {
-      if (uiStore.darkMode === '2') {
-        uiStore.toggleDarkModeCss(uiStore.darkMode);
-      }
-    }
-
-    darkModeQuery().addEventListener('change', handleDarkModeChange);
-
     const { modalCount, closeLastModal } = useModal();
     let backButtonPlugin: PluginListenerHandle;
 
@@ -136,8 +119,7 @@ export default {
     }
 
     onBeforeUnmount(() => {
-      uiStoreUnsubscribe();
-      darkModeQuery().removeEventListener('change', handleDarkModeChange);
+      unsubscribeDarkMode();
       if (backButtonPlugin) backButtonPlugin.remove();
     });
 
