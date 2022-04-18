@@ -53,12 +53,12 @@
                     </button>
                   </template>
                   <template #modal-content>
-                    <div class="flex flex-row w-full flex-wrap justify-center mt-4">
+                    <div class="flex flex-col md:flex-row w-full flex-wrap justify-center mt-4">
                       <a
                         :href="link.href"
                         :key="'link_' + li" v-for="(link, li) in studentStore.resourceLinks"
                         target="_blank"
-                        class="p-3 flex flex-col text-center justify-center items-center w-1/4 space-y-4 hover:bg-gray-200 dark:hover:bg-primary-900 rounded-lg">
+                        class="p-3 flex flex-row md:flex-col text-center md:justify-center items-center w-full md:w-1/4 <md:space-x-4 md:space-y-4 hover:bg-gray-200 dark:hover:bg-primary-900 rounded-lg">
                         <div class="max-w-10">
                           <img :src="link.iconUrl" class="h-auto w-full" :alt="link.label" />
                         </div>
