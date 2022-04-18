@@ -49,6 +49,15 @@ npm run dev
 
 This will start the Vite webserver at http://localhost:3000. You may login by typing `123456789012` as the student ID and `myuicneo` as the password.
 
+#### Run as Android App
+> See the [Android](#android) prequisites for requirements on how to build the Android app.
+
+To run the app, simply run:
+```
+npm run start-android
+```
+
+This will build the web app, inject it's contents, and install the app to your simulator or your device.
 
 #### Run as iOS App
 > See the [iOS](#ios) prequisites for requirements on how to build the iOS app.
