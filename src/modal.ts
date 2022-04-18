@@ -11,7 +11,9 @@ export function useModal() {
   } 
 
   const closeLastModal = () => {
-    modalStack.value.pop();
+    const lastId = modalStack.value.pop();
+    if (!lastId) return;
+    closeModal(lastId);
   }
 
   const handleModalOpened = ({ id }) => {
