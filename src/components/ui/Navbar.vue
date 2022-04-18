@@ -7,7 +7,7 @@
         <loading-container :is-loading="studentStore.isEmpty" v-slot="{ isLoading }">
           <div class="w-full flex flex-row space-x-2 md:flex-col md:space-y-2 md:space-x-0 lg:flex-row lg:space-y-0 lg:space-x-2">
             <div class="h-12 w-12 lg:h-13 lg:w-13">
-              <icon-logo class="w-full h-full text-primary-500 dark:text-primary-600" />
+              <icon-logo @click="isAboutModalOpen = true" class="cursor-pointer w-full h-full text-primary-400 hover:text-primary-500 transition-colors" />
             </div>
             <div
               class="h-12 w-12 lg:h-13 lg:w-13 rounded-full bg-gray-200 bg-cover"
@@ -58,7 +58,15 @@
 
       <div class="block h-8 flex-shrink-0"></div>
 
-      <div class="pb-4">
+      <div class="pb-4 space-y-3">
+        <button
+          v-if="IS_NATIVE"
+          @click="isAboutModalOpen = true"
+          class="w-full hover:bg-primary-100 dark:hover:bg-primary-800 py-2 px-4 flex items-center max-h-12 space-x-4 rounded-l-full" 
+          style="transition: ease 150ms background-color">
+            <icon-about-outline class="text-primary-500 text-[1.3rem]" />
+            <span class="md:hidden lg:block">About</span>
+        </button>
         <button
           @click="logout"
           class="w-full hover:bg-danger-100 dark:hover:bg-danger-900 bg-danger-50 dark:bg-danger-800 py-2 px-4 flex items-center max-h-12 space-x-4 rounded-l-full" 
@@ -69,6 +77,19 @@
       </div>
     </nav>
   </aside>
+
+  <modal-window title="About" v-model:open="isAboutModalOpen" modal-class="max-w-4xl w-full">
+    <div class="max-w-lg w-full mx-auto flex flex-col justify-center text-center items-center py-6">
+      <icon-logo class="text-primary-400 h-36 w-36 mb-4" />
+      <h1 class="text-4xl font-bold mb-2">MyUIC <span class="font-medium">Neo</span></h1>
+      <p class="max-w-sm text-gray-600 dark:text-primary-200 text-2xl">A new student portal concept for UICians in the 21st century.</p>
+
+      <div class="mt-24">
+        <p class="mb-18">Version {{ appVersion }}</p>
+        <p>Copyright &copy; 2022 by Ned Palacios and its contributors. Licensed under the <a class="text-primary-500 underline" href="https://github.com/nedpals/myuic-neo/blob/master/LICENSE">AGPL3 license</a>.</p>
+      </div>
+    </div>
+  </modal-window>
 
   <div class="bg-white dark:bg-primary-900 flex border-t dark:border-primary-700 fixed bottom-0 inset-x-0 md:hidden z-50">
     <router-link 
@@ -118,11 +139,17 @@ import IconArrowDropdown from '~icons/ion/md-arrow-dropdown';
 import IconLogoutOutline from '~icons/ion/log-out-outline';
 import IconLogo from '~icons/custom/logo';
 import IconOnlineEnrollment from '~icons/fluent/compose-16-filled';
+import IconAboutOutline from '~icons/ion/help-circle-outline';
 import { useStudentStore } from '../../stores/studentStore';
 import DarkModeToggle from './DarkModeToggle.vue';
 import LoadingContainer from './LoadingContainer.vue';
 import Skeleton from './Skeleton.vue';
 import { IS_NATIVE } from '../../utils';
+import SelfModalWindow from './SelfModalWindow.vue';
+import { App } from '@capacitor/app';
+import { ref } from 'vue';
+import { Capacitor } from '@capacitor/core';
+import ModalWindow from './ModalWindow.vue';
 
 export default {
   components: {
@@ -130,13 +157,25 @@ export default {
     IconArrowDropdown,
     IconLogoutOutline,
     IconLogo,
+    IconAboutOutline,
     DarkModeToggle,
     LoadingContainer,
-    Skeleton
+    Skeleton,
+    SelfModalWindow,
+    ModalWindow
   },
   setup() {
     const studentStore = useStudentStore();
-    return { studentStore };
+    const appVersion = ref('1.0.0 Web');
+    const isAboutModalOpen = ref(false);
+
+    if (IS_NATIVE) {
+      App.getInfo().then((info) => {
+        appVersion.value = `${info.version} ${info.id} ${info.build} ${Capacitor.getPlatform()}`
+      });
+    }
+
+    return { studentStore, appVersion, IS_NATIVE, isAboutModalOpen };
   },
   mounted() {
     this.currentRouteName = this.getParentRouteName()?.toString() ?? 'home';
