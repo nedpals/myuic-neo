@@ -6,6 +6,11 @@ run({
   logstream: process.stdout,
   resourcesDirectory: 'resources',
   copy: true,
+  operations: {
+    fit: 'fill',
+    position: 'center'
+  },
+  skipConfig: true,
   platforms: {
     android: {
       "adaptive-icon": {
