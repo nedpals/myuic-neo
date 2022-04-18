@@ -6,14 +6,14 @@
 	"plugins": {
 		"LocalNotifications": {
 			"smallIcon": "ic_stat_icon",
-			"iconColor": "#E65B7A"
+			"iconColor": "#dc3858"
 		},
 		"SplashScreen": {
 			"launchAutoHide": false,
 			"androidScaleType": "CENTER_CROP",
 			"splashFullScreen": true,
 			"splashImmersive": false,
-			"backgroundColor": "#E65B7A"
+			"backgroundColor": "#dc3858"
 		}
 	}
 }
