@@ -914,6 +914,11 @@
   resolved "https://registry.yarnpkg.com/@capacitor/android/-/android-3.4.3.tgz#1bfaa5bbe83872f7ba5c7d7bd38b54a47827124b"
   integrity sha512-G/6+mbOde9LMWl5KvA5rB/xEQF05sKrQFMBwo8y3C8pYF+axtcrS0Dgze9rOB7nCjH4NXv/bLw58E9+q8/sQUA==
 
+"@capacitor/app@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@capacitor/app/-/app-1.1.1.tgz#bde7202faad1b47c4ae2c4a622285d7569384c5e"
+  integrity sha512-8ADkldHnoE1xkWvPUsGlERVGm6/Zvcxy6hCI80AxydIKyaCG7kbDAvUclebbnw/eFRxj2zBoVatGLjmJNvTbYw==
+
 "@capacitor/assets@^1.0.0-next.5":
   version "1.0.0-next.5"
   resolved "https://registry.yarnpkg.com/@capacitor/assets/-/assets-1.0.0-next.5.tgz#8c6b640a2666dc9f0aa2cb11c6cb81814ca0f800"

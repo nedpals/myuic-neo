@@ -49,10 +49,10 @@ import * as auth from './auth';
 import { useTitle } from '@vueuse/core';
 import { darkModeQuery, useUIStore } from './stores/uiStore';
 import { MutationType } from 'pinia';
-import { computed, onBeforeUnmount, ref, watch } from 'vue';
+import { computed, onBeforeUnmount, ref } from 'vue';
 import useReloadPrompt from './sw';
 import NotificationContainer from './components/ui/NotificationContainer.vue';
-import { eventBus, events } from './utils';
+import { IS_NATIVE } from './utils';
 import IconFeedback from '~icons/ion/chatbox-ellipses';
 import { useRouter } from 'vue-router';
 import { notify } from 'notiwind';
@@ -60,6 +60,9 @@ import { client } from './client';
 import { eventbus } from '@myuic-api/client/lib/event';
 import { useStudentStore } from './stores/studentStore';
 import { useQueryClient } from 'vue-query';
+import { App } from '@capacitor/app';
+import { useModal } from './modal';
+import { PluginListenerHandle } from '@capacitor/core';
 
 export default {
   components: { NotificationContainer, IconFeedback },
@@ -116,28 +119,26 @@ export default {
 
     darkModeQuery().addEventListener('change', handleDarkModeChange);
 
-    const modalCount = ref(0);
-    eventBus.on(events.MODAL_OPENED, () => modalCount.value++);
-    eventBus.on(events.MODAL_CLOSED, () => {
-      if (modalCount.value <= 0) return;
-      modalCount.value--;
-    });
+    const { modalCount, closeLastModal } = useModal();
+    let backButtonPlugin: PluginListenerHandle;
 
-    watch(modalCount, (newVal, oldVal) => {
-      if (!import.meta.env.PROD) {
-        console.log('Modal Count', newVal);
-      }
-
-      if (newVal > 0) {
-        document.body.style.overflow = 'hidden';
-      } else {
-        document.body.style.overflow = 'unset';
-      }
-    });
+    if (IS_NATIVE) {
+      backButtonPlugin = App.addListener('backButton', (evt) => {
+        if (modalCount.value != 0) {
+          closeLastModal();
+          return;
+        } else if (evt.canGoBack) {
+          router.back();
+        } else {
+          App.minimizeApp();
+        }
+      });
+    }
 
     onBeforeUnmount(() => {
       uiStoreUnsubscribe();
       darkModeQuery().removeEventListener('change', handleDarkModeChange);
+      if (backButtonPlugin) backButtonPlugin.remove();
     });
 
     return { feedbackUrl }
