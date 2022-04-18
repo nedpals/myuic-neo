@@ -2,7 +2,7 @@
   <loading-container :is-loading="isLoading" v-slot="{ isLoading }">
     <box :title="!isRecent ? 'Payment History' : 'Recent Payments'">
       <div class="flex flex-col divide-y dark:divide-primary-300" :class="{ 'pb-2': hasLink }">
-        <self-modal
+        <self-modal-window
           :key="'paymentHistory_' + i"
           content-class="px-6 py-4 <md:h-[80vh]"
           v-for="(pEntry, i) in paymentHistory"
@@ -58,7 +58,7 @@
               </div>
             </div>
           </template>
-        </self-modal>
+        </self-modal-window>
       </div>
       <skeleton v-if="hasLink" custom-class="h-4 w-26 bg-primary-400">
         <router-link
@@ -75,11 +75,11 @@
 import { useFinancialRecordQuery, useFinancialRecordQueryUtilities } from '../../stores/financialStore';
 import Skeleton from '../ui/Skeleton.vue';
 import Box from '../ui/Box.vue';
-import SelfModal from '../ui/SelfModal.vue';
+import SelfModalWindow from '../ui/SelfModalWindow.vue';
 import LoadingContainer from '../ui/LoadingContainer.vue';
 
 export default {
-  components: { Skeleton, Box, SelfModal, LoadingContainer },
+  components: { Skeleton, Box, SelfModalWindow, LoadingContainer },
   props: {
     isRecent: {
       type: Boolean,

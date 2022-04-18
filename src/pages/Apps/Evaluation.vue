@@ -9,7 +9,7 @@
           <div v-if="!isLoading">
             <h2 class="text-3xl font-semibold">In Review</h2>
             <div class="flex flex-col space-y-4 py-8">
-              <self-modal
+              <self-modal-window
                 :key="'sub_' + si"
                 :title="sub.name + ' / ' + sub.code"
                 modal-class="max-w-2xl"
@@ -62,7 +62,7 @@
                       class="button is-primary px-6 py-2">Submit</button>
                   </div>
                 </template>
-              </self-modal>
+              </self-modal-window>
             </div>
             <!-- <h2 class="mt-4 text-3xl font-semibold">Completed</h2> -->
           </div>
@@ -103,12 +103,12 @@ import PromiseLoader from '../../components/ui/PromiseLoader.vue';
 import IconChevronRight from '~icons/ion/chevron-right'
 import { useSchedulesQuery } from '../../stores/scheduleStore';
 import { useStudentStore } from '../../stores/studentStore';
-import SelfModal from '../../components/ui/SelfModal.vue';
+import SelfModalWindow from '../../components/ui/SelfModalWindow.vue';
 import DashboardScaffold from '../../components/ui/DashboardScaffold.vue';
 import Skeleton from '../../components/ui/Skeleton.vue';
 
 export default {
-  components: { PromiseLoader, LoadingContainer, Loader, Box, IconChevronRight, SelfModal, DashboardScaffold, Skeleton },
+  components: { PromiseLoader, LoadingContainer, Loader, Box, IconChevronRight, SelfModalWindow, DashboardScaffold, Skeleton },
   setup() {
     const studentStore = useStudentStore();
     const schedulesQuery = useSchedulesQuery();

@@ -1,7 +1,7 @@
 <template>
   <slot :openNewPaymentModal="openNewPaymentModal"></slot>
 
-  <modal :open="open" @update:open="setOpenState" content-class="max-h-[93vh] overflow-y-auto" title="New Payment">
+  <modal-window :open="open" @update:open="setOpenState" content-class="max-h-[93vh] overflow-y-auto" title="New Payment">
     <loading-container :isLoading="formState == 'processing'" v-slot="{ isLoading }">
       <div v-if="isLoading" class="flex justify-center py-8">
         <loader class="h-14 w-14" />
@@ -119,14 +119,14 @@
         </button>
       </div>
     </template>
-  </modal>
+  </modal-window>
 </template>
 
 <script lang="ts">
 import { useStudentStore } from '../../stores/studentStore'
 import Loader from '../ui/Loader.vue';
 import LoadingContainer from '../ui/LoadingContainer.vue';
-import Modal from '../ui/Modal.vue';
+import ModalWindow from '../ui/ModalWindow.vue';
 import IconCheckmarkCircleOutline from '~icons/ion/ios-checkmark-circle-outline';
 import IconCloseCircleOutline from '~icons/ion/ios-close-circle-outline';
 import IconUnknownCircleOutline from '~icons/ion/remove-circle-outline';
@@ -148,7 +148,7 @@ import IconSM from '~icons/payment-center-logos/sm';
 export default {
   emits: ['update:open'],
   components: { 
-    Modal, 
+    ModalWindow, 
     LoadingContainer,
     Loader,
     IconCheckmarkCircleOutline,

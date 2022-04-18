@@ -14,7 +14,7 @@
             </div>
 
             <div class="flex flex-col">
-              <self-modal
+              <self-modal-window
                 :key="'monthlyDue_' + i"
                 v-for="(mDue, i) in data.monthlyDues"
                 :title="isLoading ? 'Loading...' : 'Month ' + mDue.month">
@@ -106,7 +106,7 @@
                     </div>
                   </div>
                 </template>
-              </self-modal>
+              </self-modal-window>
             </div>
           </div>
 
@@ -185,7 +185,7 @@ import DashboardScaffold from '../components/ui/DashboardScaffold.vue';
 import NewPaymentModal from '../components/Finance/NewPaymentModal.vue';
 import LoadingContainer from '../components/ui/LoadingContainer.vue';
 import PromiseLoader from '../components/ui/PromiseLoader.vue';
-import SelfModal from '../components/ui/SelfModal.vue';
+import SelfModalWindow from '../components/ui/SelfModalWindow.vue';
 import Skeleton from '../components/ui/Skeleton.vue';
 import AccountBalanceWidget from '../components/Finance/AccountBalanceWidget.vue';
 import IconPlus from '~icons/ion/plus';
@@ -206,7 +206,7 @@ export default {
     Box, 
     LoadingContainer, 
     NewPaymentModal, 
-    SelfModal,
+    SelfModalWindow,
     DashboardScaffold,
     Skeleton,
     AccountBalanceWidget,

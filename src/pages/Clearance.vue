@@ -48,7 +48,7 @@
 
           <div v-if="!isLoading && data.items.length" class="bg-gray-50 dark:bg-primary-800 shadow border dark:border-primary-600 rounded-lg">
             <div class="flex flex-col divide-y dark:divide-primary-600">
-              <self-modal 
+              <self-modal-window 
                 :key="'item_' + i" v-for="(clearanceItem, i) in data.items"
                 :title="clearanceItem.label + ' Requirements'">
                 <template #default="{ openModal }">
@@ -103,7 +103,7 @@
                     </div>
                   </div>
                 </template>
-              </self-modal>
+              </self-modal-window>
             </div>
           </div>
         </section>
@@ -118,7 +118,7 @@ import DashboardScaffold from '../components/ui/DashboardScaffold.vue';
 import Loader from '../components/ui/Loader.vue';
 import LoadingContainer from '../components/ui/LoadingContainer.vue';
 import PromiseLoader from '../components/ui/PromiseLoader.vue';
-import SelfModal from '../components/ui/SelfModal.vue';
+import SelfModalWindow from '../components/ui/SelfModalWindow.vue';
 import Skeleton from '../components/ui/Skeleton.vue';
 import { useStudentStore } from '../stores/studentStore';
 import { catchAndNotifyError } from '../utils';
@@ -132,7 +132,7 @@ export default {
     DashboardScaffold,
     Skeleton,
     Loader,
-    SelfModal,
+    SelfModalWindow,
     ClearanceStatusIcon,
   },
   setup() {
