@@ -102,7 +102,9 @@ export default {
       auth.refresh();    
     }
 
-    const { modalCount, closeLastModal } = useModal();
+    const { modalCount, closeLastModal, subscribeModalChange } = useModal();
+    const unsubscribeModalChange = subscribeModalChange();
+
     let backButtonPlugin: PluginListenerHandle;
 
     if (IS_NATIVE) {
@@ -119,6 +121,7 @@ export default {
     }
 
     onBeforeUnmount(() => {
+      unsubscribeModalChange();
       unsubscribeDarkMode();
       if (backButtonPlugin) backButtonPlugin.remove();
     });

@@ -6,19 +6,6 @@ export const currentModalId = ref(0);
 export function useModal() {
   const modalStack = ref<number[]>([]);
   const modalCount = computed(() => modalStack.value.length);
-  
-  eventBus.on('modal_opened', ({ id }) => {
-    modalStack.value.push(id);
-    currentModalId.value++;
-  });
-
-  eventBus.on('modal_closed', ({ id }) => {
-    const idIndex = modalStack.value.indexOf(id);
-    if (idIndex !== -1) {
-      modalStack.value.splice(idIndex, 1);
-    }
-  });
-  
   const closeModal = (id: number) => {
     eventBus.emit('modal_manual_close', { id });
   } 
@@ -27,22 +14,47 @@ export function useModal() {
     modalStack.value.pop();
   }
 
-  watch(modalCount, (newVal, oldVal) => {
-    if (!import.meta.env.PROD) {
-      console.log('Modal Count', newVal);
-    }
+  const handleModalOpened = ({ id }) => {
+    modalStack.value.push(id);
+    currentModalId.value++;
+  }
 
-    if (newVal > 0) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
+  const handleModalClosed = ({ id }) => {
+    const idIndex = modalStack.value.indexOf(id);
+    if (idIndex !== -1) {
+      modalStack.value.splice(idIndex, 1);
     }
-  });
+  }
+
+  const subscribeModalChange = () => {
+    eventBus.on('modal_opened', handleModalOpened);
+    eventBus.on('modal_closed', handleModalClosed);
+    const unsubscribe = watch(modalCount, (newVal, oldVal) => {
+      if (import.meta.env.DEV) {
+        console.log('Modal Count', newVal);
+      }
+  
+      if (newVal > 0) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = 'unset';
+      }
+    }, {
+      immediate: true
+    });
+    
+    return () => {
+      eventBus.off('modal_opened', handleModalOpened);
+      eventBus.off('modal_closed', handleModalClosed);
+      unsubscribe();
+    }
+  }
 
   return {
     modalStack,
     modalCount,
     closeModal,
-    closeLastModal
+    closeLastModal,
+    subscribeModalChange
   }
 }
