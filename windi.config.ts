@@ -75,6 +75,7 @@ export default defineConfig({
       white: colors.white,
       dark: colors.dark,
       light: colors.light,
+      transparent: colors.transparent
     },
   },
   plugins: [require("windicss/plugin/forms")],
