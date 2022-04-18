@@ -20,7 +20,7 @@ export default defineConfig({
         "600": "#b42d4f",
         "700": "#8e1f3f",
         "800": "#701a35",
-        "900": "#4e0e1c",
+        "900": "#55162b",
       },
       danger: {
         "50": "#fdf3f3",
@@ -75,7 +75,7 @@ export default defineConfig({
       white: colors.white,
       dark: colors.dark,
       light: colors.light,
-      transparent: colors.transparent
+      transparent: colors.transparent,
     },
   },
   plugins: [require("windicss/plugin/forms")],
