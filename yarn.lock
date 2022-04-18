@@ -1479,6 +1479,11 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
+"@robingenz/capacitor-android-dark-mode-support@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@robingenz/capacitor-android-dark-mode-support/-/capacitor-android-dark-mode-support-1.0.1.tgz#0845f1be5c2e9a3b3a58ef597ce0d945abd18e12"
+  integrity sha512-JayMLgSy/ZraS7ckSb1McBxFavUy25A334TZ6Xnd9FCEmhP6+0+WoZpSAlNPtl1EZbt/elKv13qxMhGCJmUZtw==
+
 "@rollup/plugin-babel@^5.2.0":
   version "5.3.1"
   resolved "https://registry.yarnpkg.com/@rollup/plugin-babel/-/plugin-babel-5.3.1.tgz#04bc0608f4aa4b2e4b1aebf284344d0f68fda283"

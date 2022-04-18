@@ -12,6 +12,7 @@ dependencies {
     implementation project(':capacitor-local-notifications')
     implementation project(':capacitor-splash-screen')
     implementation project(':capacitor-storage')
+    implementation project(':robingenz-capacitor-android-dark-mode-support')
 
 }
 

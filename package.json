@@ -23,6 +23,7 @@
     "@iconify-json/mdi": "^1.1.2",
     "@myuic-api/client": "^1.2.0",
     "@myuic-api/types": "^1.2.0",
+    "@robingenz/capacitor-android-dark-mode-support": "^1.0.1",
     "@vueuse/core": "^8.1.1",
     "date-fns": "^2.28.0",
     "floating-vue": "^2.0.0-beta.11",

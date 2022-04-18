@@ -3,6 +3,7 @@ import { defineStore } from 'pinia';
 
 export const DARK_MODE_KEY = 'dark_mode';
 export const darkModeQuery = () => window.matchMedia('(prefers-color-scheme: dark)');
+const DARK_MODE_CLASS = 'dark';
 
 export const  useUIStore = defineStore('ui', {
   state: () => ({
@@ -28,9 +29,9 @@ export const  useUIStore = defineStore('ui', {
       }
 
       if (isDarkMode) {
-        document.documentElement.classList.add('dark');
+        document.documentElement.classList.add(DARK_MODE_CLASS);
       } else {
-        document.documentElement.classList.remove('dark');
+        document.documentElement.classList.remove(DARK_MODE_CLASS);
       }
     },
 
