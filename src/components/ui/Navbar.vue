@@ -69,7 +69,7 @@
         </button>
 
         <router-link
-          v-if="IS_NATIVE || true"
+          v-if="IS_NATIVE"
           :to="{ name: 'settings' }"
           @click="isMenuOpen = false"
           :class="[
