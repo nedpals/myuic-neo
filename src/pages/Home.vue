@@ -69,7 +69,7 @@
                   </template>
                 </self-modal>
               </template>
-              <div v-else :key="i" v-for="i in 6" class="quick-link-item text-center">
+              <div v-else :key="i" v-for="i in 6" disabled class="quick-link-item text-center">
                 <div class="h-12 w-12 rounded-full bg-primary-400 mb-2"></div>
                 <div class="h-4 w-20 bg-gray-200 rounded-lg"></div>
               </div>
@@ -161,7 +161,7 @@ export default {
 
 <style lang="postcss" scoped>
 .quick-link-item {
-  @apply w-1/4 md:w-1/6 cursor-pointer hover:bg-gray-100 dark:hover:bg-primary-800 rounded-lg p-3 flex flex-col items-center space-y-2;
+  @apply w-1/4 md:w-1/6 cursor-pointer disabled:pointer-events-none not-disabled:hover:bg-gray-100 not-disabled:dark:hover:bg-primary-800 rounded-lg p-3 flex flex-col items-center space-y-2;
 }
 
 .quick-link-item > svg,
