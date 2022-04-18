@@ -67,6 +67,25 @@
             <icon-about-outline class="text-primary-500 text-[1.3rem]" />
             <span class="md:hidden lg:block">About</span>
         </button>
+
+        <router-link
+          v-if="IS_NATIVE || true"
+          :to="{ name: 'settings' }"
+          @click="isMenuOpen = false"
+          :class="[
+            currentRouteName === 'settings'
+            ?  'text-white bg-primary-500 hover:bg-primary-600 dark:bg-primary-700 dark:hover:bg-primary-800'
+            :  'hover:bg-primary-100 dark:hover:bg-primary-800'
+          ]"
+          class="py-2 px-4 flex items-center max-h-12 space-x-4 rounded-l-full" 
+          style="transition: ease 150ms background-color">
+          <component 
+            :is="currentRouteName === 'settings' ? 'icon-settings' : 'icon-settings-outline'" 
+            :class="[currentRouteName !== 'settings' ? 'text-primary-500' : 'dark:text-primary-300']" 
+            class="text-[1.3rem]" />
+          <span class="md:hidden lg:block">Settings</span>
+        </router-link>
+
         <button
           @click="logout"
           class="w-full hover:bg-danger-100 dark:hover:bg-danger-900 bg-danger-50 dark:bg-danger-800 py-2 px-4 flex items-center max-h-12 space-x-4 rounded-l-full" 
@@ -140,6 +159,8 @@ import IconLogoutOutline from '~icons/ion/log-out-outline';
 import IconLogo from '~icons/custom/logo';
 import IconOnlineEnrollment from '~icons/fluent/compose-16-filled';
 import IconAboutOutline from '~icons/ion/help-circle-outline';
+import IconSettings from '~icons/ion/settings';
+import IconSettingsOutline from '~icons/ion/settings-outline';
 import { useStudentStore } from '../../stores/studentStore';
 import DarkModeToggle from './DarkModeToggle.vue';
 import LoadingContainer from './LoadingContainer.vue';
@@ -158,6 +179,8 @@ export default {
     IconLogoutOutline,
     IconLogo,
     IconAboutOutline,
+    IconSettings,
+    IconSettingsOutline,
     DarkModeToggle,
     LoadingContainer,
     Skeleton,

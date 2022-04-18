@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory } from 'vue-router';
+import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
 import { client } from './client';
 import { useStudentStore } from './stores/studentStore';
 import { IS_NATIVE } from './utils';
@@ -35,6 +35,27 @@ const router = createRouter({
             useHeader: false
           }
         },
+        ...(IS_NATIVE || true ? [
+          {
+            name: 'settings',
+            path: '/settings',
+            component: () => import('./pages/Settings.vue'),
+            redirect: { name: 'notification-settings' },
+            meta: {
+              pageTitle: 'Settings',
+            },
+            children: [
+              {
+                name: 'notification-settings',
+                path: 'notifications',
+                meta: {
+                  pageTitle: 'Notifications',
+                },
+                component: () => import('./pages/Settings/Notification.vue')
+              }
+            ]
+          } as RouteRecordRaw,
+        ] : []),
         {
           name: 'finance',
           path: '/finance',
