@@ -86,6 +86,9 @@ lint/outputs/
 lint/tmp/
 # lint/reports/
 
+release.jks
+release.jks.base64
+
 # Android Profiling
 *.hprof
 
