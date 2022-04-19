@@ -32,7 +32,7 @@
                 </button>
               </tab>
             </tab-list>
-            <tab-panels class="w-full lg:w-3/4 md:min-h-[60vh] md:max-h-[60vh] pt-3 pb-6 overflow-y-auto">
+            <tab-panels ref="panelRef" class="w-full lg:w-3/4 md:min-h-[60vh] md:max-h-[60vh] pt-3 pb-6 overflow-y-auto">
               <tab-panel class="text-center px-6">
                 <p v-html="data.instructions"></p>
               </tab-panel>
@@ -84,8 +84,7 @@
 </template>
 
 <script lang="ts">
-import { PropType, ref } from 'vue-demi'
-import SelfModalWindow from '../../ui/SelfModalWindow.vue'
+import { onBeforeUnmount, PropType, ref, watch } from 'vue'
 import { CourseEvaluationEntry } from '@myuic-api/types'
 import { useFacultyEvaluationQuestionnaire } from '../../../stores/evaluationStore'
 import LoadingContainer from '../../ui/LoadingContainer.vue'
@@ -111,14 +110,24 @@ export default {
     } 
   },
   setup() {
+    const panelRef = ref<typeof TabPanels>();
     const step = ref(0);
     const { isFetching, isIdle, data } = useFacultyEvaluationQuestionnaire();
+
+    const unwatchScroll = watch(step, () => {
+      panelRef.value?.$el.scrollTo({ top: 0 });
+    });
+    
+    onBeforeUnmount(() => {
+      unwatchScroll();
+    });
 
     return {
       data,
       isFetching,
       isIdle,
       ratings,
+      panelRef,
       step
     }
   }
