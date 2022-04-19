@@ -1,5 +1,5 @@
 <template>
-  <self-modal 
+  <self-modal-window 
     :title="course.name + ' / ' + course.code" 
     content-class="flex overflow-hidden"
     modal-class="max-w-4xl w-full">
@@ -80,12 +80,12 @@
           class="button is-primary px-6 py-2">Submit</button>
       </div>
     </template>
-  </self-modal>
+  </self-modal-window>
 </template>
 
 <script lang="ts">
 import { PropType, ref } from 'vue-demi'
-import SelfModal from '../../ui/SelfModal.vue'
+import SelfModalWindow from '../../ui/SelfModalWindow.vue'
 import { CourseEvaluationEntry } from '@myuic-api/types'
 import { useFacultyEvaluationQuestionnaire } from '../../../stores/evaluationStore'
 import LoadingContainer from '../../ui/LoadingContainer.vue'
@@ -95,7 +95,7 @@ import { ratings } from '@myuic-api/types'
 
 export default {
   components: { 
-    SelfModal, 
+    SelfModalWindow, 
     LoadingContainer, 
     Loader,
     Tab,
