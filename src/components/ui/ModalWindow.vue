@@ -61,10 +61,7 @@ export default {
   setup(props, { emit }) {
     const modal = reactive({ id: currentModalId.value });
     const closeModal = () => {
-      eventBus.emit('modal_closed', modal);
-      if (props.open) {
-        emit('update:open', false);
-      }
+      emit('update:open', false);
     }
 
     eventBus.on('modal_manual_close', ({ id: gotId }) => {
@@ -78,7 +75,7 @@ export default {
       if (newVal) {
         eventBus.emit('modal_opened', modal);
       } else {
-        closeModal();
+        eventBus.emit('modal_closed', modal);
       }
     }, { immediate: true });
 
