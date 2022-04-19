@@ -28,9 +28,18 @@
                   {{ cat.title }}
                 </button>
               </tab>
+              <tab v-slot="{ selected }" as="div" class="w-full">
+                <button 
+                  :disabled="data.categories.length + 1 > step"
+                  :class="{ 'text-primary-500 bg-gradient-to-r from-transparent to-primary-100': selected }" 
+                  class="w-full px-6 py-4 disabled:cursor-default disabled:text-gray-300 not-disabled:hover:bg-gray-100 font-semibold text-left">
+                  Comments
+                </button>
+              </tab>
             </tab-list>
             <tab-panels ref="panelRef" class="w-full lg:w-3/4 md:min-h-[60vh] md:max-h-[60vh] pt-3 pb-6 overflow-y-auto">
               <tab-panel class="text-center px-6">
+                <!-- TODO: improve styling -->
                 <p v-html="data.instructions"></p>
               </tab-panel>
           
@@ -65,6 +74,33 @@
                   </div>
                 </div>
               </tab-panel>
+
+              <tab-panel class="flex flex-col divide divide-y px-3 md:px-6">
+                <div class="flex flex-col">
+                  <div class="mb-3 text-center">
+                    <h3 class="text-2xl font-semibold">Comments</h3>
+                  </div>
+
+                  <!-- TODO: add form validation check -->
+                  <div class="form-group">
+                    <!-- What do you believe the instructor has done especially well in conducting this course? -->
+                    <div class="form-control w-full">
+                      <label for="address">What do you believe the instructor has done especially well in conducting this course?</label>
+                      <textarea class="h-24" v-model="comments[0]" />
+                    </div>
+                    <!-- What might the instructor do to enhance the course?  -->
+                    <div class="form-control w-full">
+                      <label for="address">What might the instructor do to enhance the course?</label>
+                      <textarea class="h-24" v-model="comments[1]" />
+                    </div>
+                    <!-- Comments -->
+                    <div class="form-control w-full">
+                      <label for="address">Comments</label>
+                      <textarea class="h-24" v-model="comments[2]" />
+                    </div>
+                  </div>
+                </div>
+              </tab-panel>
             </tab-panels>
           </tab-group>
         </div>
@@ -73,7 +109,7 @@
     <template #footer>
       <div class="flex justify-end space-x-2">
         <button v-if="step > 0" @click="step--" class="button is-light">Previous</button>
-        <button v-if="step < 4" @click="step++" class="button is-primary px-6 py-2">Next</button>
+        <button v-if="step < 6" @click="step++" class="button is-primary px-6 py-2">Next</button>
         <button v-else @click="submitEvaluation" class="button is-primary px-6 py-2">Submit</button>
       </div>
     </template>
@@ -205,6 +241,7 @@ export default {
       panelRef,
       isProcessing,
       ratingAnswers,
+      comments,
       submitEvaluation,
       warnUserOnClose,
       step
