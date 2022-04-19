@@ -38,6 +38,9 @@ export default {
   components: { Box, IconClose, IconBack },
   emits: ['update:open'],
   props: {
+    mId: {
+      type: Number
+    },
     title: {
       type: String,
     },
@@ -60,7 +63,8 @@ export default {
   setup(props, { emit }) {
     const { closeModal, unsubscribe } = useModal(
       computed(() => props.open), 
-      (o) => emit('update:open', o)
+      (o) => emit('update:open', o),
+      props.mId
     );
 
     onBeforeUnmount(unsubscribe);

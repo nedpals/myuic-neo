@@ -15,6 +15,8 @@
     </v-tooltip>
   </div>
 
+  <dialog-manager />
+
   <notification-group>
     <div class="fixed inset-x-0 top-0 flex flex-col" style="z-index: 9999999">
       <notification
@@ -62,9 +64,10 @@ import { useQueryClient } from 'vue-query';
 import { App } from '@capacitor/app';
 import { useModalManager } from './modal';
 import { PluginListenerHandle } from '@capacitor/core';
+import DialogManager from './components/ui/DialogManager.vue';
 
 export default {
-  components: { NotificationContainer, IconFeedback },
+  components: { NotificationContainer, IconFeedback, DialogManager },
   setup() {
     const router = useRouter();
     const feedbackUrl = computed(() => import.meta.env.VITE_FEEDBACK_URL ?? null);

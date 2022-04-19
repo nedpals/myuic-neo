@@ -1,16 +1,14 @@
 import mitt from "mitt";
 import { computed, ComputedRef, reactive, ref, watch } from "vue";
 
+interface ModalInfo {
+  id: number
+}
+
 export type ModalEvents = {
-  modal_opened: {
-    id: number
-  }
-  modal_closed: {
-    id: number
-  }
-  modal_manual_close: {
-    id: number
-  }
+  modal_opened: ModalInfo & { isGenerated: boolean }
+  modal_closed: ModalInfo
+  modal_manual_close: ModalInfo
 }
 
 export const events: Record<string, keyof ModalEvents> = {
@@ -36,9 +34,11 @@ export function useModalManager() {
     closeModal(lastId);
   }
 
-  const handleModalOpened = ({ id }) => {
+  const handleModalOpened = ({ id, isGenerated }) => {
     modalStack.value.push(id);
-    currentModalId.value++;
+    if (isGenerated) {
+      currentModalId.value++;
+    }
   }
 
   const handleModalClosed = ({ id }) => {
@@ -81,13 +81,13 @@ export function useModalManager() {
   }
 }
 
-export const useModal = (isOpen: ComputedRef<boolean>, updateFn: (state: boolean) => void) => {
-  const state = reactive({ id: currentModalId.value });
+export const useModal = (isOpen: ComputedRef<boolean>, updateFn: (state: boolean) => void, modalId?: number) => {
+  const state = reactive<ModalInfo>({ id: modalId ?? currentModalId.value });
   const closeModal = () => {
     updateFn(false);
   }
 
-  const handleManualClose = ({ id: gotId }: { id: number }) => {
+  const handleManualClose = ({ id: gotId }: ModalInfo) => {
     if (gotId === state.id) {
       closeModal();
     }
@@ -98,7 +98,7 @@ export const useModal = (isOpen: ComputedRef<boolean>, updateFn: (state: boolean
   const unwatchOpen = watch(isOpen, (newVal, oldVal) => {
     if (newVal === oldVal || typeof oldVal === 'undefined') return;
     if (newVal) {
-      modalEventBus.emit('modal_opened', state);
+      modalEventBus.emit('modal_opened', { ...state, isGenerated: typeof modalId === 'undefined' });
     } else {
       modalEventBus.emit('modal_closed', state);
     }
@@ -116,3 +116,35 @@ export const useModal = (isOpen: ComputedRef<boolean>, updateFn: (state: boolean
     state
   }
 }
+
+// Dialog
+export interface DialogAction {
+  label: string
+  onClick: () => string
+}
+
+export interface Dialog {
+  title: string
+  content: string
+  class?: string
+  actions: DialogAction[]
+  onResult: (val: string) => boolean
+}
+
+export interface DialogModal extends Dialog, ModalInfo {
+  isOpen: boolean
+}
+
+export const dialogs = ref<DialogModal[]>([]);
+
+export function showDialog(d: Dialog): number {
+  const newDialog: DialogModal = {
+    ...d,
+    id: currentModalId.value,
+    isOpen: true
+  };
+
+  dialogs.value.push(newDialog);
+  currentModalId.value++;
+  return newDialog.id;
+};
