@@ -1,0 +1,57 @@
+<template>
+  <modal 
+    @update:open="handleDialogOpen(d, $event)" 
+    :m-id="d.id"
+    :open="d.isOpen"
+    :key="d.id" v-for="d in dialogs" :title="d.title">
+    <div class="pt-4" v-html="d.content"></div>
+
+    <template #footer>
+      <div class="flex justify-end items-center space-x-2">
+        <button 
+          :key="'action_' + ai" 
+          @click="handleDialogAction(d, action)"
+          class="button"
+          :class="action.class"
+          v-for="(action, ai) in d.actions">
+          {{ action.label }}
+        </button>
+      </div>
+    </template>
+  </modal>
+</template>
+
+<script lang="ts">
+import { dialogs, DialogModal, modalEventBus, DialogAction } from '../../modal';
+import Modal from './Modal.vue';
+
+export default {
+  components: { Modal },
+  setup() {
+    const handleDialogAction = (d: DialogModal, action: DialogAction) => {
+      const result = action.onClick();
+      const shouldClose = d.onResult(result);
+      if (shouldClose) {
+        modalEventBus.emit('modal_manual_close', { id: d.id });
+      }
+    }
+
+    const handleDialogOpen = (d: DialogModal, newOpen: boolean) => {
+      d.isOpen = newOpen;
+
+      if (!newOpen) {
+        const idx = dialogs.value.findIndex(dd => dd.id === d.id);
+        if (idx !== -1) {
+          dialogs.value.splice(idx, 1);
+        }
+      }
+    }
+    
+    return {
+      handleDialogOpen,
+      handleDialogAction,
+      dialogs
+    }
+  }
+}
+</script>

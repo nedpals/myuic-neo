@@ -15,6 +15,8 @@
     </v-tooltip>
   </div>
 
+  <dialog-manager />
+
   <notification-group>
     <div class="fixed inset-x-0 top-0 flex flex-col" style="z-index: 9999999">
       <notification
@@ -60,11 +62,12 @@ import { eventbus } from '@myuic-api/client/lib/event';
 import { useStudentStore } from './stores/studentStore';
 import { useQueryClient } from 'vue-query';
 import { App } from '@capacitor/app';
-import { useModal } from './modal';
+import { useModalManager } from './modal';
 import { PluginListenerHandle } from '@capacitor/core';
+import DialogManager from './components/ui/DialogManager.vue';
 
 export default {
-  components: { NotificationContainer, IconFeedback },
+  components: { NotificationContainer, IconFeedback, DialogManager },
   setup() {
     const router = useRouter();
     const feedbackUrl = computed(() => import.meta.env.VITE_FEEDBACK_URL ?? null);
@@ -102,7 +105,7 @@ export default {
       auth.refresh();    
     }
 
-    const { modalCount, closeLastModal, subscribeModalChange } = useModal();
+    const { modalCount, closeLastModal, subscribeModalChange } = useModalManager();
     const unsubscribeModalChange = subscribeModalChange();
 
     let backButtonPlugin: PluginListenerHandle;

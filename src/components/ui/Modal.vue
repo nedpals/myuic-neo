@@ -30,14 +30,17 @@
 import Box from './Box.vue';
 import IconClose from '~icons/ion/close';
 import IconBack from '~icons/ion/chevron-left';
-import { isSlotVisible, eventBus } from '../../utils';
-import { onBeforeUnmount, reactive, watch } from 'vue';
-import { currentModalId } from '../../modal';
+import { isSlotVisible } from '../../utils';
+import { computed, onBeforeUnmount } from 'vue';
+import { useModal } from '../../modal';
 
 export default {
   components: { Box, IconClose, IconBack },
   emits: ['update:open'],
   props: {
+    mId: {
+      type: Number
+    },
     title: {
       type: String,
     },
@@ -58,39 +61,17 @@ export default {
     }
   },
   setup(props, { emit }) {
-    const modal = reactive({ id: currentModalId.value });
-    const closeModal = () => {
-      eventBus.emit('modal_closed', modal);
-      if (props.open) {
-        emit('update:open', false);
-      }
-    }
+    const { closeModal, unsubscribe } = useModal(
+      computed(() => props.open), 
+      (o) => emit('update:open', o),
+      props.mId
+    );
 
-    eventBus.on('modal_manual_close', ({ id: gotId }) => {
-      if (gotId === modal.id) {
-        closeModal();
-      }
-    });
-
-    const unwatchOpen = watch(() => props.open, (newVal, oldVal) => {
-      if (newVal === oldVal || typeof oldVal === 'undefined') return;
-      if (newVal) {
-        eventBus.emit('modal_opened', modal);
-      } else {
-        closeModal();
-      }
-    }, { immediate: true });
-
-    onBeforeUnmount(() => {
-      if (props.open) {
-        closeModal();
-      }
-      unwatchOpen();
-    });
+    onBeforeUnmount(unsubscribe);
 
     return {
       isSlotVisible,
-      closeModal
+      closeModal,
     }
   },
 }
