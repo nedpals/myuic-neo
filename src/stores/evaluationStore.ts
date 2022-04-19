@@ -1,25 +1,33 @@
-import { CourseEvaluationEntry, EvaluationStatus, questionnaires, RoutePath } from "@myuic-api/types";
+import { CourseEvaluation, CourseEvaluationEntry, CourseEvaluationEntryIDs, EvaluationStatus, questionnaires, RoutePath } from "@myuic-api/types";
+import { notify } from "notiwind";
 import { computed } from "vue";
-import { useQuery } from "vue-query"
+import { useMutation, useQuery, useQueryClient } from "vue-query"
 import { client, useClientQuery } from "../client";
+import { catchAndNotifyError } from "../utils";
 
-export const useFacultyEvaluationQuestionnaire = () => {
-  return useClientQuery<typeof questionnaires>(
-    'faculty_eval_questionnaires',
-    () => client.http.get(RoutePath('facultyEvaluationQuestionnaires'))
-  );
-};
-
-export const useFacultyEvaluationIdsQuery = (classId: string, classType: string) => {
-  return useQuery(
-    ['faculty_evaluation_id', classId, classType],
+export const useEvaluationQuery = (classId: string, classType: string) => {
+  const idQuery = useQuery<CourseEvaluationEntryIDs>(
+    ['evaluation_id', classId, classType],
     () => client.facultyEvaluationEntryId(classId, classType)
   );
+  
+  const questionnaireQuery = useClientQuery<typeof questionnaires>(
+    'evaluation_questionnaires',
+    () => client.http.get(RoutePath('facultyEvaluationQuestionnaires')),
+    {
+      enabled: computed(() => !idQuery.isFetching.value && !idQuery.isIdle.value)
+    }
+  );
+
+  return {
+    questionnaireQuery,
+    idQuery
+  }
 }
 
-export const useFacultyEvaluationListQuery = () => {
+export const useEvaluationListQuery = () => {
   return useQuery(
-    'faculty_evaluation',
+    'evaluation',
     () => client.facultyEvaluationList(),
     {
       placeholderData: [...Array(6).keys()].map<CourseEvaluationEntry>(() => ({
@@ -34,7 +42,28 @@ export const useFacultyEvaluationListQuery = () => {
   );
 }
 
-export const useFacultyEvaluationListQueryUtilities = ({ isFetching, isIdle, data }: ReturnType<typeof useFacultyEvaluationListQuery>) => {
+export const useEvaluationMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation((newEval: CourseEvaluation) => client.http.postJson(RoutePath('facultyEvaluationSubmit'), newEval), {
+    onError: (err) => {
+      catchAndNotifyError(err);
+    },
+    onSuccess: async ({data}) => {
+      notify({
+        type: 'success',
+        text: data.message
+      }, 3000);
+
+      await queryClient.refetchQueries({ 
+          exact: true, 
+          queryKey: 'evaluation' 
+        });
+    }
+  });
+}
+
+export const useEvaluationListQueryUtilities = ({ isFetching, isIdle, data }: ReturnType<typeof useEvaluationListQuery>) => {
   const isLoading = computed(() => isFetching.value || isIdle.value);
   const getEntriesByStatus = (status: EvaluationStatus) => computed(() => data.value!.filter(e => e.status === status));
 

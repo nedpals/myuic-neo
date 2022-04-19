@@ -1,14 +1,12 @@
 <template>
-  <slot :openModal="openModal" />
-
   <modal-window 
     :title="course.name + ' / ' + course.code" 
     :open="isOpen"
-    @update:open="handleModalOpen"
+    @update:open="warnUserOnClose"
     content-class="flex overflow-hidden"
     modal-class="max-w-4xl w-full">
-      <loading-container :is-loading="isFetching || isIdle" v-slot="{ isLoading }">
-        <div v-if="isLoading" class="sticky left-0 inset-y-0 flex justify-center items-center py-8">
+      <loading-container :is-loading="isFetching || isIdle || isProcessing" v-slot="{ isLoading }">
+        <div v-if="isLoading" class="w-full sticky left-0 inset-y-0 flex justify-center items-center py-32">
           <loader class="h-14 w-14" />
         </div>
 
@@ -42,7 +40,10 @@
                     <h3 class="text-2xl font-semibold">{{ cat.title }}</h3>
                     <p class="text-lg text-gray-600 dark:text-primary-200">{{ cat.description }}</p>
                   </div>
-                  <div class="border-t flex" :class="{ 'border-b': qi == cat.questions.length - 1 }" :key="'q_' + i + '_' + qi" v-for="(q, qi) in cat.questions">
+                  <div 
+                    class="border-t flex" 
+                    :class="{ 'border-b': qi == cat.questions.length - 1 }" 
+                    :key="'q_' + i + '_' + qi" v-for="(q, qi) in cat.questions">
                     <div class="flex items-center justify-center border-r px-3 md:px-6 py-3 w-1/8">
                       <span>{{ qi + 1 }}</span>
                     </div>
@@ -51,7 +52,12 @@
                       <p class="pb-3">{{ q }}</p>
                       
                       <div class="w-full flex md:space-x-2 <sm:space-y-2 <sm:flex-wrap">
-                        <button v-for="(rLabel, r) in ratings" :key="'r_' + r" class="button is-light w-full md:flex-1">
+                        <button 
+                          v-for="(rLabel, r) in ratings" 
+                          @click="ratingAnswers[getQIndex(i, qi)] = parseInt(r)"
+                          :key="'r_' + r" 
+                          :class="[ratingAnswers[getQIndex(i, qi)].toString() === r  ? 'is-primary' : 'is-light']" 
+                          class="button w-full md:flex-1">
                           {{ rLabel }}
                         </button>
                       </div>
@@ -66,33 +72,26 @@
 
     <template #footer>
       <div class="flex justify-end space-x-2">
-        <button @click="step--" class="button is-light" v-if="step > 0">
-          Previous
-        </button>
-
-        <button @click="step++" v-if="step < 4" class="button is-primary px-6 py-2">Next</button>
-
-        <button 
-          v-else
-          @click="$notify({ type: 'info', text: 'Evaluation is read-only.' })" 
-          class="button is-primary px-6 py-2">Submit</button>
+        <button v-if="step > 0" @click="step--" class="button is-light">Previous</button>
+        <button v-if="step < 4" @click="step++" class="button is-primary px-6 py-2">Next</button>
+        <button v-else @click="submitEvaluation" class="button is-primary px-6 py-2">Submit</button>
       </div>
     </template>
   </modal-window>
 </template>
 
 <script lang="ts">
-import { onBeforeUnmount, PropType, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, PropType, ref, watch } from 'vue'
 import ModalWindow from '../../ui/ModalWindow.vue'
-import { CourseEvaluationEntry } from '@myuic-api/types'
-import { useFacultyEvaluationQuestionnaire } from '../../../stores/evaluationStore'
+import { ratings, CourseEvaluationEntry } from '@myuic-api/types'
+import { useEvaluationMutation, useEvaluationQuery } from '../../../stores/evaluationStore'
 import LoadingContainer from '../../ui/LoadingContainer.vue'
 import Loader from '../../ui/Loader.vue'
 import { TabGroup, Tab, TabList, TabPanels, TabPanel } from '@headlessui/vue'
-import { ratings } from '@myuic-api/types'
 import { showDialog } from '../../../modal'
 
 export default {
+  emits: ['close'],
   components: { 
     ModalWindow, 
     LoadingContainer, 
@@ -109,43 +108,81 @@ export default {
       required: true
     } 
   },
-  setup() {
+  setup({ course }, { emit }) {
     const panelRef = ref<typeof TabPanels>();
     const step = ref(0);
-    const { isFetching, isIdle, data } = useFacultyEvaluationQuestionnaire();
-    const isOpen = ref(false);
+    const isOpen = ref(true);
+    const { 
+      questionnaireQuery: { isFetching, isIdle, data, ...questionnaireQuery }, 
+      idQuery: { data: idQueryData, ...idQuery }
+    } = useEvaluationQuery(course.classID ?? course.code, course.classType ?? '3');
+    const { mutateAsync, isLoading: isProcessing } = useEvaluationMutation();
+    const totalQuestionsCount = computed(() => {
+      if (isFetching.value || isIdle.value) {
+        return 30;
+      }
+      return data.value?.categories.map(c => 
+          c.questions.length).reduce((p,v) => p + v, 0);
+    });
 
-    const openModal = () => {
-      isOpen.value = true;
+    const accQuestionIdxs = computed(() => {
+      return data.value?.categories
+        .map((_,i,a) => i == 0 ? 0 : a[i - 1].questions.length)
+        .reduce<number[]>((p,v,i) => {
+          p.push(i > 0 ? p[i - 1] + v : v);
+          return p;
+        }, []) ?? [];
+    });
+
+    const getQIndex = (cIndex: number, qIndex: number) => {
+      const prevLen = cIndex >= 0 ? accQuestionIdxs.value[cIndex] : 0;
+      const idx = prevLen + qIndex ?? 0;
+      return idx;
     }
 
-    const handleModalOpen = (newOpen: boolean) => {
-      if (!newOpen) {
-        showDialog({
-          title: 'Warning',
-          content: 'Closing this will lose your progress. Would you like to proceed?',
-          actions: [
-            {
-              label: 'Yes',
-              class: 'is-primary',
-              onClick: () => 'yes'
-            },
-            {
-              label: 'No',
-              onClick: () => 'no'
-            }
-          ],
-          onResult: (ans: string) => {
-            if (ans === 'yes') {
-              isOpen.value = newOpen;
-            }
-            return true;
+    const warnUserOnClose = (newOpen: boolean) => {
+      if (newOpen || (!newOpen && isOpen.value === newOpen)) return;
+      showDialog({
+        title: 'Warning',
+        content: 'Closing this will lose your progress. Would you like to proceed?',
+        actions: [
+          {
+            label: 'Yes',
+            class: 'is-primary',
+            onClick: () => 'yes'
+          },
+          {
+            label: 'No',
+            class: 'is-light',
+            onClick: () => 'no'
           }
-        });
-        return;
-      }
+        ],
+        onResult: (ans: string) => {
+          if (ans === 'yes') {
+            isOpen.value = false;
+            emit('close');
+          }
+          return true;
+        }
+      });
+    }
 
-      isOpen.value = newOpen;
+    // data
+    const ratingAnswers = ref([...Array(29).keys()].map(() => 1)); 
+    const comments = ref<[string, string, string]>(['', '', '']);
+    const submitEvaluation = async () => {
+      await mutateAsync({
+        ratings: ratingAnswers.value.splice(0, totalQuestionsCount.value),
+        comments: comments.value,
+        classID: idQueryData.value?.classID!,
+        classType: idQueryData.value?.classType!,
+        instructorID: idQueryData.value?.instructorID!
+      }, {
+        onSuccess: () => {
+          isOpen.value = false;
+          emit('close');
+        }
+      });
     }
 
     const unwatchScroll = watch(step, () => {
@@ -153,6 +190,8 @@ export default {
     });
     
     onBeforeUnmount(() => {
+      idQuery.remove.value();
+      questionnaireQuery.remove.value();
       unwatchScroll();
     });
 
@@ -160,11 +199,14 @@ export default {
       data,
       isFetching,
       isIdle,
+      isOpen,
+      getQIndex,
       ratings,
       panelRef,
-      isOpen,
-      handleModalOpen,
-      openModal,
+      isProcessing,
+      ratingAnswers,
+      submitEvaluation,
+      warnUserOnClose,
       step
     }
   }
