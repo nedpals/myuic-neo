@@ -64,7 +64,7 @@
         </div>
       </loading-container>
 
-    <template #modal-footer>
+    <template #footer>
       <div class="flex justify-end space-x-2">
         <button @click="step--" class="button is-light" v-if="step > 0">
           Previous
