@@ -1,56 +1,39 @@
 <template>
   <dashboard-scaffold>
     <main class="max-w-2xl mx-auto px-6 md:px-2 py-4 md:py-8">
-      <!-- TODO: skeleton -->
       <loading-container :is-loading="isLoading" v-slot="{ isLoading }">
         <skeleton custom-class="h-8 w-24 mt-2">
           <h2 class="text-3xl font-semibold">Available for Evaluation</h2>
         </skeleton>
 
-        <div v-if="!isLoading">
-          <div class="flex flex-col space-y-4 py-8">
-            <box 
-              :key="'sub_' + sub.code" v-for="sub in openedEvaluationList" 
-              class="hover:bg-gray-100 dark:hover:bg-uic-900 hover:border-uic-500 dark:hover:border-uic-700 cursor-pointer" 
-              @click="evaluateCourse(sub)">
-              <div class="flex flex-row justify-between items-center">
-                <div class="flex space-x-4 items-start">
-                  <div class="h-13 w-13 flex-shrink-0">
+        <div class="flex flex-col space-y-4 py-8">
+          <box 
+            :key="'sub_' + sub.code" v-for="sub in openedEvaluationList" 
+            :disabled="isLoading"
+            class="hover:bg-gray-100 dark:hover:bg-uic-900 hover:border-uic-500 dark:hover:border-uic-700 cursor-pointer" 
+            @click="evaluateCourse(sub)">
+            <div class="flex flex-row justify-between items-center">
+              <div class="flex space-x-4" :class="[isLoading ? 'items-center' : 'items-start']">
+                <div class="h-13 w-13 flex-shrink-0">
+                  <skeleton
+                      custom-class="bg-gray-200 dark:bg-uic-500 rounded-full h-full w-full">
                     <div 
                       :style="{ backgroundImage: `url(${sub.instructorImageUrl})` }"
                       class="bg-gray-200 dark:bg-uic-500 rounded-full h-full w-full bg-cover bg-center"></div>
-                  </div>
-                  <div>
+                  </skeleton>
+                </div>
+                <div>
+                  <skeleton custom-class="h-5 w-8 mb-2">
                     <h3 class="text-xl font-semibold">{{ sub.name }}</h3>
+                  </skeleton>
+                  <skeleton custom-class="h-4 w-16">
                     <p>{{ sub.instructor }} • {{ sub.type }}</p>
-                  </div>
+                  </skeleton>
                 </div>
-                <icon-chevron-right />
               </div>
-            </box>
-          </div>
-        </div>
-        <div v-else>
-          <div class="flex flex-col space-y-4 py-8">
-            <box
-              :key="'box_' + i"
-              v-for="i in 6">
-              <div class="flex flex-row justify-between items-center">
-                <div class="flex space-x-4 items-start">
-                  <div class="h-13 w-13 flex-shrink-0">
-                    <skeleton
-                      custom-class="bg-gray-200 dark:bg-uic-500 rounded-full h-full w-full">
-                    </skeleton>
-                  </div>
-                  <div>
-                    <skeleton custom-class="h-5 w-8 mb-2" />
-                    <skeleton custom-class="h-4 w-16" />
-                  </div>
-                </div>
-                <icon-chevron-right />
-              </div>
-            </box>
-          </div>
+              <icon-chevron-right />
+            </div>
+          </box>
         </div>
       </loading-container>
     </main>
