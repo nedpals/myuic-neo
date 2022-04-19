@@ -1,13 +1,12 @@
 <template>
-  <self-modal-window 
+  <slot :openModal="openModal" />
+
+  <modal-window 
     :title="course.name + ' / ' + course.code" 
+    :open="isOpen"
+    @update:open="handleModalOpen"
     content-class="flex overflow-hidden"
     modal-class="max-w-4xl w-full">
-    <template #default="{ openModal }">
-      <slot :openModal="openModal" />
-    </template>
-
-    <template #modal-content>
       <loading-container :is-loading="isFetching || isIdle" v-slot="{ isLoading }">
         <div v-if="isLoading" class="sticky left-0 inset-y-0 flex justify-center items-center py-8">
           <loader class="h-14 w-14" />
@@ -64,7 +63,6 @@
           </tab-group>
         </div>
       </loading-container>
-    </template>
 
     <template #modal-footer>
       <div class="flex justify-end space-x-2">
@@ -80,11 +78,12 @@
           class="button is-primary px-6 py-2">Submit</button>
       </div>
     </template>
-  </self-modal-window>
+  </modal-window>
 </template>
 
 <script lang="ts">
 import { onBeforeUnmount, PropType, ref, watch } from 'vue'
+import ModalWindow from '../../ui/ModalWindow.vue'
 import { CourseEvaluationEntry } from '@myuic-api/types'
 import { useFacultyEvaluationQuestionnaire } from '../../../stores/evaluationStore'
 import LoadingContainer from '../../ui/LoadingContainer.vue'
@@ -94,7 +93,7 @@ import { ratings } from '@myuic-api/types'
 
 export default {
   components: { 
-    SelfModalWindow, 
+    ModalWindow, 
     LoadingContainer, 
     Loader,
     Tab,
@@ -113,6 +112,15 @@ export default {
     const panelRef = ref<typeof TabPanels>();
     const step = ref(0);
     const { isFetching, isIdle, data } = useFacultyEvaluationQuestionnaire();
+    const isOpen = ref(false);
+
+    const openModal = () => {
+      isOpen.value = true;
+    }
+
+    const handleModalOpen = (newOpen: boolean) => {
+      // TODO: dialog
+    }
 
     const unwatchScroll = watch(step, () => {
       panelRef.value?.$el.scrollTo({ top: 0 });
@@ -128,6 +136,9 @@ export default {
       isIdle,
       ratings,
       panelRef,
+      isOpen,
+      handleModalOpen,
+      openModal,
       step
     }
   }
