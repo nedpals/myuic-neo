@@ -34,6 +34,15 @@
               <icon-chevron-right />
             </div>
           </box>
+
+          <div class="py-4" v-if="openedEvaluationList.length === 0">
+            <h2 class="text-3xl text-center text-gray-400">
+              {{
+                notOpenCount != 0 ? 'Evaluation is not yet open.'
+                  : 'All courses have already been evaluated.'
+              }}
+            </h2>
+          </div>
         </div>
       </loading-container>
     </main>
@@ -58,7 +67,7 @@ import DashboardScaffold from '../../components/ui/DashboardScaffold.vue';
 import Skeleton from '../../components/ui/Skeleton.vue';
 import { useEvaluationListQuery, useEvaluationListQueryUtilities } from '../../stores/evaluationStore';
 import EvaluationModal from '../../components/Apps/Evaluation/EvaluationModal.vue';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { CourseEvaluationEntry } from '@myuic-api/types';
 
 export default {
@@ -67,6 +76,7 @@ export default {
     const facultyEvaluationQuery = useEvaluationListQuery();
     const { isLoading, getEntriesByStatus } = useEvaluationListQueryUtilities(facultyEvaluationQuery);
     const openedEvaluationList = getEntriesByStatus('open');
+    const notOpenCount = computed(() => getEntriesByStatus('not_open').value.length);
     const currentlyEvaluated = ref<CourseEvaluationEntry[]>([]);
 
     const closeCourseEvaluation = (c: CourseEvaluationEntry) => {
@@ -87,6 +97,7 @@ export default {
       openedEvaluationList,
       evaluateCourse,
       closeCourseEvaluation,
+      notOpenCount,
       currentlyEvaluated
     }
   },
