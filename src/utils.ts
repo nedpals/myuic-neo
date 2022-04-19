@@ -1,6 +1,5 @@
 import { formatDistanceToNow, format } from 'date-fns';
 import { Comment, Slot } from 'vue';
-import mitt from 'mitt';
 import { notify } from 'notiwind';
 import { Capacitor } from '@capacitor/core'
 
@@ -127,26 +126,6 @@ export function isSlotVisible(slot: Slot | null): boolean {
   }
   return slot().findIndex(o => o.type !== Comment) !== -1;
 }
-
-export type AppEvents = {
-  modal_opened: {
-    id: number
-  }
-  modal_closed: {
-    id: number
-  }
-  modal_manual_close: {
-    id: number
-  }
-}
-
-export const events: Record<string, keyof AppEvents> = {
-  MODAL_OPENED: 'modal_opened',
-  MODAL_CLOSED: 'modal_closed',
-  MODAL_MANUAL_CLOSE: 'modal_manual_close',
-} as const;
-
-export const eventBus = mitt<AppEvents>();
 
 // Notifications
 export interface NotifyAction {

@@ -30,9 +30,9 @@
 import Box from './Box.vue';
 import IconClose from '~icons/ion/close';
 import IconBack from '~icons/ion/chevron-left';
-import { isSlotVisible, eventBus } from '../../utils';
+import { isSlotVisible } from '../../utils';
 import { onBeforeUnmount, reactive, watch } from 'vue';
-import { currentModalId } from '../../modal';
+import { currentModalId, modalEventBus } from '../../modal';
 
 export default {
   components: { Box, IconClose, IconBack },
@@ -60,13 +60,13 @@ export default {
   setup(props, { emit }) {
     const modal = reactive({ id: currentModalId.value });
     const closeModal = () => {
-      eventBus.emit('modal_closed', modal);
+      modalEventBus.emit('modal_closed', modal);
       if (props.open) {
         emit('update:open', false);
       }
     }
 
-    eventBus.on('modal_manual_close', ({ id: gotId }) => {
+    modalEventBus.on('modal_manual_close', ({ id: gotId }) => {
       if (gotId === modal.id) {
         closeModal();
       }
@@ -75,7 +75,7 @@ export default {
     const unwatchOpen = watch(() => props.open, (newVal, oldVal) => {
       if (newVal === oldVal || typeof oldVal === 'undefined') return;
       if (newVal) {
-        eventBus.emit('modal_opened', modal);
+        modalEventBus.emit('modal_opened', modal);
       } else {
         closeModal();
       }

@@ -60,7 +60,7 @@ import { eventbus } from '@myuic-api/client/lib/event';
 import { useStudentStore } from './stores/studentStore';
 import { useQueryClient } from 'vue-query';
 import { App } from '@capacitor/app';
-import { useModal } from './modal';
+import { useModalManager } from './modal';
 import { PluginListenerHandle } from '@capacitor/core';
 
 export default {
@@ -102,7 +102,7 @@ export default {
       auth.refresh();    
     }
 
-    const { modalCount, closeLastModal, subscribeModalChange } = useModal();
+    const { modalCount, closeLastModal, subscribeModalChange } = useModalManager();
     const unsubscribeModalChange = subscribeModalChange();
 
     let backButtonPlugin: PluginListenerHandle;

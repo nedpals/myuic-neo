@@ -1,13 +1,33 @@
+import mitt from "mitt";
 import { computed, ref, watch } from "vue";
-import { eventBus } from "./utils";
+
+export type ModalEvents = {
+  modal_opened: {
+    id: number
+  }
+  modal_closed: {
+    id: number
+  }
+  modal_manual_close: {
+    id: number
+  }
+}
+
+export const events: Record<string, keyof ModalEvents> = {
+  MODAL_OPENED: 'modal_opened',
+  MODAL_CLOSED: 'modal_closed',
+  MODAL_MANUAL_CLOSE: 'modal_manual_close',
+} as const;
+
+export const modalEventBus = mitt<ModalEvents>();
 
 export const currentModalId = ref(0);
 
-export function useModal() {
+export function useModalManager() {
   const modalStack = ref<number[]>([]);
   const modalCount = computed(() => modalStack.value.length);
   const closeModal = (id: number) => {
-    eventBus.emit('modal_manual_close', { id });
+    modalEventBus.emit('modal_manual_close', { id });
   } 
 
   const closeLastModal = () => {
@@ -29,8 +49,8 @@ export function useModal() {
   }
 
   const subscribeModalChange = () => {
-    eventBus.on('modal_opened', handleModalOpened);
-    eventBus.on('modal_closed', handleModalClosed);
+    modalEventBus.on('modal_opened', handleModalOpened);
+    modalEventBus.on('modal_closed', handleModalClosed);
     const unsubscribe = watch(modalCount, (newVal, oldVal) => {
       if (import.meta.env.DEV) {
         console.log('Modal Count', newVal);
@@ -46,8 +66,8 @@ export function useModal() {
     });
     
     return () => {
-      eventBus.off('modal_opened', handleModalOpened);
-      eventBus.off('modal_closed', handleModalClosed);
+      modalEventBus.off('modal_opened', handleModalOpened);
+      modalEventBus.off('modal_closed', handleModalClosed);
       unsubscribe();
     }
   }
