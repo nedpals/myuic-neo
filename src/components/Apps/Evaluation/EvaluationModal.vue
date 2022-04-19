@@ -90,6 +90,7 @@ import LoadingContainer from '../../ui/LoadingContainer.vue'
 import Loader from '../../ui/Loader.vue'
 import { TabGroup, Tab, TabList, TabPanels, TabPanel } from '@headlessui/vue'
 import { ratings } from '@myuic-api/types'
+import { showDialog } from '../../../modal'
 
 export default {
   components: { 
@@ -119,7 +120,32 @@ export default {
     }
 
     const handleModalOpen = (newOpen: boolean) => {
-      // TODO: dialog
+      if (!newOpen) {
+        showDialog({
+          title: 'Warning',
+          content: 'Closing this will lose your progress. Would you like to proceed?',
+          actions: [
+            {
+              label: 'Yes',
+              class: 'is-primary',
+              onClick: () => 'yes'
+            },
+            {
+              label: 'No',
+              onClick: () => 'no'
+            }
+          ],
+          onResult: (ans: string) => {
+            if (ans === 'yes') {
+              isOpen.value = newOpen;
+            }
+            return true;
+          }
+        });
+        return;
+      }
+
+      isOpen.value = newOpen;
     }
 
     const unwatchScroll = watch(step, () => {
