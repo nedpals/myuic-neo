@@ -1,5 +1,5 @@
 import mitt from "mitt";
-import { computed, ref, watch } from "vue";
+import { computed, ComputedRef, reactive, ref, watch } from "vue";
 
 export type ModalEvents = {
   modal_opened: {
@@ -78,5 +78,41 @@ export function useModalManager() {
     closeModal,
     closeLastModal,
     subscribeModalChange
+  }
+}
+
+export const useModal = (isOpen: ComputedRef<boolean>, updateFn: (state: boolean) => void) => {
+  const state = reactive({ id: currentModalId.value });
+  const closeModal = () => {
+    updateFn(false);
+  }
+
+  const handleManualClose = ({ id: gotId }: { id: number }) => {
+    if (gotId === state.id) {
+      closeModal();
+    }
+  }
+
+  modalEventBus.on('modal_manual_close', handleManualClose);
+
+  const unwatchOpen = watch(isOpen, (newVal, oldVal) => {
+    if (newVal === oldVal || typeof oldVal === 'undefined') return;
+    if (newVal) {
+      modalEventBus.emit('modal_opened', state);
+    } else {
+      modalEventBus.emit('modal_closed', state);
+    }
+  }, { immediate: true });
+  
+  return {
+    unsubscribe: () => {
+      if (isOpen.value) {
+        closeModal();
+      }
+      modalEventBus.off('modal_manual_close', handleManualClose);
+      unwatchOpen();
+    },
+    closeModal,
+    state
   }
 }
