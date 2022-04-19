@@ -8,7 +8,7 @@
 
         <div class="flex flex-col space-y-4 py-8">
           <box 
-            :key="'sub_' + sub.code" v-for="sub in openedEvaluationList" 
+            :key="'sub_' + sub.code + '_' + sub.type" v-for="sub in openedEvaluationList" 
             :disabled="isLoading"
             class="hover:bg-gray-100 dark:hover:bg-uic-900 hover:border-uic-500 dark:hover:border-uic-700 cursor-pointer" 
             @click="evaluateCourse(sub)">
