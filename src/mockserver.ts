@@ -1515,7 +1515,27 @@ export const useMockServer = () => {
       ] as CourseEvaluationEntry[]);
 
       this.get(RoutePath('facultyEvaluationQuestionnaires'), () => questionnaires);
-      // this.post(Route)
+      this.get(RoutePath('facultyEvaluationIds'), (_, req) => {
+        const classId = req.queryParams.classId;
+        const classType = req.queryParams.classType;
+        if (!classId || !classType)
+          return new MirageResponse(400, {
+            'Content-Type': 'application/json'
+          }, {
+            message: 'classId and classType is required.'
+          });
+
+        return new MirageResponse(200, {
+          'Content-Type': 'application/json'
+        }, {
+          classId,
+          classType,
+          instructorID: 1
+        });
+      });
+      this.post(RoutePath('facultyEvaluationSubmit'), () => ({
+        message: 'Evaluation submitted successfully.'
+      }))
 
       this.get(RoutePath('ethnicGroupsList'), () => reduceKV(ethnicGroups));
       this.get(RoutePath('genderList'), () => reduceKV(genders));
