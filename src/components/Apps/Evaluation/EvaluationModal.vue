@@ -18,7 +18,7 @@
             <tab-list class="w-1/4 flex flex-col border-r <md:hidden">
               <tab v-slot="{ selected }" as="div" class="w-full">
                 <button 
-                  :class="{ 'text-uic-500 bg-gradient-to-r from-transparent to-uic-100': selected }" 
+                  :class="{ 'text-primary-500 bg-gradient-to-r from-transparent to-primary-100': selected }" 
                   class="w-full px-6 py-4 hover:bg-gray-100 font-semibold text-left">
                   Instructions
                 </button>
@@ -26,7 +26,7 @@
               <tab v-slot="{ selected }" as="div" class="w-full" :key="cat.title" v-for="(cat, ci) in data.categories">
                 <button 
                   :disabled="ci + 1 > step"
-                  :class="{ 'text-uic-500 bg-gradient-to-r from-transparent to-uic-100': selected }" 
+                  :class="{ 'text-primary-500 bg-gradient-to-r from-transparent to-primary-100': selected }" 
                   class="w-full px-6 py-4 disabled:cursor-default disabled:text-gray-300 not-disabled:hover:bg-gray-100 font-semibold text-left">
                   {{ cat.title }}
                 </button>
@@ -41,7 +41,7 @@
                 <div class="flex flex-col">
                   <div class="mb-3 text-center px-3 md:px-6">
                     <h3 class="text-2xl font-semibold">{{ cat.title }}</h3>
-                    <p class="text-lg text-gray-600 dark:text-uic-200">{{ cat.description }}</p>
+                    <p class="text-lg text-gray-600 dark:text-primary-200">{{ cat.description }}</p>
                   </div>
                   <div class="border-t flex" :class="{ 'border-b': qi == cat.questions.length - 1 }" :key="'q_' + i + '_' + qi" v-for="(q, qi) in cat.questions">
                     <div class="flex items-center justify-center border-r px-3 md:px-6 py-3 w-1/8">
