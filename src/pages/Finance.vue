@@ -1,11 +1,11 @@
 <template>
-  <dashboard-header container-class="px-4 mx-auto w-full md:px-8 md:pt-8">
+  <dashboard-scaffold container-class="px-4 mx-auto w-full md:px-8 md:pt-8">
     <loading-container :is-loading="isFetching || isIdle" v-slot="{ isLoading }">
       <div class="flex flex-col-reverse lg:flex-row <lg:space-y-4 lg:space-x-4">
         <div class="w-full lg:w-2/3 flex flex-col space-y-2">
-          <div class="border dark:border-uic-700 rounded-lg bg-white dark:bg-uic-800 shadow pt-4">
+          <div class="border dark:border-primary-700 rounded-lg bg-white dark:bg-primary-800 shadow pt-4">
             <div class="flex justify-between items-start px-6 pb-4">
-              <span class="text-gray-500 dark:text-uic-300 mb-2 block">Monthly Dues</span>
+              <span class="text-gray-500 dark:text-primary-300 mb-2 block">Monthly Dues</span>
               <div class="flex flex-col items-end">
                 <p>Paid Total</p>
                 <div v-if="isLoading" class="h-7.5 w-32 bg-gray-400 rounded-xl mt-2 mb-0.5 animate-pulse"></div>
@@ -14,31 +14,31 @@
             </div>
 
             <div class="flex flex-col">
-              <self-modal
+              <self-modal-window
                 :key="'monthlyDue_' + i"
                 v-for="(mDue, i) in data.monthlyDues"
                 :title="isLoading ? 'Loading...' : 'Month ' + mDue.month">
                 <template #default="{ openModal }">
                   <div
                     @click="openModal"
-                    class="flex px-6 py-3 border-t dark:border-uic-700"
+                    class="flex px-6 py-3 border-t dark:border-primary-700"
                     :class="{
-                      'bg-green-50 dark:bg-green-800 hover:bg-green-100 dark:hover:bg-green-900': !isLoading && mDue.status === 'Paid',
-                      'bg-orange-50 dark:bg-orange-800 hover:bg-orange-100 dark:hover:bg-orange-900': !isLoading && mDue.status === 'Partially Paid',
-                      'hover:bg-gray-100 dark:hover:bg-uic-800': !isLoading && mDue.status.length === 0,
+                      'bg-success-50 dark:bg-success-800 hover:bg-success-100 dark:hover:bg-success-900': !isLoading && mDue.status === 'Paid',
+                      'bg-warning-50 dark:bg-warning-800 hover:bg-warning-100 dark:hover:bg-warning-900': !isLoading && mDue.status === 'Partially Paid',
+                      'hover:bg-gray-100 dark:hover:bg-primary-800': !isLoading && mDue.status.length === 0,
                       'cursor-pointer': !isLoading,
                       'rounded-b-lg': i === data.monthlyDues.length - 1
                     }">
                     
-                    <skeleton custom-class="w-13 h-13 -ml-1 bg-gray-400 dark:bg-uic-600 rounded-full">
+                    <skeleton custom-class="w-13 h-13 -ml-1 bg-gray-400 dark:bg-primary-600 rounded-full">
                       <div class="w-16 h-16">
                         <component
                           :is="mDue.status === 'Paid' || mDue.status === 'Partially Paid' ? 'icon-paid' : 'icon-pending'"
                           class="w-full h-full -ml-2"
                           :class="{ 
-                            'text-green-400': mDue.status === 'Paid', 
-                            'text-amber-400': mDue.status === 'Partially Paid', 
-                            'text-gray-400 dark:text-uic-600': mDue.status.length === 0 
+                            'text-success-400': mDue.status === 'Paid', 
+                            'text-warning-400': mDue.status === 'Partially Paid', 
+                            'text-gray-400 dark:text-primary-600': mDue.status.length === 0 
                           }" />
                       </div>
                     </skeleton>
@@ -50,7 +50,7 @@
                           </skeleton>
                           <skeleton custom-class="h-3 w-20">
                             <p :class="{ 
-                              'text-green-700 dark:text-green-400': mDue.status === 'Paid', 
+                              'text-success-700 dark:text-success-400': mDue.status === 'Paid', 
                               'text-amber-700 dark:text-amber-400': mDue.status === 'Partially Paid' 
                             }" class="text-sm">
                               {{ mDue.status.length ? mDue.status : 'Pending' }}
@@ -106,14 +106,14 @@
                     </div>
                   </div>
                 </template>
-              </self-modal>
+              </self-modal-window>
             </div>
           </div>
 
-          <div class="border dark:border-uic-700 rounded-lg shadow">
-            <div class="dark:border-uic-700 bg-white dark:bg-uic-800 border-b rounded-t-lg px-6 py-4">
+          <div class="border dark:border-primary-700 rounded-lg shadow">
+            <div class="dark:border-primary-700 bg-white dark:bg-primary-800 border-b rounded-t-lg px-6 py-4">
               <div class="flex justify-between items-start">
-                <span class="text-gray-500 dark:text-uic-300 mb-2 block">Assessment</span>
+                <span class="text-gray-500 dark:text-primary-300 mb-2 block">Assessment</span>
                 <div class="text-right flex flex-col items-end">
                   <p>Total</p>
                   <skeleton 
@@ -123,8 +123,8 @@
                 </div>
               </div>
             </div>
-            <div class="bg-gray-50 dark:bg-uic-800 rounded-b-lg px-6 py-2">
-              <div class="flex flex-col divide-y dark:divide-uic-600">
+            <div class="bg-gray-50 dark:bg-primary-800 rounded-b-lg px-6 py-2">
+              <div class="flex flex-col divide-y dark:divide-primary-600">
                 <div :key="'breakdown_' + bKey" v-for="(bKey, bi) in breakdownKeys" class="flex flex-col py-2">
                   <div class="flex justify-between">
                     <skeleton custom-class="h-4 w-32 rounded-xl bg-gray-400">
@@ -146,7 +146,7 @@
                         <p>{{ aEntry.description }}</p>
                       </skeleton>
                       <skeleton custom-class="h-3.5 w-16 rounded-xl">
-                        <p class="text-gray-600 dark:text-uic-300 font-semibold">{{ moneyFormatter.format(aEntry.amount) }}</p>
+                        <p class="text-gray-600 dark:text-primary-300 font-semibold">{{ moneyFormatter.format(aEntry.amount) }}</p>
                       </skeleton>
                     </div>
                   </div>
@@ -169,23 +169,23 @@
             <button
               @click="openNewPaymentModal"
               class="button is-light dark:is-primary flex items-center justify-center space-x-3">
-              <icon-plus class="text-uic-400 dark:text-white" />
+              <icon-plus class="text-primary-400 dark:text-white" />
               <span>New Payment</span>  
             </button>
           </new-payment-modal>
         </div>
       </div>
     </loading-container>
-  </dashboard-header>
+  </dashboard-scaffold>
 </template>
 
 <script lang="ts">
 import Box from '../components/ui/Box.vue';
-import DashboardHeader from '../components/ui/DashboardHeader.vue';
+import DashboardScaffold from '../components/ui/DashboardScaffold.vue';
 import NewPaymentModal from '../components/Finance/NewPaymentModal.vue';
 import LoadingContainer from '../components/ui/LoadingContainer.vue';
 import PromiseLoader from '../components/ui/PromiseLoader.vue';
-import SelfModal from '../components/ui/SelfModal.vue';
+import SelfModalWindow from '../components/ui/SelfModalWindow.vue';
 import Skeleton from '../components/ui/Skeleton.vue';
 import AccountBalanceWidget from '../components/Finance/AccountBalanceWidget.vue';
 import IconPlus from '~icons/ion/plus';
@@ -194,7 +194,7 @@ import IconPending from '~icons/ion/ios-circle-outline';
 import Loader from '../components/ui/Loader.vue';
 import { computed, ref } from 'vue';
 import PaymentHistory from '../components/Finance/PaymentHistory.vue';
-import { getBreakdownSubtotal, useFinancialRecordQuery } from '../stores/financialStore';
+import { getBreakdownSubtotal, useFinancialRecordQuery, useFinancialRecordQueryUtilities } from '../stores/financialStore';
 import { pesoFormatter } from '../utils';
 
 export default {
@@ -206,15 +206,18 @@ export default {
     Box, 
     LoadingContainer, 
     NewPaymentModal, 
-    SelfModal,
-    DashboardHeader,
+    SelfModalWindow,
+    DashboardScaffold,
     Skeleton,
     AccountBalanceWidget,
     Loader,
     PaymentHistory 
   },
   setup() {
-    const { data, isFetching, isIdle } = useFinancialRecordQuery();
+    const financialRecordQuery = useFinancialRecordQuery();
+    const { data, isFetching, isIdle } = financialRecordQuery;
+    const { paidTotal, assessmentTotal } = useFinancialRecordQueryUtilities(financialRecordQuery);
+
     const formKey = ref(0);
     const breakdownKeys = computed(() => ['tuition', 'misc', 'others', 'receivables']);
     const breakdownLabels = computed(() => ['Tuition', 'Miscellanous', 'Other Fees', 'Back Account']);
@@ -224,20 +227,6 @@ export default {
         formKey.value++;
       }
     }
-
-    const paidTotal = computed(() => {
-      return pesoFormatter.format(
-        data.value?.monthlyDues
-          .map((md: any) => md.amount - md.balance)
-          .reduce((p: number, v: any) => p + v, 0) ?? 0);
-    });
-
-    const assessmentTotal = computed(() => {
-      return pesoFormatter.format(
-        Object.values(data.value?.assessments ?? {})
-          .reduce((p, v) => p + getBreakdownSubtotal(v), 0)
-      );
-    });
 
     return {
       moneyFormatter: pesoFormatter,
@@ -266,14 +255,14 @@ progress.due-progress::-webkit-progress-bar {
 }
 
 progress.due-progress::-webkit-progress-value {
-  @apply bg-uic-400 rounded-full;
+  @apply bg-primary-400 rounded-full;
 }
 
 progress.due-progress[value="100"]::-webkit-progress-value {
-  @apply bg-green-500;
+  @apply bg-success-500;
 }
 
 progress.due-progress[value="100"]::-webkit-progress-value {
-  @apply bg-green-500;
+  @apply bg-success-500;
 }
 </style>

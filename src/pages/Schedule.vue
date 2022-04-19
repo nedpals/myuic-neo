@@ -1,5 +1,5 @@
 <template>
-  <dashboard-header container-class="p-6 flex flex-col">
+  <dashboard-scaffold container-class="p-6 flex flex-col">
     <template #actions>
       <button @click="printPdf" class="button">
         <icon-print />
@@ -33,7 +33,7 @@
             v-for="(courses, day) in scheduleList" :key="'sched_' + day">
 
             <span 
-              :class="[days[day] === currentDay ? 'bg-uic-500 dark:bg-uic-700 text-white' : 'bg-gray-200 dark:bg-uic-800']"
+              :class="[days[day] === currentDay ? 'bg-primary-500 dark:bg-primary-700 text-white' : 'bg-gray-200 dark:bg-primary-800']"
               class="flex items-start px-3 py-1 rounded-full md:rounded-xl w-full md:w-1/5">
               {{ days[day] }}
             </span>
@@ -59,7 +59,7 @@
           </div>
         </div>
       </loading-container>
-  </dashboard-header>
+  </dashboard-scaffold>
 </template>
 
 <script lang="ts">
@@ -68,7 +68,7 @@ import LoadingContainer from '../components/ui/LoadingContainer.vue';
 import PromiseLoader from '../components/ui/PromiseLoader.vue';
 import { useStudentStore } from '../stores/studentStore';
 import { formatDatetime, now } from '../utils';
-import DashboardHeader from '../components/ui/DashboardHeader.vue';
+import DashboardScaffold from '../components/ui/DashboardScaffold.vue';
 import Skeleton from '../components/ui/Skeleton.vue';
 import { ref } from 'vue';
 import { catchAndNotifyError } from '../utils';
@@ -76,7 +76,7 @@ import IconPrint from '~icons/ion/print';
 import { generateSchedulePDF, useScheduleQueryUtilities, useSchedulesQuery, days } from '../stores/scheduleStore';
 
 export default {
-  components: { PromiseLoader, Box, LoadingContainer, DashboardHeader, Skeleton, IconPrint },
+  components: { PromiseLoader, Box, LoadingContainer, DashboardScaffold, Skeleton, IconPrint },
   setup() {
     const schedulesQuery = useSchedulesQuery();
     const { isFetching, isIdle } = schedulesQuery;

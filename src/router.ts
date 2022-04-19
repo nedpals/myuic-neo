@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory } from 'vue-router';
+import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
 import { client } from './client';
 import { useStudentStore } from './stores/studentStore';
 import { IS_NATIVE } from './utils';
@@ -35,6 +35,28 @@ const router = createRouter({
             useHeader: false
           }
         },
+        ...(IS_NATIVE ? [
+          {
+            name: 'settings',
+            path: '/settings',
+            component: () => import('./pages/Settings.vue'),
+            redirect: { name: 'notification-settings' },
+            meta: {
+              pageTitle: 'Settings',
+              nativeOnly: true
+            },
+            children: [
+              {
+                name: 'notification-settings',
+                path: 'notifications',
+                meta: {
+                  pageTitle: 'Notifications',
+                },
+                component: () => import('./pages/Settings/Notification.vue')
+              }
+            ]
+          } as RouteRecordRaw,
+        ] : []),
         {
           name: 'finance',
           path: '/finance',
@@ -148,7 +170,8 @@ const router = createRouter({
             path: '/apps/test',
             component: () => import('./pages/Apps/Test.vue'),
             meta: {
-              pageTitle: 'Test Page'
+              pageTitle: 'Test Page',
+              nativeOnly: true,
             }
           }
         ] : [])
@@ -158,6 +181,9 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
+  if (to.meta.nativeOnly && !IS_NATIVE) {
+    return next({ name: 'home' });
+  }
   if (client.isAuthenticated()) {
     if (to.meta.guestOnly) {
       return next({ name: 'home' });

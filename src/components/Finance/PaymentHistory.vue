@@ -1,8 +1,8 @@
 <template>
-  <loading-container :is-loading="isFetching || isIdle" v-slot="{ isLoading }">
+  <loading-container :is-loading="isLoading" v-slot="{ isLoading }">
     <box :title="!isRecent ? 'Payment History' : 'Recent Payments'">
-      <div class="flex flex-col divide-y dark:divide-uic-300" :class="{ 'pb-2': hasLink }">
-        <self-modal
+      <div class="flex flex-col divide-y dark:divide-primary-300" :class="{ 'pb-2': hasLink }">
+        <self-modal-window
           :key="'paymentHistory_' + i"
           content-class="px-6 py-4 <md:h-[80vh]"
           v-for="(pEntry, i) in paymentHistory"
@@ -10,7 +10,7 @@
           <template #default="{ openModal }">
             <div
               @click="openModal"
-              :class="{ 'hover:bg-gray-100 dark:hover:bg-uic-700': !isLoading }"
+              :class="{ 'hover:bg-gray-100 dark:hover:bg-primary-700': !isLoading }"
               class="flex justify-between items-center rounded-lg -mx-3 px-3 py-3 cursor-pointer">
               <div>
                 <skeleton :custom-class="isShort ? 'bg-gray-200 h-3.5 w-24' : 'w-16 h-4 bg-gray-200 mb-2'">
@@ -22,7 +22,7 @@
               </div>
               <div :class="[isLoading ? 'space-y-2 flex flex-col items-end' : 'text-right']">
                 <skeleton :custom-class="isShort ? 'bg-gray-200 h-3.5 w-16' : 'w-16 h-4 bg-gray-200'">
-                  <span class="text-gray-600 dark:text-uic-200 block">
+                  <span class="text-gray-600 dark:text-primary-200 block">
                     {{ isShort ? formattedPaidAt(pEntry) : humanizedPaidAt(pEntry) }}
                   </span>
                 </skeleton>
@@ -58,12 +58,12 @@
               </div>
             </div>
           </template>
-        </self-modal>
+        </self-modal-window>
       </div>
-      <skeleton v-if="hasLink" custom-class="h-4 w-26 bg-uic-400">
+      <skeleton v-if="hasLink" custom-class="h-4 w-26 bg-primary-400">
         <router-link
           :to="{ name: 'finance' }"
-          class="hover:underline text-uic-500 dark:text-uic-200">
+          class="hover:underline text-primary-500 dark:text-primary-200">
           See full list
         </router-link>
       </skeleton>
@@ -72,17 +72,14 @@
 </template>
 
 <script lang="ts">
-import { useFinancialRecordQuery } from '../../stores/financialStore';
-import { formatDatetime, humanizeTime, pesoFormatter } from '../../utils';
-import { PaymentRecord } from '@myuic-api/types';
-import { computed } from 'vue';
+import { useFinancialRecordQuery, useFinancialRecordQueryUtilities } from '../../stores/financialStore';
 import Skeleton from '../ui/Skeleton.vue';
 import Box from '../ui/Box.vue';
-import SelfModal from '../ui/SelfModal.vue';
+import SelfModalWindow from '../ui/SelfModalWindow.vue';
 import LoadingContainer from '../ui/LoadingContainer.vue';
 
 export default {
-  components: { Skeleton, Box, SelfModal, LoadingContainer },
+  components: { Skeleton, Box, SelfModalWindow, LoadingContainer },
   props: {
     isRecent: {
       type: Boolean,
@@ -102,29 +99,15 @@ export default {
   },
 
   setup({ isRecent, limit }) {
-    const { isFetching, isIdle, data } = useFinancialRecordQuery();
-    const paymentOr = (pr: PaymentRecord) => `${pr.orNo}-${pr.orSig}`;
-    const humanizedPaidAt = (pr: PaymentRecord) => humanizeTime(pr.paidAt);
-    const formattedPaidAt = (pr: PaymentRecord) => formatDatetime(pr.paidAt, 'MMMM d, yyyy');
-    const formattedAmount = (pr: PaymentRecord) => pesoFormatter.format(pr.amount);
-    const paymentHistory = computed(() => {
-      if (!(isFetching || isIdle) && isRecent) {
-        return data.value?.paymentHistory.sort((a, b) => {
-          console.log(a, b);
-          return (<string> <unknown> b.paidAt).localeCompare(<string> <unknown> a.paidAt);
-        }).slice(0, limit ?? data.value?.paymentHistory.length);
-      }
-      return data.value?.paymentHistory.slice(0, limit ?? data.value?.paymentHistory.length);
-    });
+    const { isLoading, humanizedPaidAt, paymentOr, formattedAmount, formattedPaidAt, getPaymentHistory } = useFinancialRecordQueryUtilities(useFinancialRecordQuery());
+    const paymentHistory = getPaymentHistory(isRecent, limit);
     
-
     return {
       humanizedPaidAt,
       paymentOr,
       formattedAmount,
       formattedPaidAt,
-      isFetching,
-      isIdle,
+      isLoading,
       paymentHistory
     }
   }

@@ -1,6 +1,8 @@
 import { Assessment, PaymentDue, PaymentRecord } from "@myuic-api/types";
+import { computed } from "vue";
 import { useQuery } from "vue-query";
 import { client } from "../client";
+import { formatDatetime, humanizeTime, pesoFormatter } from "../utils";
 import { useStudentStore } from "./studentStore";
 
 export const useFinancialRecordQuery = () => {
@@ -70,3 +72,61 @@ export const useFinancialRecordQuery = () => {
 export function getBreakdownSubtotal(entries: Assessment[]) {
   return entries.reduce((p, v) => p + v.amount, 0);
 };
+
+export const useFinancialRecordQueryUtilities = ({ data, isFetching, isIdle }: ReturnType<typeof useFinancialRecordQuery>) => {
+  const isLoading = computed(() => isFetching.value || isIdle.value);
+
+  const accountBalance = computed(() => pesoFormatter.format(
+    data.value?.monthlyDues
+      .map((md) => md.balance)
+    . reduce((p, v) => p + v, 0) ?? 0
+  ));
+
+  const lastUpdated = computed(() => {
+    const record = data.value;
+    if (!record || record.paymentHistory.length === 0) return '';
+    return humanizeTime(record.paymentHistory[record.paymentHistory.length - 1].paidAt);
+  });
+
+  const paidTotal = computed(() => {
+    return pesoFormatter.format(
+      data.value?.monthlyDues
+        .map((md: any) => md.amount - md.balance)
+        .reduce((p: number, v: any) => p + v, 0) ?? 0);
+  });
+
+  const assessmentTotal = computed(() => {
+    return pesoFormatter.format(
+      Object.values(data.value?.assessments ?? {})
+        .reduce((p, v) => p + getBreakdownSubtotal(v), 0)
+    );
+  });
+
+  const getPaymentHistory = (isRecent: boolean, limit?: number) => computed(() => {
+    let history = data.value?.paymentHistory.slice() ?? [];
+    if (!isLoading.value && isRecent) {
+      history = history.sort((a, b) => {
+        return (<string> <unknown> b.paidAt).localeCompare(<string> <unknown> a.paidAt);
+      });
+    }
+    return history.slice(0, limit ?? history.length) ?? [];
+  });
+
+  const paymentOr = (pr: PaymentRecord) => `${pr.orNo}-${pr.orSig}`;
+  const humanizedPaidAt = (pr: PaymentRecord) => humanizeTime(pr.paidAt);
+  const formattedPaidAt = (pr: PaymentRecord) => formatDatetime(pr.paidAt, 'MMMM d, yyyy');
+  const formattedAmount = (pr: PaymentRecord) => pesoFormatter.format(pr.amount);
+
+  return {
+    accountBalance,
+    lastUpdated,
+    paidTotal,
+    assessmentTotal,
+    getPaymentHistory,
+    paymentOr,
+    humanizedPaidAt,
+    formattedPaidAt,
+    formattedAmount,
+    isLoading
+  }
+}

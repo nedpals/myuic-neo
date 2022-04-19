@@ -1,10 +1,10 @@
 <template>
-  <dashboard-header container-class="max-w-3xl mx-auto w-full <md:px-4 <lg:px-2">
+  <dashboard-scaffold container-class="max-w-3xl mx-auto w-full <md:px-4 <lg:px-2">
     <div class="text-center py-8 md:py-12 flex flex-col items-center">
       <loading-container :is-loading="studentStore.isEmpty" v-slot="{ isLoading }">
         <div
           :style="isLoading ? {} : {backgroundImage: 'url(./default_avatar.png)'}"
-          :class="[isLoading ? 'animate-pulse bg-gray-200' : 'bg-uic-200']"
+          :class="[isLoading ? 'animate-pulse bg-gray-200' : 'bg-primary-200']"
           class="h-32 w-32 md:h-42 md:w-42 rounded-full mb-4 md:mb-8 bg-cover"></div>
         <skeleton custom-class="h-9 min-w-64 max-w-90 w-full bg-gray-200 mb-5 rounded-2xl">
           <h1 class="text-4xl font-semibold mb-2">
@@ -12,7 +12,7 @@
           </h1>
         </skeleton>
         <skeleton custom-class="h-6 min-w-48 max-w-64 w-full bg-gray-200 rounded-xl">
-          <p class="text-2xl text-gray-600 dark:text-uic-200">{{ todayDate }}</p>
+          <p class="text-2xl text-gray-600 dark:text-primary-200">{{ todayDate }}</p>
         </skeleton>
       </loading-container>
     </div>
@@ -53,12 +53,12 @@
                     </button>
                   </template>
                   <template #modal-content>
-                    <div class="flex flex-row w-full flex-wrap justify-center mt-4">
+                    <div class="flex flex-col md:flex-row w-full flex-wrap justify-center mt-4">
                       <a
                         :href="link.href"
                         :key="'link_' + li" v-for="(link, li) in studentStore.resourceLinks"
                         target="_blank"
-                        class="p-3 flex flex-col text-center justify-center items-center w-1/4 space-y-4 hover:bg-gray-200 dark:hover:bg-uic-900 rounded-lg">
+                        class="p-3 flex flex-row md:flex-col text-center md:justify-center items-center w-full md:w-1/4 <md:space-x-4 md:space-y-4 hover:bg-gray-200 dark:hover:bg-primary-900 rounded-lg">
                         <div class="max-w-10">
                           <img :src="link.iconUrl" class="h-auto w-full" :alt="link.label" />
                         </div>
@@ -69,8 +69,8 @@
                   </template>
                 </self-modal>
               </template>
-              <div v-else :key="i" v-for="i in 6" class="quick-link-item text-center">
-                <div class="h-12 w-12 rounded-full bg-uic-400 mb-2"></div>
+              <div v-else :key="i" v-for="i in 6" disabled class="quick-link-item text-center">
+                <div class="h-12 w-12 rounded-full bg-primary-400 mb-2"></div>
                 <div class="h-4 w-20 bg-gray-200 rounded-lg"></div>
               </div>
             </div>
@@ -82,17 +82,17 @@
         <loading-container :is-loading="isClearanceLoading" v-slot="{ isLoading }">
           <box
             @click="$router.push({ name: 'clearance' })"
-            bg="bg-white hover:bg-gray-100 dark:bg-uic-800 dark:hover:bg-uic-900"
+            bg="bg-white hover:bg-gray-100 dark:bg-primary-800 dark:hover:bg-primary-900"
             class="cursor-pointer">
             <div class="flex items-center justify-between w-full">
               <div class="flex items-center space-x-2">
                 <clearance-status-icon 
                   :status="isLoading ? 'unknown' : isClearanceCleared ? 'cleared' : 'not_cleared'" class="text-xl" />
-                <skeleton custom-class="h-4 w-48 bg-gray-200 dark:text-uic-700">
+                <skeleton custom-class="h-4 w-48 bg-gray-200 dark:text-primary-700">
                   <p>Clearance Status: <span class="font-bold">{{ isClearanceCleared ? 'Cleared' : 'Not cleared' }}</span></p>
                 </skeleton>
               </div>
-              <icon-chevron-right class="text-lg text-gray-400 dark:text-uic-300" />
+              <icon-chevron-right class="text-lg text-gray-400 dark:text-primary-300" />
             </div>
           </box>
         </loading-container>
@@ -108,7 +108,7 @@
         </div>
       </div>
     </div>
-  </dashboard-header>
+  </dashboard-scaffold>
 </template>
 
 <script lang="ts">
@@ -125,7 +125,7 @@ import IconGClassroom from '~icons/custom/google-classroom';
 import { useStudentStore } from '../stores/studentStore';
 import SelfModal from '../components/ui/SelfModal.vue';
 import { formatDatetime, getPeriod, now } from '../utils';
-import DashboardHeader from '../components/ui/DashboardHeader.vue';
+import DashboardScaffold from '../components/ui/DashboardScaffold.vue';
 import Skeleton from '../components/ui/Skeleton.vue';
 import AccountBalanceWidget from '../components/Finance/AccountBalanceWidget.vue';
 import { computed } from 'vue';
@@ -136,7 +136,7 @@ import IconChevronRight from '~icons/ion/chevron-right';
 import { useClearanceQuery, useClearanceQueryUtilities } from '../stores/clearanceStore';
 
 export default {
-  components: { PromiseLoader, Box, LoadingContainer, IconGClassroom, IconBookmarkOutline, IconMailOpenOutline, IconBookOutline, IconReceiptOutline, IconChevronRight, IconCashOutline, SelfModal, DashboardHeader, Skeleton, AccountBalanceWidget, PaymentHistory, ScheduleList, ClearanceStatusIcon },
+  components: { PromiseLoader, Box, LoadingContainer, IconGClassroom, IconBookmarkOutline, IconMailOpenOutline, IconBookOutline, IconReceiptOutline, IconChevronRight, IconCashOutline, SelfModal, DashboardScaffold, Skeleton, AccountBalanceWidget, PaymentHistory, ScheduleList, ClearanceStatusIcon },
   setup() {
     const studentStore = useStudentStore();
     const { isCleared: isClearanceCleared, isLoading: isClearanceLoading } = useClearanceQueryUtilities(useClearanceQuery());
@@ -161,11 +161,11 @@ export default {
 
 <style lang="postcss" scoped>
 .quick-link-item {
-  @apply w-1/4 md:w-1/6 cursor-pointer hover:bg-gray-100 dark:hover:bg-uic-800 rounded-lg p-3 flex flex-col items-center space-y-2;
+  @apply w-1/4 md:w-1/6 cursor-pointer disabled:pointer-events-none not-disabled:hover:bg-gray-100 not-disabled:dark:hover:bg-primary-800 rounded-lg p-3 flex flex-col items-center space-y-2;
 }
 
 .quick-link-item > svg,
 .quick-link-item > .icon {
-  @apply h-12 w-12 p-1 text-uic-400;
+  @apply h-12 w-12 p-1 text-primary-400;
 }
 </style>

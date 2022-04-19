@@ -39,7 +39,7 @@
       </notification>
     </div>
   </notification-group>
-  <main class="dark:bg-uic-900">
+  <main class="dark:bg-primary-900">
     <router-view></router-view>
   </main>
 </template>
@@ -47,12 +47,11 @@
 <script lang="ts">
 import * as auth from './auth';
 import { useTitle } from '@vueuse/core';
-import { darkModeQuery, useUIStore } from './stores/uiStore';
-import { MutationType } from 'pinia';
-import { computed, onBeforeUnmount, ref, watch } from 'vue';
+import { useDarkMode } from './stores/uiStore';
+import { computed, onBeforeUnmount } from 'vue';
 import useReloadPrompt from './sw';
 import NotificationContainer from './components/ui/NotificationContainer.vue';
-import { eventBus, events } from './utils';
+import { IS_NATIVE } from './utils';
 import IconFeedback from '~icons/ion/chatbox-ellipses';
 import { useRouter } from 'vue-router';
 import { notify } from 'notiwind';
@@ -60,13 +59,17 @@ import { client } from './client';
 import { eventbus } from '@myuic-api/client/lib/event';
 import { useStudentStore } from './stores/studentStore';
 import { useQueryClient } from 'vue-query';
+import { App } from '@capacitor/app';
+import { useModal } from './modal';
+import { PluginListenerHandle } from '@capacitor/core';
 
 export default {
   components: { NotificationContainer, IconFeedback },
   setup() {
     const router = useRouter();
     const feedbackUrl = computed(() => import.meta.env.VITE_FEEDBACK_URL ?? null);
-    const uiStore = useUIStore();
+    const { subscribeDarkMode } = useDarkMode();
+    const unsubscribeDarkMode = subscribeDarkMode();
     const queryClient = useQueryClient();
 
     eventbus.on('changeAuthenticatedStatus', ({ newStatus, oldStatus }) => {
@@ -99,45 +102,28 @@ export default {
       auth.refresh();    
     }
 
-    uiStore.fetchDarkMode();
-    uiStore.toggleDarkModeCss(uiStore.darkMode);
+    const { modalCount, closeLastModal, subscribeModalChange } = useModal();
+    const unsubscribeModalChange = subscribeModalChange();
 
-    const uiStoreUnsubscribe = uiStore.$subscribe((mutation, state) => {
-      if (mutation.type === MutationType.direct && mutation.storeId === uiStore.$id) {
-        uiStore.toggleDarkModeCss(state.darkMode);
-      }
-    });
+    let backButtonPlugin: PluginListenerHandle;
 
-    const handleDarkModeChange = (ev: MediaQueryListEvent) => {
-      if (uiStore.darkMode === '2') {
-        uiStore.toggleDarkModeCss(uiStore.darkMode);
-      }
+    if (IS_NATIVE) {
+      backButtonPlugin = App.addListener('backButton', (evt) => {
+        if (modalCount.value != 0) {
+          closeLastModal();
+          return;
+        } else if (evt.canGoBack) {
+          router.back();
+        } else {
+          App.minimizeApp();
+        }
+      });
     }
 
-    darkModeQuery().addEventListener('change', handleDarkModeChange);
-
-    const modalCount = ref(0);
-    eventBus.on(events.MODAL_OPENED, () => modalCount.value++);
-    eventBus.on(events.MODAL_CLOSED, () => {
-      if (modalCount.value <= 0) return;
-      modalCount.value--;
-    });
-
-    watch(modalCount, (newVal, oldVal) => {
-      if (!import.meta.env.PROD) {
-        console.log('Modal Count', newVal);
-      }
-
-      if (newVal > 0) {
-        document.body.style.overflow = 'hidden';
-      } else {
-        document.body.style.overflow = 'unset';
-      }
-    });
-
     onBeforeUnmount(() => {
-      uiStoreUnsubscribe();
-      darkModeQuery().removeEventListener('change', handleDarkModeChange);
+      unsubscribeModalChange();
+      unsubscribeDarkMode();
+      if (backButtonPlugin) backButtonPlugin.remove();
     });
 
     return { feedbackUrl }
@@ -183,7 +169,7 @@ body {
 
 .button.is-primary,
 .dark .button.dark\:is-primary {
-  @apply bg-gradient-to-tr border-uic-500 hover:border-uic-700 text-white from-uic-500 to-uic-400 hover:from-uic-700 hover:to-uic-700;
+  @apply bg-gradient-to-tr border-primary-500 hover:border-primary-700 text-white from-primary-500 to-primary-400 hover:from-primary-700 hover:to-primary-700;
 }
 
 .button.is-light {
@@ -212,7 +198,7 @@ body {
 }
 
 .form-group-info > .description {
-  @apply text-gray-600 dark:text-uic-400;
+  @apply text-gray-600 dark:text-primary-400;
 }
 
 .form-control {
@@ -220,11 +206,11 @@ body {
 }
 
 .form-control > label {
-  @apply mb-2 text-gray-600 dark:text-uic-400;
+  @apply mb-2 text-gray-600 dark:text-primary-400;
 }
 
 .form-control > .hint-text {
-  @apply text-gray-500 dark:text-uic-300 text-sm mt-2 inline-block;
+  @apply text-gray-500 dark:text-primary-300 text-sm mt-2 inline-block;
 }
 
 .form-control.is-horizontal {
@@ -240,14 +226,14 @@ input[type='password'],
 input[type='email'],
 input[type='number'],
 input[type='url'] {
-  @apply !px-4 rounded-lg border border-gray-300 dark:border-uic-500 dark:bg-uic-900;
+  @apply !px-4 rounded-lg border border-gray-300 dark:border-primary-500 dark:bg-primary-900;
 }
 
 textarea {
-  @apply !px-4 !rounded-lg border !border-gray-300 !dark:border-uic-500 dark:bg-uic-900; 
+  @apply !px-4 !rounded-lg border !border-gray-300 !dark:border-primary-500 dark:bg-primary-900; 
 }
 
 select {
-  @apply !px-4 !py-2 !rounded-lg border !border-gray-300 !dark:border-uic-500 dark:bg-uic-900;
+  @apply !px-4 !py-2 !rounded-lg border !border-gray-300 !dark:border-primary-500 dark:bg-primary-900;
 }
 </style>

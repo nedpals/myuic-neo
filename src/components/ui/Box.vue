@@ -1,5 +1,5 @@
 <template>
-  <div :class="[{ 'px-6 py-4': !noPadding }, bg]" class="shadow rounded-lg border dark:border-uic-700">
+  <div :class="[{ 'px-6 py-4': !noPadding }, bg]" class="shadow rounded-lg border dark:border-primary-700">
     <span v-if="title" class="mb-2 block" :class="titleClass">{{ title }}</span>
     <slot :isLoading="__loadState.value || isLoading"></slot>
   </div>
@@ -29,11 +29,11 @@ export default {
     },
     titleClass: {
       type: String,
-      default: 'text-gray-500 dark:text-uic-200'
+      default: 'text-gray-500 dark:text-primary-200'
     },
     bg: {
       type: String,
-      default: 'bg-white dark:bg-uic-800'
+      default: 'bg-white dark:bg-primary-800'
     }
   }
 }

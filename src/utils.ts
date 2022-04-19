@@ -6,6 +6,9 @@ import { Capacitor } from '@capacitor/core'
 
 export const APP_PREFIX = '__myuic_neo__';
 
+// Regex
+export const semesterRegex = /((?:First|Second) Semester)\s(\d{4}-\d{4})|(Summer)\s(\d{4})/;
+
 // Currency
 export const pesoFormatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
@@ -20,11 +23,19 @@ export const now = new Date();
 export const twentyFourHoursInMs = 1000 * 60 * 60 * 24;
 
 export function humanizeTime(dt: string | Date): string {
-  return formatDistanceToNow(dt instanceof Date ? dt : new Date(dt), { addSuffix: true })
+  const input = dt instanceof Date ? dt : new Date(dt);
+  if (import.meta.env.DEV) {
+    console.log('[humanizeTime] input', dt, input);
+  }
+  return formatDistanceToNow(input, { addSuffix: true })
 }
 
 export function formatDatetime(dt: string | Date, formatStr: string): string {
-  return format(dt instanceof Date ? dt : new Date(dt), formatStr);
+  const input = dt instanceof Date ? dt : new Date(dt);
+  if (import.meta.env.DEV) {
+    console.log('[formatDateTime] input', dt, input);
+  }
+  return format(input, formatStr);
 }
 
 const twelveHourTimeRegex = /(\d{1,}):(\d{2,}):?(\d{2,})?\W*((?:A|P|a|p)(?:M|m))/;
@@ -51,9 +62,10 @@ export function getPeriod(time: string) {
     return 'morning';
   } else if (hours >= 1 && hours <= 6 && amPm === 'pm') {
     return 'afternoon';
-  } else {
+  } else if (amPm === 'pm') {
     return hours === 12 ? 'noon' : 'evening';
   }
+  return 'day';
 }
 
 export function compare12hTimes(fromTimeInput: string | ParsedTime, toTimeInput: string | ParsedTime): number {
@@ -116,11 +128,25 @@ export function isSlotVisible(slot: Slot | null): boolean {
   return slot().findIndex(o => o.type !== Comment) !== -1;
 }
 
-export const eventBus = mitt();
-export const events = {
+export type AppEvents = {
+  modal_opened: {
+    id: number
+  }
+  modal_closed: {
+    id: number
+  }
+  modal_manual_close: {
+    id: number
+  }
+}
+
+export const events: Record<string, keyof AppEvents> = {
   MODAL_OPENED: 'modal_opened',
-  MODAL_CLOSED: 'modal_closed'
-};
+  MODAL_CLOSED: 'modal_closed',
+  MODAL_MANUAL_CLOSE: 'modal_manual_close',
+} as const;
+
+export const eventBus = mitt<AppEvents>();
 
 // Notifications
 export interface NotifyAction {

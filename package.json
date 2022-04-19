@@ -7,11 +7,15 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "start-android": "npm run build && cap run android"
+    "start-android": "npm run build && npm run build-app-assets && cap run android",
+    "start-ios": "npm run build && npm run build-app-assets && cap run ios",
+    "build-app-assets": "capacitor-assets generate --android --ios"
   },
   "dependencies": {
     "@capacitor/android": "^3.4.3",
+    "@capacitor/app": "^1.1.1",
     "@capacitor/core": "^3.4.3",
+    "@capacitor/ios": "^3.4.3",
     "@capacitor/local-notifications": "^1.1.0",
     "@capacitor/splash-screen": "^1.2.2",
     "@capacitor/storage": "^1.2.5",
@@ -20,6 +24,7 @@
     "@iconify-json/mdi": "^1.1.2",
     "@myuic-api/client": "^1.2.1",
     "@myuic-api/types": "^1.2.0",
+    "@robingenz/capacitor-android-dark-mode-support": "^1.0.1",
     "@vueuse/core": "^8.1.1",
     "date-fns": "^2.28.0",
     "floating-vue": "^2.0.0-beta.11",
@@ -33,6 +38,7 @@
     "vuex": "^4.0.2"
   },
   "devDependencies": {
+    "@capacitor/assets": "^1.0.0-next.5",
     "@capacitor/cli": "^3.4.3",
     "@iconify-json/fluent": "^1.1.2",
     "@iconify-json/ic": "^1.1.1",

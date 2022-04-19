@@ -13,7 +13,7 @@
             :key="'day_' + shortDay"
             v-for="(day, shortDay) in days"
             @click="currentScheduleDay = day"
-            :class="[currentScheduleDay === day ? 'bg-uic-400 dark:bg-uic-600 text-white' : 'bg-gray-200 dark:bg-uic-700']"
+            :class="[currentScheduleDay === day ? 'bg-primary-400 dark:bg-primary-600 text-white' : 'bg-gray-200 dark:bg-primary-700']"
             class="flex-1 px-3 py-1 rounded-full">{{ day }}</button>
         </div>
 
@@ -22,23 +22,23 @@
           <span class="text-2xl block text-center">No class!</span>
         </div>
 
-        <div v-else class="flex flex-col divide-y dark:divide-uic-400 py-2">
+        <div v-else class="flex flex-col divide-y dark:divide-primary-400 py-2">
           <div
             :key="'sched_' + si" v-for="(sub, si) in currentSchedule"
-            :class="{ 'hover:bg-gray-100 dark:hover:bg-uic-700 transition-colors cursor-pointer': !isLoading }"
+            :class="{ 'hover:bg-gray-100 dark:hover:bg-primary-700 transition-colors cursor-pointer': !isLoading }"
             class="flex-col rounded-lg -mx-3 px-4 py-3">
             <skeleton custom-class="h-4 w-32 bg-gray-200 mb-2">
               <p class="mb-2 font-semibold">{{ sub.name }}</p>
             </skeleton>
             <skeleton custom-class="h-3.5 w-24 bg-gray-200">
-              <p class="text-gray-600 dark:text-uic-200 text-sm">{{ sub.fromTime }}-{{ sub.toTime }}</p>
+              <p class="text-gray-600 dark:text-primary-200 text-sm">{{ sub.fromTime }}-{{ sub.toTime }}</p>
             </skeleton>
           </div>
         </div>
         
         <div class="mt-auto">
-          <skeleton custom-class="h-4 w-24 bg-uic-400">
-            <router-link :to="{ name: 'schedule' }" class="hover:underline text-uic-500 dark:text-uic-200">See full schedule</router-link>
+          <skeleton custom-class="h-4 w-24 bg-primary-400">
+            <router-link :to="{ name: 'schedule' }" class="hover:underline text-primary-500 dark:text-primary-200">See full schedule</router-link>
           </skeleton>
         </div>
       </div>
