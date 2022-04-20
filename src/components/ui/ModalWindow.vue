@@ -59,7 +59,7 @@ export default {
     }
   },
   setup(props, { emit }) {
-    const { closeModal, unsubscribe } = useModal(
+    const { closeModal, unsubscribe, state: { id } } = useModal(
       computed(() => props.open), 
       (o) => emit('update:open', o)
     );
@@ -69,6 +69,7 @@ export default {
     return {
       isSlotVisible,
       closeModal,
+      id
     }
   },
 }

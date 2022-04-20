@@ -1,5 +1,6 @@
 <template>
   <modal-window 
+    ref="modalRef"
     :title="course.name + ' / ' + course.code" 
     :open="isOpen"
     @update:open="warnUserOnClose"
@@ -197,14 +198,14 @@
 </template>
 
 <script lang="ts">
-import { computed, onBeforeUnmount, PropType, readonly, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, PropType, readonly, ref, watch } from 'vue'
 import ModalWindow from '../../ui/ModalWindow.vue'
 import { ratings, CourseEvaluationEntry } from '@myuic-api/types'
 import { useEvaluationMutation, useEvaluationQuery } from '../../../stores/evaluationStore'
 import LoadingContainer from '../../ui/LoadingContainer.vue'
 import Loader from '../../ui/Loader.vue'
 import { TabGroup, Tab, TabList, TabPanels, TabPanel } from '@headlessui/vue'
-import { showDialog } from '../../../modal'
+import { modalEventBus, showDialog } from '../../../modal'
 import Box from '../../ui/Box.vue'
 
 export default {
@@ -228,12 +229,14 @@ export default {
   },
   setup({ courses }, { emit }) {
     const panelRef = ref<typeof TabPanels>();
+    const modalRef = ref<InstanceType<typeof ModalWindow> | null>(null);
     const step = ref(0);
     const isOpen = ref(true);
     const course = !Array.isArray(courses) ? courses : courses[0];
     const isSingle = !Array.isArray(courses) ? true : courses.length == 1;
     const shouldEvaluateAll = ref(isSingle);
     const tabOffsetStart = isSingle ? 1 : 2;
+    const modalId = ref<number | null>(null);
 
     const { 
       questionnaireQuery: { isFetching, isIdle, data, ...questionnaireQuery }, 
@@ -289,7 +292,9 @@ export default {
     ]);
 
     const warnUserOnClose = async (newOpen: boolean) => {
-      if (newOpen || (!newOpen && isOpen.value === newOpen) || isProcessing.value) return;
+      if (isOpen.value === newOpen || isProcessing.value) {
+        return;
+      }
       const ans = await showDialog({
         title: 'Warning',
         content: 'Closing this will lose your progress. Would you like to proceed?',
@@ -308,8 +313,15 @@ export default {
       });
 
       if (ans === 'yes') {
-        isOpen.value = false;
-        emit('close');
+        isOpen.value = newOpen;
+        if (modalId.value !== null) {
+          // FIXME:
+          modalEventBus.emit('modal_manual_close', { id: modalId.value });
+          modalEventBus.emit('modal_closed', { id: modalId.value });
+        }
+        setTimeout(() => {
+          emit('close');
+        }, 250);
       }
     }
 
@@ -364,7 +376,11 @@ export default {
     const unwatchScroll = watch(step, () => {
       panelRef.value?.$el.scrollTo({ top: 0 });
     });
-    
+
+    onMounted(() => {
+      modalId.value = modalRef.value!.id;
+    });
+
     onBeforeUnmount(() => {
       idQueries.forEach(q => q.remove());
       questionnaireQuery.remove.value();
@@ -391,6 +407,7 @@ export default {
       warnUserOnClose,
       commentQuestions,
       shouldProceed,
+      modalRef,
       step
     }
   }

@@ -45,6 +45,10 @@ export function useModalManager() {
 
   const handleModalClosed = ({ id }) => {
     const idIndex = modalStack.value.indexOf(id);
+    if (import.meta.env.DEV) {
+      console.log('[modalManager] closed modal', id);
+      console.log(modalStack.value, idIndex);
+    }
     if (idIndex !== -1) {
       modalStack.value.splice(idIndex, 1);
     }
@@ -91,6 +95,9 @@ export const useModal = (isOpen: ComputedRef<boolean>, updateFn: (state: boolean
 
   const handleManualClose = ({ id: gotId }: ModalInfo) => {
     if (gotId === state.id) {
+      if (import.meta.env.DEV) {
+        console.trace('[modal] manually closing modal', state.id)
+      }
       closeModal();
     }
   }
@@ -98,7 +105,7 @@ export const useModal = (isOpen: ComputedRef<boolean>, updateFn: (state: boolean
   modalEventBus.on('modal_manual_close', handleManualClose);
 
   const unwatchOpen = watch(isOpen, (newVal, oldVal) => {
-    if (newVal === oldVal || typeof oldVal === 'undefined') return;
+    if (newVal === oldVal) return;
     if (newVal) {
       modalEventBus.emit('modal_opened', state);
     } else {
