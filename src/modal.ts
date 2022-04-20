@@ -6,7 +6,7 @@ interface ModalInfo {
 }
 
 export type ModalEvents = {
-  modal_opened: ModalInfo & { isGenerated: boolean }
+  modal_opened: ModalInfo
   modal_closed: ModalInfo
   modal_manual_close: ModalInfo
   dialog_closed: ModalInfo & { result: any }
@@ -36,10 +36,10 @@ export function useModalManager() {
     closeModal(lastId);
   }
 
-  const handleModalOpened = ({ id, isGenerated }) => {
+  const handleModalOpened = ({ id }) => {
     modalStack.value.push(id);
-    if (isGenerated) {
-      currentModalId.value++;
+    if (import.meta.env.DEV) {
+      console.log('[modalManager] opened modal', id)
     }
   }
 
@@ -84,7 +84,7 @@ export function useModalManager() {
 }
 
 export const useModal = (isOpen: ComputedRef<boolean>, updateFn: (state: boolean) => void, modalId?: number) => {
-  const state = reactive<ModalInfo>({ id: modalId ?? currentModalId.value });
+  const state = reactive<ModalInfo>({ id: modalId ?? currentModalId.value++ });
   const closeModal = () => {
     updateFn(false);
   }
@@ -100,7 +100,7 @@ export const useModal = (isOpen: ComputedRef<boolean>, updateFn: (state: boolean
   const unwatchOpen = watch(isOpen, (newVal, oldVal) => {
     if (newVal === oldVal || typeof oldVal === 'undefined') return;
     if (newVal) {
-      modalEventBus.emit('modal_opened', { ...state, isGenerated: typeof modalId === 'undefined' });
+      modalEventBus.emit('modal_opened', state);
     } else {
       modalEventBus.emit('modal_closed', state);
     }
@@ -142,7 +142,7 @@ export async function showDialog(d: Dialog): Promise<string | null> {
   let gotResult: string | null = '';
   const newDialog: DialogModal = {
     ...d,
-    id: currentModalId.value,
+    id: currentModalId.value++,
     isOpen: true
   };
 
@@ -153,8 +153,6 @@ export async function showDialog(d: Dialog): Promise<string | null> {
   }
 
   dialogs.value.push(newDialog);
-  currentModalId.value++;
-
   modalEventBus.on('dialog_closed', dialogHandler);
 
   return new Promise<string | null>((resolve) => {
