@@ -32,7 +32,7 @@ export default {
     const hasActionPressed = ref(false);
     const handleDialogAction = (d: DialogModal, action: DialogAction) => {
       hasActionPressed.value = true;
-      const result = action.onClick();
+      const result = typeof action.answer === 'function' ? action.answer() : action.answer;
       modalEventBus.emit('dialog_closed', { id: d.id, result });
       modalEventBus.emit('modal_manual_close', { id: d.id });
     }

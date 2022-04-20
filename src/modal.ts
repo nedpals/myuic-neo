@@ -123,7 +123,7 @@ export const useModal = (isOpen: ComputedRef<boolean>, updateFn: (state: boolean
 export interface DialogAction {
   label: string
   class?: string
-  onClick: () => string
+  answer: string | (() => string)
 }
 
 export interface Dialog {
