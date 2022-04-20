@@ -101,6 +101,19 @@
                   </div>
                 </div>
               </tab-panel>
+
+              <tab-panel class="flex flex-col divide divide-y px-3 md:px-6">
+                <div class="flex flex-col">
+                  <div class="mb-4 text-center">
+                    <h3 class="text-2xl font-semibold">Summary</h3>
+                  </div>
+
+                  <!-- TODO: add summary of all inputs (questions + comments) before proceeding -->
+                  <div class="">
+
+                  </div>
+                </div>
+              </tab-panel>
             </tab-panels>
           </tab-group>
         </div>
@@ -109,7 +122,7 @@
     <template #footer>
       <div class="flex justify-end space-x-2">
         <button v-if="step > 0" @click="step--" class="button is-light">Previous</button>
-        <button v-if="step < 6" @click="step++" class="button is-primary px-6 py-2">Next</button>
+        <button v-if="step < 5" @click="step++" class="button is-primary px-6 py-2">Next</button>
         <button v-else @click="submitEvaluation" class="button is-primary px-6 py-2">Submit</button>
       </div>
     </template>
@@ -176,49 +189,66 @@ export default {
       return idx;
     }
 
-    const warnUserOnClose = (newOpen: boolean) => {
+    const warnUserOnClose = async (newOpen: boolean) => {
       if (newOpen || (!newOpen && isOpen.value === newOpen)) return;
-      showDialog({
+      const ans = await showDialog({
         title: 'Warning',
         content: 'Closing this will lose your progress. Would you like to proceed?',
         actions: [
           {
             label: 'Yes',
             class: 'is-primary',
-            onClick: () => 'yes'
+            answer: 'yes'
           },
           {
             label: 'No',
             class: 'is-light',
-            onClick: () => 'no'
+            answer: 'no'
           }
         ],
-        onResult: (ans: string) => {
-          if (ans === 'yes') {
-            isOpen.value = false;
-            emit('close');
-          }
-          return true;
-        }
       });
+
+      if (ans === 'yes') {
+        isOpen.value = false;
+        emit('close');
+      }
     }
 
     // data
     const ratingAnswers = ref([...Array(29).keys()].map(() => 1)); 
     const comments = ref<[string, string, string]>(['', '', '']);
     const submitEvaluation = async () => {
-      await mutateAsync({
-        ratings: ratingAnswers.value.splice(0, totalQuestionsCount.value),
-        comments: comments.value,
-        classID: idQueryData.value?.classID!,
-        classType: idQueryData.value?.classType!,
-        instructorID: idQueryData.value?.instructorID!
-      }, {
-        onSuccess: () => {
-          isOpen.value = false;
-          emit('close');
-        }
+      const ans = await showDialog({
+        title: 'Confirmation',
+        content: `By clicking "Confirm", you agree to the inputs of your evaluation for <b>${course.name}</b> is final.`,
+        actions: [
+          {
+            label: 'Confirm',
+            class: 'is-primary',
+            answer: 'confirm'
+          },
+          {
+            label: 'Cancel',
+            class: 'is-light',
+            answer: 'cancel'
+          }
+        ]
       });
+
+      if (ans === 'confirm') {
+        await mutateAsync({
+          ratings: ratingAnswers.value.splice(0, totalQuestionsCount.value),
+          comments: comments.value,
+          classID: idQueryData.value?.classID!,
+          classType: idQueryData.value?.classType!,
+          instructorID: idQueryData.value?.instructorID!
+        }, {
+          onSuccess: () => {
+            isOpen.value = false;
+            emit('close');
+          }
+        });
+      }
     }
 
     const unwatchScroll = watch(step, () => {
