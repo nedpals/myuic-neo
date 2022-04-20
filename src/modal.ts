@@ -9,12 +9,14 @@ export type ModalEvents = {
   modal_opened: ModalInfo & { isGenerated: boolean }
   modal_closed: ModalInfo
   modal_manual_close: ModalInfo
+  dialog_closed: ModalInfo & { result: any }
 }
 
 export const events: Record<string, keyof ModalEvents> = {
   MODAL_OPENED: 'modal_opened',
   MODAL_CLOSED: 'modal_closed',
   MODAL_MANUAL_CLOSE: 'modal_manual_close',
+  DIALOG_CLOSED: 'dialog_closed'
 } as const;
 
 export const modalEventBus = mitt<ModalEvents>();
@@ -128,7 +130,6 @@ export interface Dialog {
   title: string
   content: string
   actions: DialogAction[]
-  onResult: (val: string) => boolean
 }
 
 export interface DialogModal extends Dialog, ModalInfo {
@@ -137,14 +138,29 @@ export interface DialogModal extends Dialog, ModalInfo {
 
 export const dialogs = ref<DialogModal[]>([]);
 
-export function showDialog(d: Dialog): number {
+export async function showDialog(d: Dialog): Promise<string | null> {
+  let gotResult: string | null = '';
   const newDialog: DialogModal = {
     ...d,
     id: currentModalId.value,
     isOpen: true
   };
 
+  const dialogHandler = ({ id, result }: ModalInfo & { result: any }) => {
+    if (id !== newDialog.id) return;
+    gotResult = result;
+    modalEventBus.off('dialog_closed', dialogHandler);
+  }
+
   dialogs.value.push(newDialog);
   currentModalId.value++;
-  return newDialog.id;
+
+  modalEventBus.on('dialog_closed', dialogHandler);
+
+  return new Promise<string | null>((resolve) => {
+    (function waitForResult() {
+      if (gotResult || gotResult === null) return resolve(gotResult);
+      setTimeout(waitForResult, 30);
+    })()
+  });
 };
