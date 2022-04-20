@@ -337,9 +337,10 @@ export default {
       if (ans === 'confirm') {
         let successCount = 0;
         const toBeEvaluated = Array.isArray(courses) && shouldEvaluateAll.value ? courses.slice() : [course];
+        const ratings = ratingAnswers.value.slice(0, totalQuestionsCount.value);
         for (const i of toBeEvaluated.keys()) {
           await mutateAsync({
-            ratings: ratingAnswers.value.splice(0, totalQuestionsCount.value),
+            ratings,
             comments: comments.value,
             classID: idQueries[i].data!.classID!,
             classType: idQueries[i].data!.classType!,
