@@ -35,6 +35,7 @@ export default {
       const result = typeof action.answer === 'function' ? action.answer() : action.answer;
       modalEventBus.emit('dialog_closed', { id: d.id, result });
       modalEventBus.emit('modal_manual_close', { id: d.id });
+      modalEventBus.emit('modal_closed', { id: d.id });
     }
 
     const handleDialogOpen = (d: DialogModal, newOpen: boolean) => {

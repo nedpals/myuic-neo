@@ -1,4 +1,5 @@
 import { EthnicGroup, Gender, IncomeGroup, Nationality, ParentRelationship, Religion, RouteName, RoutePath } from '@myuic-api/types';
+import { readonly } from 'vue';
 import { client, useClientQuery } from '../client';
 import { useStudentStore } from './studentStore';
 
@@ -6,9 +7,9 @@ function useFormListQuery<T>(routeName: RouteName) {
   const studentStore = useStudentStore();
 
   return function() {
-    return useClientQuery<Record<string, T>>(routeName, () => client.http.get(RoutePath(routeName)), {
+    return readonly(useClientQuery<Record<string, T>>(routeName, () => client.http.get(RoutePath(routeName)), {
       enabled: studentStore.hasSemesterId
-    });
+    }));
   }
 }
 

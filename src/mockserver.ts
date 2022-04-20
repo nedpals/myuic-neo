@@ -1,4 +1,4 @@
-import { ethnicGroups, genders, incomeGroups, nationalities, Nationality, ParentRelationship, parentRelationshipStatus, Religion, religions, RoutePath } from "@myuic-api/types";
+import { CourseEvaluationEntry, ethnicGroups, genders, incomeGroups, nationalities, Nationality, ParentRelationship, parentRelationshipStatus, questionnaires, Religion, religions, RoutePath } from "@myuic-api/types";
 import { createServer, Response as MirageResponse } from "miragejs";
 import { backendUrl } from "./client";
 
@@ -1397,122 +1397,145 @@ export const useMockServer = () => {
           name: "Automata Theory & Formal Languages",
           type: "Lec",
           instructor: "Alan Turing",
-          instructorImageUrl: "http://www3.uic.edu.ph/images/100x102/648.jpg",
-          status: "not_open",
+          instructorImageUrl: "https://i.pinimg.com/originals/7a/39/b9/7a39b9d359159e2f275f1e92bc5ebf67.jpg",
+          status: "open",
         },
         {
           code: "CS212",
           name: "Automata Theory & Formal Languages",
           type: "Lab",
           instructor: "Alan Turing",
-          instructorImageUrl: "http://www3.uic.edu.ph/images/100x102/648.jpg",
-          status: "not_open",
+          instructorImageUrl: "https://i.pinimg.com/originals/7a/39/b9/7a39b9d359159e2f275f1e92bc5ebf67.jpg",
+          status: "open",
         },
         {
           code: "CS211",
           name: "Networks & Communications",
           type: "Lec",
           instructor: "Alan Kay",
-          instructorImageUrl: "http://www3.uic.edu.ph/images/100x102/270.jpg",
-          status: "not_open",
+          instructorImageUrl: "https://cdn.idolnetworth.com/medias/profile/11/alan-kay.jpg",
+          status: "open",
         },
         {
           code: "CS211",
           name: "Networks & Communications",
           type: "Lab",
           instructor: "Alan Kay",
-          instructorImageUrl: "http://www3.uic.edu.ph/images/100x102/270.jpg",
-          status: "not_open",
+          instructorImageUrl: "https://cdn.idolnetworth.com/medias/profile/11/alan-kay.jpg",
+          status: "open",
         },
         {
           code: "CS213",
           name: "Algorithms & Complexity",
           type: "Lec",
           instructor: "Donald Knuth",
-          instructorImageUrl: "http://www3.uic.edu.ph/images/100x102/556.jpg",
-          status: "not_open",
+          instructorImageUrl: "https://www.premiosfronterasdelconocimiento.es/wp-content/uploads/sites/2/2019/06/FBBVA-10-tic-Knuth.jpg",
+          status: "open",
         },
         {
           code: "GEC006",
           name: "Readings in Philippine History",
           type: "Lec",
           instructor: "Carlos Celdran",
-          instructorImageUrl: "http://www3.uic.edu.ph/images/100x102/.jpg",
-          status: "not_open",
+          instructorImageUrl: "https://1cms-img.imgix.net/Celdran.jpg?auto=compress",
+          status: "open",
         },
         {
           code: "CC214",
           name: "Information Management",
           type: "Lec",
           instructor: "Bill Gates",
-          instructorImageUrl: "http://www3.uic.edu.ph/images/100x102/1679.jpg",
-          status: "not_open",
+          instructorImageUrl: "https://upload.wikimedia.org/wikipedia/commons/a/a8/Bill_Gates_2017_%28cropped%29.jpg",
+          status: "open",
         },
         {
           code: "CC214",
           name: "Information Management",
           type: "Lab",
           instructor: "Bill Gates",
-          instructorImageUrl: "http://www3.uic.edu.ph/images/100x102/1679.jpg",
-          status: "not_open",
+          instructorImageUrl: "https://upload.wikimedia.org/wikipedia/commons/a/a8/Bill_Gates_2017_%28cropped%29.jpg",
+          status: "open",
         },
         {
           code: "CC211",
           name: "Web Applications Development 1",
           type: "Lec",
           instructor: "Bill Gates",
-          instructorImageUrl: "http://www3.uic.edu.ph/images/100x102/1679.jpg",
-          status: "not_open",
+          instructorImageUrl: "https://upload.wikimedia.org/wikipedia/commons/a/a8/Bill_Gates_2017_%28cropped%29.jpg",
+          status: "open",
         },
         {
           code: "CC211",
           name: "Web Applications Development 1",
           type: "Lab",
           instructor: "Bill Gates",
-          instructorImageUrl: "http://www3.uic.edu.ph/images/100x102/1679.jpg",
-          status: "not_open",
+          instructorImageUrl: "https://upload.wikimedia.org/wikipedia/commons/a/a8/Bill_Gates_2017_%28cropped%29.jpg",
+          status: "open",
         },
         {
           code: "CC213",
           name: "Systems Integration & Architecture",
           type: "Lec",
           instructor: "Paul Rand",
-          instructorImageUrl: "http://www3.uic.edu.ph/images/100x102/1546.jpg",
-          status: "not_open",
+          instructorImageUrl: "https://www.logomaker.com/wp-content/uploads/2012/03/portrait111-e1332173042365.jpg",
+          status: "open",
         },
         {
           code: "CC213",
           name: "Systems Integration & Architecture",
           type: "Lab",
           instructor: "Paul Rand",
-          instructorImageUrl: "http://www3.uic.edu.ph/images/100x102/1546.jpg",
-          status: "not_open",
+          instructorImageUrl: "https://www.logomaker.com/wp-content/uploads/2012/03/portrait111-e1332173042365.jpg",
+          status: "open",
         },
         {
           code: "PE211",
           name: "Physical Education 3",
           type: "Lec",
           instructor: "Hidilyn Diaz",
-          instructorImageUrl: "http://www3.uic.edu.ph/images/100x102/1503.jpg",
-          status: "not_open",
+          instructorImageUrl: "https://upload.wikimedia.org/wikipedia/commons/7/7c/Hidilyn_Diaz_with_her_gold_medal_2021_%281-44_screenshot%29.jpg",
+          status: "open",
         },
         {
           code: "CC212",
           name: "Object-Oriented Programming",
           type: "Lec",
           instructor: "James Gosling",
-          instructorImageUrl: "http://www3.uic.edu.ph/images/100x102/1734.jpg",
-          status: "not_open",
+          instructorImageUrl: "https://pbs.twimg.com/profile_images/1060661254853865472/Oj2V9k6Y_400x400.jpg",
+          status: "open",
         },
         {
           code: "CC212",
           name: "Object-Oriented Programming",
           type: "Lab",
           instructor: "James Gosling",
-          instructorImageUrl: "http://www3.uic.edu.ph/images/100x102/1734.jpg",
-          status: "not_open",
+          instructorImageUrl: "https://pbs.twimg.com/profile_images/1060661254853865472/Oj2V9k6Y_400x400.jpg",
+          status: "open",
         },
-      ]);
+      ] as CourseEvaluationEntry[]);
+
+      this.get(RoutePath('facultyEvaluationQuestionnaires'), () => questionnaires);
+      this.get(RoutePath('facultyEvaluationIds'), (_, req) => {
+        const classId = req.queryParams.classId;
+        const classType = req.queryParams.classType;
+        if (!classId || !classType)
+          return new MirageResponse(400, {
+            'Content-Type': 'application/json'
+          }, {
+            message: 'classId and classType is required.'
+          });
+
+        return new MirageResponse(200, {
+          'Content-Type': 'application/json'
+        }, {
+          classId,
+          classType,
+          instructorID: 1
+        });
+      });
+      this.post(RoutePath('facultyEvaluationSubmit'), () => ({
+        message: 'Evaluation submitted successfully.'
+      }))
 
       this.get(RoutePath('ethnicGroupsList'), () => reduceKV(ethnicGroups));
       this.get(RoutePath('genderList'), () => reduceKV(genders));

@@ -139,6 +139,10 @@ body {
   @apply text-gray-700 font-sans-2 dark:text-white;
 }
 
+b {
+  @apply font-bold;
+}
+
 /* Skeleton */
 /* TODO: fix this */
 
@@ -233,7 +237,7 @@ input[type='url'] {
 }
 
 textarea {
-  @apply !px-4 !rounded-lg border !border-gray-300 !dark:border-primary-500 dark:bg-primary-900; 
+  @apply !px-4 !py-2 !rounded-lg border !border-gray-300 !dark:border-primary-500 dark:bg-primary-900; 
 }
 
 select {
