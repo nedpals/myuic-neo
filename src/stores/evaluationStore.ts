@@ -1,27 +1,27 @@
-import { CourseEvaluation, CourseEvaluationEntry, CourseEvaluationEntryIDs, EvaluationStatus, questionnaires, RoutePath } from "@myuic-api/types";
+import { CourseEvaluation, CourseEvaluationEntry, EvaluationStatus, questionnaires, RoutePath } from "@myuic-api/types";
 import { notify } from "notiwind";
 import { computed } from "vue";
-import { useMutation, useQuery, useQueryClient } from "vue-query"
+import { useMutation, useQueries, useQuery, useQueryClient } from "vue-query"
 import { client, useClientQuery } from "../client";
 import { catchAndNotifyError } from "../utils";
 
-export const useEvaluationQuery = (classId: string, classType: string) => {
-  const idQuery = useQuery<CourseEvaluationEntryIDs>(
-    ['evaluation_id', classId, classType],
-    () => client.facultyEvaluationEntryId(classId, classType)
-  );
+export const useEvaluationQuery = (courses: {classId: string, classType: string}[]) => {
+  const idQueries = useQueries(courses.map(({ classId, classType }) => ({
+    queryKey: ['evaluation_id', classId, classType],
+    queryFn: () => client.facultyEvaluationEntryId(classId, classType)
+  })))
   
   const questionnaireQuery = useClientQuery<typeof questionnaires>(
     'evaluation_questionnaires',
     () => client.http.get(RoutePath('facultyEvaluationQuestionnaires')),
     {
-      enabled: computed(() => !idQuery.isFetching.value && !idQuery.isIdle.value)
+      enabled: computed(() => idQueries.every(q => !q.isFetching && !q.isIdle))
     }
   );
 
   return {
     questionnaireQuery,
-    idQuery
+    idQueries
   }
 }
 

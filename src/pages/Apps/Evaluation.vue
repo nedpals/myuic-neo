@@ -11,7 +11,7 @@
             :key="'sub_' + sub.code + '_' + sub.type" v-for="sub in openedEvaluationList" 
             :disabled="isLoading"
             class="hover:bg-gray-100 dark:hover:bg-uic-900 hover:border-uic-500 dark:hover:border-uic-700 cursor-pointer" 
-            @click="evaluateCourse(sub)">
+            @click="evaluateCourse([sub])">
             <div class="flex flex-row justify-between items-center">
               <div class="flex space-x-4" :class="[isLoading ? 'items-center' : 'items-start']">
                 <div class="h-13 w-13 flex-shrink-0">
@@ -52,7 +52,7 @@
       v-for="c in currentlyEvaluated"
       :key="'eval_' + c.code + '_' + c.type"
       @close="closeCourseEvaluation(c)"
-      :course="c"
+      :courses="c"
       open />
   </dashboard-scaffold>
 </template>
@@ -70,6 +70,8 @@ import EvaluationModal from '../../components/Apps/Evaluation/EvaluationModal.vu
 import { computed, ref } from 'vue';
 import { CourseEvaluationEntry } from '@myuic-api/types';
 
+type Entries = [CourseEvaluationEntry] | [CourseEvaluationEntry, CourseEvaluationEntry];
+
 export default {
   components: { PromiseLoader, LoadingContainer, Loader, Box, IconChevronRight, DashboardScaffold, Skeleton, EvaluationModal },
   setup() {
@@ -77,19 +79,25 @@ export default {
     const { isLoading, getEntriesByStatus } = useEvaluationListQueryUtilities(facultyEvaluationQuery);
     const openedEvaluationList = getEntriesByStatus('open');
     const notOpenCount = computed(() => getEntriesByStatus('not_open').value.length);
-    const currentlyEvaluated = ref<CourseEvaluationEntry[]>([]);
-
+    const currentlyEvaluated = ref<Entries[]>([]);
     const closeCourseEvaluation = (c: CourseEvaluationEntry) => {
-      const idx = currentlyEvaluated.value.findIndex(e => e.code === c.code && e.type === c.type);
+      const idx = currentlyEvaluated.value.findIndex(e => e[0].code === c.code && e[0].type === c.type);
       currentlyEvaluated.value.splice(idx, 1);
     }
 
-    const evaluateCourse = (c: CourseEvaluationEntry) => {
+    const evaluateCourse = (c: Entries) => {
+      const additionalEntry = openedEvaluationList.value.find(cc => cc.code === c[0].code && cc.type !== c[0].type);
+      const finalEntries : CourseEvaluationEntry[] = [];
+      if (typeof additionalEntry !== 'undefined') {
+        finalEntries.push(additionalEntry);
+      }
+
+      finalEntries.push(...c);
       if (currentlyEvaluated.value.length !== 0) {
         currentlyEvaluated.value.splice(0, currentlyEvaluated.value.length);
       }
 
-      currentlyEvaluated.value.push(c);
+      currentlyEvaluated.value.push(finalEntries as Entries);
     }
 
     return {

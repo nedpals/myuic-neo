@@ -10,7 +10,7 @@
           <loader class="h-14 w-14" />
         </div>
 
-        <div class="flex h-full" v-if="!isLoading">
+        <div class="flex w-full h-full" v-if="!isLoading">
           <tab-group vertical manual :selected-index="step" @change="step = $event">
             <tab-list class="w-1/4 flex flex-col border-r <md:hidden">
               <tab v-slot="{ selected }" as="div" class="w-full">
@@ -20,9 +20,17 @@
                   Reminders
                 </button>
               </tab>
+              <tab v-if="!isSingle" v-slot="{ selected }" as="div" class="w-full">
+                <button 
+                  :disabled="1 > step"
+                  :class="{ 'text-primary-500 bg-gradient-to-r from-transparent to-primary-100': selected }" 
+                  class="w-full px-6 py-4 disabled:cursor-default disabled:text-gray-300 not-disabled:hover:bg-gray-100 font-semibold text-left">
+                  Notice
+                </button>
+              </tab>
               <tab v-slot="{ selected }" as="div" class="w-full" :key="cat.title" v-for="(cat, ci) in data.categories">
                 <button 
-                  :disabled="ci + 1 > step"
+                  :disabled="ci + tabOffsetStart > step"
                   :class="{ 'text-primary-500 bg-gradient-to-r from-transparent to-primary-100': selected }" 
                   class="w-full px-6 py-4 disabled:cursor-default disabled:text-gray-300 not-disabled:hover:bg-gray-100 font-semibold text-left">
                   {{ cat.title }}
@@ -30,7 +38,7 @@
               </tab>
               <tab v-slot="{ selected }" as="div" class="w-full">
                 <button 
-                  :disabled="data.categories.length + 1 > step"
+                  :disabled="data.categories.length + tabOffsetStart > step"
                   :class="{ 'text-primary-500 bg-gradient-to-r from-transparent to-primary-100': selected }" 
                   class="w-full px-6 py-4 disabled:cursor-default disabled:text-gray-300 not-disabled:hover:bg-gray-100 font-semibold text-left">
                   Comments
@@ -38,7 +46,7 @@
               </tab>
               <tab v-slot="{ selected }" as="div" class="w-full">
                 <button 
-                  :disabled="data.categories.length + 2 > step"
+                  :disabled="data.categories.length + tabOffsetStart + 1 > step"
                   :class="{ 'text-primary-500 bg-gradient-to-r from-transparent to-primary-100': selected }" 
                   class="w-full px-6 py-4 disabled:cursor-default disabled:text-gray-300 not-disabled:hover:bg-gray-100 font-semibold text-left">
                   Summary
@@ -66,6 +74,34 @@
                     </ul>
                   </li>
                 </ol>
+              </tab-panel>
+
+              <tab-panel v-if="!isSingle" class="mx-auto px-3 md:px-6 pb-6">
+                <div class="mb-3 text-center">
+                  <h3 class="text-2xl font-semibold">Notice</h3>
+                </div>
+                <p>The following courses have been detected by the evaluation utility:</p>
+                <div class="flex flex-col space-y-4 py-2">
+                  <box :key="'sub_' + sub.code + '_' + sub.type" v-for="(sub, si) in courses">
+                    <div class="flex flex-row space-x-4 items-center">
+                      <div class="h-13 w-13 flex-shrink-0">
+                        <div
+                          :style="{ backgroundImage: `url(${sub.instructorImageUrl})` }"
+                          class="bg-gray-200 dark:bg-uic-500 rounded-full h-full w-full bg-cover bg-center"></div>
+                      </div>
+                      <div>
+                        <h3 class="text-xl font-semibold">{{ sub.name }}</h3>
+                        <p>{{ sub.instructor }} • {{ sub.type }}{{ si == 0 || shouldEvaluateAll ? ' • SELECTED' : '' }} </p>
+                      </div>
+                    </div>
+                  </box>
+                </div>
+                <div class="form-group">
+                  <div class="form-control is-horizontal w-full">
+                    <input type="checkbox" id="should_evaluate_all" v-model="shouldEvaluateAll">
+                    <label for="should_evaluate_all">Do you want to evaluate all the mentioned courses together?</label>
+                  </div>
+                </div>
               </tab-panel>
           
               <tab-panel :key="cat.title" v-for="(cat, i) in data.categories" class="flex flex-col divide divide-y">
@@ -153,7 +189,7 @@
     <template #footer>
       <div class="flex justify-end space-x-2">
         <button v-if="step > 0" @click="step--" class="button is-light">Previous</button>
-        <button v-if="step < 6" @click="step++" :disabled="!shouldProceed(step)" class="button is-primary px-6 py-2">Next</button>
+        <button v-if="step < 5 + tabOffsetStart" @click="step++" :disabled="!shouldProceed(step)" class="button is-primary px-6 py-2">Next</button>
         <button v-else @click="submitEvaluation" class="button is-primary px-6 py-2">Submit</button>
       </div>
     </template>
@@ -169,6 +205,7 @@ import LoadingContainer from '../../ui/LoadingContainer.vue'
 import Loader from '../../ui/Loader.vue'
 import { TabGroup, Tab, TabList, TabPanels, TabPanel } from '@headlessui/vue'
 import { showDialog } from '../../../modal'
+import Box from '../../ui/Box.vue'
 
 export default {
   emits: ['close'],
@@ -180,23 +217,32 @@ export default {
     TabGroup,
     TabList,
     TabPanels,
-    TabPanel
+    TabPanel,
+    Box
   },
   props: {
-    course: {
-      type: Object as PropType<CourseEvaluationEntry>,
+    courses: {
+      type: [Object, Array] as PropType<CourseEvaluationEntry | CourseEvaluationEntry[]>,
       required: true
     } 
   },
-  setup({ course }, { emit }) {
+  setup({ courses }, { emit }) {
     const panelRef = ref<typeof TabPanels>();
     const step = ref(0);
     const isOpen = ref(true);
+    const course = !Array.isArray(courses) ? courses : courses[0];
+    const isSingle = !Array.isArray(courses) ? true : courses.length == 1;
+    const shouldEvaluateAll = ref(isSingle);
+    const tabOffsetStart = isSingle ? 1 : 2;
+
     const { 
       questionnaireQuery: { isFetching, isIdle, data, ...questionnaireQuery }, 
-      idQuery: { data: idQueryData, ...idQuery }
-    } = useEvaluationQuery(course.classID ?? course.code, course.classType ?? '3');
-    const { mutateAsync, isLoading: isProcessing } = useEvaluationMutation();
+      idQueries
+    } = useEvaluationQuery(
+      !Array.isArray(courses) 
+      ? [{classId: course.classID ?? course.code, classType: course.classType ?? '3'}] 
+      : courses.map(c => ({classId: c.classID ?? course.code, classType: c.classType ?? '3'})));
+    const { mutate, isLoading: isProcessing } = useEvaluationMutation();
     const totalQuestionsCount = computed(() => {
       if (isFetching.value || isIdle.value) {
         return 30;
@@ -222,13 +268,12 @@ export default {
 
     const shouldProceed = (catIdx: number) => {
       if (isFetching.value || isIdle.value) return false;
-      return step.value < 5 ? isCategoryHasAnswers(catIdx) : isCommentsFilledUp.value;
+      return step.value < 4 + tabOffsetStart ? isCategoryHasAnswers(catIdx) : isCommentsFilledUp.value;
     }
 
     const isCategoryHasAnswers = (catIdx: number) => {
-      const questionOffsetStart = 1;
-      if (catIdx < questionOffsetStart || catIdx > (data.value?.categories.length ?? 0) + questionOffsetStart) return true;
-      const idx = catIdx - questionOffsetStart;
+      if (catIdx < tabOffsetStart || catIdx > (data.value?.categories.length ?? 0) + tabOffsetStart) return true;
+      const idx = catIdx - tabOffsetStart;
       return data.value?.categories[idx]
         .questions.every((_, qi) => ratingAnswers.value[getQIndex(idx, qi)] !== 0) ?? false;
     }
@@ -290,18 +335,25 @@ export default {
       });
 
       if (ans === 'confirm') {
-        await mutateAsync({
-          ratings: ratingAnswers.value.splice(0, totalQuestionsCount.value),
-          comments: comments.value,
-          classID: idQueryData.value?.classID!,
-          classType: idQueryData.value?.classType!,
-          instructorID: idQueryData.value?.instructorID!
-        }, {
-          onSuccess: () => {
-            isOpen.value = false;
-            emit('close');
-          }
+        let successCount = 0;
+        const toBeEvaluated = Array.isArray(courses) && shouldEvaluateAll ? courses : [course];
+        toBeEvaluated.forEach((_, i) => {
+          mutate({
+            ratings: ratingAnswers.value.splice(0, totalQuestionsCount.value),
+            comments: comments.value,
+            classID: idQueries[i].data!.classID!,
+            classType: idQueries[i].data!.classType!,
+            instructorID: idQueries[i].data!.instructorID!
+          }, {
+            onSuccess: () => {
+              successCount++
+            }
+          });
         });
+        if (successCount === toBeEvaluated.length) {
+          isOpen.value = false;
+          emit('close');
+        }
       }
     }
 
@@ -310,7 +362,7 @@ export default {
     });
     
     onBeforeUnmount(() => {
-      idQuery.remove.value();
+      idQueries.forEach(q => q.remove());
       questionnaireQuery.remove.value();
       unwatchScroll();
     });
@@ -326,6 +378,11 @@ export default {
       isProcessing,
       ratingAnswers,
       comments,
+      courses,
+      course,
+      isSingle,
+      tabOffsetStart,
+      shouldEvaluateAll,
       submitEvaluation,
       warnUserOnClose,
       commentQuestions,
