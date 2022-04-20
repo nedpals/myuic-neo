@@ -17,7 +17,7 @@
                 <button 
                   :class="{ 'text-primary-500 bg-gradient-to-r from-transparent to-primary-100': selected }" 
                   class="w-full px-6 py-4 hover:bg-gray-100 font-semibold text-left">
-                  Instructions
+                  Reminders
                 </button>
               </tab>
               <tab v-slot="{ selected }" as="div" class="w-full" :key="cat.title" v-for="(cat, ci) in data.categories">
@@ -36,11 +36,36 @@
                   Comments
                 </button>
               </tab>
+              <tab v-slot="{ selected }" as="div" class="w-full">
+                <button 
+                  :disabled="data.categories.length + 2 > step"
+                  :class="{ 'text-primary-500 bg-gradient-to-r from-transparent to-primary-100': selected }" 
+                  class="w-full px-6 py-4 disabled:cursor-default disabled:text-gray-300 not-disabled:hover:bg-gray-100 font-semibold text-left">
+                  Summary
+                </button>
+              </tab>
             </tab-list>
             <tab-panels ref="panelRef" class="w-full lg:w-3/4 md:min-h-[60vh] md:max-h-[60vh] pt-3 pb-6 overflow-y-auto">
-              <tab-panel class="text-center px-6">
-                <!-- TODO: improve styling -->
-                <p v-html="data.instructions"></p>
+              <tab-panel class="px-3 md:px-6">
+                <div class="mb-3 text-center">
+                  <h3 class="text-2xl font-semibold">Reminders</h3>
+                  <p class="text-lg text-gray-600 dark:text-primary-200">
+                    Please consider the following be considered when evaluating the teacher
+                  </p>
+                </div>
+                <ol class="list-inside list-decimal space-y-2">
+                  <li>Read all the items in each of the category the instructor will be evaluated.</li>
+                  <li>Read the description of each of the rating code.</li>
+                  <li>
+                    Rate the faculty according to the rubric of the rating scale. The Rating Scale for this classroom evaluation instrument is as follows:
+                    <ul class="mt-2 ml-2 list-inside list-disc space-y-1">
+                      <li class="font-bold">4 - Excellent</li>
+                      <li class="font-bold">3 - Very Good</li>
+                      <li class="font-bold">2 - Good</li>
+                      <li class="font-bold">1 - Fair</li>
+                    </ul>
+                  </li>
+                </ol>
               </tab-panel>
           
               <tab-panel :key="cat.title" v-for="(cat, i) in data.categories" class="flex flex-col divide divide-y">
@@ -60,11 +85,14 @@
                     <div class="flex flex-col w-7/8 px-3 md:px-6 py-2 md:py-4">
                       <p class="pb-3">{{ q }}</p>
                       
-                      <div class="w-full flex md:space-x-2 <sm:space-y-2 <sm:flex-wrap">
+                      <div 
+                        :disabled="qi != 0 && ratingAnswers[getQIndex(i, qi - 1)] == '0'" 
+                        class="disabled:opacity-40 w-full flex md:space-x-2 <sm:space-y-2 <sm:flex-wrap">
                         <button 
                           v-for="(rLabel, r) in ratings" 
                           @click="ratingAnswers[getQIndex(i, qi)] = parseInt(r)"
                           :key="'r_' + r" 
+                          :disabled="qi != 0 && ratingAnswers[getQIndex(i, qi - 1)] == '0'"
                           :class="[ratingAnswers[getQIndex(i, qi)].toString() === r  ? 'is-primary' : 'is-light']" 
                           class="button w-full md:flex-1">
                           {{ rLabel }}
@@ -81,37 +109,40 @@
                     <h3 class="text-2xl font-semibold">Comments</h3>
                   </div>
 
-                  <!-- TODO: add form validation check -->
-                  <div class="form-group">
-                    <!-- What do you believe the instructor has done especially well in conducting this course? -->
-                    <div class="form-control w-full">
-                      <label for="address">What do you believe the instructor has done especially well in conducting this course?</label>
-                      <textarea class="h-24" v-model="comments[0]" />
+                  <form @submit.prevent="">
+                    <div class="form-group">
+                      <div class="form-control w-full" :key="'comment_' + ci" v-for="(cq, ci) in commentQuestions">
+                        <label for="address">{{ cq }}</label>
+                        <textarea class="h-24" v-model="comments[ci]" required />
+                      </div>
                     </div>
-                    <!-- What might the instructor do to enhance the course?  -->
-                    <div class="form-control w-full">
-                      <label for="address">What might the instructor do to enhance the course?</label>
-                      <textarea class="h-24" v-model="comments[1]" />
-                    </div>
-                    <!-- Comments -->
-                    <div class="form-control w-full">
-                      <label for="address">Comments</label>
-                      <textarea class="h-24" v-model="comments[2]" />
-                    </div>
-                  </div>
+                  </form>
                 </div>
               </tab-panel>
 
-              <tab-panel class="flex flex-col divide divide-y px-3 md:px-6">
+              <tab-panel class="flex flex-col">
                 <div class="flex flex-col">
-                  <div class="mb-4 text-center">
+                  <div class="mb-4 text-center px-3 md:px-6">
                     <h3 class="text-2xl font-semibold">Summary</h3>
+                    <p class="text-lg text-gray-600 dark:text-primary-200">Review first your inputs before submitting.</p>
                   </div>
 
-                  <!-- TODO: add summary of all inputs (questions + comments) before proceeding -->
-                  <div class="">
+                  <section :key="cat.title" v-for="(cat, i) in data.categories" class="border-t py-3 px-3 md:px-6">
+                    <h3 class="font-semibold mb-2">{{ cat.title }}</h3>
+                    <div class="flex flex-col space-y-4">
+                      <div 
+                        :key="'summary_q_' + i + '_' + qi" v-for="(q, qi) in cat.questions" 
+                        class="flex justify-between">
+                        <p class="w-3/4">{{ q }}</p>
+                        <p class="w-1/4 font-semibold text-right">{{ ratingAnswers[getQIndex(i, qi)] === 0 ? 'None' : ratings[parseInt(ratingAnswers[getQIndex(i, qi)])] }}</p>
+                      </div>
+                    </div>
+                  </section>
 
-                  </div>
+                  <section :key="'summary_comment_' + ci" v-for="(cq, ci) in commentQuestions" class="border-t py-3 px-3 md:px-6">
+                    <h3 class="mb-2">{{ cq }}</h3>
+                    <p class="font-semibold">{{ comments[ci].length === 0 ? 'N/A' : comments[ci] }}</p>
+                  </section>
                 </div>
               </tab-panel>
             </tab-panels>
@@ -122,7 +153,7 @@
     <template #footer>
       <div class="flex justify-end space-x-2">
         <button v-if="step > 0" @click="step--" class="button is-light">Previous</button>
-        <button v-if="step < 5" @click="step++" class="button is-primary px-6 py-2">Next</button>
+        <button v-if="step < 6" @click="step++" :disabled="!shouldProceed(step)" class="button is-primary px-6 py-2">Next</button>
         <button v-else @click="submitEvaluation" class="button is-primary px-6 py-2">Submit</button>
       </div>
     </template>
@@ -130,7 +161,7 @@
 </template>
 
 <script lang="ts">
-import { computed, onBeforeUnmount, PropType, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, PropType, readonly, ref, watch } from 'vue'
 import ModalWindow from '../../ui/ModalWindow.vue'
 import { ratings, CourseEvaluationEntry } from '@myuic-api/types'
 import { useEvaluationMutation, useEvaluationQuery } from '../../../stores/evaluationStore'
@@ -189,6 +220,29 @@ export default {
       return idx;
     }
 
+    const shouldProceed = (catIdx: number) => {
+      if (isFetching.value || isIdle.value) return false;
+      return step.value < 5 ? isCategoryHasAnswers(catIdx) : isCommentsFilledUp.value;
+    }
+
+    const isCategoryHasAnswers = (catIdx: number) => {
+      const questionOffsetStart = 1;
+      if (catIdx < questionOffsetStart || catIdx > (data.value?.categories.length ?? 0) + questionOffsetStart) return true;
+      const idx = catIdx - questionOffsetStart;
+      return data.value?.categories[idx]
+        .questions.every((_, qi) => ratingAnswers.value[getQIndex(idx, qi)] !== 0) ?? false;
+    }
+
+    const isCommentsFilledUp = computed(() => {
+      return comments.value.every(c => c.length !== 0);
+    });
+
+    const commentQuestions = readonly([
+      'What do you believe the instructor has done especially well in conducting this course?',
+      'What might the instructor do to enhance the course?',
+      'Additional comments'
+    ]);
+
     const warnUserOnClose = async (newOpen: boolean) => {
       if (newOpen || (!newOpen && isOpen.value === newOpen)) return;
       const ans = await showDialog({
@@ -215,7 +269,7 @@ export default {
     }
 
     // data
-    const ratingAnswers = ref([...Array(29).keys()].map(() => 1)); 
+    const ratingAnswers = ref([...Array(29).keys()].map(() => 0)); 
     const comments = ref<[string, string, string]>(['', '', '']);
     const submitEvaluation = async () => {
       const ans = await showDialog({
@@ -274,6 +328,8 @@ export default {
       comments,
       submitEvaluation,
       warnUserOnClose,
+      commentQuestions,
+      shouldProceed,
       step
     }
   }

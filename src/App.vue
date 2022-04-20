@@ -139,6 +139,10 @@ body {
   @apply text-gray-700 font-sans-2 dark:text-white;
 }
 
+b {
+  @apply font-bold;
+}
+
 /* Skeleton */
 /* TODO: fix this */
 
