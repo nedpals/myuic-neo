@@ -242,7 +242,7 @@ export default {
       !Array.isArray(courses) 
       ? [{classId: course.classID ?? course.code, classType: course.classType ?? '3'}] 
       : courses.map(c => ({classId: c.classID ?? course.code, classType: c.classType ?? '3'})));
-    const { mutate, isLoading: isProcessing } = useEvaluationMutation();
+    const { mutateAsync, isLoading: isProcessing } = useEvaluationMutation();
     const totalQuestionsCount = computed(() => {
       if (isFetching.value || isIdle.value) {
         return 30;
@@ -289,7 +289,7 @@ export default {
     ]);
 
     const warnUserOnClose = async (newOpen: boolean) => {
-      if (newOpen || (!newOpen && isOpen.value === newOpen)) return;
+      if (newOpen || (!newOpen && isOpen.value === newOpen) || isProcessing.value) return;
       const ans = await showDialog({
         title: 'Warning',
         content: 'Closing this will lose your progress. Would you like to proceed?',
@@ -336,9 +336,9 @@ export default {
 
       if (ans === 'confirm') {
         let successCount = 0;
-        const toBeEvaluated = Array.isArray(courses) && shouldEvaluateAll ? courses : [course];
-        toBeEvaluated.forEach((_, i) => {
-          mutate({
+        const toBeEvaluated = Array.isArray(courses) && shouldEvaluateAll.value ? courses.slice() : [course];
+        for (const i of toBeEvaluated.keys()) {
+          await mutateAsync({
             ratings: ratingAnswers.value.splice(0, totalQuestionsCount.value),
             comments: comments.value,
             classID: idQueries[i].data!.classID!,
@@ -349,7 +349,10 @@ export default {
               successCount++
             }
           });
-        });
+        }
+        if (import.meta.env.DEV) {
+          console.log({toBeEvaluated, successCount});
+        }
         if (successCount === toBeEvaluated.length) {
           isOpen.value = false;
           emit('close');
