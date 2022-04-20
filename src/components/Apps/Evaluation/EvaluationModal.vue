@@ -11,7 +11,7 @@
           <loader class="h-14 w-14" />
         </div>
 
-        <div class="flex w-full h-full" v-if="!isLoading">
+        <div class="flex w-full h-full" v-else-if="!isDone">
           <tab-group vertical manual :selected-index="step" @change="step = $event">
             <tab-list class="w-1/4 flex flex-col border-r <md:hidden">
               <tab v-slot="{ selected }" as="div" class="w-full">
@@ -185,6 +185,12 @@
             </tab-panels>
           </tab-group>
         </div>
+
+        <div class="flex flex-col items-center justify-center w-full h-full py-16" v-else>
+          <icon-done class="w-36 h-36 text-gray-400 mb-4" />
+          <h2 class="text-3xl font-semibold">Your evaluation is done!</h2>
+          <p class="text-xl text-gray-500">Please wait for the evaluation utility to close.</p>
+        </div>
       </loading-container>
 
     <template #footer>
@@ -209,6 +215,7 @@ import { modalEventBus, showDialog } from '../../../modal'
 import Box from '../../ui/Box.vue'
 import { notify } from 'notiwind'
 import { useQueryClient } from 'vue-query'
+import IconDone from '~icons/ion/happy-outline';
 
 export default {
   emits: ['close'],
@@ -221,7 +228,8 @@ export default {
     TabList,
     TabPanels,
     TabPanel,
-    Box
+    Box,
+    IconDone
   },
   props: {
     courses: {
@@ -240,6 +248,7 @@ export default {
     const tabOffsetStart = isSingle ? 1 : 2;
     const modalId = ref<number | null>(null);
     const queryClient = useQueryClient();
+    const isDone = ref(false);
 
     const { 
       questionnaireQuery: { isFetching, isIdle, data, ...questionnaireQuery }, 
@@ -294,8 +303,17 @@ export default {
       'Additional comments'
     ]);
 
+    const closeModal = () => {
+      if (modalId.value !== null) {
+        // FIXME:
+        modalEventBus.emit('modal_manual_close', { id: modalId.value });
+        modalEventBus.emit('modal_closed', { id: modalId.value });
+      }
+      emit('close');
+    }
+
     const warnUserOnClose = async (newOpen: boolean) => {
-      if (isOpen.value === newOpen || isProcessing.value) {
+      if (isDone.value || isOpen.value === newOpen || isProcessing.value) {
         return;
       }
       const ans = await showDialog({
@@ -317,14 +335,7 @@ export default {
 
       if (ans === 'yes') {
         isOpen.value = newOpen;
-        if (modalId.value !== null) {
-          // FIXME:
-          modalEventBus.emit('modal_manual_close', { id: modalId.value });
-          modalEventBus.emit('modal_closed', { id: modalId.value });
-        }
-        setTimeout(() => {
-          emit('close');
-        }, 250);
+        closeModal();
       }
     }
 
@@ -376,12 +387,12 @@ export default {
             type: 'success',
             text: msg
           }, 3000);
+          isDone.value = true;
           await queryClient.refetchQueries({ 
             exact: true, 
             queryKey: 'evaluation' 
           });
-          isOpen.value = false;
-          emit('close');
+          closeModal();
         }
       }
     }
@@ -421,7 +432,8 @@ export default {
       commentQuestions,
       shouldProceed,
       modalRef,
-      step
+      step,
+      isDone
     }
   }
 }
