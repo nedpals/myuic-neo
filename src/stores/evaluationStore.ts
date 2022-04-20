@@ -43,22 +43,9 @@ export const useEvaluationListQuery = () => {
 }
 
 export const useEvaluationMutation = () => {
-  const queryClient = useQueryClient();
-
   return useMutation((newEval: CourseEvaluation) => client.http.postJson(RoutePath('facultyEvaluationSubmit'), newEval), {
     onError: (err) => {
       catchAndNotifyError(err);
-    },
-    onSuccess: async ({data}) => {
-      notify({
-        type: 'success',
-        text: data.message
-      }, 3000);
-
-      await queryClient.refetchQueries({ 
-          exact: true, 
-          queryKey: 'evaluation' 
-        });
     }
   });
 }

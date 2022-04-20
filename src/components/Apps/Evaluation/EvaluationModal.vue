@@ -207,6 +207,8 @@ import Loader from '../../ui/Loader.vue'
 import { TabGroup, Tab, TabList, TabPanels, TabPanel } from '@headlessui/vue'
 import { modalEventBus, showDialog } from '../../../modal'
 import Box from '../../ui/Box.vue'
+import { notify } from 'notiwind'
+import { useQueryClient } from 'vue-query'
 
 export default {
   emits: ['close'],
@@ -348,6 +350,7 @@ export default {
 
       if (ans === 'confirm') {
         let successCount = 0;
+        let msg = '';
         const toBeEvaluated = Array.isArray(courses) && shouldEvaluateAll.value ? courses.slice() : [course];
         const ratings = ratingAnswers.value.slice(0, totalQuestionsCount.value);
         for (const i of toBeEvaluated.keys()) {
@@ -358,8 +361,9 @@ export default {
             classType: idQueries[i].data!.classType!,
             instructorID: idQueries[i].data!.instructorID!
           }, {
-            onSuccess: () => {
+            onSuccess: ({ data }) => {
               successCount++
+              msg = data.message;
             }
           });
         }
@@ -367,6 +371,15 @@ export default {
           console.log({toBeEvaluated, successCount});
         }
         if (successCount === toBeEvaluated.length) {
+          const queryClient = useQueryClient();
+          notify({
+            type: 'success',
+            text: msg
+          }, 3000);
+          await queryClient.refetchQueries({ 
+            exact: true, 
+            queryKey: 'evaluation' 
+          });
           isOpen.value = false;
           emit('close');
         }
