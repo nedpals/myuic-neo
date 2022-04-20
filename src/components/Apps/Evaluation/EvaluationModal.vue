@@ -100,7 +100,7 @@
                 <div class="form-group">
                   <div class="form-control is-horizontal w-full">
                     <input type="checkbox" id="should_evaluate_all" v-model="shouldEvaluateAll">
-                    <label for="should_evaluate_all">Do you want to evaluate all the mentioned courses together?</label>
+                    <label for="should_evaluate_all">Evaluate all of the courses aforementioned at once.</label>
                   </div>
                 </div>
               </tab-panel>
@@ -239,6 +239,7 @@ export default {
     const shouldEvaluateAll = ref(isSingle);
     const tabOffsetStart = isSingle ? 1 : 2;
     const modalId = ref<number | null>(null);
+    const queryClient = useQueryClient();
 
     const { 
       questionnaireQuery: { isFetching, isIdle, data, ...questionnaireQuery }, 
@@ -371,7 +372,6 @@ export default {
           console.log({toBeEvaluated, successCount});
         }
         if (successCount === toBeEvaluated.length) {
-          const queryClient = useQueryClient();
           notify({
             type: 'success',
             text: msg
