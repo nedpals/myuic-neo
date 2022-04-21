@@ -47,7 +47,7 @@
 </template>
 
 <script lang="ts">
-import * as auth from './auth';
+import { subscribeAuth } from './auth';
 import { useTitle } from '@vueuse/core';
 import { useDarkMode } from './stores/uiStore';
 import { computed, onBeforeUnmount } from 'vue';
@@ -56,11 +56,6 @@ import NotificationContainer from './components/ui/NotificationContainer.vue';
 import { IS_NATIVE } from './utils';
 import IconFeedback from '~icons/ion/chatbox-ellipses';
 import { useRouter } from 'vue-router';
-import { notify } from 'notiwind';
-import { client } from './client';
-import { eventbus } from '@myuic-api/client/lib/event';
-import { useStudentStore } from './stores/studentStore';
-import { useQueryClient } from 'vue-query';
 import { App } from '@capacitor/app';
 import { useModalManager } from './modal';
 import { PluginListenerHandle } from '@capacitor/core';
@@ -73,40 +68,12 @@ export default {
     const feedbackUrl = computed(() => import.meta.env.VITE_FEEDBACK_URL ?? null);
     const { subscribeDarkMode } = useDarkMode();
     const unsubscribeDarkMode = subscribeDarkMode();
-    const queryClient = useQueryClient();
-
-    eventbus.on('changeAuthenticatedStatus', ({ newStatus, oldStatus }) => {
-      if (oldStatus && !newStatus) {
-        router.replace({ name: 'login' });
-        useStudentStore().fullReset();
-        queryClient.clear();
-      }
-    })
-
-    eventbus.on('sessionRefresh', () => {
-      notify({
-        type: 'info',
-        text: 'Refreshing your session...'
-      }, 1000);
-    });
-
-    eventbus.on('sessionExpired', () => {
-      notify({
-        type: 'error',
-        text: 'Your session has expired. Please log in again.'
-      }, 3000);
-    })
+    const unsubscribeAuth = subscribeAuth();
+    const { modalCount, closeLastModal, subscribeModalChange } = useModalManager();
+    const unsubscribeModalChange = subscribeModalChange();
 
     useReloadPrompt();
     useTitle('MyUIC');
-
-    auth.retrieve();
-    if (client.isAuthenticated()) {
-      auth.refresh();    
-    }
-
-    const { modalCount, closeLastModal, subscribeModalChange } = useModalManager();
-    const unsubscribeModalChange = subscribeModalChange();
 
     let backButtonPlugin: PluginListenerHandle;
 
@@ -126,6 +93,7 @@ export default {
     onBeforeUnmount(() => {
       unsubscribeModalChange();
       unsubscribeDarkMode();
+      unsubscribeAuth();
       if (backButtonPlugin) backButtonPlugin.remove();
     });
 
