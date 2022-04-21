@@ -1,6 +1,6 @@
 import { client, eventbus } from './client';
 import { Storage } from '@capacitor/storage';
-import { useQueryClient } from 'vue-query';
+import { useMutation, useQueryClient } from 'vue-query';
 import { useStudentStore } from './stores/studentStore';
 import { useRouter } from 'vue-router';
 import { notify } from 'notiwind';
@@ -58,9 +58,19 @@ export function persistTokens(token: string, refreshToken: string) {
     });
 }
 
-export async function login(id: string, password: string) {
-  const { token, refreshToken } = await client.login(id, password);
-  persistTokens(token, refreshToken);
+export function useLoginMutation() {
+  const { mutateAsync, isLoading } = useMutation(
+    ({ id, password }:{ id: string, password: string }) => client.login(id, password), 
+  {
+    onSuccess: ({ token, refreshToken }) => {
+      persistTokens(token, refreshToken);
+    }
+  });
+
+  return {
+    login: (id: string, password: string) => mutateAsync({ id, password }),
+    isProcessing: isLoading
+  }
 }
 
 export async function refresh() {

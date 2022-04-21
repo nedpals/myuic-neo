@@ -5,7 +5,7 @@
 
       </div>
       <div class="relative flex md:items-center bg-white dark:bg-primary-800 <md:h-full w-full md:w-100 shadow-lg p-8 z-10">
-        <loading-container :is-loading="isAuthProcessing" v-slot="{ isLoading }">
+        <loading-container :is-loading="isProcessing" v-slot="{ isLoading }">
           <div 
             v-if="isLoading" 
             class="bg-white dark:bg-primary-800 bg-opacity-50 dark:bg-opacity-50 h-full w-full absolute inset-0 rounded-lg flex items-center justify-center">
@@ -49,17 +49,17 @@
 import backgroundImageUrl from '../assets/BG4.jpeg';
 import Loader from '../components/ui/Loader.vue';
 import LoadingContainer from '../components/ui/LoadingContainer.vue';
-import { login as authLogin } from '../auth';
+import { useLoginMutation } from '../auth';
 import { useStudentStore } from '../stores/studentStore';
 import IconLogo from '~icons/custom/logo';
 import DarkModeToggle from '../components/ui/DarkModeToggle.vue';
-import { catchAndNotifyError } from '../utils';
 
 export default {
   components: { LoadingContainer, Loader, IconLogo, DarkModeToggle },
   setup() {
     const studentStore = useStudentStore();
-    return { studentStore };
+    const { login, isProcessing } = useLoginMutation();
+    return { studentStore, login, isProcessing };
   },
   computed: {
     backgroundImageCss(): Record<string, any> {
@@ -70,27 +70,19 @@ export default {
       }
     }
   },
-  data() {
-    return {
-      isAuthProcessing: false,
-    }
-  },
   methods: {
     async login(e: SubmitEvent) {
       try {
-        this.isAuthProcessing = true;
         if (!e.target || !(e.target instanceof HTMLFormElement)) return;
         const fd = new FormData(e.target);
-        await authLogin(fd.get('student_id')?.toString()!, fd.get('password')?.toString()!);
+        const id = fd.get('student_id')?.toString()!;
+        const pw = fd.get('password')?.toString()!;
+        await this.login(id, pw);
         await this.studentStore.getCurrentSemesterId();
         e.target.reset();
         this.$router.replace({ name: 'home' });
-      } catch(e) {
+      } catch (e) {
         console.error(e);
-        this.$notify
-        catchAndNotifyError(e);
-      } finally {
-        this.isAuthProcessing = false;
       }
     }
   }
