@@ -8,15 +8,15 @@
       <div class="form-group">
         <div class="form-control w-full md:w-1/2 lg:w-1/3">
           <label for="lrn_number">LRN Number</label>
-          <input type="text" name="lrn_number" id="lrn_number" :value="studentStore.student.LRN" readonly />
+          <input type="text" name="lrn_number" id="lrn_number" :value="student.LRN" readonly />
         </div>
         <div class="form-control w-full md:w-1/2 lg:w-1/3">
           <label for="id_number">ID Number</label>
-          <input type="text" name="id_number" id="id_number" :value="studentStore.student.number" readonly />
+          <input type="text" name="id_number" id="id_number" :value="student.number" readonly />
         </div>
         <div class="form-control w-full md:w-1/2 lg:w-1/3">
           <label for="acr_number">ACR Number</label>
-          <input type="text" name="acr_number" id="acr_number" :value="studentStore.student.ACR" readonly />
+          <input type="text" name="acr_number" id="acr_number" :value="student.ACR" readonly />
           <span class="hint-text">For foreign students only</span>
         </div>
       </div>
@@ -31,20 +31,20 @@
       <div class="form-group">
         <div class="form-control w-full md:w-1/2">
           <label for="last_name">Last Name</label>
-          <input type="text" name="last_name" id="last_name" :value="studentStore.student.lastName" />
+          <input type="text" name="last_name" id="last_name" :value="student.lastName" />
         </div>
         <div class="form-control w-full md:w-1/2">
           <label for="first_name">First Name</label>
-          <input type="text" name="first_name" id="first_name" :value="studentStore.student.firstName" />
+          <input type="text" name="first_name" id="first_name" :value="student.firstName" />
         </div>
         <div class="form-control w-full md:w-1/2">
           <label for="middle_name">Middle Name</label>
-          <input type="text" name="middle_name" id="middle_name" :value="studentStore.student.middleName" />
+          <input type="text" name="middle_name" id="middle_name" :value="student.middleName" />
           <span class="hint-text">The full version of your middle initial.</span>
         </div>
         <div class="form-control w-full md:w-1/2">
           <label for="suffix">Suffix</label>
-          <input type="text" name="suffix" id="suffix" :value="studentStore.student.suffix" />
+          <input type="text" name="suffix" id="suffix" :value="student.suffix" />
         </div>
       </div>
 
@@ -53,7 +53,7 @@
         <div class="form-control w-full md:w-1/2">
           <label for="gender">Gender</label>
           <loading-container :is-loading="gendersQuery.isLoading" v-slot="{ isLoading }">
-            <select name="gender" id="gender" :value="studentStore.student.gender" :disabled="isLoading">
+            <select name="gender" id="gender" :value="student.gender" :disabled="isLoading">
               <option v-if="isLoading" selected>Loading...</option>
               <option v-for="g in gendersQuery.data" :key="g" :value="g">{{ g }}</option>
             </select>
@@ -61,11 +61,11 @@
         </div>
         <div class="form-control w-full md:w-1/2">
           <label for="birth_date">Birth Date</label>
-          <input type="text" name="birth_date" id="birth_date" :value="studentStore.student.birthDate" />
+          <input type="text" name="birth_date" id="birth_date" :value="student.birthDate" />
         </div>
         <div class="form-control w-full">
           <label for="birth_place">Birth Place</label>
-          <input type="text" name="birth_place" id="birth_place" :value="studentStore.student.birthPlace" />
+          <input type="text" name="birth_place" id="birth_place" :value="student.birthPlace" />
         </div>
       </div>
 
@@ -74,7 +74,7 @@
         <div class="form-control w-full md:w-1/2">
           <label for="nationality">Nationality</label>
           <loading-container :is-loading="nationalitiesQuery.isLoading" v-slot="{ isLoading }">
-            <select name="nationality" id="nationality" :value="studentStore.student.nationality" :disabled="isLoading">
+            <select name="nationality" id="nationality" :value="student.nationality" :disabled="isLoading">
               <option v-if="isLoading" selected>Loading...</option>
               <option v-for="n in nationalitiesQuery.data" :key="n" :value="n">{{ n }}</option>
             </select>
@@ -83,7 +83,7 @@
         <div class="form-control w-full md:w-1/2">
           <label for="ethnic_group">Ethnic Group</label>
           <loading-container :is-loading="ethnicGroupsQuery.isLoading" v-slot="{ isLoading }">
-            <select name="ethnic_group" id="ethnic_group" :value="studentStore.student.ethnicGroup" :disabled="isLoading">
+            <select name="ethnic_group" id="ethnic_group" :value="student.ethnicGroup" :disabled="isLoading">
               <option v-if="isLoading" selected>Loading...</option>
               <option v-for="eg in ethnicGroupsQuery.data" :key="eg" :value="eg">{{ eg }}</option>
             </select>
@@ -96,7 +96,7 @@
         <div class="form-control w-full">
           <label for="religion">Religion</label>
           <loading-container :is-loading="religionsQuery.isLoading" v-slot="{ isLoading }">
-            <select name="religion" id="religion" :value="studentStore.student.religion" :disabled="isLoading">
+            <select name="religion" id="religion" :value="student.religion" :disabled="isLoading">
               <option v-if="isLoading" selected>Loading...</option>
               <option v-for="r in religionsQuery.data" :key="r" :value="r">{{ r }}</option>
             </select>
@@ -104,12 +104,12 @@
         </div>
 
         <div class="form-control is-horizontal w-full">
-          <input type="checkbox" name="has_baptized" id="has_baptized" :checked="studentStore.student.baptized">
+          <input type="checkbox" name="has_baptized" id="has_baptized" :checked="student.baptized">
           <label for="has_baptized">I am baptized.</label>
         </div>
 
         <div class="form-control is-horizontal w-full">
-          <input type="checkbox" name="has_confirmed" id="has_confirmed" :checked="studentStore.student.confirmed">
+          <input type="checkbox" name="has_confirmed" id="has_confirmed" :checked="student.confirmed">
           <label for="has_confirmed">I am confirmed. (For Roman Catholics)</label>
         </div>
       </div>
@@ -118,11 +118,11 @@
       <div class="form-group">
         <div class="form-control w-full md:w-1/2">
           <label for="email_address">E-mail Address</label>
-          <input type="email" name="email_address" id="email_address" :value="studentStore.student.email" />
+          <input type="email" name="email_address" id="email_address" :value="student.email" />
         </div>
         <div class="form-control w-full md:w-1/2">
           <label for="contact_no">Contact Number</label>
-          <input type="text" name="contact_no" id="contact_no" :value="studentStore.student.contactNumber" />
+          <input type="text" name="contact_no" id="contact_no" :value="student.contactNumber" />
         </div>
       </div>
 
@@ -130,19 +130,19 @@
       <div class="form-group">
         <div class="form-control w-full">
           <label for="address">Full Address</label>
-          <input type="text" name="address" id="address" :value="studentStore.student.address.address" />
+          <input type="text" name="address" id="address" :value="student.address.address" />
         </div>
         <div class="form-control w-full md:w-1/2">
           <label for="city">City</label>
-          <input type="text" name="city" id="city" :value="studentStore.student.address.city" />
+          <input type="text" name="city" id="city" :value="student.address.city" />
         </div>
         <div class="form-control w-full md:w-1/2">
           <label for="Province">Province</label>
-          <input type="text" name="province" id="province" :value="studentStore.student.address.province" />
+          <input type="text" name="province" id="province" :value="student.address.province" />
         </div>
         <div class="form-control w-full md:w-1/2">
           <label for="region">Region</label>
-          <input type="text" name="region" id="region" :value="studentStore.student.address.region" />
+          <input type="text" name="region" id="region" :value="student.address.region" />
         </div>
       </div>
     </div>
@@ -152,18 +152,18 @@
 <script>
 import LoadingContainer from '../../components/ui/LoadingContainer.vue';
 import { useGendersQuery, useNationalitiesQuery, useEthnicGroupsQuery, useReligionsQuery } from '../../stores/formStore';
-import { useStudentStore } from '../../stores/studentStore'
+import { useStudentQuery } from '../../stores/studentStore'
 export default {
   components: { LoadingContainer },
   setup() {
-    const studentStore = useStudentStore();
+    const { query: { data: student } } = useStudentQuery();
     const gendersQuery = useGendersQuery();
     const nationalitiesQuery = useNationalitiesQuery();
     const ethnicGroupsQuery = useEthnicGroupsQuery();
     const religionsQuery = useReligionsQuery();
 
     return { 
-      studentStore,
+      student,
       gendersQuery,
       nationalitiesQuery,
       ethnicGroupsQuery,

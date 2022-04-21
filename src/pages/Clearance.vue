@@ -24,7 +24,7 @@
 
             <skeleton custom-class="h-7.5 md:h-9 w-96 mb-4">
               <h1 class="text-3xl md:text-4xl font-semibold mb-2">
-                {{ isCleared ? 'You\'re cleared' : 'You\'re not cleared' }}, {{ studentStore.normalizedFirstName }}!
+                {{ isCleared ? 'You\'re cleared' : 'You\'re not cleared' }}, {{ studentFirstName }}!
               </h1>
             </skeleton>
 
@@ -120,7 +120,7 @@ import LoadingContainer from '../components/ui/LoadingContainer.vue';
 import PromiseLoader from '../components/ui/PromiseLoader.vue';
 import SelfModalWindow from '../components/ui/SelfModalWindow.vue';
 import Skeleton from '../components/ui/Skeleton.vue';
-import { useStudentStore } from '../stores/studentStore';
+import { useStudentQuery, useStudentStore } from '../stores/studentStore';
 import { catchAndNotifyError } from '../utils';
 import ClearanceStatusIcon from '../components/Clearance/ClearanceStatusIcon.vue';
 import { generateClearancePDF, useClearanceQuery, useClearanceQueryUtilities } from '../stores/clearanceStore';
@@ -141,6 +141,7 @@ export default {
     const { data, isFetching, isIdle } = clearanceQuery;
 
     const studentStore = useStudentStore();
+    const { normalizedFirstName: studentFirstName } = useStudentQuery();
     const statusText = (status: 'cleared' | 'not_cleared' | 'unknown') => {
       return status == 'cleared' 
         ? 'Cleared'
@@ -164,6 +165,7 @@ export default {
 
     return {
       studentStore,
+      studentFirstName,
       clearedRequirementsCount,
       statusColor,
       statusText,

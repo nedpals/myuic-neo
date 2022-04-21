@@ -50,16 +50,18 @@ import backgroundImageUrl from '../assets/BG4.jpeg';
 import Loader from '../components/ui/Loader.vue';
 import LoadingContainer from '../components/ui/LoadingContainer.vue';
 import { useLoginMutation } from '../auth';
-import { useStudentStore } from '../stores/studentStore';
+import { prefetchStudent, useStudentStore } from '../stores/studentStore';
 import IconLogo from '~icons/custom/logo';
 import DarkModeToggle from '../components/ui/DarkModeToggle.vue';
+import { useQueryClient } from 'vue-query';
 
 export default {
   components: { LoadingContainer, Loader, IconLogo, DarkModeToggle },
   setup() {
     const studentStore = useStudentStore();
     const { login, isProcessing } = useLoginMutation();
-    return { studentStore, login, isProcessing };
+    const queryClient = useQueryClient();
+    return { studentStore, login, isProcessing, queryClient };
   },
   computed: {
     backgroundImageCss(): Record<string, any> {
@@ -78,6 +80,7 @@ export default {
         const id = fd.get('student_id')?.toString()!;
         const pw = fd.get('password')?.toString()!;
         await this.login(id, pw);
+        await prefetchStudent(this.queryClient);
         await this.studentStore.getCurrentSemesterId();
         e.target.reset();
         this.$router.replace({ name: 'home' });

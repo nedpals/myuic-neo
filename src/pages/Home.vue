@@ -1,14 +1,14 @@
 <template>
   <dashboard-scaffold container-class="max-w-3xl mx-auto w-full <md:px-4 <lg:px-2">
     <div class="text-center py-8 md:py-12 flex flex-col items-center">
-      <loading-container :is-loading="studentStore.isEmpty" v-slot="{ isLoading }">
+      <loading-container :is-loading="isStudentLoading" v-slot="{ isLoading }">
         <div
           :style="isLoading ? {} : {backgroundImage: 'url(./default_avatar.png)'}"
           :class="[isLoading ? 'animate-pulse bg-gray-200' : 'bg-primary-200']"
           class="h-32 w-32 md:h-42 md:w-42 rounded-full mb-4 md:mb-8 bg-cover"></div>
         <skeleton custom-class="h-9 min-w-64 max-w-90 w-full bg-gray-200 mb-5 rounded-2xl">
           <h1 class="text-4xl font-semibold mb-2">
-            {{ welcomeGreeting }}, {{ studentStore.normalizedFirstName }}!
+            {{ welcomeGreeting }}, {{ studentFirstName }}!
           </h1>
         </skeleton>
         <skeleton custom-class="h-6 min-w-48 max-w-64 w-full bg-gray-200 rounded-xl">
@@ -120,7 +120,7 @@ import IconReceiptOutline from '~icons/ion/receipt-outline';
 import IconCashOutline from '~icons/ion/cash-outline';
 import IconGClassroom from '~icons/custom/google-classroom';
 
-import { useStudentStore, useResourceLinkQuery } from '../stores/studentStore';
+import { useResourceLinkQuery, useStudentQuery } from '../stores/studentStore';
 import SelfModal from '../components/ui/SelfModal.vue';
 import { formatDatetime, getPeriod, now } from '../utils';
 import DashboardScaffold from '../components/ui/DashboardScaffold.vue';
@@ -136,7 +136,7 @@ import { useClearanceQuery, useClearanceQueryUtilities } from '../stores/clearan
 export default {
   components: { PromiseLoader, Box, LoadingContainer, IconGClassroom, IconBookmarkOutline, IconMailOpenOutline, IconBookOutline, IconReceiptOutline, IconChevronRight, IconCashOutline, SelfModal, DashboardScaffold, Skeleton, AccountBalanceWidget, PaymentHistory, ScheduleList, ClearanceStatusIcon },
   setup() {
-    const studentStore = useStudentStore();
+    const { isLoading: isStudentLoading, normalizedFirstName: studentFirstName } = useStudentQuery();
     const { isFetching: isRLinksFetching, isIdle: isRLinksIdle, data: resourceLinks } = useResourceLinkQuery();
     const { isCleared: isClearanceCleared, isLoading: isClearanceLoading } = useClearanceQueryUtilities(useClearanceQuery());
 
@@ -152,7 +152,8 @@ export default {
       resourceLinks,
       isClearanceCleared,
       isClearanceLoading,
-      studentStore,
+      isStudentLoading,
+      studentFirstName,
       welcomeGreeting,
       todayDate
     }

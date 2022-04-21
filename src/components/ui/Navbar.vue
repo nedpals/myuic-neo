@@ -4,7 +4,7 @@
     class="main-navbar md:border-l md:border-r border-gray-300 dark:border-primary-700 md:h-full md:w-24 lg:w-64 fixed h-screen z-40 transition pt-2 bg-white dark:bg-primary-900 overflow-y-auto scrollbar-thin">
     <div class="flex flex-row md:flex-col lg:flex-row justify-between px-2 w-full">
       <div class="flex flex-col space-y-2 py-2 pl-4 pr-2">
-        <loading-container :is-loading="studentStore.isEmpty" v-slot="{ isLoading }">
+        <loading-container :is-loading="isStudentLoading" v-slot="{ isLoading }">
           <div class="w-full flex flex-row space-x-2 md:flex-col md:space-y-2 md:space-x-0 lg:flex-row lg:space-y-0 lg:space-x-2">
             <div class="h-12 w-12 lg:h-13 lg:w-13">
               <icon-logo @click="isAboutModalOpen = true" class="cursor-pointer w-full h-full text-primary-400 hover:text-primary-500 transition-colors" />
@@ -19,10 +19,10 @@
             :class="{ 'space-y-2 pt-2': isLoading }"
             class="flex-col flex md:hidden lg:flex">
             <skeleton custom-class="h-4 w-36 bg-gray-200">
-              <span class="font-semibold">{{ studentStore.normalizedFirstName }}'s MyUIC</span>
+              <span class="font-semibold">{{ studentFirstName }}'s MyUIC</span>
             </skeleton>
             <skeleton custom-class="h-3.5 w-24 bg-gray-200">
-              <span class="text-sm">{{ studentStore.student.number }}</span>
+              <span class="text-sm">{{ student.number }}</span>
             </skeleton>
           </div>
         </loading-container>
@@ -161,7 +161,7 @@ import IconOnlineEnrollment from '~icons/fluent/compose-16-filled';
 import IconAboutOutline from '~icons/ion/help-circle-outline';
 import IconSettings from '~icons/ion/settings';
 import IconSettingsOutline from '~icons/ion/settings-outline';
-import { useStudentStore } from '../../stores/studentStore';
+import { useStudentQuery } from '../../stores/studentStore';
 import DarkModeToggle from './DarkModeToggle.vue';
 import LoadingContainer from './LoadingContainer.vue';
 import Skeleton from './Skeleton.vue';
@@ -171,6 +171,7 @@ import { App } from '@capacitor/app';
 import { ref } from 'vue';
 import { Capacitor } from '@capacitor/core';
 import ModalWindow from './ModalWindow.vue';
+import { destroy } from '../../auth';
 
 export default {
   components: {
@@ -188,9 +189,9 @@ export default {
     ModalWindow
   },
   setup() {
-    const studentStore = useStudentStore();
     const appVersion = ref('1.0.0 Web');
     const isAboutModalOpen = ref(false);
+    const { isLoading: isStudentLoading, normalizedFirstName: studentFirstName, query: { data: student } } = useStudentQuery();
 
     if (IS_NATIVE) {
       App.getInfo().then((info) => {
@@ -198,7 +199,7 @@ export default {
       });
     }
 
-    return { studentStore, appVersion, IS_NATIVE, isAboutModalOpen };
+    return { isStudentLoading, studentFirstName, student, appVersion, IS_NATIVE, isAboutModalOpen };
   },
   mounted() {
     this.currentRouteName = this.getParentRouteName()?.toString() ?? 'home';
@@ -301,7 +302,7 @@ export default {
       return this.$route.matched[1].name;
     },
     logout() {
-      this.studentStore.fullReset();
+      destroy();
     }
   }
 }

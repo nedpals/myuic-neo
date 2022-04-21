@@ -5,7 +5,7 @@
         <div class="form-control w-full md:w-1/2">
           <label for="parents_status">Parents Status</label>
           <loading-container :is-loading="parentRelationshipStatusesQuery.isLoading" v-slot="{ isLoading }">
-            <select name="monthly_family_income" id="monthly_family_income" :value="studentStore.student.parentInformation.status" :disabled="isLoading">
+            <select name="monthly_family_income" id="monthly_family_income" :value="student.parentInformation.status" :disabled="isLoading">
               <option v-if="isLoading">Loading...</option>
               <option v-for="n in parentRelationshipStatusesQuery.data" :key="n" :value="n">{{ n }}</option>
             </select>
@@ -14,7 +14,7 @@
         <div class="form-control w-full md:w-1/2">
           <label for="monthly_family_income">Monthly Family Income</label>
           <loading-container :is-loading="incomeGroupsQuery.isLoading" v-slot="{ isLoading }">
-            <select name="monthly_family_income" id="monthly_family_income" :value="studentStore.student.parentInformation.incomeGroup" :disabled="isLoading">
+            <select name="monthly_family_income" id="monthly_family_income" :value="student.parentInformation.incomeGroup" :disabled="isLoading">
               <option v-if="isLoading">Loading...</option>
               <option v-for="n in incomeGroupsQuery.data" :key="n" :value="n">{{ n }}</option>
             </select>
@@ -22,7 +22,7 @@
         </div>
         <div class="form-control w-full md:w-1/2">
           <label for="contact_no">Contact Number</label>
-          <input type="text" name="contact_no" id="contact_no" :value="studentStore.student.parentInformation.contactNumber" />
+          <input type="text" name="contact_no" id="contact_no" :value="student.parentInformation.contactNumber" />
         </div>
       </div>
 
@@ -30,11 +30,11 @@
       <div class="form-group">
         <div class="form-control w-full">
           <label for="address">Full Address</label>
-          <input type="text" name="address" id="address" :value="studentStore.student.parentInformation.address.address" />
+          <input type="text" name="address" id="address" :value="student.parentInformation.address.address" />
         </div>
         <div class="form-control w-full md:w-1/2">
           <label for="city">City</label>
-          <input type="text" name="city" id="city" :value="studentStore.student.parentInformation.address.city" />
+          <input type="text" name="city" id="city" :value="student.parentInformation.address.city" />
         </div>
       </div>
     </div>
@@ -80,14 +80,14 @@
 <script>
 import LoadingContainer from '../../components/ui/LoadingContainer.vue';
 import { useParentRelationshipsQuery, useIncomeGroupsQuery } from '../../stores/formStore';
-import { useStudentStore } from '../../stores/studentStore'
+import { useStudentQuery } from '../../stores/studentStore'
 export default {
   components: { LoadingContainer },
   setup() {
-    const studentStore = useStudentStore();
+    const { query: { data: student } } = useStudentQuery();
     const parentRelationshipStatusesQuery = useParentRelationshipsQuery();
     const incomeGroupsQuery = useIncomeGroupsQuery();
-    return { studentStore, parentRelationshipStatusesQuery, incomeGroupsQuery }
+    return { student, parentRelationshipStatusesQuery, incomeGroupsQuery }
   },
   computed: {
     parents() {

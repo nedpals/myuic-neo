@@ -3,7 +3,7 @@
     <!-- TODO: -->
     <form @submit.prevent="">
       <input type="hidden" name="account_id">
-      <input type="hidden" name="username" :value="studentStore.student.number">
+      <input type="hidden" name="username" :value="student.number">
       <div>
         <div class="form-group-info">
           <h2 class="title">Change Password</h2>
@@ -29,11 +29,11 @@
 </template>
 
 <script>
-import { useStudentStore } from '../../stores/studentStore'
+import { useStudentQuery } from '../../stores/studentStore'
 export default {
   setup() {
-    const studentStore = useStudentStore();
-    return { studentStore }
+    const { query: { data: student } } = useStudentQuery();
+    return { student }
   }
 }
 </script>

@@ -90,12 +90,12 @@
                 capture="camera">
             </div>
             <!-- Hidden stuff that should be automatically filled out -->
-            <input type="hidden" name="student_id" :value="studentStore.student.number" />
-            <input type="hidden" name="first_name" :value="studentStore.student.firstName" />
-            <input type="hidden" name="middle_name" :value="studentStore.student.middleName" />
-            <input type="hidden" name="last_name" :value="studentStore.student.lastName" />
-            <input type="hidden" name="email" :value="studentStore.student.email" />
-            <input type="hidden" name="contact_number" :value="studentStore.student.contactNumber" />
+            <input type="hidden" name="student_id" :value="student.number" />
+            <input type="hidden" name="first_name" :value="student.firstName" />
+            <input type="hidden" name="middle_name" :value="student.middleName" />
+            <input type="hidden" name="last_name" :value="student.lastName" />
+            <input type="hidden" name="email" :value="student.email" />
+            <input type="hidden" name="contact_number" :value="student.contactNumber" />
             <input type="hidden" name="department" :value="higherEducationDepartmentId" />
             <input type="hidden" name="payment_center" :value="miscData.paymentMethod" />
             <div class="form-control pt-8">
@@ -123,7 +123,7 @@
 </template>
 
 <script lang="ts">
-import { useStudentStore } from '../../stores/studentStore'
+import { useStudentQuery } from '../../stores/studentStore'
 import Loader from '../ui/Loader.vue';
 import LoadingContainer from '../ui/LoadingContainer.vue';
 import ModalWindow from '../ui/ModalWindow.vue';
@@ -160,10 +160,10 @@ export default {
     RadioGroupOption
   },
   setup() {
-    const studentStore = useStudentStore();
+    const { query: { data: student } } = useStudentQuery();
     const newPaymentForm = ref<HTMLFormElement | null>(null);
     return {
-      studentStore,
+      student,
       newPaymentForm
     }
   },

@@ -16,26 +16,27 @@
 
 <script>
 import Navbar from '../components/ui/Navbar.vue'
-import { useStudentStore } from '../stores/studentStore';
+import { prefetchStudent, useStudentStore } from '../stores/studentStore';
 import DashboardScaffold from '../components/ui/DashboardScaffold.vue';
 import LoadingContainer from '../components/ui/LoadingContainer.vue';
 import Loader from '../components/ui/Loader.vue';
+import { useQueryClient } from 'vue-query';
 
 export default {
   components: { Navbar, DashboardScaffold, LoadingContainer, Loader },
   setup() {
     const studentStore = useStudentStore();
+    const queryClient = useQueryClient();
+
+    studentStore.getCurrentSemesterId()
+      .then(() => Promise.all([
+        prefetchStudent(queryClient),
+        studentStore.getSemesterList(),
+      ]));
 
     return {
       studentStore
     }
   },
-  created() {
-    this.studentStore.getCurrentSemesterId()
-      .then(() => Promise.all([
-        this.studentStore.getStudent(),
-        this.studentStore.getSemesterList(),
-      ]));
-  }
 }
 </script>

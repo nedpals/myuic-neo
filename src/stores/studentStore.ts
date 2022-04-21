@@ -4,10 +4,32 @@ import { nameCase } from '@foundernest/namecase';
 import { destroy } from '../auth';
 import { RoutePath } from '@myuic-api/types';
 import { semesterRegex } from '../utils';
+import { QueryClient, useQuery } from 'vue-query';
+import { computed } from 'vue';
+
+const fetchStudent = () => client.currentStudent();
+
+export const prefetchStudent = (queryClient: QueryClient) => 
+  queryClient.prefetchQuery('student', fetchStudent);
+
+export const useStudentQuery = () => {
+  const query = useQuery('student', fetchStudent);
+  const isLoading = computed(() => query.isFetching.value || query.isIdle.value);
+  const normalizedFirstName = computed(() => {
+    if (isLoading.value || !query.data.value) return '';
+    const splitted = query.data.value.firstName.split(' ');
+    return nameCase(splitted[0]);
+  });
+
+  return {
+    query,
+    isLoading,
+    normalizedFirstName
+  }
+}
 
 export const useStudentStore = defineStore('student', {
   state: () => ({
-    student: {} as Record<string, any>,
     currentSemesterId: -1,
     academicRecords: [] as any[],
     semesterList: [] as any[],
@@ -18,30 +40,12 @@ export const useStudentStore = defineStore('student', {
       return this.currentSemesterId !== -1;
     },
 
-    isEmpty(state): boolean {
-      return state.student == null || Object.keys(state.student).length == 0;
-    },
-
-    normalizedFirstName(state): string {
-      if (this.isEmpty) return '';
-      const splitted = state.student.firstName.split(' ');
-      return nameCase(splitted[0]);
-    },
-
     currentSemester(state): any {
       return this.semesterList.find(s => s.id == state.currentSemesterId);
     },
   },
 
   actions: {
-    async getStudent() {
-      if (this.isEmpty) {
-        const data = await client.currentStudent();
-        this.student = data;
-      }
-      return this.student;
-    },
-
     async getCurrentSemesterId() {
       if (this.currentSemesterId > 0) return;
       const data = await client.semesterId();
