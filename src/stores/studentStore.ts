@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { client } from '../client';
+import { client, useClientQuery } from '../client';
 import { nameCase } from '@foundernest/namecase';
 import { destroy } from '../auth';
 import { RoutePath } from '@myuic-api/types';
@@ -11,7 +11,6 @@ export const useStudentStore = defineStore('student', {
     currentSemesterId: -1,
     academicRecords: [] as any[],
     semesterList: [] as any[],
-    resourceLinks: [] as any[],
   }),
 
   getters: {
@@ -56,15 +55,6 @@ export const useStudentStore = defineStore('student', {
       }
     },
 
-    async getResourceLinks() {
-      if (this.resourceLinks == null || this.resourceLinks.length == 0) {
-        const { data } = await client.http.get(RoutePath('resourceLinksList'));
-        if (data && data.length != 0) {
-          this.resourceLinks = data[0].entries;
-        }
-      }
-    },
-
     getSemesterInfoByID(semId: number): any {
       return this.semesterList.find(s => s.id == semId);
     },
@@ -80,3 +70,13 @@ export const useStudentStore = defineStore('student', {
     }
   }
 });
+
+export const useResourceLinkQuery = () => {
+  return useClientQuery(
+    'resource_links',
+    () => client.http.get(RoutePath('resourceLinksList')),
+    {
+      select: ({ data }) => data[0].entries ?? [],
+    }
+  );
+}

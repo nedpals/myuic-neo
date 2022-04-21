@@ -19,63 +19,61 @@
 
     <div class="flex flex-col space-y-4">
       <div class="w-full px-6">
-        <promise-loader :promise="studentStore.getResourceLinks()" v-slot="{ isPending }">
-          <loading-container :is-loading="isPending" v-slot="{ isLoading }">
-            <div 
-              class="flex pt-2 flex-wrap justify-center flex-wrap" 
-              :class="{ 'animate-pulse': isLoading }">
-              <template v-if="!isLoading">
-                <router-link :to="{ name: 'finance' }" class="quick-link-item">
-                  <icon-cash-outline />
-                  <span>Finance</span>
-                </router-link>
-                <router-link :to="{ name: 'clearance' }" class="quick-link-item">
-                  <icon-receipt-outline />
-                  <span>Clearance</span>
-                </router-link>
-                <a href="http://bit.ly/2xSkcLk" class="quick-link-item">
-                  <icon-book-outline />
-                  <span>Handbook</span>
-                </a>
-                <a href="https://mail.google.com" class="quick-link-item">
-                  <icon-mail-open-outline />
-                  <span>E-mail</span>
-                </a>
-                <a href="https://classroom.google.com" class="quick-link-item">
-                  <icon-g-classroom />
-                  <span>Classroom</span>
-                </a>
-                <self-modal title="Resources">
-                  <template #default="{ openModal }">
-                    <button @click="openModal" class="quick-link-item">
-                      <icon-bookmark-outline />
-                      <span>Resources</span>
-                    </button>
-                  </template>
-                  <template #modal-content>
-                    <div class="flex flex-col md:flex-row w-full flex-wrap justify-center mt-4">
-                      <a
-                        :href="link.href"
-                        :key="'link_' + li" v-for="(link, li) in studentStore.resourceLinks"
-                        target="_blank"
-                        class="p-3 flex flex-row md:flex-col text-center md:justify-center items-center w-full md:w-1/4 <md:space-x-4 md:space-y-4 hover:bg-gray-200 dark:hover:bg-primary-900 rounded-lg">
-                        <div class="max-w-10">
-                          <img :src="link.iconUrl" class="h-auto w-full" :alt="link.label" />
-                        </div>
-                        <p>{{ link.label }}</p>
-                      </a>
-                    </div>
-                    <p class="text-center pt-8">You will be redirected to a new window / tab upon clicking the link.</p>
-                  </template>
-                </self-modal>
-              </template>
-              <div v-else :key="i" v-for="i in 6" disabled class="quick-link-item text-center">
-                <div class="h-12 w-12 rounded-full bg-primary-400 mb-2"></div>
-                <div class="h-4 w-20 bg-gray-200 rounded-lg"></div>
-              </div>
+        <loading-container :is-loading="isRLinksLoading" v-slot="{ isLoading }">
+          <div 
+            class="flex pt-2 flex-wrap justify-center flex-wrap" 
+            :class="{ 'animate-pulse': isLoading }">
+            <template v-if="!isLoading">
+              <router-link :to="{ name: 'finance' }" class="quick-link-item">
+                <icon-cash-outline />
+                <span>Finance</span>
+              </router-link>
+              <router-link :to="{ name: 'clearance' }" class="quick-link-item">
+                <icon-receipt-outline />
+                <span>Clearance</span>
+              </router-link>
+              <a href="http://bit.ly/2xSkcLk" class="quick-link-item">
+                <icon-book-outline />
+                <span>Handbook</span>
+              </a>
+              <a href="https://mail.google.com" class="quick-link-item">
+                <icon-mail-open-outline />
+                <span>E-mail</span>
+              </a>
+              <a href="https://classroom.google.com" class="quick-link-item">
+                <icon-g-classroom />
+                <span>Classroom</span>
+              </a>
+              <self-modal title="Resources">
+                <template #default="{ openModal }">
+                  <button @click="openModal" class="quick-link-item">
+                    <icon-bookmark-outline />
+                    <span>Resources</span>
+                  </button>
+                </template>
+                <template #modal-content>
+                  <div class="flex flex-col md:flex-row w-full flex-wrap justify-center mt-4">
+                    <a
+                      :href="link.href"
+                      :key="'link_' + li" v-for="(link, li) in resourceLinks"
+                      target="_blank"
+                      class="p-3 flex flex-row md:flex-col text-center md:justify-center items-center w-full md:w-1/4 <md:space-x-4 md:space-y-4 hover:bg-gray-200 dark:hover:bg-primary-900 rounded-lg">
+                      <div class="max-w-10">
+                        <img :src="link.iconUrl" class="h-auto w-full" :alt="link.label" />
+                      </div>
+                      <p>{{ link.label }}</p>
+                    </a>
+                  </div>
+                  <p class="text-center pt-8">You will be redirected to a new window / tab upon clicking the link.</p>
+                </template>
+              </self-modal>
+            </template>
+            <div v-else :key="i" v-for="i in 6" disabled class="quick-link-item text-center">
+              <div class="h-12 w-12 rounded-full bg-primary-400 mb-2"></div>
+              <div class="h-4 w-20 bg-gray-200 rounded-lg"></div>
             </div>
-          </loading-container>
-        </promise-loader>
+          </div>
+        </loading-container>
       </div>
 
       <div class="w-full">
@@ -122,7 +120,7 @@ import IconReceiptOutline from '~icons/ion/receipt-outline';
 import IconCashOutline from '~icons/ion/cash-outline';
 import IconGClassroom from '~icons/custom/google-classroom';
 
-import { useStudentStore } from '../stores/studentStore';
+import { useStudentStore, useResourceLinkQuery } from '../stores/studentStore';
 import SelfModal from '../components/ui/SelfModal.vue';
 import { formatDatetime, getPeriod, now } from '../utils';
 import DashboardScaffold from '../components/ui/DashboardScaffold.vue';
@@ -139,6 +137,7 @@ export default {
   components: { PromiseLoader, Box, LoadingContainer, IconGClassroom, IconBookmarkOutline, IconMailOpenOutline, IconBookOutline, IconReceiptOutline, IconChevronRight, IconCashOutline, SelfModal, DashboardScaffold, Skeleton, AccountBalanceWidget, PaymentHistory, ScheduleList, ClearanceStatusIcon },
   setup() {
     const studentStore = useStudentStore();
+    const { isFetching: isRLinksFetching, isIdle: isRLinksIdle, data: resourceLinks } = useResourceLinkQuery();
     const { isCleared: isClearanceCleared, isLoading: isClearanceLoading } = useClearanceQueryUtilities(useClearanceQuery());
 
     const welcomeGreeting = computed(() => {
@@ -149,6 +148,8 @@ export default {
     const todayDate = computed(() => formatDatetime(now, '\'Today is\' iiii, MMMM d, yyyy'));
 
     return {
+      isRLinksLoading: computed(() => isRLinksFetching.value || isRLinksIdle.value),
+      resourceLinks,
       isClearanceCleared,
       isClearanceLoading,
       studentStore,
