@@ -1,6 +1,6 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
+import { destroy } from './auth';
 import { client } from './client';
-import { useStudentStore } from './stores/studentStore';
 import { IS_NATIVE } from './utils';
 
 const router = createRouter({
@@ -190,7 +190,7 @@ router.beforeEach((to, from, next) => {
     }
   } else {
     if (to.meta.requiresAuth) {
-      useStudentStore().fullReset();
+      destroy();
       return next({ name: 'login' });
     }
   }

@@ -4,7 +4,7 @@ import { computed, isRef, Ref, ref } from "vue";
 import { useQuery } from "vue-query";
 import { client } from "../client";
 import { compare12hTimesSort, IS_NATIVE } from "../utils";
-import { useStudentStore } from "./studentStore";
+import { useSemesterQuery } from "./studentStore";
 
 interface NormalizedCourseSchedule {
   name: string;
@@ -16,13 +16,11 @@ interface NormalizedCourseSchedule {
 }
 
 export const useSchedulesQuery = () => {
-  const studentStore = useStudentStore();
+  const { idQuery: { data: currentSemesterId } } = useSemesterQuery();
 
   return useQuery(
     'class_schedule',
-    () => client.classSchedule(
-      studentStore.currentSemesterId.toString()
-    )
+    () => client.classSchedule(currentSemesterId.value!)
   );
 };
 
@@ -171,8 +169,8 @@ export const useScheduleQueryUtilities = ({ data, isFetching, isIdle }: ReturnTy
 };
 
 export async function generateSchedulePDF(): Promise<string> {
-  const studentStore = useStudentStore();
-  const data = await client.classSchedulePDF((studentStore.currentSemesterId - 1).toString());
+  const { idQuery: { data: currentSemesterId } } = useSemesterQuery();
+  const data = await client.classSchedulePDF((parseInt(currentSemesterId.value!) - 1).toString());
   if (data instanceof Blob && window.URL.createObjectURL) {
     const fileUrl = window.URL.createObjectURL(data);
     return fileUrl;

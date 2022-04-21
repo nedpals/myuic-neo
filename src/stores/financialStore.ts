@@ -3,15 +3,13 @@ import { computed } from "vue";
 import { useQuery } from "vue-query";
 import { client } from "../client";
 import { formatDatetime, humanizeTime, pesoFormatter } from "../utils";
-import { useStudentStore } from "./studentStore";
+import { useSemesterQuery } from "./studentStore";
 
 export const useFinancialRecordQuery = () => {
-  const studentStore = useStudentStore();
+  const { idQuery: { data: currentSemesterId }, hasSemesterId } = useSemesterQuery();
   return useQuery(
     'financial_records', 
-    () => client.financialRecord(
-      studentStore.currentSemesterId.toString()
-    ), 
+    () => client.financialRecord(currentSemesterId.value!), 
     {
       placeholderData: {
         assessments: {
@@ -64,7 +62,7 @@ export const useFinancialRecordQuery = () => {
           paidAt: new Date()
         }))
       },
-      enabled: studentStore.hasSemesterId
+      enabled: hasSemesterId
     }
   );
 };

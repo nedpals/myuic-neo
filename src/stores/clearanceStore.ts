@@ -1,18 +1,14 @@
 import { computed } from "vue";
 import { useQuery } from "vue-query";
 import { client } from "../client";
-import { useStudentStore } from "./studentStore";
+import { useSemesterQuery } from "./studentStore";
 
 export const useClearanceQuery = () => {
-  const studentStore = useStudentStore();
-  const semesterId = studentStore.currentSemesterId;
-
+  const { idQuery: { data: semesterId }, hasSemesterId } = useSemesterQuery();
   return useQuery(
     'clearance',
-    () => client.clearance(semesterId.toString()),
-    {
-      enabled: studentStore.hasSemesterId
-    }
+    () => client.clearance(semesterId.value!),
+    { enabled: hasSemesterId }
   );
 }
 
@@ -37,8 +33,8 @@ export const useClearanceQueryUtilities = ({ isFetching, isIdle, data }: ReturnT
 }
 
 export async function generateClearancePDF(): Promise<string> {
-  const studentStore = useStudentStore();
-  const data = await client.clearancePermitPDF(studentStore.currentSemesterId.toString());
+  const { idQuery: { data: currentSemesterId } } = useSemesterQuery();
+  const data = await client.clearancePermitPDF(currentSemesterId.value!);
   if (window.URL.createObjectURL) {
     const fileUrl = window.URL.createObjectURL(data);
     return fileUrl;

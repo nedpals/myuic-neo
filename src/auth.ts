@@ -1,7 +1,6 @@
 import { client, eventbus } from './client';
 import { Storage } from '@capacitor/storage';
 import { useMutation, useQueryClient } from 'vue-query';
-import { useStudentStore } from './stores/studentStore';
 import { useRouter } from 'vue-router';
 import { notify } from 'notiwind';
 
@@ -15,7 +14,7 @@ export function subscribeAuth() {
   const handleChangeAuthenticatedStatus = ({ newStatus, oldStatus }) => {
     if (oldStatus && !newStatus) {
       router.replace({ name: 'login' });
-      useStudentStore().fullReset();
+      destroy();
       queryClient.clear();
     }
   };

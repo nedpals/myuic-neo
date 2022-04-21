@@ -1,7 +1,5 @@
-import { defineStore } from 'pinia';
 import { client, useClientQuery } from '../client';
 import { nameCase } from '@foundernest/namecase';
-import { destroy } from '../auth';
 import { RoutePath } from '@myuic-api/types';
 import { semesterRegex } from '../utils';
 import { QueryClient, useQuery } from 'vue-query';
@@ -28,52 +26,37 @@ export const useStudentQuery = () => {
   }
 }
 
-export const useStudentStore = defineStore('student', {
-  state: () => ({
-    currentSemesterId: -1,
-    academicRecords: [] as any[],
-    semesterList: [] as any[],
-  }),
+const fetchSemesterId = () => client.semesterId();
+const fetchSemesterList = () => client.http.get(RoutePath('semesterList'));
 
-  getters: {
-    hasSemesterId(): boolean {
-      return this.currentSemesterId !== -1;
-    },
+export const prefetchSemesterId = (queryClient: QueryClient) =>
+  queryClient.prefetchQuery('semester_id', fetchSemesterId);
 
-    currentSemester(state): any {
-      return this.semesterList.find(s => s.id == state.currentSemesterId);
-    },
-  },
+export const prefetchSemesterList = (queryClient: QueryClient) =>
+  queryClient.prefetchQuery('semester_list', fetchSemesterList);
 
-  actions: {
-    async getCurrentSemesterId() {
-      if (this.currentSemesterId > 0) return;
-      const data = await client.semesterId();
-      this.currentSemesterId = parseInt(data);
-    },
+export const useSemesterQuery = () => {
+  const idQuery = useQuery('semester_id', fetchSemesterId, { initialData: () => '' });
+  const listQuery = useClientQuery('semester_list', fetchSemesterList);
+  const hasSemesterId = computed(() => !!idQuery.data.value);
+  const semesterList = computed<any[]>(() => listQuery.data.value as any[] ?? []);
+  const getSemesterInfoByID = (semId: number | string): any => semesterList.value.find(s => s.id == semId);
+  const currentSemester = computed(() => semesterList.value.find(s => s.id == idQuery.data.value));
 
-    async getSemesterList() {
-      if (this.semesterList === null || this.semesterList.length === 0) {
-        const { data } = await client.http.get(RoutePath('semesterList'));
-        this.semesterList = data;
-      }
-    },
-
-    getSemesterInfoByID(semId: number): any {
-      return this.semesterList.find(s => s.id == semId);
-    },
-
-    filterSemesterLabel(label: string): string {
-      const parsedSemResults = semesterRegex.exec(label);
-      return parsedSemResults?.[1] ?? label;
-    },
-
-    fullReset(): void {
-      this.$reset();
-      destroy();
-    }
+  return {
+    idQuery,
+    listQuery,
+    hasSemesterId,
+    semesterList,
+    currentSemester,
+    getSemesterInfoByID
   }
-});
+}
+
+export const filterSemesterLabel = (label: string): string => {
+  const parsedSemResults = semesterRegex.exec(label);
+  return parsedSemResults?.[1] ?? label;
+}
 
 export const useResourceLinkQuery = () => {
   return useClientQuery(

@@ -10,10 +10,10 @@
         <section class="p-4 max-w-4xl mx-auto">
           <div class="text-center py-8 md:py-8 flex flex-col items-center">
             <skeleton 
-              :is-loading="!studentStore.hasSemesterId" 
+              :is-loading="!hasSemesterId" 
               custom-class="h-4.5 md:h-5 w-72 rounded-lg mb-8">
               <span class="text-gray-600 dark:text-primary-200 text-lg md:text-xl mb-8">
-                {{ studentStore.getSemesterInfoByID(studentStore.currentSemesterId)?.label ?? 'Unknown Semester' }}
+                {{ currentSemester.label ?? 'Unknown Semester' }}
               </span>
             </skeleton>
 
@@ -120,7 +120,7 @@ import LoadingContainer from '../components/ui/LoadingContainer.vue';
 import PromiseLoader from '../components/ui/PromiseLoader.vue';
 import SelfModalWindow from '../components/ui/SelfModalWindow.vue';
 import Skeleton from '../components/ui/Skeleton.vue';
-import { useStudentQuery, useStudentStore } from '../stores/studentStore';
+import { useSemesterQuery, useStudentQuery } from '../stores/studentStore';
 import { catchAndNotifyError } from '../utils';
 import ClearanceStatusIcon from '../components/Clearance/ClearanceStatusIcon.vue';
 import { generateClearancePDF, useClearanceQuery, useClearanceQueryUtilities } from '../stores/clearanceStore';
@@ -139,8 +139,8 @@ export default {
     const clearanceQuery = useClearanceQuery();
     const { isCleared } = useClearanceQueryUtilities(clearanceQuery);
     const { data, isFetching, isIdle } = clearanceQuery;
+    const { hasSemesterId, currentSemester } = useSemesterQuery();
 
-    const studentStore = useStudentStore();
     const { normalizedFirstName: studentFirstName } = useStudentQuery();
     const statusText = (status: 'cleared' | 'not_cleared' | 'unknown') => {
       return status == 'cleared' 
@@ -164,7 +164,8 @@ export default {
     }
 
     return {
-      studentStore,
+      hasSemesterId,
+      currentSemester,
       studentFirstName,
       clearedRequirementsCount,
       statusColor,

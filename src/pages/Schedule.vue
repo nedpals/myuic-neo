@@ -13,9 +13,9 @@
         <p class="md:text-xl md:mt-2">{{ currentDate }}</p>
       </div>
 
-      <div class="mb-6 text-right" v-if="studentStore.currentSemester"> 
-        <h2 class="text-2xl md:text-4xl font-bold">{{ studentStore.filterSemesterLabel(studentStore.currentSemester.label) }}</h2>
-        <p class="md:text-xl md:mt-2">{{ studentStore.currentSemester.fromYear }} - {{ studentStore.currentSemester.toYear }}</p>
+      <div class="mb-6 text-right" v-if="currentSemester"> 
+        <h2 class="text-2xl md:text-4xl font-bold">{{ filterSemesterLabel(currentSemester.label) }}</h2>
+        <p class="md:text-xl md:mt-2">{{ currentSemester.fromYear }} - {{ currentSemester.toYear }}</p>
       </div>
     </div>
 
@@ -66,7 +66,7 @@
 import Box from '../components/ui/Box.vue';
 import LoadingContainer from '../components/ui/LoadingContainer.vue';
 import PromiseLoader from '../components/ui/PromiseLoader.vue';
-import { useStudentStore } from '../stores/studentStore';
+import { useSemesterQuery, filterSemesterLabel } from '../stores/studentStore';
 import { formatDatetime, now } from '../utils';
 import DashboardScaffold from '../components/ui/DashboardScaffold.vue';
 import Skeleton from '../components/ui/Skeleton.vue';
@@ -81,8 +81,7 @@ export default {
     const schedulesQuery = useSchedulesQuery();
     const { isFetching, isIdle } = schedulesQuery;
     const { scheduleList, hasAlternates, isAlternate } = useScheduleQueryUtilities(schedulesQuery);
-
-    const studentStore = useStudentStore();
+    const { currentSemester } = useSemesterQuery();
     const currentDay = ref(formatDatetime(now, 'EEE'));
     const currentDate = ref(formatDatetime(now, 'MMMM d, yyyy'));
     const formattedDate = ref(formatDatetime(now, 'yyyy-MM-d'));
@@ -92,11 +91,12 @@ export default {
       scheduleList,
       hasAlternates,
       isAlternate,
-      studentStore,
       isIdle,
       isFetching,
       currentDay,
       currentDate,
+      currentSemester,
+      filterSemesterLabel,
       formattedDate
     }
   },
