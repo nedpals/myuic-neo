@@ -108,13 +108,14 @@ export const useModal = (isOpen: ComputedRef<boolean>, updateFn: (state: boolean
     if (newVal === oldVal) return;
     if (newVal) {
       modalEventBus.emit('modal_opened', state);
-    } else {
+    } else if (typeof oldVal !== 'undefined') {
       modalEventBus.emit('modal_closed', state);
     }
   }, { immediate: true });
   
   return {
     unsubscribe: () => {
+      modalEventBus.emit('modal_closed', state);
       if (isOpen.value) {
         closeModal();
       }
@@ -156,6 +157,7 @@ export async function showDialog(d: Dialog): Promise<string | null> {
   const dialogHandler = ({ id, result }: ModalInfo & { result: any }) => {
     if (id !== newDialog.id) return;
     gotResult = result;
+    modalEventBus.emit('modal_manual_close', { id });
     modalEventBus.off('dialog_closed', dialogHandler);
   }
 

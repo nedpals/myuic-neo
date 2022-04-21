@@ -3,7 +3,7 @@
     @update:open="handleDialogOpen(d, $event)" 
     :m-id="d.id"
     :open="d.isOpen"
-    :key="d.id" v-for="d in dialogs" :title="d.title">
+    :key="'dialog_' + d.id" v-for="d in dialogs" :title="d.title">
     <div class="pt-4" v-html="d.content"></div>
 
     <template #footer>
@@ -34,8 +34,6 @@ export default {
       hasActionPressed.value = true;
       const result = typeof action.answer === 'function' ? action.answer() : action.answer;
       modalEventBus.emit('dialog_closed', { id: d.id, result });
-      modalEventBus.emit('modal_manual_close', { id: d.id });
-      modalEventBus.emit('modal_closed', { id: d.id });
     }
 
     const handleDialogOpen = (d: DialogModal, newOpen: boolean) => {

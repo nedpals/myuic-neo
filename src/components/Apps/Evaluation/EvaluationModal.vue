@@ -1,6 +1,5 @@
 <template>
-  <modal-window 
-    ref="modalRef"
+  <modal-window
     :title="course.name + ' / ' + course.code" 
     :open="isOpen"
     @update:open="warnUserOnClose"
@@ -239,14 +238,12 @@ export default {
   },
   setup({ courses }, { emit }) {
     const panelRef = ref<typeof TabPanels>();
-    const modalRef = ref<InstanceType<typeof ModalWindow> | null>(null);
     const step = ref(0);
     const isOpen = ref(true);
     const course = !Array.isArray(courses) ? courses : courses[0];
     const isSingle = !Array.isArray(courses) ? true : courses.length == 1;
     const shouldEvaluateAll = ref(isSingle);
     const tabOffsetStart = isSingle ? 1 : 2;
-    const modalId = ref<number | null>(null);
     const queryClient = useQueryClient();
     const isDone = ref(false);
 
@@ -304,11 +301,6 @@ export default {
     ]);
 
     const closeModal = () => {
-      if (modalId.value !== null) {
-        // FIXME:
-        modalEventBus.emit('modal_manual_close', { id: modalId.value });
-        modalEventBus.emit('modal_closed', { id: modalId.value });
-      }
       emit('close');
     }
 
@@ -401,10 +393,6 @@ export default {
       panelRef.value?.$el.scrollTo({ top: 0 });
     });
 
-    onMounted(() => {
-      modalId.value = modalRef.value!.id;
-    });
-
     onBeforeUnmount(() => {
       idQueries.forEach(q => q.remove());
       questionnaireQuery.remove.value();
@@ -431,7 +419,6 @@ export default {
       warnUserOnClose,
       commentQuestions,
       shouldProceed,
-      modalRef,
       step,
       isDone
     }
