@@ -962,7 +962,7 @@
     tslib "^2.1.0"
     xml2js "^0.4.23"
 
-"@capacitor/core@^3.4.3":
+"@capacitor/core@^3.0.0", "@capacitor/core@^3.4.3":
   version "3.4.3"
   resolved "https://registry.yarnpkg.com/@capacitor/core/-/core-3.4.3.tgz#3cf343b7035f1f6f9b73854dfb828600cd8a5e07"
   integrity sha512-drfu0IiDMyeJtL4QALQgNFqdgN19DZJkbKh945eXyK44Sk2YkFXUs7Ewq1ZlVI30QF79mHGuM13oZeki0gv5Tw==
@@ -2632,6 +2632,12 @@ caniuse-lite@^1.0.30001317:
   version "1.0.30001331"
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001331.tgz#41048f2a5cf0c3c6198f40207cd323388b3d4399"
   integrity sha512-Y1xk6paHpUXKP/P6YjQv1xqyTbgAP05ycHBcRdQjTcyXlWol868sJJPlmk5ylOekw2BrucWes5jk+LvVd7WZ5Q==
+
+"capacitor-secure-storage-plugin@https://github.com/martinkasa/capacitor-secure-storage-plugin":
+  version "0.6.2"
+  resolved "https://github.com/martinkasa/capacitor-secure-storage-plugin#f1608f11c94da81400753eb374f2a9eb65e91fbf"
+  dependencies:
+    "@capacitor/core" "^3.0.0"
 
 caseless@~0.12.0:
   version "0.12.0"

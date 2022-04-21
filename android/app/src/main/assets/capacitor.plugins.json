@@ -18,5 +18,9 @@
 	{
 		"pkg": "@robingenz/capacitor-android-dark-mode-support",
 		"classpath": "dev.robingenz.capacitor.androiddarkmodesupport.AndroidDarkModeSupportPlugin"
+	},
+	{
+		"pkg": "capacitor-secure-storage-plugin",
+		"classpath": "com.whitestein.securestorage.SecureStoragePlugin"
 	}
 ]

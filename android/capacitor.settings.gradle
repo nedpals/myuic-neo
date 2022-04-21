@@ -16,3 +16,6 @@ project(':capacitor-storage').projectDir = new File('../node_modules/@capacitor/
 
 include ':robingenz-capacitor-android-dark-mode-support'
 project(':robingenz-capacitor-android-dark-mode-support').projectDir = new File('../node_modules/@robingenz/capacitor-android-dark-mode-support/android')
+
+include ':capacitor-secure-storage-plugin'
+project(':capacitor-secure-storage-plugin').projectDir = new File('../node_modules/capacitor-secure-storage-plugin/android')
