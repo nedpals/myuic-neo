@@ -22,6 +22,9 @@ export const customClientOptions: VueQueryPluginOptions = {
         staleTime: twentyFourHoursInMs,
         onError: catchAndNotifyError
       },
+      mutations: {
+        onError: catchAndNotifyError
+      }
     },
   }
 }

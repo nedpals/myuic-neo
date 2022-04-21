@@ -43,11 +43,8 @@ export const useEvaluationListQuery = () => {
 }
 
 export const useEvaluationMutation = () => {
-  return useMutation((newEval: CourseEvaluation) => client.http.postJson(RoutePath('facultyEvaluationSubmit'), newEval), {
-    onError: (err) => {
-      catchAndNotifyError(err);
-    }
-  });
+  return useMutation((newEval: CourseEvaluation) => 
+    client.http.postJson(RoutePath('facultyEvaluationSubmit'), newEval));
 }
 
 export const useEvaluationListQueryUtilities = ({ isFetching, isIdle, data }: ReturnType<typeof useEvaluationListQuery>) => {
