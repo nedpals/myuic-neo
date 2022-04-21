@@ -12,7 +12,6 @@ export const useStudentStore = defineStore('student', {
     academicRecords: [] as any[],
     semesterList: [] as any[],
     resourceLinks: [] as any[],
-    courseEvaluationList: [] as any[]
   }),
 
   getters: {
@@ -64,16 +63,6 @@ export const useStudentStore = defineStore('student', {
           this.resourceLinks = data[0].entries;
         }
       }
-    },
-
-    async getCourseEvaluationList() {
-      if (this.courseEvaluationList == null || this.courseEvaluationList.length == 0) {
-        const data = await client.facultyEvaluationList();
-        if (data && data.length != 0) {
-          this.courseEvaluationList = data;
-        }
-      }
-      return this.courseEvaluationList;
     },
 
     getSemesterInfoByID(semId: number): any {
