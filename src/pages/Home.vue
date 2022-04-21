@@ -131,14 +131,14 @@ import PaymentHistory from '../components/Finance/PaymentHistory.vue';
 import ScheduleList from '../components/Schedule/ScheduleList.vue';
 import ClearanceStatusIcon from '../components/Clearance/ClearanceStatusIcon.vue';
 import IconChevronRight from '~icons/ion/chevron-right';
-import { useClearanceQuery, useClearanceQueryUtilities } from '../stores/clearanceStore';
+import { useClearanceQuery } from '../stores/clearanceStore';
 
 export default {
   components: { PromiseLoader, Box, LoadingContainer, IconGClassroom, IconBookmarkOutline, IconMailOpenOutline, IconBookOutline, IconReceiptOutline, IconChevronRight, IconCashOutline, SelfModal, DashboardScaffold, Skeleton, AccountBalanceWidget, PaymentHistory, ScheduleList, ClearanceStatusIcon },
   setup() {
     const { isLoading: isStudentLoading, normalizedFirstName: studentFirstName } = useStudentQuery();
     const { isFetching: isRLinksFetching, isIdle: isRLinksIdle, data: resourceLinks } = useResourceLinkQuery();
-    const { isCleared: isClearanceCleared, isLoading: isClearanceLoading } = useClearanceQueryUtilities(useClearanceQuery());
+    const { isCleared: isClearanceCleared, isLoading: isClearanceLoading } = useClearanceQuery();
 
     const welcomeGreeting = computed(() => {
       const twelveHr = formatDatetime(now, 'hh:mm aa');

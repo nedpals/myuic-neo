@@ -72,7 +72,7 @@
 </template>
 
 <script lang="ts">
-import { useFinancialRecordQuery, useFinancialRecordQueryUtilities } from '../../stores/financialStore';
+import { useFinancialRecordQuery } from '../../stores/financialStore';
 import Skeleton from '../ui/Skeleton.vue';
 import Box from '../ui/Box.vue';
 import SelfModalWindow from '../ui/SelfModalWindow.vue';
@@ -99,7 +99,7 @@ export default {
   },
 
   setup({ isRecent, limit }) {
-    const { isLoading, humanizedPaidAt, paymentOr, formattedAmount, formattedPaidAt, getPaymentHistory } = useFinancialRecordQueryUtilities(useFinancialRecordQuery());
+    const { isLoading, humanizedPaidAt, paymentOr, formattedAmount, formattedPaidAt, getPaymentHistory } = useFinancialRecordQuery();
     const paymentHistory = getPaymentHistory(isRecent, limit);
     
     return {

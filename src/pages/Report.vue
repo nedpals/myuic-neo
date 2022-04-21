@@ -114,7 +114,7 @@
 import DashboardScaffold from '../components/ui/DashboardScaffold.vue';
 import LoadingContainer from '../components/ui/LoadingContainer.vue';
 import PromiseLoader from '../components/ui/PromiseLoader.vue';
-import { generateAcademicRecordsPDF, useAcademicRecordQuery, useAcademicRecordQueryUtilities } from '../stores/academicRecordStore';
+import { generateAcademicRecordsPDF, useAcademicRecordsQuery } from '../stores/academicRecordStore';
 import IconPrint from '~icons/ion/print';
 import { catchAndNotifyError } from '../utils';
 import SelfModal from '../components/ui/SelfModal.vue';
@@ -132,7 +132,7 @@ export default {
       overallAverages, 
       semesterDisplayNames, 
       overallUnits 
-    } = useAcademicRecordQueryUtilities(useAcademicRecordQuery());
+    } = useAcademicRecordsQuery();
 
     const gradeKeysAndLabels = readonly({
       'prelimGrade': 'Prelim',

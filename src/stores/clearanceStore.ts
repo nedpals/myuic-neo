@@ -5,28 +5,23 @@ import { useSemesterQuery } from "./studentStore";
 
 export const useClearanceQuery = () => {
   const { idQuery: { data: semesterId }, hasSemesterId } = useSemesterQuery();
-  return useQuery(
+  const query = useQuery(
     'clearance',
     () => client.clearance(semesterId.value!),
     { enabled: hasSemesterId }
   );
-}
 
-export const useClearanceQueryUtilities = ({ isFetching, isIdle, data }: ReturnType<typeof useClearanceQuery>) => {
-  const isLoading = computed(() => isFetching.value || isIdle.value);
-
+  const isLoading = computed(() => query.isFetching.value || query.isIdle.value);
   const isCleared = computed(() => {
-    if (isLoading.value || !data.value) return false;
-
-    for (const item of data.value.items) {
+    if (isLoading.value || !query.data.value) return false;
+    for (const item of query.data.value.items) {
       if (item.status === 'not_cleared') return false;
     }
-
     return true;
   });
 
-
   return {
+    query,
     isCleared,
     isLoading
   }

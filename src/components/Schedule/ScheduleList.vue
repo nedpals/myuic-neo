@@ -1,5 +1,5 @@
 <template>
-  <loading-container :is-loading="isFetching || isIdle" v-slot="{ isLoading }">
+  <loading-container :is-loading="isLoading" v-slot="{ isLoading }">
     <box title="This week's class schedule" class="h-full min-h-[23rem] flex flex-col">
       <div class="flex flex-col flex-1">
         <div class="flex space-x-1 overflow-x-scroll disable-scrollbar">
@@ -48,7 +48,7 @@
 
 <script lang="ts">
 import { ref } from 'vue';
-import { useScheduleQueryUtilities, useSchedulesQuery, days } from '../../stores/scheduleStore';
+import { useSchedulesQuery, days } from '../../stores/scheduleStore';
 import Box from '../ui/Box.vue';
 import LoadingContainer from '../ui/LoadingContainer.vue';
 import Skeleton from '../ui/Skeleton.vue';
@@ -57,22 +57,16 @@ import IconCalendar from '~icons/ion/calendar-clear-outline';
 
 export default {
   components: { Box, LoadingContainer, Skeleton, IconCalendar },
-  
   setup() {
-    const schedulesQuery = useSchedulesQuery();
-    const { getScheduleByDay } = useScheduleQueryUtilities(schedulesQuery);
-    const { isFetching, isIdle } = schedulesQuery;
-    
+    const { getScheduleByDay, isLoading } = useSchedulesQuery();
     const currentScheduleDay = ref(formatDatetime(now, 'EEE'));
     if (currentScheduleDay.value === 'Sun') {
       currentScheduleDay.value = 'Mon';
     }
 
     const currentSchedule = getScheduleByDay(currentScheduleDay);
-
     return {
-      isFetching,
-      isIdle,
+      isLoading,
       currentSchedule,
       currentScheduleDay,
       days

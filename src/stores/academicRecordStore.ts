@@ -4,8 +4,8 @@ import { useQuery } from "vue-query"
 import { client } from "../client";
 import { semesterRegex } from "../utils";
 
-export const useAcademicRecordQuery = () => {
-  return useQuery(
+export const useAcademicRecordsQuery = () => {
+  const query = useQuery(
     'academic_records',
     () => client.academicRecords(),
     {
@@ -32,9 +32,8 @@ export const useAcademicRecordQuery = () => {
       }
     }
   );
-}
 
-export const useAcademicRecordQueryUtilities = ({ isFetching, isIdle, data }: ReturnType<typeof useAcademicRecordQuery>) => {
+  const { isFetching, isIdle, data } = query;
   const isLoading = computed(() => isFetching.value || isIdle.value);
 
   const extractSemesterInfo = (r: SemesterReport) => {
@@ -88,6 +87,7 @@ export const useAcademicRecordQueryUtilities = ({ isFetching, isIdle, data }: Re
   });
 
   return {
+    query,
     isLoading,
     semesterDisplayNames,
     overallAverages,

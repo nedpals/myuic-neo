@@ -1,6 +1,6 @@
 <template>
   <dashboard-scaffold container-class="px-4 mx-auto w-full md:px-8 md:pt-8">
-    <loading-container :is-loading="isFetching || isIdle" v-slot="{ isLoading }">
+    <loading-container :is-loading="isLoading" v-slot="{ isLoading }">
       <div class="flex flex-col-reverse lg:flex-row <lg:space-y-4 lg:space-x-4">
         <div class="w-full lg:w-2/3 flex flex-col space-y-2">
           <div class="border dark:border-primary-700 rounded-lg bg-white dark:bg-primary-800 shadow pt-4">
@@ -194,7 +194,7 @@ import IconPending from '~icons/ion/ios-circle-outline';
 import Loader from '../components/ui/Loader.vue';
 import { computed, ref } from 'vue';
 import PaymentHistory from '../components/Finance/PaymentHistory.vue';
-import { getBreakdownSubtotal, useFinancialRecordQuery, useFinancialRecordQueryUtilities } from '../stores/financialStore';
+import { getBreakdownSubtotal, useFinancialRecordQuery } from '../stores/financialStore';
 import { pesoFormatter } from '../utils';
 
 export default {
@@ -214,10 +214,7 @@ export default {
     PaymentHistory 
   },
   setup() {
-    const financialRecordQuery = useFinancialRecordQuery();
-    const { data, isFetching, isIdle } = financialRecordQuery;
-    const { paidTotal, assessmentTotal } = useFinancialRecordQueryUtilities(financialRecordQuery);
-
+    const { query: { data }, isLoading, paidTotal, assessmentTotal } = useFinancialRecordQuery();
     const formKey = ref(0);
     const breakdownKeys = computed(() => ['tuition', 'misc', 'others', 'receivables']);
     const breakdownLabels = computed(() => ['Tuition', 'Miscellanous', 'Other Fees', 'Back Account']);
@@ -235,8 +232,7 @@ export default {
       breakdownKeys,
       breakdownLabels,
       onPaymentFormOpenUpdate,
-      isFetching,
-      isIdle,
+      isLoading,
       data,
       paidTotal,
       assessmentTotal

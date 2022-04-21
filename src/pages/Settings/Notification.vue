@@ -30,11 +30,10 @@
 <script lang="ts">
 import { notify } from 'notiwind';
 import { LocalNotifications } from '@capacitor/local-notifications';
-import { useScheduleQueryUtilities, useSchedulesQuery } from '../../stores/scheduleStore';
+import { useSchedulesQuery } from '../../stores/scheduleStore';
 export default {
   setup() {
-    const { activateNotifications } = useScheduleQueryUtilities(useSchedulesQuery());
-
+    const { activateNotifications } = useSchedulesQuery();
     const testNotify = async () => {
       try {
         notify({ type: 'info', text: 'Creating test notification...' }, 5 * 1000);

@@ -19,7 +19,7 @@
       </div>
     </div>
 
-    <loading-container :is-loading="isIdle || isFetching" v-slot="{ isLoading }">
+    <loading-container :is-loading="isLoading" v-slot="{ isLoading }">
       <button 
         :disabled="!hasAlternates || isLoading"
         v-tooltip="!hasAlternates ? 'All of your courses does not have alternate class times.' : null"
@@ -73,14 +73,12 @@ import Skeleton from '../components/ui/Skeleton.vue';
 import { ref } from 'vue';
 import { catchAndNotifyError } from '../utils';
 import IconPrint from '~icons/ion/print';
-import { generateSchedulePDF, useScheduleQueryUtilities, useSchedulesQuery, days } from '../stores/scheduleStore';
+import { generateSchedulePDF, useSchedulesQuery, days } from '../stores/scheduleStore';
 
 export default {
   components: { PromiseLoader, Box, LoadingContainer, DashboardScaffold, Skeleton, IconPrint },
   setup() {
-    const schedulesQuery = useSchedulesQuery();
-    const { isFetching, isIdle } = schedulesQuery;
-    const { scheduleList, hasAlternates, isAlternate } = useScheduleQueryUtilities(schedulesQuery);
+    const { scheduleList, hasAlternates, isAlternate, isLoading } = useSchedulesQuery();
     const { currentSemester } = useSemesterQuery();
     const currentDay = ref(formatDatetime(now, 'EEE'));
     const currentDate = ref(formatDatetime(now, 'MMMM d, yyyy'));
@@ -91,8 +89,7 @@ export default {
       scheduleList,
       hasAlternates,
       isAlternate,
-      isIdle,
-      isFetching,
+      isLoading,
       currentDay,
       currentDate,
       currentSemester,

@@ -1,6 +1,6 @@
 <template>
   <dashboard-scaffold>
-    <loading-container :is-loading="isFetching || isIdle" v-slot="{ isLoading }">
+    <loading-container :is-loading="isLoading" v-slot="{ isLoading }">
       <div class="relative">
         <div 
           style="z-index:-1; opacity: 0.2;" 
@@ -123,7 +123,7 @@ import Skeleton from '../components/ui/Skeleton.vue';
 import { useSemesterQuery, useStudentQuery } from '../stores/studentStore';
 import { catchAndNotifyError } from '../utils';
 import ClearanceStatusIcon from '../components/Clearance/ClearanceStatusIcon.vue';
-import { generateClearancePDF, useClearanceQuery, useClearanceQueryUtilities } from '../stores/clearanceStore';
+import { generateClearancePDF, useClearanceQuery } from '../stores/clearanceStore';
 
 export default {
   components: {
@@ -136,11 +136,8 @@ export default {
     ClearanceStatusIcon,
   },
   setup() {
-    const clearanceQuery = useClearanceQuery();
-    const { isCleared } = useClearanceQueryUtilities(clearanceQuery);
-    const { data, isFetching, isIdle } = clearanceQuery;
+    const { query: { data }, isCleared, isLoading } = useClearanceQuery();
     const { hasSemesterId, currentSemester } = useSemesterQuery();
-
     const { normalizedFirstName: studentFirstName } = useStudentQuery();
     const statusText = (status: 'cleared' | 'not_cleared' | 'unknown') => {
       return status == 'cleared' 
@@ -171,8 +168,7 @@ export default {
       statusColor,
       statusText,
       data,
-      isFetching,
-      isIdle,
+      isLoading,
       isCleared
     }
   },

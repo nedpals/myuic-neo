@@ -25,8 +25,13 @@ export const useEvaluationQuery = (courses: {classId: string, classType: string}
   }
 }
 
+export const useEvaluationMutation = () => {
+  return useMutation((newEval: CourseEvaluation) => 
+    client.http.postJson(RoutePath('facultyEvaluationSubmit'), newEval));
+}
+
 export const useEvaluationListQuery = () => {
-  return useQuery(
+  const query = useQuery(
     'evaluation',
     () => client.facultyEvaluationList(),
     {
@@ -40,18 +45,13 @@ export const useEvaluationListQuery = () => {
       }))
     }
   );
-}
 
-export const useEvaluationMutation = () => {
-  return useMutation((newEval: CourseEvaluation) => 
-    client.http.postJson(RoutePath('facultyEvaluationSubmit'), newEval));
-}
-
-export const useEvaluationListQueryUtilities = ({ isFetching, isIdle, data }: ReturnType<typeof useEvaluationListQuery>) => {
+  const { isFetching, isIdle, data } = query;
   const isLoading = computed(() => isFetching.value || isIdle.value);
   const getEntriesByStatus = (status: EvaluationStatus) => computed(() => data.value!.filter(e => e.status === status));
 
   return {
+    query,
     isLoading,
     getEntriesByStatus
   }

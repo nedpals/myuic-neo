@@ -65,7 +65,7 @@ import PromiseLoader from '../../components/ui/PromiseLoader.vue';
 import IconChevronRight from '~icons/ion/chevron-right'
 import DashboardScaffold from '../../components/ui/DashboardScaffold.vue';
 import Skeleton from '../../components/ui/Skeleton.vue';
-import { useEvaluationListQuery, useEvaluationListQueryUtilities } from '../../stores/evaluationStore';
+import { useEvaluationListQuery } from '../../stores/evaluationStore';
 import EvaluationModal from '../../components/Apps/Evaluation/EvaluationModal.vue';
 import { computed, ref } from 'vue';
 import { CourseEvaluationEntry } from '@myuic-api/types';
@@ -75,8 +75,7 @@ type Entries = [CourseEvaluationEntry] | [CourseEvaluationEntry, CourseEvaluatio
 export default {
   components: { PromiseLoader, LoadingContainer, Loader, Box, IconChevronRight, DashboardScaffold, Skeleton, EvaluationModal },
   setup() {
-    const facultyEvaluationQuery = useEvaluationListQuery();
-    const { isLoading, getEntriesByStatus } = useEvaluationListQueryUtilities(facultyEvaluationQuery);
+    const { isLoading, getEntriesByStatus } = useEvaluationListQuery();
     const openedEvaluationList = getEntriesByStatus('open');
     const notOpenCount = computed(() => getEntriesByStatus('not_open').value.length);
     const currentlyEvaluated = ref<Entries[]>([]);

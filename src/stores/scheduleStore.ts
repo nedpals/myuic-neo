@@ -15,15 +15,6 @@ interface NormalizedCourseSchedule {
   day: string;
 }
 
-export const useSchedulesQuery = () => {
-  const { idQuery: { data: currentSemesterId } } = useSemesterQuery();
-
-  return useQuery(
-    'class_schedule',
-    () => client.classSchedule(currentSemesterId.value!)
-  );
-};
-
 const roomRegex = /(?:OL-)?((?:2nd|1st)T)/;
 
 export const days = {
@@ -44,11 +35,16 @@ const weekday: Weekday[] = [
   Weekday.Saturday
 ];
 
-export const useScheduleQueryUtilities = ({ data, isFetching, isIdle }: ReturnType<typeof useSchedulesQuery>) => {
+export const useSchedulesQuery = () => {
+  const { idQuery: { data: currentSemesterId }, hasSemesterId } = useSemesterQuery();
+  const query = useQuery('class_schedule', () => client.classSchedule(currentSemesterId.value!), {
+    enabled: hasSemesterId,
+  });
+  const { isFetching, isIdle, data } = query;
+  const isLoading = computed(() => isFetching.value || isIdle.value);
   const isAlternate = ref(false);
   const hasAlternates = ref(false);  
   const scheduleList = computed(() => {
-    const isLoading = isFetching.value || isIdle.value;
     let scheduleList: Record<string, NormalizedCourseSchedule[]> = {
       'M': [],
       'T': [],
@@ -58,7 +54,7 @@ export const useScheduleQueryUtilities = ({ data, isFetching, isIdle }: ReturnTy
       'S': []
     }
 
-    if (isLoading) {
+    if (isLoading.value) {
       for (const day in scheduleList) {
         scheduleList[day] = [...Array(3).keys()].map<NormalizedCourseSchedule>(() => ({
           instructor: '',
@@ -160,6 +156,8 @@ export const useScheduleQueryUtilities = ({ data, isFetching, isIdle }: ReturnTy
   }
 
   return {
+    query,
+    isLoading,
     scheduleList,
     activateNotifications,
     getScheduleByDay,

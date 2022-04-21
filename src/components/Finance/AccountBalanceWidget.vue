@@ -1,5 +1,5 @@
 <template>
-  <loading-container :isLoading="isFetching || isIdle">
+  <loading-container :isLoading="isLoading">
     <box
       title="Account Balance"
       title-class="text-white"
@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts">
-import { useFinancialRecordQuery, useFinancialRecordQueryUtilities } from '../../stores/financialStore';
+import { useFinancialRecordQuery } from '../../stores/financialStore';
 import Box from '../ui/Box.vue';
 import LoadingContainer from '../ui/LoadingContainer.vue';
 import Skeleton from '../ui/Skeleton.vue';
@@ -26,14 +26,12 @@ export default {
   components: { Box, Skeleton, LoadingContainer },
   setup() {
     const financialRecordQuery = useFinancialRecordQuery();
-    const { isIdle, isFetching } = financialRecordQuery;
-    const { accountBalance, lastUpdated } = useFinancialRecordQueryUtilities(financialRecordQuery);
+    const { accountBalance, lastUpdated, isLoading } = useFinancialRecordQuery();
 
     return { 
       accountBalance,
       lastUpdated,
-      isFetching,
-      isIdle,
+      isLoading,
       financialRecordQuery
     };
   }
