@@ -6,10 +6,12 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build-pwa": "npm run build && npm run build-pwa-assets",
     "preview": "vite preview",
     "start-android": "npm run build && npm run build-app-assets && cap run android",
     "start-ios": "npm run build && npm run build-app-assets && cap run ios",
-    "build-app-assets": "capacitor-assets generate --android --ios"
+    "build-app-assets": "capacitor-assets generate --android --ios",
+    "build-pwa-assets": "capacitor-assets generate --pwa --pwaManifestPath ./dist/manifest.webmanifest && mv ./icons ./dist/icons"
   },
   "dependencies": {
     "@capacitor/android": "^3.4.3",
