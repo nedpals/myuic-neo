@@ -38,9 +38,6 @@ export function subscribeAuth() {
   eventbus.on('sessionExpired', handleSessionExpired);
 
   retrieve();
-  if (client.isAuthenticated()) {
-    refresh();    
-  }
 
   return () => {
     eventbus.off('changeAuthenticatedStatus', handleChangeAuthenticatedStatus);
@@ -70,12 +67,6 @@ export function useLoginMutation() {
     login: (id: string, password: string) => mutateAsync({ id, password }),
     isProcessing: isLoading
   }
-}
-
-export async function refresh() {
-  if (!client.isAuthenticated()) return;
-  const { token, refreshToken } = await client.refresh();
-  persistTokens(token, refreshToken);
 }
 
 export async function retrieve() {
