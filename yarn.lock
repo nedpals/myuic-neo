@@ -1739,10 +1739,10 @@
   resolved "https://registry.yarnpkg.com/@miragejs/pretender-node-polyfill/-/pretender-node-polyfill-0.1.2.tgz#d26b6b7483fb70cd62189d05c95d2f67153e43f2"
   integrity sha512-M/BexG/p05C5lFfMunxo/QcgIJnMT2vDVCd00wNqK2ImZONIlEETZwWJu1QtLxtmYlSHlCFl3JNzp0tLe7OJ5g==
 
-"@myuic-api/client@^1.2.2":
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/@myuic-api/client/-/client-1.2.2.tgz#96a6163551597c92cd6d6d4e19095b3f4d93eb8e"
-  integrity sha512-Y/q7sPM6RrKOgWOcbcas6e8lelIlC5f6OHD8MxAccv+8CUpOB0j5mDv2NBcxZ5wYEWh6W5MPKtcDnexWapbVkg==
+"@myuic-api/client@^1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@myuic-api/client/-/client-1.3.0.tgz#17587e392fb941045c3b984b4d2658c05fe20950"
+  integrity sha512-u9VSK0FAeAQry1TSpDpz4IyzlzMl+L+pGQnj3Kai+3PrCKuBCWi4UD3jWBc1PF98tJ+HiOZyl4SfAaewxA7NXg==
   dependencies:
     "@myuic-api/types" "^1.2.0"
     mitt "^3.0.0"
