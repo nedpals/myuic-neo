@@ -3,9 +3,13 @@ import { Storage } from '@capacitor/storage';
 import { useMutation, useQueryClient } from 'vue-query';
 import { useRouter } from 'vue-router';
 import { notify } from 'notiwind';
+import { IS_NATIVE } from './utils';
+import { SecureStoragePlugin } from 'capacitor-secure-storage-plugin/src';
 
 const SESSION_NAME = 'session';
 const SESSION_SEP = '||-||';
+export const SESSION_NATIVE_ID_KEY = { key: 'id' };
+export const SESSION_NATIVE_PW_KEY = { key: 'password' };
 
 export function subscribeAuth() {
   const queryClient = useQueryClient();
@@ -58,8 +62,15 @@ export function useLoginMutation() {
   const { mutateAsync, isLoading } = useMutation(
     ({ id, password }:{ id: string, password: string }) => client.login(id, password), 
   {
-    onSuccess: ({ token, refreshToken }) => {
+    onSuccess: async ({ token, refreshToken }, { id, password }) => {
       persistTokens(token, refreshToken);
+
+      if (IS_NATIVE) {
+        await Promise.all([
+          SecureStoragePlugin.set({ ...SESSION_NATIVE_ID_KEY, value: id }),
+          SecureStoragePlugin.set({ ...SESSION_NATIVE_PW_KEY, value: password })
+        ]);
+      }
     }
   });
 
@@ -81,9 +92,13 @@ export async function retrieve() {
 export async function destroy() {
   try {
     await client.logout();
+    await Promise.all([
+      SecureStoragePlugin.remove(SESSION_NATIVE_ID_KEY),
+      SecureStoragePlugin.remove(SESSION_NATIVE_PW_KEY)
+    ]);
   } catch(e) {
     console.error(e);
   } finally {
-    Storage.remove({ key: SESSION_NAME });
+    await Storage.remove({ key: SESSION_NAME });
   }
 }
