@@ -171,7 +171,7 @@ import { App } from '@capacitor/app';
 import { ref } from 'vue';
 import { Capacitor } from '@capacitor/core';
 import ModalWindow from './ModalWindow.vue';
-import { destroy } from '../../auth';
+import { useLogoutMutation } from '../../auth';
 
 export default {
   components: {
@@ -192,6 +192,7 @@ export default {
     const appVersion = ref('1.0.0 Web');
     const isAboutModalOpen = ref(false);
     const { isLoading: isStudentLoading, normalizedFirstName: studentFirstName, query: { data: student } } = useStudentQuery();
+    const { mutate: destroy } = useLogoutMutation();
 
     if (IS_NATIVE) {
       App.getInfo().then((info) => {
@@ -199,7 +200,7 @@ export default {
       });
     }
 
-    return { isStudentLoading, studentFirstName, student, appVersion, IS_NATIVE, isAboutModalOpen };
+    return { isStudentLoading, studentFirstName, student, appVersion, IS_NATIVE, isAboutModalOpen, destroy };
   },
   mounted() {
     this.currentRouteName = this.getParentRouteName()?.toString() ?? 'home';
@@ -302,7 +303,7 @@ export default {
       return this.$route.matched[1].name;
     },
     logout() {
-      destroy();
+      this.destroy();
     }
   }
 }

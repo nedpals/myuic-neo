@@ -13,12 +13,11 @@ export const SESSION_NATIVE_PW_KEY = { key: 'password' };
 
 export function subscribeAuth() {
   const queryClient = useQueryClient();
-  const router = useRouter();
+  const { mutate: logout } = useLogoutMutation();
 
   const handleChangeAuthenticatedStatus = ({ newStatus, oldStatus }) => {
     if (oldStatus && !newStatus) {
-      router.replace({ name: 'login' });
-      destroy();
+      logout();
       queryClient.clear();
     }
   };
@@ -89,16 +88,17 @@ export async function retrieve() {
   client.setAuthCredentials(accessToken, refreshToken);
 }
 
-export async function destroy() {
-  try {
-    await client.logout();
-    await Promise.all([
-      SecureStoragePlugin.remove(SESSION_NATIVE_ID_KEY),
-      SecureStoragePlugin.remove(SESSION_NATIVE_PW_KEY)
-    ]);
-  } catch(e) {
-    console.error(e);
-  } finally {
-    await Storage.remove({ key: SESSION_NAME });
-  }
+export function useLogoutMutation() {
+  const router = useRouter();
+  return useMutation(() => client.logout(), {
+    onSuccess: async () => {
+      if (IS_NATIVE) 
+        await Promise.all([
+          SecureStoragePlugin.remove(SESSION_NATIVE_ID_KEY),
+          SecureStoragePlugin.remove(SESSION_NATIVE_PW_KEY)
+        ]);
+      await Storage.remove({ key: SESSION_NAME });
+      router.replace({ name: 'login' });
+    }
+  });
 }

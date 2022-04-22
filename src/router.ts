@@ -1,6 +1,5 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
-import { destroy } from './auth';
-import { client } from './client';
+import { client, eventbus } from './client';
 import { IS_NATIVE } from './utils';
 
 const router = createRouter({
@@ -190,7 +189,6 @@ router.beforeEach((to, from, next) => {
     }
   } else {
     if (to.meta.requiresAuth) {
-      destroy();
       return next({ name: 'login' });
     }
   }
