@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from 'vue-query';
 import { useRouter } from 'vue-router';
 import { notify } from 'notiwind';
 import { IS_NATIVE } from './utils';
-import { SecureStoragePlugin } from 'capacitor-secure-storage-plugin/src/index';
+import { SecureStoragePlugin } from 'capacitor-secure-storage-plugin';
 
 const SESSION_NAME = 'session';
 const SESSION_SEP = '||-||';

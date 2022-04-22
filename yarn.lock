@@ -2633,9 +2633,9 @@ caniuse-lite@^1.0.30001317:
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001331.tgz#41048f2a5cf0c3c6198f40207cd323388b3d4399"
   integrity sha512-Y1xk6paHpUXKP/P6YjQv1xqyTbgAP05ycHBcRdQjTcyXlWol868sJJPlmk5ylOekw2BrucWes5jk+LvVd7WZ5Q==
 
-"capacitor-secure-storage-plugin@https://github.com/martinkasa/capacitor-secure-storage-plugin":
+"capacitor-secure-storage-plugin@https://github.com/nedpals/capacitor-secure-storage-plugin":
   version "0.6.2"
-  resolved "https://github.com/martinkasa/capacitor-secure-storage-plugin#f1608f11c94da81400753eb374f2a9eb65e91fbf"
+  resolved "https://github.com/nedpals/capacitor-secure-storage-plugin#a50365c7d1b5cad229d2bf595483730af23d4aa9"
   dependencies:
     "@capacitor/core" "^3.0.0"
 

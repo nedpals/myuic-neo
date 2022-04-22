@@ -1,6 +1,6 @@
 import { newClient } from '@myuic-api/client';
 import { APIResponse, APIResponseError } from '@myuic-api/client/lib/fetch';
-import { SecureStoragePlugin } from 'capacitor-secure-storage-plugin/src/index';
+import { SecureStoragePlugin } from 'capacitor-secure-storage-plugin';
 import { QueryFunction, QueryKey } from 'react-query/types/core';
 import { useQuery, UseQueryOptions, VueQueryPluginOptions } from 'vue-query';
 import { persistTokens, SESSION_NATIVE_ID_KEY, SESSION_NATIVE_PW_KEY } from './auth';
