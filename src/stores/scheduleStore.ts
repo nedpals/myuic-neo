@@ -166,13 +166,18 @@ export const useSchedulesQuery = () => {
   };
 };
 
-export async function generateSchedulePDF(): Promise<string> {
+export function generateSchedulePDF() {
   const { idQuery: { data: currentSemesterId } } = useSemesterQuery();
-  const data = await client.classSchedulePDF((parseInt(currentSemesterId.value!) - 1).toString());
-  if (data instanceof Blob && window.URL.createObjectURL) {
-    const fileUrl = window.URL.createObjectURL(data);
-    return fileUrl;
-  } else {
-    throw new Error('There was an error downloading the file.');
-  }
+  return useQuery(
+    ['schedule_pdf', currentSemesterId.value!],
+    async () => {
+      if (!window.URL.createObjectURL) {
+        throw new Error('Downloading PDF files is not supported.');
+      }
+      return client.classSchedulePDF(currentSemesterId.value!);
+    }, {
+      enabled: false,
+      select: window.URL.createObjectURL
+    }
+  );
 }

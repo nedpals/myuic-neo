@@ -27,13 +27,18 @@ export const useClearanceQuery = () => {
   }
 }
 
-export async function generateClearancePDF(): Promise<string> {
+export function generateClearancePDF() {
   const { idQuery: { data: currentSemesterId } } = useSemesterQuery();
-  const data = await client.clearancePermitPDF(currentSemesterId.value!);
-  if (window.URL.createObjectURL) {
-    const fileUrl = window.URL.createObjectURL(data);
-    return fileUrl;
-  } else {
-    throw new Error('There was an error downloading the file.');
-  }
+  return useQuery(
+    ['clearance_pdf', currentSemesterId.value!],
+    async () => {
+      if (!window.URL.createObjectURL) {
+        throw new Error('Downloading PDF files is not supported.');
+      }
+      return client.clearancePermitPDF(currentSemesterId.value!);
+    }, {
+      enabled: false,
+      select: window.URL.createObjectURL
+    }
+  );
 }

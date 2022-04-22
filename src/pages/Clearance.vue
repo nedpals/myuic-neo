@@ -124,6 +124,7 @@ import { useSemesterQuery, useStudentQuery } from '../stores/studentStore';
 import { catchAndNotifyError } from '../utils';
 import ClearanceStatusIcon from '../components/Clearance/ClearanceStatusIcon.vue';
 import { generateClearancePDF, useClearanceQuery } from '../stores/clearanceStore';
+import { notify } from 'notiwind';
 
 export default {
   components: {
@@ -139,6 +140,22 @@ export default {
     const { query: { data }, isCleared, isLoading } = useClearanceQuery();
     const { hasSemesterId, currentSemester } = useSemesterQuery();
     const { normalizedFirstName: studentFirstName } = useStudentQuery();
+    const { data: fileUrl, isSuccess, refetch } = generateClearancePDF();
+    const printPdf = async () => {
+      if (!hasSemesterId) return;
+      notify({ type: 'info', text: 'Downloading PDF...' }, 10 * 1000);
+      await refetch.value();
+      if (!isSuccess.value) return;
+      const pdfPreviewTab = window.open(fileUrl.value, '_blank');
+      if (!pdfPreviewTab) {
+        catchAndNotifyError(
+          new Error('There was an error when opening the file.')
+        );
+        return;
+      }
+      pdfPreviewTab.focus();
+    }
+
     const statusText = (status: 'cleared' | 'not_cleared' | 'unknown') => {
       return status == 'cleared' 
         ? 'Cleared'
@@ -169,23 +186,8 @@ export default {
       statusText,
       data,
       isLoading,
-      isCleared
-    }
-  },
-  methods: {
-    async printPdf() {
-      try {
-        this.$notify({ type: 'info', text: 'Downloading PDF...' }, 10 * 1000);
-        const fileUrl = await generateClearancePDF();
-        const pdfPreviewTab = window.open(fileUrl, '_blank');
-        if (pdfPreviewTab) {
-          pdfPreviewTab.focus();
-        } else {
-          throw new Error('There was an error when opening the file.');
-        }
-      } catch (e) {
-        catchAndNotifyError(e);
-      }
+      isCleared,
+      printPdf
     }
   }
 }

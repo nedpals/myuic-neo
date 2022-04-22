@@ -74,15 +74,31 @@ import { ref } from 'vue';
 import { catchAndNotifyError } from '../utils';
 import IconPrint from '~icons/ion/print';
 import { generateSchedulePDF, useSchedulesQuery, days } from '../stores/scheduleStore';
+import { notify } from 'notiwind';
 
 export default {
   components: { PromiseLoader, Box, LoadingContainer, DashboardScaffold, Skeleton, IconPrint },
   setup() {
     const { scheduleList, hasAlternates, isAlternate, isLoading } = useSchedulesQuery();
-    const { currentSemester } = useSemesterQuery();
+    const { currentSemester, hasSemesterId } = useSemesterQuery();
     const currentDay = ref(formatDatetime(now, 'EEE'));
     const currentDate = ref(formatDatetime(now, 'MMMM d, yyyy'));
     const formattedDate = ref(formatDatetime(now, 'yyyy-MM-d'));
+    const { data: fileUrl, isSuccess, refetch } = generateSchedulePDF();
+    const printPdf = async () => {
+      if (!hasSemesterId) return;
+      notify({ type: 'info', text: 'Downloading PDF...' }, 10 * 1000);
+      await refetch.value();
+      if (!isSuccess.value) return;
+      const pdfPreviewTab = window.open(fileUrl.value, '_blank');
+      if (!pdfPreviewTab) {
+        catchAndNotifyError(
+          new Error('There was an error when opening the file.')
+        );
+        return;
+      }
+      pdfPreviewTab.focus();
+    }
 
     return {
       days,
@@ -94,25 +110,9 @@ export default {
       currentDate,
       currentSemester,
       filterSemesterLabel,
-      formattedDate
+      formattedDate,
+      printPdf
     }
   },
-  methods: {
-    async printPdf() {
-      try {
-        // TODO: unified component for fetching and previewing PDFs
-        this.$notify({ type: 'info', text: 'Downloading PDF...' }, 10 * 1000);
-        const fileUrl = await generateSchedulePDF();
-        const pdfPreviewTab = window.open(fileUrl, '_blank');
-        if (pdfPreviewTab) {
-          pdfPreviewTab.focus();
-        } else {
-          throw new Error('There was an error when opening the file.');
-        }
-      } catch (e) {
-        catchAndNotifyError(e);
-      }
-    }
-  }
 }
 </script>
