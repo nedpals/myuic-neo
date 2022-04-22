@@ -10,7 +10,7 @@ jobs:
   build:
     name: Build and release APK
     runs-on: ubuntu-latest
-    environment: production
+    environment: Production
     steps:
       - name: Checkout source
         uses: actions/checkout@v2
