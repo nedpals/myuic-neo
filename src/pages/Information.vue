@@ -73,7 +73,6 @@ export default {
     // triggered only once student data is received.
     const unwatchOrigData = watch(originalStudentData, (newData, oldData) => {
       if (typeof newData !== 'undefined') {
-        console.log('MUTATE!');
         replaceStudentData(newData);
         unwatchOrigData();
       }
