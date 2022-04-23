@@ -31,20 +31,20 @@
       <div class="form-group">
         <div class="form-control w-full md:w-1/2">
           <label for="last_name">Last Name</label>
-          <input type="text" name="last_name" id="last_name" :value="student.lastName" />
+          <input type="text" name="last_name" id="last_name" v-model="student.lastName" />
         </div>
         <div class="form-control w-full md:w-1/2">
           <label for="first_name">First Name</label>
-          <input type="text" name="first_name" id="first_name" :value="student.firstName" />
+          <input type="text" name="first_name" id="first_name" v-model="student.firstName" />
         </div>
         <div class="form-control w-full md:w-1/2">
           <label for="middle_name">Middle Name</label>
-          <input type="text" name="middle_name" id="middle_name" :value="student.middleName" />
+          <input type="text" name="middle_name" id="middle_name" v-model="student.middleName" />
           <span class="hint-text">The full version of your middle initial.</span>
         </div>
         <div class="form-control w-full md:w-1/2">
           <label for="suffix">Suffix</label>
-          <input type="text" name="suffix" id="suffix" :value="student.suffix" />
+          <input type="text" name="suffix" id="suffix" v-model="student.suffix" />
         </div>
       </div>
 
@@ -53,7 +53,7 @@
         <div class="form-control w-full md:w-1/2">
           <label for="gender">Gender</label>
           <loading-container :is-loading="gendersQuery.isLoading" v-slot="{ isLoading }">
-            <select name="gender" id="gender" :value="student.gender" :disabled="isLoading">
+            <select name="gender" id="gender" v-model="student.gender" :disabled="isLoading">
               <option v-if="isLoading" selected>Loading...</option>
               <option v-for="g in gendersQuery.data" :key="g" :value="g">{{ g }}</option>
             </select>
@@ -61,11 +61,11 @@
         </div>
         <div class="form-control w-full md:w-1/2">
           <label for="birth_date">Birth Date</label>
-          <input type="text" name="birth_date" id="birth_date" :value="student.birthDate" />
+          <input type="text" name="birth_date" id="birth_date" v-model="student.birthDate" />
         </div>
         <div class="form-control w-full">
           <label for="birth_place">Birth Place</label>
-          <input type="text" name="birth_place" id="birth_place" :value="student.birthPlace" />
+          <input type="text" name="birth_place" id="birth_place" v-model="student.birthPlace" />
         </div>
       </div>
 
@@ -74,7 +74,7 @@
         <div class="form-control w-full md:w-1/2">
           <label for="nationality">Nationality</label>
           <loading-container :is-loading="nationalitiesQuery.isLoading" v-slot="{ isLoading }">
-            <select name="nationality" id="nationality" :value="student.nationality" :disabled="isLoading">
+            <select name="nationality" id="nationality" v-model="student.nationality" :disabled="isLoading">
               <option v-if="isLoading" selected>Loading...</option>
               <option v-for="n in nationalitiesQuery.data" :key="n" :value="n">{{ n }}</option>
             </select>
@@ -83,7 +83,7 @@
         <div class="form-control w-full md:w-1/2">
           <label for="ethnic_group">Ethnic Group</label>
           <loading-container :is-loading="ethnicGroupsQuery.isLoading" v-slot="{ isLoading }">
-            <select name="ethnic_group" id="ethnic_group" :value="student.ethnicGroup" :disabled="isLoading">
+            <select name="ethnic_group" id="ethnic_group" v-model="student.ethnicGroup" :disabled="isLoading">
               <option v-if="isLoading" selected>Loading...</option>
               <option v-for="eg in ethnicGroupsQuery.data" :key="eg" :value="eg">{{ eg }}</option>
             </select>
@@ -96,7 +96,7 @@
         <div class="form-control w-full">
           <label for="religion">Religion</label>
           <loading-container :is-loading="religionsQuery.isLoading" v-slot="{ isLoading }">
-            <select name="religion" id="religion" :value="student.religion" :disabled="isLoading">
+            <select name="religion" id="religion" v-model="student.religion" :disabled="isLoading">
               <option v-if="isLoading" selected>Loading...</option>
               <option v-for="r in religionsQuery.data" :key="r" :value="r">{{ r }}</option>
             </select>
@@ -118,11 +118,11 @@
       <div class="form-group">
         <div class="form-control w-full md:w-1/2">
           <label for="email_address">E-mail Address</label>
-          <input type="email" name="email_address" id="email_address" :value="student.email" />
+          <input type="email" name="email_address" id="email_address" v-model="student.email" />
         </div>
         <div class="form-control w-full md:w-1/2">
           <label for="contact_no">Contact Number</label>
-          <input type="text" name="contact_no" id="contact_no" :value="student.contactNumber" />
+          <input type="text" name="contact_no" id="contact_no" v-model="student.contactNumber" />
         </div>
       </div>
 
@@ -130,37 +130,52 @@
       <div class="form-group">
         <div class="form-control w-full">
           <label for="address">Full Address</label>
-          <input type="text" name="address" id="address" :value="student.address.address" />
+          <input type="text" name="address" id="address" v-model="student.address.address" />
         </div>
         <div class="form-control w-full md:w-1/2">
           <label for="city">City</label>
-          <input type="text" name="city" id="city" :value="student.address.city" />
+          <input type="text" name="city" id="city" v-model="student.address.city" />
         </div>
         <div class="form-control w-full md:w-1/2">
           <label for="Province">Province</label>
-          <input type="text" name="province" id="province" :value="student.address.province" />
+          <input type="text" name="province" id="province" v-model="student.address.province" />
         </div>
         <div class="form-control w-full md:w-1/2">
           <label for="region">Region</label>
-          <input type="text" name="region" id="region" :value="student.address.region" />
+          <input type="text" name="region" id="region" v-model="student.address.region" />
         </div>
       </div>
     </div>
   </main>
 </template>
 
-<script>
+<script lang="ts">
+import { Student } from '@myuic-api/types';
 import LoadingContainer from '../../components/ui/LoadingContainer.vue';
 import { useGendersQuery, useNationalitiesQuery, useEthnicGroupsQuery, useReligionsQuery } from '../../stores/formStore';
-import { useStudentQuery } from '../../stores/studentStore'
+import { computed, PropType, watch } from 'vue';
 export default {
   components: { LoadingContainer },
-  setup() {
-    const { query: { data: student } } = useStudentQuery();
+  emits: ['update:student'],
+  props: {
+    student: {
+      type: Object as PropType<Student>,
+      required: true
+    }
+  },
+  setup(props, { emit }) {
+    const student = computed({
+      get: () => props.student,
+      set: (v) => emit('update:student', v)
+    });
     const gendersQuery = useGendersQuery();
     const nationalitiesQuery = useNationalitiesQuery();
     const ethnicGroupsQuery = useEthnicGroupsQuery();
     const religionsQuery = useReligionsQuery();
+
+    watch(student, () => {
+      console.log('student updated');
+    })
 
     return { 
       student,

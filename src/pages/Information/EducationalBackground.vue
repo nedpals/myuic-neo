@@ -19,11 +19,24 @@
   </main>
 </template>
 
-<script>
-import { useStudentQuery } from '../../stores/studentStore'
+<script lang="ts">
+import { computed, PropType } from 'vue';
+import { Student } from '@myuic-api/types';
+import { useStudentQuery } from '../../stores/studentStore';
 export default {
-  setup() {
-    const { isLoading, query: { data: student } } = useStudentQuery();
+  emits: ['update:student'],
+  props: {
+    student: {
+      type: Object as PropType<Student>,
+      required: true
+    }
+  },
+  setup(props, { emit }) {
+    const student = computed({
+      get: () => props.student,
+      set: (v) => emit('update:student', v)
+    });
+    const { isLoading } = useStudentQuery();
     return { isLoading, student }
   },
   computed: {
@@ -43,7 +56,3 @@ export default {
   }
 }
 </script>
-
-<style>
-
-</style>

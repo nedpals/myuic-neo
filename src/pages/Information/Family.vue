@@ -42,6 +42,7 @@
     <div>
       <div class="form-group-info">
         <h2 class="title">Parent Information</h2>
+        <p class="description">Additional information of mother and/or father.</p>
       </div>
 
       <div :key="key" v-for="(label, key) in parents">
@@ -77,14 +78,25 @@
   </main>
 </template>
 
-<script>
+<script lang="ts">
+import { computed, PropType } from 'vue';
 import LoadingContainer from '../../components/ui/LoadingContainer.vue';
 import { useParentRelationshipsQuery, useIncomeGroupsQuery } from '../../stores/formStore';
-import { useStudentQuery } from '../../stores/studentStore'
+import { Student } from '@myuic-api/types';
 export default {
   components: { LoadingContainer },
-  setup() {
-    const { query: { data: student } } = useStudentQuery();
+  emits: ['update:student'],
+  props: {
+    student: {
+      type: Object as PropType<Student>,
+      required: true
+    }
+  },
+  setup(props, { emit }) {
+    const student = computed({
+      get: () => props.student,
+      set: (v) => emit('update:student', v)
+    });
     const parentRelationshipStatusesQuery = useParentRelationshipsQuery();
     const incomeGroupsQuery = useIncomeGroupsQuery();
     return { student, parentRelationshipStatusesQuery, incomeGroupsQuery }
@@ -99,7 +111,3 @@ export default {
   }
 }
 </script>
-
-<style>
-
-</style>

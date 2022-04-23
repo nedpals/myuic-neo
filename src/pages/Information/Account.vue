@@ -28,16 +28,23 @@
   </main>
 </template>
 
-<script>
-import { useStudentQuery } from '../../stores/studentStore'
+<script lang="ts">
+import { computed, PropType } from 'vue';
+import { Student } from '@myuic-api/types';
 export default {
-  setup() {
-    const { query: { data: student } } = useStudentQuery();
-    return { student }
+  emits: ['update:student'],
+  props: {
+    student: {
+      type: Object as PropType<Student>,
+      required: true
+    }
+  },
+  setup(props, { emit }) {
+    const student = computed({
+      get: () => props.student,
+      set: (v) => emit('update:student', v)
+    });
+    return { student: student }
   }
 }
 </script>
-
-<style>
-
-</style>

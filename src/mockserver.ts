@@ -128,6 +128,10 @@ export const useMockServer = () => {
         },
       }));
 
+      this.patch(RoutePath('studentInfoUpdate'), () => ({
+        message: 'Student information updated successfully.'
+      }))
+
       this.get(RoutePath('studentFinancialRecords'), () => ({
         assessments: {
           tuition: [
