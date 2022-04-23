@@ -79,24 +79,14 @@
 </template>
 
 <script lang="ts">
-import { computed, PropType } from 'vue';
+import { inject } from 'vue';
 import LoadingContainer from '../../components/ui/LoadingContainer.vue';
 import { useParentRelationshipsQuery, useIncomeGroupsQuery } from '../../stores/formStore';
-import { Student } from '@myuic-api/types';
+import { studentInjectionKey } from '../../keys';
 export default {
   components: { LoadingContainer },
-  emits: ['update:student'],
-  props: {
-    student: {
-      type: Object as PropType<Student>,
-      required: true
-    }
-  },
-  setup(props, { emit }) {
-    const student = computed({
-      get: () => props.student,
-      set: (v) => emit('update:student', v)
-    });
+  setup() {
+    const student = inject(studentInjectionKey)!;
     const parentRelationshipStatusesQuery = useParentRelationshipsQuery();
     const incomeGroupsQuery = useIncomeGroupsQuery();
     return { student, parentRelationshipStatusesQuery, incomeGroupsQuery }

@@ -140,3 +140,22 @@ export function catchAndNotifyError(e: unknown) {
     notify({ type: 'error', text: `Unknown error.` }, 3000);
   }
 }
+
+// Data
+export function deepReactiveUpdate(src: Record<any, any>, dest: Record<any, any>) {
+  for (const k in src) {
+    if (Array.isArray(src[k])) {
+      if (!dest.hasOwnProperty(k)) {
+        dest[k] = src[k];
+      } else {
+        dest[k] = dest[k].splice(0, dest[k].length);
+        dest[k].push(...src[k]);
+      }
+
+    } else if (typeof src[k] === 'object') {
+      deepReactiveUpdate(src[k], dest[k]);
+    } else {
+      dest[k] = src[k];
+    }
+  }
+}
