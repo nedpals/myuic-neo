@@ -82,6 +82,8 @@ export default {
     const unwatchData = watch(studentData, (n, o) => {
       if (isLoading.value || isProcessing.value) return;
       isSet.value = !deepEqual(n, originalStudentData.value!);
+    }, {
+      deep: true
     });    
 
     onBeforeUnmount(() => {
