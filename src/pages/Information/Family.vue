@@ -45,16 +45,16 @@
         <p class="description">Additional information of mother and/or father.</p>
       </div>
 
-      <div :key="key" v-for="(label, key) in parents">
+      <div :key="key" v-for="(label, key) in parentsKV">
         <h3 class="sub-form-group-title !text-2xl">{{ label }}</h3>
         <div class="form-group">
           <div class="form-control w-full md:w-1/2">
             <label :for="key + '_name'">Full Name</label>
-            <input type="text" :name="key + '_name'" :id="key + '_name'" />
+            <input type="text" :name="key + '_name'" :id="key + '_name'" v-model="student.parentInformation[key].name" />
           </div>
           <div class="form-control w-full md:w-1/2">
             <label :for="key + '_educational_attainment'">Educational Attainment</label>
-            <input type="text" :name="key + '_educational_attainment'" :id="key + '_educational_attainment'" />
+            <input type="text" :name="key + '_educational_attainment'" :id="key + '_educational_attainment'" v-model="student.parentInformation[key].educationalAttainment" />
           </div>
         </div>
         
@@ -62,15 +62,15 @@
         <div class="form-group">
           <div class="form-control w-full md:w-1/2">
             <label :for="key + '_occupation'">Occupation</label>
-            <input type="text" :name="key + '_occupation'" :id="key + '_occupation'" />
+            <input type="text" :name="key + '_occupation'" :id="key + '_occupation'" v-model="student.parentInformation[key].occupation" />
           </div>
           <div class="form-control w-full md:w-1/2">
             <label :for="key + '_office_contact_number'">Contact Number</label>
-            <input type="text" :name="key + '_office_contact_number'" :id="key + '_office_contact_number'" />
+            <input type="text" :name="key + '_office_contact_number'" :id="key + '_office_contact_number'" v-model="student.parentInformation[key].officeContactNumber" />
           </div>
           <div class="form-control w-full">
             <label :for="key + '_employment_address'">Employment Address</label>
-            <input type="text" :name="key + '_employment_address'" :id="key + '_employment_address'" />
+            <input type="text" :name="key + '_employment_address'" :id="key + '_employment_address'" v-model="student.parentInformation[key].employer" />
           </div>
         </div>
       </div>
@@ -89,15 +89,11 @@ export default {
     const student = inject(studentInjectionKey)!;
     const parentRelationshipStatusesQuery = useParentRelationshipsQuery();
     const incomeGroupsQuery = useIncomeGroupsQuery();
-    return { student, parentRelationshipStatusesQuery, incomeGroupsQuery }
-  },
-  computed: {
-    parents() {
-      return {
-        'fathers': 'Father',
-        'mothers': 'Mother'
-      }
+    const parentsKV = {
+      'father': 'Father',
+      'mother': 'Mother'
     }
+    return { student, parentsKV, parentRelationshipStatusesQuery, incomeGroupsQuery }
   }
 }
 </script>
