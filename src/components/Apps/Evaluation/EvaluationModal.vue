@@ -193,7 +193,7 @@
       </loading-container>
 
     <template #footer>
-      <div class="flex justify-end space-x-2">
+      <div v-if="!isDone && !isProcessing && (!isFetching && !isIdle)" class="flex justify-end space-x-2">
         <button v-if="step > 0" @click="step--" class="button is-light">Previous</button>
         <button v-if="step < 5 + tabOffsetStart" @click="step++" :disabled="!shouldProceed(step)" class="button is-primary px-6 py-2">Next</button>
         <button v-else @click="submitEvaluation" class="button is-primary px-6 py-2">Submit</button>
@@ -203,14 +203,14 @@
 </template>
 
 <script lang="ts">
-import { computed, onBeforeUnmount, onMounted, PropType, readonly, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, PropType, readonly, ref, watch } from 'vue'
 import ModalWindow from '../../ui/ModalWindow.vue'
 import { ratings, CourseEvaluationEntry } from '@myuic-api/types'
 import { useEvaluationMutation, useEvaluationQuery } from '../../../stores/evaluationStore'
 import LoadingContainer from '../../ui/LoadingContainer.vue'
 import Loader from '../../ui/Loader.vue'
 import { TabGroup, Tab, TabList, TabPanels, TabPanel } from '@headlessui/vue'
-import { modalEventBus, showDialog } from '../../../modal'
+import { showDialog } from '../../../modal'
 import Box from '../../ui/Box.vue'
 import { notify } from 'notiwind'
 import { useQueryClient } from 'vue-query'
