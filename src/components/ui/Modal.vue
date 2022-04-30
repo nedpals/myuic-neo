@@ -32,7 +32,7 @@ import IconClose from '~icons/ion/close';
 import IconBack from '~icons/ion/chevron-left';
 import { isSlotVisible } from '../../utils';
 import { computed, onBeforeUnmount } from 'vue';
-import { useModal } from '../../modal';
+import { useModal } from '../../composables/modal';
 
 export default {
   components: { Box, IconClose, IconBack },

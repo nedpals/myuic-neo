@@ -23,7 +23,7 @@
 
 <script lang="ts">
 import { ref } from 'vue';
-import { dialogs, DialogModal, modalEventBus, DialogAction } from '../../modal';
+import { dialogs, DialogModal, modalEventBus, DialogAction } from '../../composables/modal';
 import Modal from './Modal.vue';
 
 export default {

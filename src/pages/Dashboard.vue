@@ -21,7 +21,7 @@ import DashboardScaffold from '../components/ui/DashboardScaffold.vue';
 import LoadingContainer from '../components/ui/LoadingContainer.vue';
 import Loader from '../components/ui/Loader.vue';
 import { useQueryClient } from 'vue-query';
-import { useLogoutMutation } from '../auth';
+import { useLogoutMutation } from '../composables/auth';
 
 export default {
   components: { Navbar, DashboardScaffold, LoadingContainer, Loader },
