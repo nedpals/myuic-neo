@@ -2,8 +2,9 @@ import { client, useClientQuery } from '../client';
 import { nameCase } from '@foundernest/namecase';
 import { RoutePath } from '@myuic-api/types';
 import { semesterRegex } from '../utils';
-import { QueryClient, useQuery } from 'vue-query';
+import { QueryClient, useMutation, useQuery } from 'vue-query';
 import { computed } from 'vue';
+import { notify } from 'notiwind';
 
 const fetchStudent = () => client.currentStudent();
 
@@ -64,6 +65,21 @@ export const useResourceLinkQuery = () => {
     () => client.http.get(RoutePath('resourceLinksList')),
     {
       select: ({ data }) => data[0].entries ?? [],
+    }
+  );
+}
+
+export const useChangePasswordMutation = () => {
+  return useMutation(
+    ({ newPassword, confirmNewPassword }: { newPassword: string, confirmNewPassword: string }) => 
+      client.updatePassword(newPassword, confirmNewPassword),
+    {
+      onSuccess: ({ message }) => {
+        notify({
+          type: 'success',
+          text: message,
+        }, 3000);
+      }
     }
   );
 }

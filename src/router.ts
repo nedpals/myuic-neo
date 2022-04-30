@@ -114,11 +114,11 @@ const router = createRouter({
               }
             },
             {
-              name: 'account',
+              name: 'account-information',
               path: 'account',
               component: () => import('./pages/Information/Account.vue'),
               meta: {
-                pageTitle: 'Account Information'
+                pageTitle: 'Account'
               }
             }
           ]

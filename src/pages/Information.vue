@@ -1,7 +1,7 @@
 <template>
   <dashboard-scaffold>
     <template #actions>
-      <button @click="saveInformation" class="button">
+      <button v-if="$route.name !== 'account-information'" @click="saveInformation" class="button">
         <icon-save />
         <span>Save</span>
       </button>
