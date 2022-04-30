@@ -33,7 +33,7 @@ export function subscribeAuth() {
     notify({
       type: 'error',
       text: 'Your session has expired. Please log in again.'
-    }, 3000);
+    });
   };
 
   eventbus.on('changeAuthenticatedStatus', handleChangeAuthenticatedStatus);

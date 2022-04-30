@@ -78,7 +78,7 @@ export const useChangePasswordMutation = () => {
         notify({
           type: 'success',
           text: message,
-        }, 3000);
+        });
       }
     }
   );

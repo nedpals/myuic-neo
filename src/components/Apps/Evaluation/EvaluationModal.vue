@@ -378,7 +378,7 @@ export default {
           notify({
             type: 'success',
             text: msg
-          }, 3000);
+          });
           isDone.value = true;
           await queryClient.refetchQueries({ 
             exact: true, 

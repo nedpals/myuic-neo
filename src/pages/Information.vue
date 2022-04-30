@@ -131,7 +131,7 @@ export default {
         notify({
           type: 'info',
           text: 'Saving your information...',
-        }, 3000);
+        });
       },
     });
 
@@ -141,7 +141,7 @@ export default {
           notify({
             type: 'success',
             text: message,
-          }, 3000);
+          });
           const { data: newData } = await refetchStudent.value();
           replaceStudentData(newData!);
         }
