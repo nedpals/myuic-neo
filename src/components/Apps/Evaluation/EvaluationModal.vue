@@ -210,7 +210,7 @@ import { useEvaluationMutation, useEvaluationQuery } from '../../../stores/evalu
 import LoadingContainer from '../../ui/LoadingContainer.vue'
 import Loader from '../../ui/Loader.vue'
 import { TabGroup, Tab, TabList, TabPanels, TabPanel } from '@headlessui/vue'
-import { showDialog } from '../../../modal'
+import { showDialog } from '../../../composables/modal'
 import Box from '../../ui/Box.vue'
 import { notify } from 'notiwind'
 import { useQueryClient } from 'vue-query'

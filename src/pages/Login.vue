@@ -49,7 +49,7 @@
 import backgroundImageUrl from '../assets/BG4.jpeg';
 import Loader from '../components/ui/Loader.vue';
 import LoadingContainer from '../components/ui/LoadingContainer.vue';
-import { useLoginMutation } from '../auth';
+import { useLoginMutation } from '../composables/auth';
 import IconLogo from '~icons/custom/logo';
 import DarkModeToggle from '../components/ui/DarkModeToggle.vue';
 import { useQueryClient } from 'vue-query';
