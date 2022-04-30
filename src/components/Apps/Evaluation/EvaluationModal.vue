@@ -5,7 +5,7 @@
     @update:open="warnUserOnClose"
     content-class="flex overflow-hidden"
     modal-class="max-w-4xl w-full">
-      <loading-container :is-loading="isFetching || isIdle || isProcessing" v-slot="{ isLoading }">
+      <loading-container :is-loading="isLoading || isProcessing" v-slot="{ isLoading }">
         <div v-if="isLoading" class="w-full sticky left-0 inset-y-0 flex justify-center items-center py-32">
           <loader class="h-14 w-14" />
         </div>
