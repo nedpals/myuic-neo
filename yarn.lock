@@ -5531,7 +5531,7 @@ normalize-url@^4.1.0:
 
 notiwind@nedpals/notiwind:
   version "1.2.5"
-  resolved "https://codeload.github.com/nedpals/notiwind/tar.gz/bd489d3df1a6e983bb7c44659028b7d6dee9cadb"
+  resolved "https://codeload.github.com/nedpals/notiwind/tar.gz/8590a12b8ac6b4f1eb81b392e3fdda326352d716"
   dependencies:
     mitt "^3.0.0"
 
