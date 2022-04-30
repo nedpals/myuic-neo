@@ -87,8 +87,9 @@ export default {
     const { data: fileUrl, isSuccess, refetch } = generateSchedulePDF();
     const printPdf = async () => {
       if (!hasSemesterId) return;
-      notify({ type: 'info', text: 'Downloading PDF...' }, 10 * 1000);
+      const { close } = notify({ type: 'info', text: 'Downloading PDF...' }, Infinity);
       await refetch.value();
+      close();
       if (!isSuccess.value) return;
       const pdfPreviewTab = window.open(fileUrl.value, '_blank');
       if (!pdfPreviewTab) {

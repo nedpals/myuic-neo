@@ -153,8 +153,9 @@ export default {
   methods: {
     async printPdf() {
       try {
-        this.$notify({ type: 'info', text: 'Downloading PDF...' }, 10 * 1000);
+        const { close } = this.$notify({ type: 'info', text: 'Downloading PDF...' }, Infinity);
         const fileUrl = await generateAcademicRecordsPDF();
+        close();
         const pdfPreviewTab = window.open(fileUrl, '_blank');
         if (pdfPreviewTab) {
           pdfPreviewTab.focus();
