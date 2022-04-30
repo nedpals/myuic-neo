@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import { useDarkMode } from '../../stores/uiStore';
+import { useDarkMode } from '../../composables/ui';
 import IconSun from '~icons/ion/sunny-outline';
 import IconMoon from '~icons/ion/moon-outline';
 import IconSunMoon from '~icons/mdi/theme-light-dark';

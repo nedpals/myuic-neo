@@ -47,17 +47,17 @@
 </template>
 
 <script lang="ts">
-import { subscribeAuth } from './auth';
+import { subscribeAuth } from './composables/auth';
 import { useTitle } from '@vueuse/core';
-import { useDarkMode } from './stores/uiStore';
+import { useDarkMode } from './composables/ui';
 import { computed, onBeforeUnmount } from 'vue';
-import useReloadPrompt from './sw';
+import useReloadPrompt from './composables/sw';
 import NotificationContainer from './components/ui/NotificationContainer.vue';
 import { IS_NATIVE } from './utils';
 import IconFeedback from '~icons/ion/chatbox-ellipses';
 import { useRouter } from 'vue-router';
 import { App } from '@capacitor/app';
-import { useModalManager } from './modal';
+import { useModalManager } from './composables/modal';
 import { PluginListenerHandle } from '@capacitor/core';
 import DialogManager from './components/ui/DialogManager.vue';
 

@@ -3,7 +3,7 @@ import { APIResponse, APIResponseError } from '@myuic-api/client/lib/fetch';
 import { SecureStoragePlugin } from 'capacitor-secure-storage-plugin';
 import { QueryFunction, QueryKey } from 'react-query/types/core';
 import { useQuery, UseQueryOptions, VueQueryPluginOptions } from 'vue-query';
-import { persistTokens, SESSION_NATIVE_ID_KEY, SESSION_NATIVE_PW_KEY } from './auth';
+import { persistTokens, SESSION_NATIVE_ID_KEY, SESSION_NATIVE_PW_KEY } from './composables/auth';
 import { catchAndNotifyError, IS_NATIVE, twentyFourHoursInMs } from './utils';
 export { eventbus } from '@myuic-api/client/lib/event';
 

@@ -171,7 +171,7 @@ import { App } from '@capacitor/app';
 import { ref } from 'vue';
 import { Capacitor } from '@capacitor/core';
 import ModalWindow from './ModalWindow.vue';
-import { useLogoutMutation } from '../../auth';
+import { useLogoutMutation } from '../../composables/auth';
 
 export default {
   components: {

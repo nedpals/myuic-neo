@@ -1,9 +1,9 @@
-import { client, eventbus } from './client';
+import { client, eventbus } from '../client';
 import { Storage } from '@capacitor/storage';
 import { useMutation, useQueryClient } from 'vue-query';
 import { useRouter } from 'vue-router';
 import { notify } from 'notiwind';
-import { IS_NATIVE } from './utils';
+import { IS_NATIVE } from '../utils';
 import { SecureStoragePlugin } from 'capacitor-secure-storage-plugin';
 
 const SESSION_NAME = 'session';
