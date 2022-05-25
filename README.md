@@ -16,9 +16,19 @@
 </div>
 
 ## Description
-MyUIC Neo is a Single-Page Application (SPA) and a Progressive Web App (PWA) version of MyUIC, a student portal website by the [University of the Immaculate Conception](https://uic.edu.ph). Not only it improves the user interface and user experience but it also provides additional features that fully utilizes different types of information only few can access prior to it.
+MyUIC Neo is a student-made implementation of MyUIC: the student portal web application of the [University of the Immaculate Conception](https://uic.edu.ph). The focus of MyUIC Neo is to provide **better user experience** and **better user interface** for UIC students by using modern web standards and design techniques. 
 
-Thanks to [CapacitorJS](https://capacitorjs.com), it is also a mobile app providing another set of features that cannot be achieved with just the web app.
+It is both a [single-page application (SPA)](https://en.wikipedia.org/wiki/Single-page_application) and a [progressive web application (PWA)](https://web.dev/what-are-pwas/) for smooth native-app like experience on any device whether be on the phone, on the tablet, or on the desktop.
+
+## Why?
+Information through online platforms became the norm after the start of the online class mandate. Thus, any data related to financial payments, student grades were heavily relied on the MyUIC student portal. As a student myself of the school along with others, the experience was not good and the information it provides does not utilize it very well to the point that to get the right information, you must go to a series of links which should be exposed directly in the first place.
+
+With this, it hopefully solves the dissatisfaction and other problems experienced by the students.
+
+## Native Application
+MyUIC Neo can also be used as a mobile application both for iOS and Android with the help of [CapacitorJS](https://capacitorjs.com). Unlike the web-only version, the mobile app provides features such as offline notifications, fingerprint authentication, persistent session, and etc.
+
+To get started, please refer to the ["Run as Android app"](#run-as-android-app) and ["Run as iOS App"](#run-as-ios-app) sections.
 
 ## Prerequisites
 ### Web
