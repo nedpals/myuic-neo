@@ -93,7 +93,7 @@
                     </div>
 
                     <div v-else class="flex flex-col divide-y">
-                      <div v-for="r in clearanceItem.requirements" class="flex justify-between py-2">
+                      <div :key="'requirement_' + i" v-for="(r, i) in clearanceItem.requirements" class="flex justify-between py-2">
                         <p>{{ r.remarks }}</p>
                         <div class="flex space-x-2 items-center">
                           <p class="font-bold">{{ statusText(r.status) }}</p>
