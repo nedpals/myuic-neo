@@ -62,7 +62,11 @@
         </div>
         <div class="rounded-b-xl">
           <div class="flex flex-col divide-y dark:divide-primary-600">
-            <div :key="'sem_' + j + '_sub_' + i" v-for="(ar, i) in r.reports" class="flex items-center">
+            <div class="flex items-center justify-center" v-if="r.report.courses.length == 0">
+              <p class="text-center text-2xl py-8">No grades found.</p>
+            </div>
+            
+            <div :key="'sem_' + j + '_sub_' + i" v-for="(ar, i) in r.report.courses" class="flex items-center">
               <div class="<md:hidden w-1/9 px-3 md:px-6 py-2 md:py-4">
                 <skeleton custom-class="w-8 md:w-11 h-5 md:h-7.5 bg-gray-400">
                   <p class="font-semibold">{{ ar.code }}</p>
@@ -116,23 +120,41 @@ import LoadingContainer from '../components/ui/LoadingContainer.vue';
 import PromiseLoader from '../components/ui/PromiseLoader.vue';
 import { generateAcademicRecordsPDF, useAcademicRecordsQuery } from '../stores/academicRecordStore';
 import IconPrint from '~icons/ion/print';
-import { catchAndNotifyError } from '../utils';
+import { catchAndNotifyError, semesterRegex } from '../utils';
 import SelfModal from '../components/ui/SelfModal.vue';
-import { readonly, ref } from 'vue';
+import { computed, readonly, ref } from 'vue';
 
 import computationFormulaImg from '../assets/computation-formula.png';
 import Skeleton from '../components/ui/Skeleton.vue';
+import { useSemesterQuery } from '../stores/studentStore';
 
 export default {
   components: { PromiseLoader, LoadingContainer, DashboardScaffold, IconPrint, SelfModal, Skeleton },
   setup() {
+    const { idQuery: { data: currentSemesterId }, currentSemester, hasSemesterId } = useSemesterQuery();
     const { 
       isLoading, 
       latestAcademicRecords, 
-      overallAverages, 
-      semesterDisplayNames, 
-      overallUnits 
+      overallAverages,
+      overallUnits
     } = useAcademicRecordsQuery();
+
+    const extractSemesterInfo = (label: string) => {
+      const parsedSemResults = semesterRegex.exec(label);
+      return {
+        semester: parsedSemResults?.[1] ?? parsedSemResults?.[3] ?? label,
+        year: parsedSemResults?.[2] ?? parsedSemResults?.[4] ?? label
+      }
+    }
+
+    const semesterDisplayNames = computed(() => {
+      if (!hasSemesterId.value) {
+        return [{semester: '', year: ''}];
+      }
+      return [
+        extractSemesterInfo(currentSemester.value.label)
+      ];
+    });
 
     const gradeKeysAndLabels = readonly({
       'prelimGrade': 'Prelim',
@@ -145,16 +167,17 @@ export default {
       isLoading,
       overallAverages,
       overallUnits,
-      semesterDisplayNames,
       computationFormulaImg: ref(computationFormulaImg),
-      gradeKeysAndLabels
+      gradeKeysAndLabels,
+      currentSemesterId,
+      semesterDisplayNames
     }
   },
   methods: {
     async printPdf() {
       try {
         const { close } = this.$notify({ type: 'info', text: 'Downloading PDF...' }, Infinity);
-        const fileUrl = await generateAcademicRecordsPDF();
+        const fileUrl = await generateAcademicRecordsPDF(this.currentSemesterId!);
         close();
         const pdfPreviewTab = window.open(fileUrl, '_blank');
         if (pdfPreviewTab) {
