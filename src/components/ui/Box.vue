@@ -1,5 +1,13 @@
 <template>
-  <div :class="[{ 'px-6 py-4': !noPadding }, bg]" class="shadow rounded-lg border dark:border-primary-700">
+  <div 
+    :class="[
+      { 
+        'px-6 py-4': !noPadding, 
+        'hover:bg-gray-100 dark:hover:bg-uic-900 hover:border-uic-500 dark:hover:border-uic-700 cursor-pointer': isHoverable 
+      }, 
+      bg
+    ]" 
+    class="shadow rounded-lg border dark:border-primary-700">
     <span v-if="title" class="mb-2 block" :class="titleClass">{{ title }}</span>
     <slot :isLoading="__loadState || isLoading"></slot>
   </div>
@@ -9,6 +17,9 @@
 import { inject, Ref, ref } from 'vue';
 
 defineProps({
+  isHoverable: {
+    type: Boolean
+  },
   title: {
     type: String,
   },
