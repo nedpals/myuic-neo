@@ -87,7 +87,7 @@
               </div>
               <div :key="'grade_' + gKey" v-for="(gLabel, gKey) in gradeKeysAndLabels" class="w-1/9 px-2 md:px-4 py-2 md:py-3 <md:text-center">
                 <skeleton custom-class="w-6 md:w-11 h-5 md:h-7.5 mt-1 mb-3 bg-gray-400">
-                  <p class="text-xl md:text-3xl font-semibold">{{ ar[gKey] ?? '--' }}</p>
+                  <p class="text-xl md:text-3xl font-semibold">{{ ar[gKey] && ar[gKey] > 40 ? ar[gKey] : '--' }}</p>
                 </skeleton>
                 <skeleton custom-class="w-5 md:w-14 <md:h-3.5 h-4 bg-gray-200">
                   <p 
@@ -99,7 +99,7 @@
               <div class="w-1/9 px-2 md:px-4 py-2 md:py-3 <md:text-center flex flex-col">
                 <skeleton custom-class="w-6 md:w-11 h-5 md:h-7.5 mt-1 mb-3 bg-primary-400">
                   <p class="text-xl text-primary-800 dark:text-primary-200 md:text-3xl font-semibold <md:my-auto">
-                    {{ ar.overallGrade ?? '--' }}
+                    {{ ar.overallGrade && typeof ar.overallGrade == 'number' ? ar.overallGrade : '--' }}
                   </p>
                 </skeleton>
                 <skeleton custom-class="w-5 md:w-14 <md:h-3.5 h-4 bg-gray-200">
