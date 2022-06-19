@@ -1,19 +1,17 @@
 import { Assessment, PaymentDue, PaymentRecord } from "@myuic-api/types";
-import { computed } from "vue";
+import { computed, Ref } from "vue";
 import { useQuery } from "vue-query";
 import { client } from "../client";
 import { formatDatetime, humanizeTime, pesoFormatter } from "../utils";
-import { useSemesterQuery } from "./studentStore";
 
 export function getBreakdownSubtotal(entries: Assessment[]) {
   return entries.reduce((p, v) => p + v.amount, 0);
 };
 
-export const useFinancialRecordQuery = () => {
-  const { idQuery: { data: currentSemesterId }, hasSemesterId } = useSemesterQuery();
+export const useFinancialRecordQuery = (semesterId: Ref<string | number | undefined>) => {
   const query = useQuery(
-    'financial_records', 
-    () => client.financialRecord(currentSemesterId.value!), 
+    ['financial_records', semesterId], 
+    () => client.financialRecord(semesterId.value!.toString()), 
     {
       placeholderData: {
         assessments: {
@@ -66,7 +64,7 @@ export const useFinancialRecordQuery = () => {
           paidAt: new Date()
         }))
       },
-      enabled: hasSemesterId
+      enabled: computed(() => typeof semesterId.value !== 'undefined')
     }
   );
   

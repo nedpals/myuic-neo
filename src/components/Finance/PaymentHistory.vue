@@ -77,6 +77,8 @@ import Skeleton from '../ui/Skeleton.vue';
 import Box from '../ui/Box.vue';
 import SelfModalWindow from '../ui/SelfModalWindow.vue';
 import LoadingContainer from '../ui/LoadingContainer.vue';
+import { inject } from 'vue';
+import { currentSemesterIdKey } from '../../stores/studentStore';
 
 export default {
   components: { Skeleton, Box, SelfModalWindow, LoadingContainer },
@@ -99,7 +101,8 @@ export default {
   },
 
   setup({ isRecent, limit }) {
-    const { isLoading, humanizedPaidAt, paymentOr, formattedAmount, formattedPaidAt, getPaymentHistory } = useFinancialRecordQuery();
+    const currentSemesterId = inject(currentSemesterIdKey);
+    const { isLoading, humanizedPaidAt, paymentOr, formattedAmount, formattedPaidAt, getPaymentHistory } = useFinancialRecordQuery(currentSemesterId!);
     const paymentHistory = getPaymentHistory(isRecent, limit);
     
     return {

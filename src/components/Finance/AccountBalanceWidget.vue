@@ -17,7 +17,9 @@
 </template>
 
 <script lang="ts">
+import { inject } from 'vue';
 import { useFinancialRecordQuery } from '../../stores/financialStore';
+import { currentSemesterIdKey } from '../../stores/studentStore';
 import Box from '../ui/Box.vue';
 import LoadingContainer from '../ui/LoadingContainer.vue';
 import Skeleton from '../ui/Skeleton.vue';
@@ -25,8 +27,9 @@ import Skeleton from '../ui/Skeleton.vue';
 export default {
   components: { Box, Skeleton, LoadingContainer },
   setup() {
-    const financialRecordQuery = useFinancialRecordQuery();
-    const { accountBalance, lastUpdated, isLoading } = useFinancialRecordQuery();
+    const currentSemesterId = inject(currentSemesterIdKey);
+    const financialRecordQuery = useFinancialRecordQuery(currentSemesterId!);
+    const { accountBalance, lastUpdated, isLoading } = useFinancialRecordQuery(currentSemesterId!);
 
     return { 
       accountBalance,

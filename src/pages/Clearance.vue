@@ -120,11 +120,12 @@ import LoadingContainer from '../components/ui/LoadingContainer.vue';
 import PromiseLoader from '../components/ui/PromiseLoader.vue';
 import SelfModalWindow from '../components/ui/SelfModalWindow.vue';
 import Skeleton from '../components/ui/Skeleton.vue';
-import { useSemesterQuery, useStudentQuery } from '../stores/studentStore';
+import { currentSemesterIdKey, useSemesterQuery, useStudentQuery } from '../stores/studentStore';
 import { catchAndNotifyError } from '../utils';
 import ClearanceStatusIcon from '../components/Clearance/ClearanceStatusIcon.vue';
 import { generateClearancePDF, useClearanceQuery } from '../stores/clearanceStore';
 import { notify } from 'notiwind';
+import { inject } from 'vue';
 
 export default {
   components: {
@@ -137,10 +138,11 @@ export default {
     ClearanceStatusIcon,
   },
   setup() {
-    const { query: { data }, isCleared, isLoading } = useClearanceQuery();
-    const { hasSemesterId, currentSemester } = useSemesterQuery();
+    const currentSemesterId = inject(currentSemesterIdKey);
+    const { hasSemesterId, currentSemester } = useSemesterQuery(currentSemesterId!);
+    const { query: { data }, isCleared, isLoading } = useClearanceQuery(currentSemesterId!);
     const { normalizedFirstName: studentFirstName } = useStudentQuery();
-    const { data: fileUrl, isSuccess, refetch } = generateClearancePDF();
+    const { data: fileUrl, isSuccess, refetch } = generateClearancePDF(currentSemesterId!);
     const printPdf = async () => {
       if (!hasSemesterId) return;
       const { close } = notify({ type: 'info', text: 'Downloading PDF...' }, Infinity);

@@ -1,16 +1,14 @@
-import { AcademicRecord, CourseReport, SemesterReport } from "@myuic-api/types";
-import { computed } from "vue";
+import { AcademicRecord, CourseReport } from "@myuic-api/types";
+import { computed, Ref } from "vue";
 import { useQuery } from "vue-query"
 import { client } from "../client";
-import { useSemesterQuery } from "./studentStore";
 
-export const useAcademicRecordsQuery = () => {
-  const { idQuery: { data: currentSemesterId }, hasSemesterId } = useSemesterQuery();
+export const useAcademicRecordsQuery = (semesterId: Ref<string | number | undefined>) => {
   const query = useQuery(
-    'academic_records',
-    () => client.academicRecord(currentSemesterId.value!),
+    ['academic_records', semesterId],
+    () => client.academicRecord(semesterId.value!.toString()),
     {
-      enabled: hasSemesterId,
+      enabled: computed(() => typeof semesterId.value !== 'undefined'),
       placeholderData: {
         studentPermanentRecordId: '',
         report: {

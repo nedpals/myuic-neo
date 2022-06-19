@@ -120,13 +120,13 @@ import IconReceiptOutline from '~icons/ion/receipt-outline';
 import IconCashOutline from '~icons/ion/cash-outline';
 import IconGClassroom from '~icons/custom/google-classroom';
 
-import { useResourceLinkQuery, useStudentQuery } from '../stores/studentStore';
+import { currentSemesterIdKey, useResourceLinkQuery, useStudentQuery } from '../stores/studentStore';
 import SelfModal from '../components/ui/SelfModal.vue';
 import { formatDatetime, getPeriod, now } from '../utils';
 import DashboardScaffold from '../components/ui/DashboardScaffold.vue';
 import Skeleton from '../components/ui/Skeleton.vue';
 import AccountBalanceWidget from '../components/Finance/AccountBalanceWidget.vue';
-import { computed } from 'vue';
+import { computed, inject } from 'vue';
 import PaymentHistory from '../components/Finance/PaymentHistory.vue';
 import ScheduleList from '../components/Schedule/ScheduleList.vue';
 import ClearanceStatusIcon from '../components/Clearance/ClearanceStatusIcon.vue';
@@ -136,9 +136,10 @@ import { useClearanceQuery } from '../stores/clearanceStore';
 export default {
   components: { PromiseLoader, Box, LoadingContainer, IconGClassroom, IconBookmarkOutline, IconMailOpenOutline, IconBookOutline, IconReceiptOutline, IconChevronRight, IconCashOutline, SelfModal, DashboardScaffold, Skeleton, AccountBalanceWidget, PaymentHistory, ScheduleList, ClearanceStatusIcon },
   setup() {
+    const currentSemesterId = inject(currentSemesterIdKey);
     const { isLoading: isStudentLoading, normalizedFirstName: studentFirstName } = useStudentQuery();
     const { isFetching: isRLinksFetching, isIdle: isRLinksIdle, data: resourceLinks } = useResourceLinkQuery();
-    const { isCleared: isClearanceCleared, isLoading: isClearanceLoading } = useClearanceQuery();
+    const { isCleared: isClearanceCleared, isLoading: isClearanceLoading } = useClearanceQuery(currentSemesterId!);
 
     const welcomeGreeting = computed(() => {
       const twelveHr = formatDatetime(now, 'hh:mm aa');

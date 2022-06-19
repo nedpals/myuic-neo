@@ -120,39 +120,29 @@ import LoadingContainer from '../components/ui/LoadingContainer.vue';
 import PromiseLoader from '../components/ui/PromiseLoader.vue';
 import { generateAcademicRecordsPDF, useAcademicRecordsQuery } from '../stores/academicRecordStore';
 import IconPrint from '~icons/ion/print';
-import { catchAndNotifyError, semesterRegex } from '../utils';
+import { catchAndNotifyError } from '../utils';
 import SelfModal from '../components/ui/SelfModal.vue';
-import { computed, readonly, ref } from 'vue';
+import { computed, inject, readonly, ref } from 'vue';
 
 import computationFormulaImg from '../assets/computation-formula.png';
 import Skeleton from '../components/ui/Skeleton.vue';
-import { useSemesterQuery } from '../stores/studentStore';
+import { currentSemesterIdKey, useSemesterQuery } from '../stores/studentStore';
 
 export default {
   components: { PromiseLoader, LoadingContainer, DashboardScaffold, IconPrint, SelfModal, Skeleton },
   setup() {
-    const { idQuery: { data: currentSemesterId }, currentSemester, hasSemesterId } = useSemesterQuery();
+    const currentSemesterId = inject(currentSemesterIdKey);
+    const { currentSemester } = useSemesterQuery(currentSemesterId);
     const { 
       isLoading, 
       latestAcademicRecords, 
       overallAverages,
       overallUnits
-    } = useAcademicRecordsQuery();
-
-    const extractSemesterInfo = (label: string) => {
-      const parsedSemResults = semesterRegex.exec(label);
-      return {
-        semester: parsedSemResults?.[1] ?? parsedSemResults?.[3] ?? label,
-        year: parsedSemResults?.[2] ?? parsedSemResults?.[4] ?? label
-      }
-    }
+    } = useAcademicRecordsQuery(currentSemesterId!);
 
     const semesterDisplayNames = computed(() => {
-      if (!hasSemesterId.value) {
-        return [{semester: '', year: ''}];
-      }
       return [
-        extractSemesterInfo(currentSemester.value.label)
+        currentSemester.value.display
       ];
     });
 
@@ -177,7 +167,7 @@ export default {
     async printPdf() {
       try {
         const { close } = this.$notify({ type: 'info', text: 'Downloading PDF...' }, Infinity);
-        const fileUrl = await generateAcademicRecordsPDF(this.currentSemesterId!);
+        const fileUrl = await generateAcademicRecordsPDF(this.currentSemesterId!.toString());
         close();
         const pdfPreviewTab = window.open(fileUrl, '_blank');
         if (pdfPreviewTab) {

@@ -17,7 +17,7 @@
             class="flex-1 px-3 py-1 rounded-full">{{ day }}</button>
         </div>
 
-        <div v-if="currentSchedule.length == 0" class="text-gray-400 flex flex-col items-center flex-1 justify-center space-y-2">
+        <div v-if="currentSchedule.length == 0" class="text-gray-400 dark:text-primary-300 flex flex-col items-center flex-1 justify-center space-y-2">
           <icon-calendar class="text-7xl" />
           <span class="text-2xl block text-center">No class!</span>
         </div>
@@ -47,18 +47,20 @@
 </template>
 
 <script lang="ts">
-import { ref } from 'vue';
+import { inject, ref } from 'vue';
 import { useSchedulesQuery, days } from '../../stores/scheduleStore';
 import Box from '../ui/Box.vue';
 import LoadingContainer from '../ui/LoadingContainer.vue';
 import Skeleton from '../ui/Skeleton.vue';
 import { formatDatetime, now } from '../../utils';
 import IconCalendar from '~icons/ion/calendar-clear-outline';
+import { currentSemesterIdKey } from '../../stores/studentStore';
 
 export default {
   components: { Box, LoadingContainer, Skeleton, IconCalendar },
   setup() {
-    const { getScheduleByDay, isLoading } = useSchedulesQuery();
+    const currentSemesterId = inject(currentSemesterIdKey);
+    const { getScheduleByDay, isLoading } = useSchedulesQuery(currentSemesterId!);
     const currentScheduleDay = ref(formatDatetime(now, 'EEE'));
     if (currentScheduleDay.value === 'Sun') {
       currentScheduleDay.value = 'Mon';

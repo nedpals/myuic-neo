@@ -192,10 +192,11 @@ import IconPlus from '~icons/ion/plus';
 import IconPaid from '~icons/ion/checkmark-circle';
 import IconPending from '~icons/ion/ios-circle-outline';
 import Loader from '../components/ui/Loader.vue';
-import { computed, ref } from 'vue';
+import { computed, inject, ref } from 'vue';
 import PaymentHistory from '../components/Finance/PaymentHistory.vue';
 import { getBreakdownSubtotal, useFinancialRecordQuery } from '../stores/financialStore';
 import { pesoFormatter } from '../utils';
+import { currentSemesterIdKey } from '../stores/studentStore';
 
 export default {
   components: { 
@@ -214,7 +215,8 @@ export default {
     PaymentHistory 
   },
   setup() {
-    const { query: { data }, isLoading, paidTotal, assessmentTotal } = useFinancialRecordQuery();
+    const currentSemesterId = inject(currentSemesterIdKey);
+    const { query: { data }, isLoading, paidTotal, assessmentTotal } = useFinancialRecordQuery(currentSemesterId!);
     const formKey = ref(0);
     const breakdownKeys = computed(() => ['tuition', 'misc', 'others', 'receivables']);
     const breakdownLabels = computed(() => ['Tuition', 'Miscellanous', 'Other Fees', 'Back Account']);

@@ -1,14 +1,12 @@
-import { computed } from "vue";
+import { computed, Ref } from "vue";
 import { useQuery } from "vue-query";
 import { client } from "../client";
-import { useSemesterQuery } from "./studentStore";
 
-export const useClearanceQuery = () => {
-  const { idQuery: { data: semesterId }, hasSemesterId } = useSemesterQuery();
+export const useClearanceQuery = (semesterId: Ref<string | number | undefined>) => {
   const query = useQuery(
-    'clearance',
-    () => client.clearance(semesterId.value!),
-    { enabled: hasSemesterId }
+    ['clearance', semesterId],
+    () => client.clearance(semesterId.value!.toString()),
+    { enabled: computed(() => typeof semesterId.value !== 'undefined') }
   );
 
   const isLoading = computed(() => query.isFetching.value || query.isIdle.value);
@@ -27,15 +25,14 @@ export const useClearanceQuery = () => {
   }
 }
 
-export function generateClearancePDF() {
-  const { idQuery: { data: currentSemesterId } } = useSemesterQuery();
+export function generateClearancePDF(semesterId: Ref<string | number | undefined>) {
   return useQuery(
-    ['clearance_pdf', currentSemesterId.value!],
+    ['clearance_pdf', semesterId],
     async () => {
       if (!window.URL.createObjectURL) {
         throw new Error('Downloading PDF files is not supported.');
       }
-      return client.clearancePermitPDF(currentSemesterId.value!);
+      return client.clearancePermitPDF(semesterId.value!.toString());
     }, {
       enabled: false,
       select: window.URL.createObjectURL

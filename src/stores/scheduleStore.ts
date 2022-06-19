@@ -4,7 +4,6 @@ import { computed, isRef, Ref, ref } from "vue";
 import { useQuery } from "vue-query";
 import { client } from "../client";
 import { compare12hTimesSort, IS_NATIVE } from "../utils";
-import { useSemesterQuery } from "./studentStore";
 
 interface NormalizedCourseSchedule {
   name: string;
@@ -35,10 +34,9 @@ const weekday: Weekday[] = [
   Weekday.Saturday
 ];
 
-export const useSchedulesQuery = () => {
-  const { idQuery: { data: currentSemesterId }, hasSemesterId } = useSemesterQuery();
-  const query = useQuery('class_schedule', () => client.classSchedule(currentSemesterId.value!), {
-    enabled: hasSemesterId,
+export const useSchedulesQuery = (semesterId: Ref<string | number | undefined>) => {
+  const query = useQuery(['class_schedule', semesterId], () => client.classSchedule(semesterId.value!.toString()), {
+    enabled: computed(() => typeof semesterId.value !== 'undefined'),
   });
   const { isFetching, isIdle, data } = query;
   const isLoading = computed(() => isFetching.value || isIdle.value);
@@ -166,15 +164,14 @@ export const useSchedulesQuery = () => {
   };
 };
 
-export function generateSchedulePDF() {
-  const { idQuery: { data: currentSemesterId } } = useSemesterQuery();
+export function generateSchedulePDF(semesterId: Ref<string | number | undefined>) {
   return useQuery(
-    ['schedule_pdf', currentSemesterId.value!],
+    ['schedule_pdf', semesterId],
     async () => {
       if (!window.URL.createObjectURL) {
         throw new Error('Downloading PDF files is not supported.');
       }
-      return client.classSchedulePDF(currentSemesterId.value!);
+      return client.classSchedulePDF(semesterId.value!.toString());
     }, {
       enabled: false,
       select: window.URL.createObjectURL

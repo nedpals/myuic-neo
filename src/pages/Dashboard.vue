@@ -16,12 +16,13 @@
 
 <script>
 import Navbar from '../components/ui/Navbar.vue'
-import { prefetchStudent, prefetchSemesterId, prefetchSemesterList, useSemesterQuery } from '../stores/studentStore';
+import { prefetchStudent, prefetchSemesterId, prefetchSemesterList, useSemesterQuery, currentSemesterIdKey } from '../stores/studentStore';
 import DashboardScaffold from '../components/ui/DashboardScaffold.vue';
 import LoadingContainer from '../components/ui/LoadingContainer.vue';
 import Loader from '../components/ui/Loader.vue';
 import { useQueryClient } from 'vue-query';
 import { useLogoutMutation } from '../composables/auth';
+import { provide } from 'vue-demi';
 
 export default {
   components: { Navbar, DashboardScaffold, LoadingContainer, Loader },
@@ -35,8 +36,10 @@ export default {
       prefetchStudent(queryClient),
     ]);
 
+    const { currentSemesterId } = useSemesterQuery();
     const { hasSemesterId } = useSemesterQuery();
 
+    provide(currentSemesterIdKey, currentSemesterId);
     return {
       hasSemesterId,
       isLogoutProcessing

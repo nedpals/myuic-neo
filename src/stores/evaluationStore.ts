@@ -1,9 +1,7 @@
 import { CourseEvaluation, CourseEvaluationEntry, EvaluationStatus, questionnaires, RoutePath } from "@myuic-api/types";
-import { notify } from "notiwind";
 import { computed } from "vue";
-import { useMutation, useQueries, useQuery, useQueryClient } from "vue-query"
+import { useMutation, useQueries, useQuery } from "vue-query"
 import { client, useClientQuery } from "../client";
-import { catchAndNotifyError } from "../utils";
 
 export const useEvaluationQuery = (courses: {classId: string, classType: string}[]) => {
   const idQueries = useQueries(courses.map(({ classId, classType }) => ({

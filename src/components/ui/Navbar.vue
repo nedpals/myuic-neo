@@ -31,7 +31,55 @@
       <dark-mode-toggle class="self-start md:self-center md:mt-4 lg:mt-0 lg:self-start" />
     </div>
 
-    <nav class="pt-6 md:pt-12 pb-24 md:pb-8 pl-4 md:h-[87%] flex flex-col">
+    <loading-container :is-loading="isStudentLoading" v-slot="{ isLoading }">
+      <listbox as="div" class="@md:hidden px-2" v-model="currentSemesterId">
+        <div class="md:pt-4 relative">
+          <listbox-button 
+            :disabled="isLoading"
+            :class="{ 'cursor-pointer hover:bg-gray-100 dark:hover:bg-primary-700': !isLoading }"
+            class="flex items-center justify-between transition-colors relative w-full border dark:border-primary-700 rounded-md px-4 py-2 text-left focus:outline-none">
+            <div
+              :class="{ 'space-y-2': isLoading }"
+              class="flex-col flex md:hidden lg:flex">
+              <skeleton custom-class="h-4 w-36 bg-gray-200">
+                <span class="font-semibold">{{ currentSemester.display.semester }}</span>
+              </skeleton>
+              <skeleton custom-class="h-3.5 w-24 bg-gray-200">
+                <span class="text-sm">{{ currentSemester.display.year }}</span>
+              </skeleton>
+            </div>
+            <icon-chevron-right class="text-primary-400" />
+          </listbox-button>
+          <transition
+            enter-active-class="transition duration-100 ease-out"
+            enter-from-class="transform scale-95 opacity-0"
+            enter-to-class="transform scale-100 opacity-100"
+            leave-active-class="transition duration-75 ease-out"
+            leave-from-class="transform scale-100 opacity-100"
+            leave-to-class="transform scale-95 opacity-0"
+          >
+            <listbox-options class="absolute z-10 mt-1 w-full border dark:border-primary-700 bg-white dark:bg-primary-800 shadow-lg max-h-56 rounded-md py-1 text-base overflow-auto focus:outline-none sm:text-sm">
+              <listbox-option as="template" v-slot="{ active, selected }" :key="semester.id" :value="semester.id" v-for="semester in semesterList">
+                <li :class="[currentSemesterId == semester.id ? 'bg-primary-100 dark:bg-primary-600' : '', 'hover:bg-gray-200 dark:hover:bg-primary-700 cursor-default select-none relative py-2 pl-3 pr-9']">
+                  <div
+                    :class="{ 'space-y-2': isLoading }"
+                    class="flex-col flex md:hidden lg:flex">
+                    <skeleton custom-class="h-4 w-36 bg-gray-200">
+                      <span class="font-semibold">{{ semester.display.semester }}</span>
+                    </skeleton>
+                    <skeleton custom-class="h-3.5 w-24 bg-gray-200">
+                      <span class="text-sm">{{ semester.display.year }}</span>
+                    </skeleton>
+                  </div>
+                </li>
+              </listbox-option>
+            </listbox-options>
+          </transition>
+        </div>
+      </listbox>
+    </loading-container>
+
+    <nav class="pt-6 pb-24 mt-2 md:pb-8 pl-4 md:h-[87%] flex flex-col">
       <div :key="'links_' + j" v-for="(linkGroup, j) in linkGroups" :class="{ 'mt-10': j > 0 }">
         <span class="uppercase text-sm font-bold pb-4 block pl-2 text-gray-500 dark:text-primary-200 md:hidden lg:block">{{ linkGroup.name }}</span>
         <div class="space-y-3">
@@ -161,17 +209,20 @@ import IconOnlineEnrollment from '~icons/fluent/compose-16-filled';
 import IconAboutOutline from '~icons/ion/help-circle-outline';
 import IconSettings from '~icons/ion/settings';
 import IconSettingsOutline from '~icons/ion/settings-outline';
-import { useStudentQuery } from '../../stores/studentStore';
+import IconChevronRight from '~icons/ion/chevron-right';
+import { currentSemesterIdKey, useStudentQuery } from '../../stores/studentStore';
 import DarkModeToggle from './DarkModeToggle.vue';
 import LoadingContainer from './LoadingContainer.vue';
 import Skeleton from './Skeleton.vue';
 import { IS_NATIVE } from '../../utils';
 import SelfModalWindow from './SelfModalWindow.vue';
 import { App } from '@capacitor/app';
-import { ref } from 'vue';
+import { computed, inject, ref } from 'vue';
 import { Capacitor } from '@capacitor/core';
 import ModalWindow from './ModalWindow.vue';
 import { useLogoutMutation } from '../../composables/auth';
+import { useSemesterQuery } from '../../stores/studentStore';
+import { Listbox, ListboxButton, ListboxOptions, ListboxOption } from '@headlessui/vue';
 
 export default {
   components: {
@@ -182,41 +233,55 @@ export default {
     IconAboutOutline,
     IconSettings,
     IconSettingsOutline,
+    IconChevronRight,
     DarkModeToggle,
     LoadingContainer,
     Skeleton,
     SelfModalWindow,
-    ModalWindow
+    ModalWindow,
+    Listbox,
+    ListboxButton,
+    ListboxOptions,
+    ListboxOption
   },
   setup() {
     const appVersion = ref('1.0.0 Web');
     const isAboutModalOpen = ref(false);
     const { isLoading: isStudentLoading, normalizedFirstName: studentFirstName, query: { data: student } } = useStudentQuery();
     const { mutate: destroy } = useLogoutMutation();
+    const currentSemesterId = inject(currentSemesterIdKey);
+    const { semesterList, hasSemesterId, currentSemester, idQuery } = useSemesterQuery(currentSemesterId);
 
     if (IS_NATIVE) {
       App.getInfo().then((info) => {
         appVersion.value = `${info.version} ${info.id} ${info.build} ${Capacitor.getPlatform()}`
       });
-    }
+    } 
 
-    return { isStudentLoading, studentFirstName, student, appVersion, IS_NATIVE, isAboutModalOpen, destroy };
-  },
-  mounted() {
-    this.currentRouteName = this.getParentRouteName()?.toString() ?? 'home';
+    const filteredSemesterList = computed(() => {
+      if (isStudentLoading.value) {
+        return [];
+      }
+
+      const startingYear = 2000 + parseInt(student.value?.number.substring(0, 2) ?? '20');
+      const endingYear = (new Date()).getFullYear();
+
+      return semesterList.value.filter((s) => {
+        return s.fromYear && s.fromYear >= startingYear && s.fromYear <= endingYear && s.id && s.id <= idQuery.data.value!;
+      })
+    });
+
+    return { isStudentLoading, studentFirstName, student, appVersion, IS_NATIVE, isAboutModalOpen, destroy, currentSemesterId, semesterList: filteredSemesterList, hasSemesterId, currentSemester };
   },
   data() {
     return {
-      currentRouteName: 'home',
       isMenuOpen: false
     }
   },
-  watch: {
-    '$route'() {
-      this.currentRouteName =this.getParentRouteName()?.toString() ?? 'home';
-    }
-  },
   computed: {
+    currentRouteName(): string {
+      return this.getParentRouteName()?.toString() ?? 'home';
+    },
     mobileMenuLinks(): any[] {
       return this.linkGroups[0].links.slice(0, 4)
     },

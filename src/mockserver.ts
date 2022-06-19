@@ -11,7 +11,7 @@ function reduceKV<T>(arr: readonly T[], offset: number = 1): Record<number, T> {
   }, {} as Record<number, T>);
 }
 
-const studentId = "123456789012"
+const studentId = "203456789012"
 
 export const useMockServer = () => {
   if (!enableMockServer) return;
@@ -1134,9 +1134,9 @@ export const useMockServer = () => {
 
       this.get(RoutePath('facultyEvaluationQuestionnaires'), () => questionnaires);
       this.get(RoutePath('facultyEvaluationIds'), (_, req) => {
-        const classId = req.queryParams.classId;
-        const classType = req.queryParams.classType;
-        if (!classId || !classType)
+        const classId = req.queryParams!.classId;
+        const classType = req.queryParams!.classType;
+        if (!req.queryParams || !classId || !classType)
           return new MirageResponse(400, {
             'Content-Type': 'application/json'
           }, {
