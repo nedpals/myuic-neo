@@ -65,7 +65,6 @@
 <script lang="ts" setup>
 import Box from '../components/ui/Box.vue';
 import LoadingContainer from '../components/ui/LoadingContainer.vue';
-import PromiseLoader from '../components/ui/PromiseLoader.vue';
 import { useSemesterQuery, filterSemesterLabel, currentSemesterIdKey } from '../stores/studentStore';
 import { formatDatetime, now } from '../utils';
 import DashboardScaffold from '../components/ui/DashboardScaffold.vue';

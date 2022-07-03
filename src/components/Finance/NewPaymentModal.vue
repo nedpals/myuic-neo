@@ -127,9 +127,6 @@ import { useStudentQuery } from '../../stores/studentStore'
 import Loader from '../ui/Loader.vue';
 import LoadingContainer from '../ui/LoadingContainer.vue';
 import ModalWindow from '../ui/ModalWindow.vue';
-import IconCheckmarkCircleOutline from '~icons/ion/ios-checkmark-circle-outline';
-import IconCloseCircleOutline from '~icons/ion/ios-close-circle-outline';
-import IconUnknownCircleOutline from '~icons/ion/remove-circle-outline';
 import NotificationContainer from '../ui/NotificationContainer.vue';
 import { RadioGroup, RadioGroupLabel, RadioGroupOption } from '@headlessui/vue';
 import { reactive, ref, defineEmits } from 'vue';
@@ -191,7 +188,7 @@ function setOpenState(ev: boolean) {
   emit('update:open', ev);
 }
 
-function triggerSubmitForm(e: Event) {
+function triggerSubmitForm(_e: Event) {
   newPaymentForm.value?.requestSubmit();
 }
 

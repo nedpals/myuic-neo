@@ -20,13 +20,12 @@
 
 <script lang="ts" setup>
 import LoadingContainer from '../components/ui/LoadingContainer.vue';
-import PromiseLoader from '../components/ui/PromiseLoader.vue';
 import Loader from '../components/ui/Loader.vue';
 import IconSave from '~icons/ion/save';
 
 import { useStudentQuery } from '../stores/studentStore';
 import DashboardScaffold from '../components/ui/DashboardScaffold.vue';
-import { provide, reactive, readonly, ref, watch } from 'vue';
+import { provide, reactive, watch } from 'vue';
 import { Student } from '@myuic-api/types';
 import { notify } from 'notiwind';
 import { useMutation } from 'vue-query';
@@ -123,7 +122,7 @@ const studentData = reactive<Student>({
   },
 });
 
-const { mutateAsync, isLoading: isProcessing } = useMutation((s: Student) => client.updateStudent(s), {
+const { mutateAsync } = useMutation((s: Student) => client.updateStudent(s), {
   onMutate: () => {
     notify({
       type: 'info',
@@ -150,7 +149,7 @@ const replaceStudentData = (newData: Student) => {
 }
 
 // triggered only once student data is received.
-const unwatchOrigData = watch(originalStudentData, (newData, oldData) => {
+const unwatchOrigData = watch(originalStudentData, (newData) => {
   if (typeof newData !== 'undefined') {
     replaceStudentData(newData);
     unwatchOrigData();

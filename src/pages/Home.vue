@@ -110,7 +110,6 @@
 </template>
 
 <script lang="ts" setup>
-import PromiseLoader from '../components/ui/PromiseLoader.vue';
 import Box from '../components/ui/Box.vue';
 import LoadingContainer from '../components/ui/LoadingContainer.vue';
 import IconBookmarkOutline from '~icons/ion/bookmarks-outline';

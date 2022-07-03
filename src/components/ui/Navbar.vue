@@ -202,18 +202,14 @@ import IconFeedbackOutline from '~icons/fluent/person-feedback-16-regular';
 import IconReport from '~icons/ion/stats-chart';
 import IconReportOutline from '~icons/ion/stats-chart-outline';
 import IconMenu from '~icons/ion/apps';
-import IconArrowDropdown from '~icons/ion/md-arrow-dropdown';
 import IconLogoutOutline from '~icons/ion/log-out-outline';
 import IconLogo from '~icons/custom/logo';
 import IconOnlineEnrollment from '~icons/fluent/compose-16-filled';
 import IconAboutOutline from '~icons/ion/help-circle-outline';
-import IconSettings from '~icons/ion/settings';
-import IconSettingsOutline from '~icons/ion/settings-outline';
 import IconChevronRight from '~icons/ion/chevron-right';
 import DarkModeToggle from './DarkModeToggle.vue';
 import LoadingContainer from './LoadingContainer.vue';
 import Skeleton from './Skeleton.vue';
-import SelfModalWindow from './SelfModalWindow.vue';
 import ModalWindow from './ModalWindow.vue';
 import { Listbox, ListboxButton, ListboxOptions, ListboxOption } from '@headlessui/vue';
 import { currentSemesterIdKey, useStudentQuery } from '../../stores/studentStore';
@@ -233,26 +229,13 @@ const isAboutModalOpen = ref(false);
 const { isLoading: isStudentLoading, normalizedFirstName: studentFirstName, query: { data: student } } = useStudentQuery();
 const { mutate: destroy } = useLogoutMutation();
 const currentSemesterId = inject(currentSemesterIdKey);
-const { semesterList, hasSemesterId, currentSemester, idQuery } = useSemesterQuery(currentSemesterId);
+const { semesterList, currentSemester, idQuery } = useSemesterQuery(currentSemesterId);
 
 if (IS_NATIVE) {
   App.getInfo().then((info) => {
     appVersion.value = `${info.version} ${info.id} ${info.build} ${Capacitor.getPlatform()}`
   });
 } 
-
-const filteredSemesterList = computed(() => {
-  if (isStudentLoading.value) {
-    return [];
-  }
-
-  const startingYear = 2000 + parseInt(student.value?.number.substring(0, 2) ?? '20');
-  const endingYear = (new Date()).getFullYear();
-
-  return semesterList.value.filter((s) => {
-    return s.fromYear && s.fromYear >= startingYear && s.fromYear <= endingYear && s.id && s.id <= idQuery.data.value!;
-  })
-});
 
 const getParentRouteName = () => {
   if (route.matched.length < 2) return 'dashboard';

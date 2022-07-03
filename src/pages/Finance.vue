@@ -180,17 +180,13 @@
 </template>
 
 <script lang="ts" setup>
-import Box from '../components/ui/Box.vue';
 import DashboardScaffold from '../components/ui/DashboardScaffold.vue';
 import NewPaymentModal from '../components/Finance/NewPaymentModal.vue';
 import LoadingContainer from '../components/ui/LoadingContainer.vue';
-import PromiseLoader from '../components/ui/PromiseLoader.vue';
 import SelfModalWindow from '../components/ui/SelfModalWindow.vue';
 import Skeleton from '../components/ui/Skeleton.vue';
 import AccountBalanceWidget from '../components/Finance/AccountBalanceWidget.vue';
 import IconPlus from '~icons/ion/plus';
-import IconPaid from '~icons/ion/checkmark-circle';
-import IconPending from '~icons/ion/ios-circle-outline';
 import Loader from '../components/ui/Loader.vue';
 import { computed, inject, ref } from 'vue';
 import PaymentHistory from '../components/Finance/PaymentHistory.vue';

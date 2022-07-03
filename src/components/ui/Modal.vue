@@ -29,7 +29,6 @@
 <script lang="ts" setup>
 import Box from './Box.vue';
 import IconClose from '~icons/ion/close';
-import IconBack from '~icons/ion/chevron-left';
 import { isSlotVisible } from '../../utils';
 import { computed, onBeforeUnmount, defineEmits, defineProps } from 'vue';
 import { useModal } from '../../composables/modal';

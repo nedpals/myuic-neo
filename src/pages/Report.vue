@@ -121,7 +121,7 @@ import { generateAcademicRecordsPDF, useAcademicRecordsQuery } from '../stores/a
 import IconPrint from '~icons/ion/print';
 import { catchAndNotifyError } from '../utils';
 import SelfModal from '../components/ui/SelfModal.vue';
-import { computed, inject, readonly, ref } from 'vue';
+import { computed, inject, readonly } from 'vue';
 
 import computationFormulaImg from '../assets/computation-formula.png';
 import Skeleton from '../components/ui/Skeleton.vue';
