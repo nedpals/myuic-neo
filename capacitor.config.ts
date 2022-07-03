@@ -1,5 +1,5 @@
 /// <reference types="@capacitor/local-notifications" />
-/// <reference types="@capacitor/splash-screen" />
+//// <reference types="@capacitor/splash-screen" />
 import { CapacitorConfig } from '@capacitor/cli';
 import windiConfig from './windi.config';
 

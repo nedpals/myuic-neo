@@ -12,7 +12,7 @@ import 'virtual:windi.css'
 import 'virtual:windi-devtools'
 import { registerSW } from 'virtual:pwa-register'
 
-import { SplashScreen } from '@capacitor/splash-screen'
+// import { SplashScreen } from '@capacitor/splash-screen'
 import { APP_PREFIX, IS_NATIVE } from './utils'
 import { Storage } from '@capacitor/storage'
 
@@ -25,7 +25,7 @@ Storage.configure({
 
 async function startApp() {
   try {
-    await SplashScreen.hide();
+    // await SplashScreen.hide();
     await registerSW({ immediate: true })(true);
   } catch (e) {
     console.error(e);
@@ -51,8 +51,7 @@ async function initializeServer() {
 }
 
 
-SplashScreen.show()
-  .then(initializeServer)
+initializeServer()
   .finally(() => {
     startApp();
   });

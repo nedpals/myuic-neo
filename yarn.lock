@@ -967,11 +967,6 @@
   resolved "https://registry.yarnpkg.com/@capacitor/local-notifications/-/local-notifications-1.1.0.tgz#614c3d27fd6fe3f1d89bbed8dbdf4c7eaf234f08"
   integrity sha512-l6S9rBylxGPq/U+xpJzZcOL4l2s8I2Igq7uDTidR4imIxxX3bLRz9nDSQREWsbQkFx7ALFm/5Y8PJGz2C6qKPw==
 
-"@capacitor/splash-screen@^1.2.2":
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/@capacitor/splash-screen/-/splash-screen-1.2.2.tgz#fabd52ffbb922c38e2b3ef605332f29c830bd508"
-  integrity sha512-iGh9gc0rdS3R+Wr+bD/+tJl3qbmJZ5xVQAP5UsD6U6Y3ydCBo9KpA8DEqxaBZVsCDaLt67009hK5nxKBwjRn7Q==
-
 "@capacitor/storage@^1.2.5":
   version "1.2.5"
   resolved "https://registry.yarnpkg.com/@capacitor/storage/-/storage-1.2.5.tgz#48206869cbbf1404fcdbb5c440a882140bd3abd8"
@@ -2201,6 +2196,11 @@ caniuse-lite@^1.0.30001349:
   version "1.0.30001356"
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001356.tgz#cbf5fe7b33f90962bfbca532212ea478d4ec9de8"
   integrity sha512-/30854bktMLhxtjieIxsrJBfs2gTM1pel6MXKF3K+RdIVJZcsn2A2QdhsuR4/p9+R204fZw0zCBBhktX8xWuyQ==
+
+capacitor-plugin-safe-area@^0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/capacitor-plugin-safe-area/-/capacitor-plugin-safe-area-0.0.3.tgz#ca5539390015d80bfdbeb734285f86b9fdd1f706"
+  integrity sha512-AOsUOz56GRb74eu5cOEyCt34zgxNuyQV5XQKmFaHqtemXnycc4zSgivP9mpjf+vAGtHjozeEcCQSQqGBuiZnKQ==
 
 "capacitor-secure-storage-plugin@https://github.com/nedpals/capacitor-secure-storage-plugin":
   version "0.6.2"
