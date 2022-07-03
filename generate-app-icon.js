@@ -34,8 +34,9 @@ async function downloadAsset(config) {
     console.log('> Generating assets...');
     const downloadPath = path.join(__dirname, '.cache');
     const browser = await puppeteer.launch({
-        executablePath: process.env.CHROME_PATH,
-        headless: true
+        args: ['--no-sandbox'],
+        executablePath: process.env.PUPPETEER_EXEC_PATH,
+        headless: false
     });
 
     const page = await browser.newPage();
