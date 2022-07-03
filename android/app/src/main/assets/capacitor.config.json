@@ -11,7 +11,7 @@
 		"SplashScreen": {
 			"launchAutoHide": false,
 			"androidScaleType": "CENTER_CROP",
-			"backgroundColor": "#dc3858"
+			"backgroundColor": "#FFFFFF"
 		}
 	}
 }
