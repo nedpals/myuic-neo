@@ -1,74 +1,66 @@
 <template>
-  <main :style="backgroundImageCss" class="h-screen w-screen !md:bg-cover bg-no-repeat !md:bg-center overflow-hidden">
-    <div class="max-w-[1920px] mx-auto h-full relative flex flex-col md:flex-row">
-      <div class="bg-gradient-to-r md:bg-gradient-to-b from-primary-500 to-transparent h-18 md:h-full w-full md:w-18">
-
-      </div>
-      <div class="relative flex md:items-center bg-white dark:bg-primary-800 <md:h-full w-full md:w-100 shadow-lg p-8 z-10">
-        <loading-container :is-loading="isProcessing" v-slot="{ isLoading }">
-          <div 
-            v-if="isLoading" 
-            class="bg-white dark:bg-primary-800 bg-opacity-50 dark:bg-opacity-50 h-full w-full absolute inset-0 rounded-lg flex items-center justify-center">
-            <loader class="h-16 w-16" />
-          </div>
-        </loading-container>
-      
-        <div class="md:mb-48 w-full flex flex-col">
-          <div class="flex justify-between mb-4">
-            <div class="h-14 w-14">
-              <icon-logo class="w-full h-full text-primary-500 dark:text-primary-400" />
-            </div>
-
-            <dark-mode-toggle class="self-start" />
-          </div>
-          <h2 class="text-3xl font-bold pb-6">Login</h2>
-          <form @submit.prevent="login" autocomplete="off">
-            <div class="flex flex-col space-y-2 py-2">
-              <label for="student_id" class="font-lg">Student ID</label>
-              <input type="text" name="student_id" id="student_id" placeholder="e.g. 20000000xxx" pattern="[0-9]{6,12}" required class="px-4 py-3 rounded-lg border bg-gray-100 border-gray-300" />
-            </div>
-            <div class="flex flex-col space-y-2 py-2">
-              <label for="password" class="font-lg">Password</label>
-              <input type="password" name="password" id="password" class="px-4 py-3 rounded-lg border bg-gray-100 border-gray-300" required />
-            </div>
-            <div class="flex flex-col-reverse md:flex-row justify-between pt-4">
-              <div class="flex flex-col <md:mt-8 space-y-1">
-                <a href="#" class="hover:underline text-primary-600 dark:text-primary-200">Forgot password?</a>
-                <a href="#" class="hover:underline text-primary-600 dark:text-primary-200">Open a Support Ticket</a>
-              </div>
-              <button type="submit" class="button is-primary is-medium">Login</button>
-            </div>
-          </form>
-        </div>
-      </div>
+  <main :style="{paddingTop: `calc(3rem + ${topInset}px)`}" class="relative flex flex-col h-screen max-w-7xl px-8 pb-8 mx-auto md:border-x border-gray-300 dark:border-primary-700">
+    <div 
+      v-if="isProcessing" 
+      class="z-10 bg-white dark:bg-primary-900 bg-opacity-50 dark:bg-opacity-50 h-full max-w-7xl mx-auto absolute inset-0 rounded-lg flex items-center justify-center">
+      <loader class="h-16 w-16" />
     </div>
+    <div class="pt-6 pr-6 md:pr-8 absolute top-0 left-0 flex justify-end mb-8 w-full">
+      <dark-mode-toggle class="self-start" />
+    </div>
+    <div class="md:mt-8 flex flex-col items-center text-center mb-12">
+      <div class="w-24 md:w-48 mb-3 md:mb-8">
+        <icon-logo class="w-full h-full text-primary-400" />
+      </div>
+      <h1 class="text-3xl md:text-4xl font-bold mb-2">MyUIC <span class="font-medium">Neo</span></h1>
+      <p class="w-80 md:w-90 text-gray-600 dark:text-primary-200 text-xl md:text-2xl">A new student portal concept for UICians in the 21st century.</p>
+    </div>
+    <div class="w-full max-w-lg mx-auto relative flex flex-col">
+      <h2 class="text-xl md:text-2xl font-bold pb-3 md:pb-6">Login</h2>
+      <form @submit.prevent="login" autocomplete="off">
+        <div class="flex flex-col space-y-2 py-2">
+          <label for="student_id" class="font-lg">Student ID</label>
+          <input 
+            type="text" 
+            name="student_id"
+            id="student_id" 
+            placeholder="e.g. 20000000xxx" 
+            pattern="[0-9]{6,12}" required />
+        </div>
+        <div class="flex flex-col space-y-2 py-2">
+          <label for="password" class="font-lg">Password</label>
+          <input type="password" name="password" id="password" placeholder="Enter your password" required />
+        </div>
+        <button type="submit" class="button is-primary is-medium w-full mt-12">Login</button>
+      </form>
+    </div>
+    <footer class="mt-auto text-center pt-3">
+      <p>Made with ❤️ by <a class="text-primary-400 hover:underline" href="https://twitter.com/npned">Ned Palacios</a></p>
+    </footer>
   </main>
 </template>
 
 <script lang="ts">
-import backgroundImageUrl from '../assets/BG4.jpeg';
 import Loader from '../components/ui/Loader.vue';
-import LoadingContainer from '../components/ui/LoadingContainer.vue';
 import { useLoginMutation } from '../composables/auth';
 import IconLogo from '~icons/custom/logo';
 import DarkModeToggle from '../components/ui/DarkModeToggle.vue';
 import { useQueryClient } from 'vue-query';
+import { SafeArea } from 'capacitor-plugin-safe-area';
+import { onMounted, ref } from 'vue';
 
 export default {
-  components: { LoadingContainer, Loader, IconLogo, DarkModeToggle },
+  components: { Loader, IconLogo, DarkModeToggle },
   setup() {
+    const topInset = ref(0);
+      onMounted(() => {
+        SafeArea.getSafeAreaInsets().then(({ insets }) => {
+          topInset.value = insets.top;
+        });
+      });
     const { login, isProcessing } = useLoginMutation();
     const queryClient = useQueryClient();
-    return { login, isProcessing, queryClient };
-  },
-  computed: {
-    backgroundImageCss(): Record<string, any> {
-      return {
-        'background-image': 'url('+backgroundImageUrl+')', 
-        'background-size': '100%',
-        'background-position': '100% -27%'
-      }
-    }
+    return { login, isProcessing, queryClient, topInset };
   },
   methods: {
     async login(e: SubmitEvent) {
@@ -87,3 +79,9 @@ export default {
   }
 }
 </script>
+
+<style lang="postcss" scoped>
+input[name="student_id"], input[name="password"] {
+  @apply px-4 py-3 rounded-lg !border-2  outline-primary-500 dark:outline-white focus:border-primary-500 border-gray-300 dark:focus:border-white dark:border-primary-700 dark:placeholder-primary-400;
+}
+</style>
