@@ -129,7 +129,7 @@
           class="py-2 px-4 flex items-center max-h-12 space-x-4 rounded-l-full" 
           style="transition: ease 150ms background-color">
           <component 
-            :is="currentRouteName === 'settings' ? 'icon-settings' : 'icon-settings-outline'" 
+            :is="currentRouteName === 'settings' ? IconSettings : IconSettingsOutline" 
             :class="[currentRouteName !== 'settings' ? 'text-primary-500' : 'dark:text-primary-300']" 
             class="text-[1.3rem]" />
           <span class="md:hidden lg:block">Settings</span>
@@ -210,6 +210,8 @@ import IconLogo from '~icons/custom/logo';
 import IconOnlineEnrollment from '~icons/fluent/compose-16-filled';
 import IconAboutOutline from '~icons/ion/help-circle-outline';
 import IconChevronRight from '~icons/ion/chevron-right';
+import IconSettings from '~icons/ion/settings';
+import IconSettingsOutline from '~icons/ion/settings-outline';
 import DarkModeToggle from './DarkModeToggle.vue';
 import LoadingContainer from './LoadingContainer.vue';
 import Skeleton from './Skeleton.vue';
