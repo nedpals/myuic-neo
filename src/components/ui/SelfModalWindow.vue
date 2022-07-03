@@ -15,30 +15,22 @@
   </modal-window>
 </template>
 
-<script>
-import ModalWindow from './ModalWindow.vue'
-export default {
-  components: { ModalWindow },
-  props: {
-    title: {
-      type: String,
-    },
-    modalClass: {
-      type: String
-    },
-    contentClass: {
-      type: String
-    }
+<script lang="ts" setup>
+import { ref } from 'vue';
+import ModalWindow from './ModalWindow.vue';
+
+defineProps({
+  title: {
+    type: String,
   },
-  data() {
-    return {
-      open: false
-    }
+  modalClass: {
+    type: String
   },
-  methods: {
-    openModal() {
-      this.open = true;
-    }
+  contentClass: {
+    type: String
   }
-}
+});
+
+const open = ref(false);
+const openModal = () => { open.value = true };
 </script>

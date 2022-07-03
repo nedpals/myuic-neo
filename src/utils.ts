@@ -120,7 +120,7 @@ export function compare12hTimesSort(a: string, b: string) {
 // }
 
 // Vue utilities
-export function isSlotVisible(slot: Slot | null): boolean {
+export function isSlotVisible(slot: Slot | null | undefined): boolean {
   if (!slot) {
     return false;
   }

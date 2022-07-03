@@ -46,10 +46,10 @@
             </button>
           </div>
 
-          <div v-if="!isLoading && data.items.length" class="bg-gray-50 dark:bg-primary-800 shadow border dark:border-primary-600 rounded-lg">
+          <div v-if="!isLoading && data!.items.length" class="bg-gray-50 dark:bg-primary-800 shadow border dark:border-primary-600 rounded-lg">
             <div class="flex flex-col divide-y dark:divide-primary-600">
               <self-modal-window 
-                :key="'item_' + i" v-for="(clearanceItem, i) in data.items"
+                :key="'item_' + i" v-for="(clearanceItem, i) in data!.items"
                 :title="clearanceItem.label + ' Requirements'">
                 <template #default="{ openModal }">
                   <div
@@ -112,12 +112,11 @@
   </dashboard-scaffold>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { ClearanceItem } from '@myuic-api/types';
 import DashboardScaffold from '../components/ui/DashboardScaffold.vue';
 import Loader from '../components/ui/Loader.vue';
 import LoadingContainer from '../components/ui/LoadingContainer.vue';
-import PromiseLoader from '../components/ui/PromiseLoader.vue';
 import SelfModalWindow from '../components/ui/SelfModalWindow.vue';
 import Skeleton from '../components/ui/Skeleton.vue';
 import { currentSemesterIdKey, useSemesterQuery, useStudentQuery } from '../stores/studentStore';
@@ -127,71 +126,50 @@ import { generateClearancePDF, useClearanceQuery } from '../stores/clearanceStor
 import { notify } from 'notiwind';
 import { inject } from 'vue';
 
-export default {
-  components: {
-    PromiseLoader,
-    LoadingContainer,
-    DashboardScaffold,
-    Skeleton,
-    Loader,
-    SelfModalWindow,
-    ClearanceStatusIcon,
-  },
-  setup() {
-    const currentSemesterId = inject(currentSemesterIdKey);
-    const { hasSemesterId, currentSemester } = useSemesterQuery(currentSemesterId!);
-    const { query: { data }, isCleared, isLoading } = useClearanceQuery(currentSemesterId!);
-    const { normalizedFirstName: studentFirstName } = useStudentQuery();
-    const { data: fileUrl, isSuccess, refetch } = generateClearancePDF(currentSemesterId!);
-    const printPdf = async () => {
-      if (!hasSemesterId) return;
-      const { close } = notify({ type: 'info', text: 'Downloading PDF...' }, Infinity);
-      await refetch.value();
-      close();
-      if (!isSuccess.value) return;
-      const pdfPreviewTab = window.open(fileUrl.value, '_blank');
-      if (!pdfPreviewTab) {
-        catchAndNotifyError(
-          new Error('There was an error when opening the file.')
-        );
-        return;
-      }
-      pdfPreviewTab.focus();
-    }
-
-    const statusText = (status: 'cleared' | 'not_cleared' | 'unknown') => {
-      return status == 'cleared' 
-        ? 'Cleared'
-        : status == 'not_cleared'
-        ? 'Not cleared'
-        : 'Unknown';
-    }
-  
-    const statusColor = (status: 'cleared' | 'not_cleared' | 'unknown') => {
-      return status == 'cleared' 
-        ? 'text-success-600'
-        : status == 'not_cleared'
-        ? 'text-danger-400'
-        : 'text-gray-600';
-    }
-
-    const clearedRequirementsCount = (item: ClearanceItem) => {
-      return item.requirements
-        .filter(r => r.status === 'cleared' || r.status === 'promisory').length;
-    }
-
-    return {
-      hasSemesterId,
-      currentSemester,
-      studentFirstName,
-      clearedRequirementsCount,
-      statusColor,
-      statusText,
-      data,
-      isLoading,
-      isCleared,
-      printPdf
-    }
+const currentSemesterId = inject(currentSemesterIdKey);
+const { hasSemesterId, currentSemester } = useSemesterQuery(currentSemesterId!);
+const { query: { data }, isCleared, isLoading } = useClearanceQuery(currentSemesterId!);
+const { normalizedFirstName: studentFirstName } = useStudentQuery();
+const { data: fileUrl, isSuccess, refetch } = generateClearancePDF(currentSemesterId!);
+const printPdf = async () => {
+  if (!hasSemesterId) return;
+  const { close } = notify({ type: 'info', text: 'Downloading PDF...' }, Infinity);
+  await refetch.value();
+  close();
+  if (!isSuccess.value) return;
+  const pdfPreviewTab = window.open(fileUrl.value, '_blank');
+  if (!pdfPreviewTab) {
+    catchAndNotifyError(
+      new Error('There was an error when opening the file.')
+    );
+    return;
   }
+  pdfPreviewTab.focus();
+}
+
+const statusText = (status: 'cleared' | 'not_cleared' | 'unknown' | 'promisory') => {
+  switch (status) {
+    case 'cleared':
+      return 'Cleared';
+    case 'not_cleared':
+      return 'Not cleared';
+    case 'promisory':
+      return 'Promisory';
+    default:
+      return 'Unknown';
+  }
+}
+
+const statusColor = (status: 'cleared' | 'not_cleared' | 'unknown' | 'promisory') => {
+  return status == 'cleared' || status == 'promisory' 
+    ? 'text-success-600'
+    : status == 'not_cleared'
+    ? 'text-danger-400'
+    : 'text-gray-600';
+}
+
+const clearedRequirementsCount = (item: ClearanceItem) => {
+  return item.requirements
+    .filter(r => r.status === 'cleared' || r.status === 'promisory').length;
 }
 </script>

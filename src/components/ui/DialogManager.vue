@@ -21,39 +21,28 @@
   </modal>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { ref } from 'vue';
 import { dialogs, DialogModal, modalEventBus, DialogAction } from '../../composables/modal';
 import Modal from './Modal.vue';
 
-export default {
-  components: { Modal },
-  setup() {
-    const hasActionPressed = ref(false);
-    const handleDialogAction = (d: DialogModal, action: DialogAction) => {
-      hasActionPressed.value = true;
-      const result = typeof action.answer === 'function' ? action.answer() : action.answer;
-      modalEventBus.emit('dialog_closed', { id: d.id, result });
-    }
+const hasActionPressed = ref(false);
+const handleDialogAction = (d: DialogModal, action: DialogAction) => {
+  hasActionPressed.value = true;
+  const result = typeof action.answer === 'function' ? action.answer() : action.answer;
+  modalEventBus.emit('dialog_closed', { id: d.id, result });
+}
 
-    const handleDialogOpen = (d: DialogModal, newOpen: boolean) => {
-      d.isOpen = newOpen;
+const handleDialogOpen = (d: DialogModal, newOpen: boolean) => {
+  d.isOpen = newOpen;
 
-      if (!newOpen) {
-        if (!hasActionPressed.value) {
-          modalEventBus.emit('dialog_closed', { id: d.id, result: null });
-        }
-        const idx = dialogs.value.findIndex(dd => dd.id === d.id);
-        if (idx !== -1) {
-          dialogs.value.splice(idx, 1);
-        }
-      }
+  if (!newOpen) {
+    if (!hasActionPressed.value) {
+      modalEventBus.emit('dialog_closed', { id: d.id, result: null });
     }
-    
-    return {
-      handleDialogOpen,
-      handleDialogAction,
-      dialogs
+    const idx = dialogs.value.findIndex(dd => dd.id === d.id);
+    if (idx !== -1) {
+      dialogs.value.splice(idx, 1);
     }
   }
 }

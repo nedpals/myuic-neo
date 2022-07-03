@@ -16,7 +16,7 @@
             <div class="flex flex-col">
               <self-modal-window
                 :key="'monthlyDue_' + i"
-                v-for="(mDue, i) in data.monthlyDues"
+                v-for="(mDue, i) in data!.monthlyDues"
                 :title="isLoading ? 'Loading...' : 'Month ' + mDue.month">
                 <template #default="{ openModal }">
                   <div
@@ -27,7 +27,7 @@
                       'bg-warning-50 dark:bg-warning-800 hover:bg-warning-100 dark:hover:bg-warning-900': !isLoading && mDue.status === 'Partially Paid',
                       'hover:bg-gray-100 dark:hover:bg-primary-800': !isLoading && mDue.status.length === 0,
                       'cursor-pointer': !isLoading,
-                      'rounded-b-lg': i === data.monthlyDues.length - 1
+                      'rounded-b-lg': i === data!.monthlyDues.length - 1
                     }">
                     
                     <skeleton custom-class="w-13 h-13 -ml-1 bg-gray-400 dark:bg-primary-600 rounded-full">
@@ -132,7 +132,7 @@
                     </skeleton>
                     <skeleton custom-class="h-4 w-24 rounded-xl bg-gray-400">
                       <p class="font-bold">
-                        {{ !isLoading ? moneyFormatter.format(getBreakdownSubtotal(data.assessments[bKey])) : '--' }}
+                        {{ !isLoading ? moneyFormatter.format(getBreakdownSubtotal(data!.assessments[bKey])) : '--' }}
                       </p>
                     </skeleton>
                   </div>
@@ -140,7 +140,7 @@
                     <div
                       v-if="!isLoading"
                       :key="'entry_' + ai + '_' + bKey"
-                      v-for="(aEntry, ai) in data.assessments[bKey]"
+                      v-for="(aEntry, ai) in data!.assessments[bKey]"
                       class="flex justify-between text-sm mb-2">
                       <skeleton custom-class="h-3.5 w-24 rounded-xl">
                         <p>{{ aEntry.description }}</p>
@@ -179,7 +179,7 @@
   </dashboard-scaffold>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import Box from '../components/ui/Box.vue';
 import DashboardScaffold from '../components/ui/DashboardScaffold.vue';
 import NewPaymentModal from '../components/Finance/NewPaymentModal.vue';
@@ -195,50 +195,18 @@ import Loader from '../components/ui/Loader.vue';
 import { computed, inject, ref } from 'vue';
 import PaymentHistory from '../components/Finance/PaymentHistory.vue';
 import { getBreakdownSubtotal, useFinancialRecordQuery } from '../stores/financialStore';
-import { pesoFormatter } from '../utils';
+import { pesoFormatter as moneyFormatter } from '../utils';
 import { currentSemesterIdKey } from '../stores/studentStore';
 
-export default {
-  components: { 
-    IconPlus,
-    IconPaid,
-    IconPending,
-    PromiseLoader, 
-    Box, 
-    LoadingContainer, 
-    NewPaymentModal, 
-    SelfModalWindow,
-    DashboardScaffold,
-    Skeleton,
-    AccountBalanceWidget,
-    Loader,
-    PaymentHistory 
-  },
-  setup() {
-    const currentSemesterId = inject(currentSemesterIdKey);
-    const { query: { data }, isLoading, paidTotal, assessmentTotal } = useFinancialRecordQuery(currentSemesterId!);
-    const formKey = ref(0);
-    const breakdownKeys = computed(() => ['tuition', 'misc', 'others', 'receivables']);
-    const breakdownLabels = computed(() => ['Tuition', 'Miscellanous', 'Other Fees', 'Back Account']);
+const currentSemesterId = inject(currentSemesterIdKey);
+const { query: { data }, isLoading, paidTotal, assessmentTotal } = useFinancialRecordQuery(currentSemesterId!);
+const formKey = ref(0);
+const breakdownKeys = computed(() => ['tuition', 'misc', 'others', 'receivables']);
+const breakdownLabels = computed(() => ['Tuition', 'Miscellanous', 'Other Fees', 'Back Account']);
 
-    function onPaymentFormOpenUpdate(isOpen: boolean) {
-      if (!isOpen) {
-        formKey.value++;
-      }
-    }
-
-    return {
-      moneyFormatter: pesoFormatter,
-      getBreakdownSubtotal,
-      formKey,
-      breakdownKeys,
-      breakdownLabels,
-      onPaymentFormOpenUpdate,
-      isLoading,
-      data,
-      paidTotal,
-      assessmentTotal
-    }
+function onPaymentFormOpenUpdate(isOpen: boolean) {
+  if (!isOpen) {
+    formKey.value++;
   }
 }
 </script>

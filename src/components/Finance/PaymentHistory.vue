@@ -71,48 +71,34 @@
   </loading-container>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { useFinancialRecordQuery } from '../../stores/financialStore';
 import Skeleton from '../ui/Skeleton.vue';
 import Box from '../ui/Box.vue';
 import SelfModalWindow from '../ui/SelfModalWindow.vue';
 import LoadingContainer from '../ui/LoadingContainer.vue';
-import { inject } from 'vue';
+import { inject, defineProps } from 'vue';
 import { currentSemesterIdKey } from '../../stores/studentStore';
 
-export default {
-  components: { Skeleton, Box, SelfModalWindow, LoadingContainer },
-  props: {
-    isRecent: {
-      type: Boolean,
-      default: false
-    },
-    isShort: {
-      type: Boolean,
-      default: false
-    },
-    hasLink: {
-      type: Boolean,
-      default: false
-    },
-    limit: {
-      type: Number
-    }
+const { isRecent, limit } = defineProps({
+  isRecent: {
+    type: Boolean,
+    default: false
   },
-
-  setup({ isRecent, limit }) {
-    const currentSemesterId = inject(currentSemesterIdKey);
-    const { isLoading, humanizedPaidAt, paymentOr, formattedAmount, formattedPaidAt, getPaymentHistory } = useFinancialRecordQuery(currentSemesterId!);
-    const paymentHistory = getPaymentHistory(isRecent, limit);
-    
-    return {
-      humanizedPaidAt,
-      paymentOr,
-      formattedAmount,
-      formattedPaidAt,
-      isLoading,
-      paymentHistory
-    }
+  isShort: {
+    type: Boolean,
+    default: false
+  },
+  hasLink: {
+    type: Boolean,
+    default: false
+  },
+  limit: {
+    type: Number
   }
-}
+});
+
+const currentSemesterId = inject(currentSemesterIdKey);
+const { isLoading, humanizedPaidAt, paymentOr, formattedAmount, formattedPaidAt, getPaymentHistory } = useFinancialRecordQuery(currentSemesterId!);
+const paymentHistory = getPaymentHistory(isRecent, limit);
 </script>

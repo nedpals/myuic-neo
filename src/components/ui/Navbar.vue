@@ -22,7 +22,7 @@
               <span class="font-semibold">{{ studentFirstName }}'s MyUIC</span>
             </skeleton>
             <skeleton custom-class="h-3.5 w-24 bg-gray-200">
-              <span class="text-sm">{{ student.number }}</span>
+              <span class="text-sm">{{ student!.number }}</span>
             </skeleton>
           </div>
         </loading-container>
@@ -184,7 +184,7 @@
   </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import IconHomeOutline from '~icons/ion/home-outline';
 import IconHome from '~icons/ion/home';
 import IconCalendar from '~icons/ion/calendar';
@@ -210,168 +210,134 @@ import IconAboutOutline from '~icons/ion/help-circle-outline';
 import IconSettings from '~icons/ion/settings';
 import IconSettingsOutline from '~icons/ion/settings-outline';
 import IconChevronRight from '~icons/ion/chevron-right';
-import { currentSemesterIdKey, useStudentQuery } from '../../stores/studentStore';
 import DarkModeToggle from './DarkModeToggle.vue';
 import LoadingContainer from './LoadingContainer.vue';
 import Skeleton from './Skeleton.vue';
-import { IS_NATIVE } from '../../utils';
 import SelfModalWindow from './SelfModalWindow.vue';
+import ModalWindow from './ModalWindow.vue';
+import { Listbox, ListboxButton, ListboxOptions, ListboxOption } from '@headlessui/vue';
+import { currentSemesterIdKey, useStudentQuery } from '../../stores/studentStore';
+
+import { IS_NATIVE } from '../../utils';
 import { App } from '@capacitor/app';
 import { computed, inject, ref } from 'vue';
 import { Capacitor } from '@capacitor/core';
-import ModalWindow from './ModalWindow.vue';
 import { useLogoutMutation } from '../../composables/auth';
 import { useSemesterQuery } from '../../stores/studentStore';
-import { Listbox, ListboxButton, ListboxOptions, ListboxOption } from '@headlessui/vue';
+import { useRoute } from 'vue-router';
 
-export default {
-  components: {
-    IconMenu,
-    IconArrowDropdown,
-    IconLogoutOutline,
-    IconLogo,
-    IconAboutOutline,
-    IconSettings,
-    IconSettingsOutline,
-    IconChevronRight,
-    DarkModeToggle,
-    LoadingContainer,
-    Skeleton,
-    SelfModalWindow,
-    ModalWindow,
-    Listbox,
-    ListboxButton,
-    ListboxOptions,
-    ListboxOption
-  },
-  setup() {
-    const appVersion = ref('1.0.0 Web');
-    const isAboutModalOpen = ref(false);
-    const { isLoading: isStudentLoading, normalizedFirstName: studentFirstName, query: { data: student } } = useStudentQuery();
-    const { mutate: destroy } = useLogoutMutation();
-    const currentSemesterId = inject(currentSemesterIdKey);
-    const { semesterList, hasSemesterId, currentSemester, idQuery } = useSemesterQuery(currentSemesterId);
+const route = useRoute();
+const isMenuOpen = ref(false);
+const appVersion = ref('1.0.0 Web');
+const isAboutModalOpen = ref(false);
+const { isLoading: isStudentLoading, normalizedFirstName: studentFirstName, query: { data: student } } = useStudentQuery();
+const { mutate: destroy } = useLogoutMutation();
+const currentSemesterId = inject(currentSemesterIdKey);
+const { semesterList, hasSemesterId, currentSemester, idQuery } = useSemesterQuery(currentSemesterId);
 
-    if (IS_NATIVE) {
-      App.getInfo().then((info) => {
-        appVersion.value = `${info.version} ${info.id} ${info.build} ${Capacitor.getPlatform()}`
-      });
-    } 
+if (IS_NATIVE) {
+  App.getInfo().then((info) => {
+    appVersion.value = `${info.version} ${info.id} ${info.build} ${Capacitor.getPlatform()}`
+  });
+} 
 
-    const filteredSemesterList = computed(() => {
-      if (isStudentLoading.value) {
-        return [];
-      }
-
-      const startingYear = 2000 + parseInt(student.value?.number.substring(0, 2) ?? '20');
-      const endingYear = (new Date()).getFullYear();
-
-      return semesterList.value.filter((s) => {
-        return s.fromYear && s.fromYear >= startingYear && s.fromYear <= endingYear && s.id && s.id <= idQuery.data.value!;
-      })
-    });
-
-    return { isStudentLoading, studentFirstName, student, appVersion, IS_NATIVE, isAboutModalOpen, destroy, currentSemesterId, semesterList: filteredSemesterList, hasSemesterId, currentSemester };
-  },
-  data() {
-    return {
-      isMenuOpen: false
-    }
-  },
-  computed: {
-    currentRouteName(): string {
-      return this.getParentRouteName()?.toString() ?? 'home';
-    },
-    mobileMenuLinks(): any[] {
-      return this.linkGroups[0].links.slice(0, 4)
-    },
-    linkGroups(): any[] {
-      return [
-        {
-          name: 'Student',
-          links: [
-            {
-              title: 'Home',
-              to: { name: 'home' },
-              icon: IconHomeOutline,
-              activeIcon: IconHome,
-            },
-            {
-              title: 'Schedule',
-              to: { name: 'schedule' },
-              icon: IconCalendarOutline,
-              activeIcon: IconCalendar,
-            },
-            {
-              title: 'Reports',
-              to: { name: 'reports' },
-              icon: IconReportOutline,
-              activeIcon: IconReport,
-            },
-            {
-              title: 'Finance',
-              to: { name: 'finance' },
-              icon: IconCashOutline,
-              activeIcon: IconCash,
-            },
-            {
-              title: 'Clearance',
-              to: { name: 'clearance' },
-              icon: IconReceiptOutline,
-              activeIcon: IconReceipt,
-            },
-            {
-              title: 'Information',
-              to: { name: 'information' },
-              icon: IconPersonOutline,
-              activeIcon: IconPerson,
-            }
-          ]
-        },
-        {
-          name: 'Apps',
-          links: [
-            {
-              title: 'Election',
-              to: { name: 'election-app' },
-              icon: IconBallotOutline,
-              activeIcon: IconBallot,
-            },
-            {
-              title: 'Course Evaluation',
-              to: { name: 'course-evaluation-app' },
-              icon: IconFeedbackOutline,
-              activeIcon: IconFeedback,
-            },
-            {
-              title: 'Online Enrollment',
-              to: { name: 'online-enrollment-app' },
-              icon: IconOnlineEnrollment,
-              activeIcon: IconOnlineEnrollment,
-            },
-            ...(IS_NATIVE ? [
-              {
-                title: 'Test App',
-                to: { name: 'test-app' },
-                icon: IconLogo,
-                activeIcon: IconLogo,
-              }
-            ]: []),
-          ]
-        }
-      ];
-    }
-  },
-  methods: {
-    getParentRouteName() {
-      if (this.$route.matched.length < 2) return 'dashboard';
-      return this.$route.matched[1].name;
-    },
-    logout() {
-      this.destroy();
-    }
+const filteredSemesterList = computed(() => {
+  if (isStudentLoading.value) {
+    return [];
   }
+
+  const startingYear = 2000 + parseInt(student.value?.number.substring(0, 2) ?? '20');
+  const endingYear = (new Date()).getFullYear();
+
+  return semesterList.value.filter((s) => {
+    return s.fromYear && s.fromYear >= startingYear && s.fromYear <= endingYear && s.id && s.id <= idQuery.data.value!;
+  })
+});
+
+const getParentRouteName = () => {
+  if (route.matched.length < 2) return 'dashboard';
+  return route.matched[1].name;
 }
+
+const logout = () => destroy();
+
+const currentRouteName = computed(() => getParentRouteName()?.toString() ?? 'home');
+const linkGroups = [
+  {
+    name: 'Student',
+    links: [
+      {
+        title: 'Home',
+        to: { name: 'home' },
+        icon: IconHomeOutline,
+        activeIcon: IconHome,
+      },
+      {
+        title: 'Schedule',
+        to: { name: 'schedule' },
+        icon: IconCalendarOutline,
+        activeIcon: IconCalendar,
+      },
+      {
+        title: 'Reports',
+        to: { name: 'reports' },
+        icon: IconReportOutline,
+        activeIcon: IconReport,
+      },
+      {
+        title: 'Finance',
+        to: { name: 'finance' },
+        icon: IconCashOutline,
+        activeIcon: IconCash,
+      },
+      {
+        title: 'Clearance',
+        to: { name: 'clearance' },
+        icon: IconReceiptOutline,
+        activeIcon: IconReceipt,
+      },
+      {
+        title: 'Information',
+        to: { name: 'information' },
+        icon: IconPersonOutline,
+        activeIcon: IconPerson,
+      }
+    ]
+  },
+  {
+    name: 'Apps',
+    links: [
+      {
+        title: 'Election',
+        to: { name: 'election-app' },
+        icon: IconBallotOutline,
+        activeIcon: IconBallot,
+      },
+      {
+        title: 'Course Evaluation',
+        to: { name: 'course-evaluation-app' },
+        icon: IconFeedbackOutline,
+        activeIcon: IconFeedback,
+      },
+      {
+        title: 'Online Enrollment',
+        to: { name: 'online-enrollment-app' },
+        icon: IconOnlineEnrollment,
+        activeIcon: IconOnlineEnrollment,
+      },
+      ...(IS_NATIVE ? [
+        {
+          title: 'Test App',
+          to: { name: 'test-app' },
+          icon: IconLogo,
+          activeIcon: IconLogo,
+        }
+      ]: []),
+    ]
+  }
+];
+
+const mobileMenuLinks = linkGroups[0].links.slice(0, 4);
 </script>
 
 <style lang="postcss" scoped>

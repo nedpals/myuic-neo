@@ -78,22 +78,17 @@
   </main>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { inject } from 'vue';
 import LoadingContainer from '../../components/ui/LoadingContainer.vue';
 import { useParentRelationshipsQuery, useIncomeGroupsQuery } from '../../stores/formStore';
 import { studentInjectionKey } from '../../keys';
-export default {
-  components: { LoadingContainer },
-  setup() {
-    const student = inject(studentInjectionKey)!;
-    const parentRelationshipStatusesQuery = useParentRelationshipsQuery();
-    const incomeGroupsQuery = useIncomeGroupsQuery();
-    const parentsKV = {
-      'father': 'Father',
-      'mother': 'Mother'
-    }
-    return { student, parentsKV, parentRelationshipStatusesQuery, incomeGroupsQuery }
-  }
+
+const student = inject(studentInjectionKey)!;
+const parentRelationshipStatusesQuery = useParentRelationshipsQuery();
+const incomeGroupsQuery = useIncomeGroupsQuery();
+const parentsKV = {
+  'father': 'Father',
+  'mother': 'Mother'
 }
 </script>

@@ -26,53 +26,44 @@
   </teleport>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import Box from './Box.vue';
 import IconClose from '~icons/ion/close';
 import IconBack from '~icons/ion/chevron-left';
 import { isSlotVisible } from '../../utils';
-import { computed, onBeforeUnmount } from 'vue';
+import { computed, onBeforeUnmount, defineEmits, defineProps } from 'vue';
 import { useModal } from '../../composables/modal';
 
-export default {
-  components: { Box, IconClose, IconBack },
-  emits: ['update:open'],
-  props: {
-    mId: {
-      type: Number
-    },
-    title: {
-      type: String,
-    },
-    open: {
-      type: Boolean
-    },
-    contentClass: {
-      type: String,
-      default: 'px-6 pb-4'
-    },
-    footerClass: {
-      type: String,
-      default: 'px-4 px-6 py-4'
-    },
-    modalClass: {
-      type: String,
-      default: 'max-w-xl w-full'
-    }
+const emit = defineEmits(['update:open']);
+const props = defineProps({
+  mId: {
+    type: Number
   },
-  setup(props, { emit }) {
-    const { closeModal, unsubscribe } = useModal(
-      computed(() => props.open), 
-      (o) => emit('update:open', o),
-      props.mId
-    );
-
-    onBeforeUnmount(unsubscribe);
-
-    return {
-      isSlotVisible,
-      closeModal,
-    }
+  title: {
+    type: String,
   },
-}
+  open: {
+    type: Boolean
+  },
+  contentClass: {
+    type: String,
+    default: 'px-6 pb-4'
+  },
+  footerClass: {
+    type: String,
+    default: 'px-4 px-6 py-4'
+  },
+  modalClass: {
+    type: String,
+    default: 'max-w-xl w-full'
+  }
+});
+
+const { closeModal, unsubscribe } = useModal(
+  computed(() => props.open), 
+  (o) => emit('update:open', o),
+  props.mId
+);
+
+onBeforeUnmount(unsubscribe);
 </script>

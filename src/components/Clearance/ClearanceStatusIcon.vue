@@ -8,35 +8,25 @@
       : 'text-gray-400']" />
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
+import { RequirementStatus } from '@myuic-api/types';
+import { defineProps, PropType } from 'vue';
 import IconCheckmarkCircleOutline from '~icons/ion/ios-checkmark-circle-outline';
 import IconCloseCircleOutline from '~icons/ion/ios-close-circle-outline';
 import IconUnknownCircleOutline from '~icons/ion/remove-circle-outline';
 
-export default {
-  props: {
-    status: {
-      type: String,
-      default: 'unknown'
-    },
+defineProps({
+  status: {
+    type: String as PropType<RequirementStatus>,
+    default: 'unknown'
   },
-  components: {
-    IconCheckmarkCircleOutline,
-    IconCloseCircleOutline,
-    IconUnknownCircleOutline,
-  },
-  setup() {
-    const statusIcon = (status: 'cleared' | 'not_cleared' | 'unknown') => {
-      return status == 'cleared' 
-        ? 'icon-checkmark-circle-outline'
-        : status == 'not_cleared'
-        ? 'icon-close-circle-outline'
-        : 'icon-unknown-circle-outline';
-    }
+});
 
-    return {
-      statusIcon
-    }
-  }
+const statusIcon = (status: RequirementStatus) => {
+  return status == 'cleared' 
+    ? IconCheckmarkCircleOutline
+    : status == 'not_cleared'
+    ? IconCloseCircleOutline
+    : IconUnknownCircleOutline;
 }
 </script>

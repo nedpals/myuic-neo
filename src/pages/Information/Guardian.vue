@@ -26,13 +26,8 @@
   </main>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { inject } from 'vue';
 import { studentInjectionKey } from '../../keys';
-export default {
-  setup() {
-    const student = inject(studentInjectionKey)!;
-    return { student };
-  }
-}
+const student = inject(studentInjectionKey)!;
 </script>

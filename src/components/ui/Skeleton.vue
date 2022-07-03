@@ -3,7 +3,7 @@
   <slot v-else></slot>
 </template>
 
-<script>
+<script lang="ts">
 export default {
   inject: {
     __loadState: {

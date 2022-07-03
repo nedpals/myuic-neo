@@ -15,7 +15,7 @@
               style="transition: ease 150ms background-color "
               exact-active-class="bg-primary-100 dark:bg-primary-700 !border-primary-500 !dark:border-primary-600 hover:bg-primary-200 dark:hover:bg-primary-800"
               class="px-4 py-2 md:py-3 hover:bg-primary-100 dark:hover:bg-primary-800 rounded-t-lg border-b-4 border-transparent">
-              {{ r.meta.pageTitle ?? r.name }}
+              {{ r.meta?.pageTitle ?? r.name }}
             </router-link>
           </li>
         </ul>
@@ -28,54 +28,47 @@
   </main>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { useTitle } from '@vueuse/core';
-import { computed, watch } from 'vue';
+import { computed, watch, defineEmits, defineProps } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-export default {
-  emits: ['reload'],
-  props: {
-    title: {
-      type: String
-    },
-    containerClass: {
-      type: String
-    }
+defineEmits(['reload']);
+
+const { title } = defineProps({
+  title: {
+    type: String
   },
-  setup({ title }) {
-    const route = useRoute();
-    const router = useRouter();
+  containerClass: {
+    type: String
+  }
+});
 
-    const childRouteLinks = computed(() => {
-      if (route.matched.length < 3) return [];
-      const routes = router.getRoutes();
-      const currentRouteData = routes.find(r => r.name === route.matched[route.matched.length - 2].name);
-      if (!currentRouteData) return [];
-      return currentRouteData.children;
-    })
+const route = useRoute();
+const router = useRouter();
 
-    const pageTitle = computed(() => {
-      if (title) return title;
-      if (route.matched.length < 3) return route.meta.pageTitle;
-      const routes = router.getRoutes();
-      const currentRouteData = routes.find(r => r.name === route.matched[route.matched.length - 2].name);
-      if (!currentRouteData) return route.meta.pageTitle;
-      return currentRouteData.meta.pageTitle;
-    })
+const childRouteLinks = computed(() => {
+  if (route.matched.length < 3) return [];
+  const routes = router.getRoutes();
+  const currentRouteData = routes.find(r => r.name === route.matched[route.matched.length - 2].name);
+  if (!currentRouteData) return [];
+  return currentRouteData.children;
+})
 
-    watch(() => route.fullPath, () => {
-      useTitle(`${pageTitle.value} | MyUIC`);
-    }, {
-      immediate: true
-    });
+const pageTitle = computed(() => {
+  if (title) return title;
+  if (route.matched.length < 3) return route.meta.pageTitle;
+  const routes = router.getRoutes();
+  const currentRouteData = routes.find(r => r.name === route.matched[route.matched.length - 2].name);
+  if (!currentRouteData) return route.meta.pageTitle;
+  return currentRouteData.meta.pageTitle;
+})
 
-    return {
-      pageTitle,
-      childRouteLinks
-    }
-  },
-}
+watch(() => route.fullPath, () => {
+  useTitle(`${pageTitle.value} | MyUIC`);
+}, {
+  immediate: true
+});
 </script>
 
 <style lang="postcss">

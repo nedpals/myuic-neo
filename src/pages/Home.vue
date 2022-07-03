@@ -109,7 +109,7 @@
   </dashboard-scaffold>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import PromiseLoader from '../components/ui/PromiseLoader.vue';
 import Box from '../components/ui/Box.vue';
 import LoadingContainer from '../components/ui/LoadingContainer.vue';
@@ -133,33 +133,19 @@ import ClearanceStatusIcon from '../components/Clearance/ClearanceStatusIcon.vue
 import IconChevronRight from '~icons/ion/chevron-right';
 import { useClearanceQuery } from '../stores/clearanceStore';
 
-export default {
-  components: { PromiseLoader, Box, LoadingContainer, IconGClassroom, IconBookmarkOutline, IconMailOpenOutline, IconBookOutline, IconReceiptOutline, IconChevronRight, IconCashOutline, SelfModal, DashboardScaffold, Skeleton, AccountBalanceWidget, PaymentHistory, ScheduleList, ClearanceStatusIcon },
-  setup() {
-    const currentSemesterId = inject(currentSemesterIdKey);
-    const { isLoading: isStudentLoading, normalizedFirstName: studentFirstName } = useStudentQuery();
-    const { isFetching: isRLinksFetching, isIdle: isRLinksIdle, data: resourceLinks } = useResourceLinkQuery();
-    const { isCleared: isClearanceCleared, isLoading: isClearanceLoading } = useClearanceQuery(currentSemesterId!);
+const currentSemesterId = inject(currentSemesterIdKey);
+const { isLoading: isStudentLoading, normalizedFirstName: studentFirstName } = useStudentQuery();
+const { isFetching: isRLinksFetching, isIdle: isRLinksIdle, data: resourceLinks } = useResourceLinkQuery();
+const { isCleared: isClearanceCleared, isLoading: isClearanceLoading } = useClearanceQuery(currentSemesterId!);
 
-    const welcomeGreeting = computed(() => {
-      const twelveHr = formatDatetime(now, 'hh:mm aa');
-      const period = getPeriod(twelveHr);
-      return `Good ${period}`;
-    });
-    const todayDate = computed(() => formatDatetime(now, '\'Today is\' iiii, MMMM d, yyyy'));
+const welcomeGreeting = computed(() => {
+  const twelveHr = formatDatetime(now, 'hh:mm aa');
+  const period = getPeriod(twelveHr);
+  return `Good ${period}`;
+});
 
-    return {
-      isRLinksLoading: computed(() => isRLinksFetching.value || isRLinksIdle.value),
-      resourceLinks,
-      isClearanceCleared,
-      isClearanceLoading,
-      isStudentLoading,
-      studentFirstName,
-      welcomeGreeting,
-      todayDate
-    }
-  }
-}
+const todayDate = computed(() => formatDatetime(now, '\'Today is\' iiii, MMMM d, yyyy'));
+const isRLinksLoading = computed(() => isRLinksFetching.value || isRLinksIdle.value)
 </script>
 
 <style lang="postcss" scoped>

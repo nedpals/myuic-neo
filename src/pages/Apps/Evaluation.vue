@@ -50,18 +50,16 @@
     <!-- Modal -->
     <evaluation-modal
       v-for="c in currentlyEvaluated"
-      :key="'eval_' + c.code + '_' + c.type"
-      @close="closeCourseEvaluation(c)"
+      :key="'eval_' + c[0].code + '_' + c[0].type"
+      @close="closeCourseEvaluation(c[0])"
       :courses="c"
       open />
   </dashboard-scaffold>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import Box from '../../components/ui/Box.vue';
-import Loader from '../../components/ui/Loader.vue';
 import LoadingContainer from '../../components/ui/LoadingContainer.vue';
-import PromiseLoader from '../../components/ui/PromiseLoader.vue';
 import IconChevronRight from '~icons/ion/chevron-right'
 import DashboardScaffold from '../../components/ui/DashboardScaffold.vue';
 import Skeleton from '../../components/ui/Skeleton.vue';
@@ -72,41 +70,27 @@ import { CourseEvaluationEntry } from '@myuic-api/types';
 
 type Entries = [CourseEvaluationEntry] | [CourseEvaluationEntry, CourseEvaluationEntry];
 
-export default {
-  components: { PromiseLoader, LoadingContainer, Loader, Box, IconChevronRight, DashboardScaffold, Skeleton, EvaluationModal },
-  setup() {
-    const { isLoading, getEntriesByStatus } = useEvaluationListQuery();
-    const openedEvaluationList = getEntriesByStatus('open');
-    const notOpenCount = computed(() => getEntriesByStatus('not_open').value.length);
-    const currentlyEvaluated = ref<Entries[]>([]);
-    const closeCourseEvaluation = (c: CourseEvaluationEntry) => {
-      const idx = currentlyEvaluated.value.findIndex(e => e[0].code === c.code && e[0].type === c.type);
-      currentlyEvaluated.value.splice(idx, 1);
-    }
+const { isLoading, getEntriesByStatus } = useEvaluationListQuery();
+const openedEvaluationList = getEntriesByStatus('open');
+const notOpenCount = computed(() => getEntriesByStatus('not_open').value.length);
+const currentlyEvaluated = ref<Entries[]>([]);
+const closeCourseEvaluation = (c: CourseEvaluationEntry) => {
+  const idx = currentlyEvaluated.value.findIndex(e => e[0].code === c.code && e[0].type === c.type);
+  currentlyEvaluated.value.splice(idx, 1);
+}
 
-    const evaluateCourse = (c: Entries) => {
-      const additionalEntry = openedEvaluationList.value.find(cc => cc.code === c[0].code && cc.type !== c[0].type);
-      const finalEntries : CourseEvaluationEntry[] = [];
-      if (typeof additionalEntry !== 'undefined') {
-        finalEntries.push(additionalEntry);
-      }
+const evaluateCourse = (c: Entries) => {
+  const additionalEntry = openedEvaluationList.value.find(cc => cc.code === c[0].code && cc.type !== c[0].type);
+  const finalEntries : CourseEvaluationEntry[] = [];
+  if (typeof additionalEntry !== 'undefined') {
+    finalEntries.push(additionalEntry);
+  }
 
-      finalEntries.push(...c);
-      if (currentlyEvaluated.value.length !== 0) {
-        currentlyEvaluated.value.splice(0, currentlyEvaluated.value.length);
-      }
+  finalEntries.push(...c);
+  if (currentlyEvaluated.value.length !== 0) {
+    currentlyEvaluated.value.splice(0, currentlyEvaluated.value.length);
+  }
 
-      currentlyEvaluated.value.push(finalEntries as Entries);
-    }
-
-    return {
-      isLoading,
-      openedEvaluationList,
-      evaluateCourse,
-      closeCourseEvaluation,
-      notOpenCount,
-      currentlyEvaluated
-    }
-  },
+  currentlyEvaluated.value.push(finalEntries as Entries);
 }
 </script>

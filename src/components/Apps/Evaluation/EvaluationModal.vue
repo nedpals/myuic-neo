@@ -28,7 +28,7 @@
                   Notice
                 </button>
               </tab>
-              <tab v-slot="{ selected }" as="div" class="w-full" :key="cat.title" v-for="(cat, ci) in data.categories">
+              <tab v-slot="{ selected }" as="div" class="w-full" :key="cat.title" v-for="(cat, ci) in data!.categories">
                 <button 
                   :disabled="ci + tabOffsetStart > step"
                   :class="{ 'text-primary-500 bg-gradient-to-r from-transparent to-primary-100': selected }" 
@@ -38,7 +38,7 @@
               </tab>
               <tab v-slot="{ selected }" as="div" class="w-full">
                 <button 
-                  :disabled="data.categories.length + tabOffsetStart > step"
+                  :disabled="data!.categories.length + tabOffsetStart > step"
                   :class="{ 'text-primary-500 bg-gradient-to-r from-transparent to-primary-100': selected }" 
                   class="w-full px-6 py-4 disabled:cursor-default disabled:text-gray-300 not-disabled:hover:bg-gray-100 font-semibold text-left">
                   Comments
@@ -46,7 +46,7 @@
               </tab>
               <tab v-slot="{ selected }" as="div" class="w-full">
                 <button 
-                  :disabled="data.categories.length + tabOffsetStart + 1 > step"
+                  :disabled="data!.categories.length + tabOffsetStart + 1 > step"
                   :class="{ 'text-primary-500 bg-gradient-to-r from-transparent to-primary-100': selected }" 
                   class="w-full px-6 py-4 disabled:cursor-default disabled:text-gray-300 not-disabled:hover:bg-gray-100 font-semibold text-left">
                   Summary
@@ -104,7 +104,7 @@
                 </div>
               </tab-panel>
           
-              <tab-panel :key="cat.title" v-for="(cat, i) in data.categories" class="flex flex-col divide divide-y">
+              <tab-panel :key="cat.title" v-for="(cat, i) in data!.categories" class="flex flex-col divide divide-y">
                 <div class="flex flex-col">
                   <div class="mb-3 text-center px-3 md:px-6">
                     <h3 class="text-2xl font-semibold">{{ cat.title }}</h3>
@@ -122,14 +122,14 @@
                       <p class="pb-3">{{ q }}</p>
                       
                       <div 
-                        :disabled="qi != 0 && ratingAnswers[getQIndex(i, qi - 1)] == '0'" 
+                        :disabled="qi != 0 && ratingAnswers[getQIndex(i, qi - 1)] == 0" 
                         class="disabled:opacity-40 w-full flex md:space-x-2 <sm:space-y-2 <sm:flex-wrap">
                         <button 
                           v-for="(rLabel, r) in ratings" 
-                          @click="ratingAnswers[getQIndex(i, qi)] = parseInt(r)"
+                          @click="ratingAnswers[getQIndex(i, qi)] = r"
                           :key="'r_' + r" 
-                          :disabled="qi != 0 && ratingAnswers[getQIndex(i, qi - 1)] == '0'"
-                          :class="[ratingAnswers[getQIndex(i, qi)].toString() === r  ? 'is-primary' : 'is-light']" 
+                          :disabled="qi != 0 && ratingAnswers[getQIndex(i, qi - 1)] == 0"
+                          :class="[ratingAnswers[getQIndex(i, qi)] === r  ? 'is-primary' : 'is-light']" 
                           class="button w-full md:flex-1">
                           {{ rLabel }}
                         </button>
@@ -163,14 +163,16 @@
                     <p class="text-lg text-gray-600 dark:text-primary-200">Review first your inputs before submitting.</p>
                   </div>
 
-                  <section :key="cat.title" v-for="(cat, i) in data.categories" class="border-t py-3 px-3 md:px-6">
+                  <section :key="cat.title" v-for="(cat, i) in data!.categories" class="border-t py-3 px-3 md:px-6">
                     <h3 class="font-semibold mb-2">{{ cat.title }}</h3>
                     <div class="flex flex-col space-y-4">
                       <div 
                         :key="'summary_q_' + i + '_' + qi" v-for="(q, qi) in cat.questions" 
                         class="flex justify-between">
                         <p class="w-3/4">{{ q }}</p>
-                        <p class="w-1/4 font-semibold text-right">{{ ratingAnswers[getQIndex(i, qi)] === 0 ? 'None' : ratings[parseInt(ratingAnswers[getQIndex(i, qi)])] }}</p>
+                        <p class="w-1/4 font-semibold text-right">
+                          {{ ratingAnswers[getQIndex(i, qi)] === 0 ? 'None' : ratings[ratingAnswers[getQIndex(i, qi)]] }}
+                        </p>
                       </div>
                     </div>
                   </section>
@@ -202,8 +204,8 @@
   </modal-window>
 </template>
 
-<script lang="ts">
-import { computed, onBeforeUnmount, PropType, readonly, ref, watch } from 'vue'
+<script lang="ts" setup>
+import { computed, onBeforeUnmount, PropType, readonly, ref, watch, defineEmits, defineProps } from 'vue'
 import ModalWindow from '../../ui/ModalWindow.vue'
 import { ratings, CourseEvaluationEntry } from '@myuic-api/types'
 import { useEvaluationMutation, useEvaluationQuery } from '../../../stores/evaluationStore'
@@ -216,220 +218,181 @@ import { notify } from 'notiwind'
 import { useQueryClient } from 'vue-query'
 import IconDone from '~icons/ion/happy-outline';
 
-export default {
-  emits: ['close'],
-  components: { 
-    ModalWindow, 
-    LoadingContainer, 
-    Loader,
-    Tab,
-    TabGroup,
-    TabList,
-    TabPanels,
-    TabPanel,
-    Box,
-    IconDone
-  },
-  props: {
-    courses: {
-      type: [Object, Array] as PropType<CourseEvaluationEntry | CourseEvaluationEntry[]>,
-      required: true
-    } 
-  },
-  setup({ courses }, { emit }) {
-    const panelRef = ref<typeof TabPanels>();
-    const step = ref(0);
-    const isOpen = ref(true);
-    const course = !Array.isArray(courses) ? courses : courses[0];
-    const isSingle = !Array.isArray(courses) ? true : courses.length == 1;
-    const shouldEvaluateAll = ref(isSingle);
-    const tabOffsetStart = isSingle ? 1 : 2;
-    const queryClient = useQueryClient();
-    const isDone = ref(false);
+const emit = defineEmits(['close']);
+const { courses } = defineProps({
+  courses: {
+    type: [Object, Array] as PropType<CourseEvaluationEntry[]>,
+    required: true
+  } 
+});
 
-    const { 
-      questionnaireQuery: { isFetching, isIdle, data, ...questionnaireQuery }, 
-      idQueries
-    } = useEvaluationQuery(
-      !Array.isArray(courses) 
-      ? [{classId: course.classID ?? course.code, classType: course.classType ?? '3'}] 
-      : courses.map(c => ({classId: c.classID ?? course.code, classType: c.classType ?? '3'})));
-    const isLoading = computed(() => isFetching.value || isIdle.value);
-    const { mutateAsync, isLoading: isProcessing } = useEvaluationMutation();
-    const totalQuestionsCount = computed(() => {
-      if (isLoading.value) {
-        return 30;
+const panelRef = ref<typeof TabPanels>();
+const step = ref(0);
+const isOpen = ref(true);
+const course = !Array.isArray(courses) ? courses : courses[0];
+const isSingle = !Array.isArray(courses) ? true : courses.length == 1;
+const shouldEvaluateAll = ref(isSingle);
+const tabOffsetStart = isSingle ? 1 : 2;
+const queryClient = useQueryClient();
+const isDone = ref(false);
+
+const { 
+  questionnaireQuery: { isFetching, isIdle, data, ...questionnaireQuery }, 
+  idQueries
+} = useEvaluationQuery(
+  !Array.isArray(courses) 
+  ? [{classId: course.classID ?? course.code, classType: course.classType ?? '3'}] 
+  : courses.map(c => ({classId: c.classID ?? course.code, classType: c.classType ?? '3'})));
+const isLoading = computed(() => isFetching.value || isIdle.value);
+const { mutateAsync, isLoading: isProcessing } = useEvaluationMutation();
+const totalQuestionsCount = computed(() => {
+  if (isLoading.value) {
+    return 30;
+  }
+  return data.value?.categories.map(c => 
+      c.questions.length).reduce((p,v) => p + v, 0);
+});
+
+const accQuestionIdxs = computed(() => {
+  return data.value?.categories
+    .map((_,i,a) => i == 0 ? 0 : a[i - 1].questions.length)
+    .reduce<number[]>((p,v,i) => {
+      p.push(i > 0 ? p[i - 1] + v : v);
+      return p;
+    }, []) ?? [];
+});
+
+const getQIndex = (cIndex: number, qIndex: number) => {
+  const prevLen = cIndex >= 0 ? accQuestionIdxs.value[cIndex] : 0;
+  const idx = prevLen + qIndex ?? 0;
+  return idx;
+}
+
+const shouldProceed = (catIdx: number) => {
+  if (isLoading.value) return false;
+  return step.value < 4 + tabOffsetStart ? isCategoryHasAnswers(catIdx) : isCommentsFilledUp.value;
+}
+
+const shouldShowButtons = computed(() => {
+  if (isDone.value || isProcessing.value || isLoading.value) {
+    return false;
+  }
+  return true;
+});
+
+const isCategoryHasAnswers = (catIdx: number) => {
+  if (catIdx < tabOffsetStart || catIdx > (data.value?.categories.length ?? 0) + tabOffsetStart) return true;
+  const idx = catIdx - tabOffsetStart;
+  return data.value?.categories[idx]
+    .questions.every((_, qi) => ratingAnswers.value[getQIndex(idx, qi)] !== 0) ?? false;
+}
+
+const isCommentsFilledUp = computed(() => {
+  return comments.value.every(c => c.length !== 0);
+});
+
+const commentQuestions = readonly([
+  'What do you believe the instructor has done especially well in conducting this course?',
+  'What might the instructor do to enhance the course?',
+  'Additional comments'
+]);
+
+const closeModal = () => {
+  emit('close');
+}
+
+const warnUserOnClose = async (newOpen: boolean) => {
+  if (isDone.value || isOpen.value === newOpen || isProcessing.value) {
+    return;
+  }
+  const ans = await showDialog({
+    title: 'Warning',
+    content: 'Closing this will lose your progress. Would you like to proceed?',
+    actions: [
+      {
+        label: 'Yes',
+        class: 'is-primary',
+        answer: 'yes'
+      },
+      {
+        label: 'No',
+        class: 'is-light',
+        answer: 'no'
       }
-      return data.value?.categories.map(c => 
-          c.questions.length).reduce((p,v) => p + v, 0);
-    });
+    ],
+  });
 
-    const accQuestionIdxs = computed(() => {
-      return data.value?.categories
-        .map((_,i,a) => i == 0 ? 0 : a[i - 1].questions.length)
-        .reduce<number[]>((p,v,i) => {
-          p.push(i > 0 ? p[i - 1] + v : v);
-          return p;
-        }, []) ?? [];
-    });
+  if (ans === 'yes') {
+    isOpen.value = newOpen;
+    closeModal();
+  }
+}
 
-    const getQIndex = (cIndex: number, qIndex: number) => {
-      const prevLen = cIndex >= 0 ? accQuestionIdxs.value[cIndex] : 0;
-      const idx = prevLen + qIndex ?? 0;
-      return idx;
-    }
-
-    const shouldProceed = (catIdx: number) => {
-      if (isLoading.value) return false;
-      return step.value < 4 + tabOffsetStart ? isCategoryHasAnswers(catIdx) : isCommentsFilledUp.value;
-    }
-
-    const shouldShowButtons = computed(() => {
-      if (isDone.value || isProcessing.value || isLoading.value) {
-        return false;
+// data
+const ratingAnswers = ref([...Array(29).keys()].map(() => 0)); 
+const comments = ref<[string, string, string]>(['', '', '']);
+const submitEvaluation = async () => {
+  const ans = await showDialog({
+    title: 'Confirmation',
+    content: `By clicking "Confirm", you agree to the inputs of your evaluation for <b>${course.name}</b> is final.`,
+    actions: [
+      {
+        label: 'Confirm',
+        class: 'is-primary',
+        answer: 'confirm'
+      },
+      {
+        label: 'Cancel',
+        class: 'is-light',
+        answer: 'cancel'
       }
-      return true;
-    });
+    ]
+  });
 
-    const isCategoryHasAnswers = (catIdx: number) => {
-      if (catIdx < tabOffsetStart || catIdx > (data.value?.categories.length ?? 0) + tabOffsetStart) return true;
-      const idx = catIdx - tabOffsetStart;
-      return data.value?.categories[idx]
-        .questions.every((_, qi) => ratingAnswers.value[getQIndex(idx, qi)] !== 0) ?? false;
-    }
-
-    const isCommentsFilledUp = computed(() => {
-      return comments.value.every(c => c.length !== 0);
-    });
-
-    const commentQuestions = readonly([
-      'What do you believe the instructor has done especially well in conducting this course?',
-      'What might the instructor do to enhance the course?',
-      'Additional comments'
-    ]);
-
-    const closeModal = () => {
-      emit('close');
-    }
-
-    const warnUserOnClose = async (newOpen: boolean) => {
-      if (isDone.value || isOpen.value === newOpen || isProcessing.value) {
-        return;
-      }
-      const ans = await showDialog({
-        title: 'Warning',
-        content: 'Closing this will lose your progress. Would you like to proceed?',
-        actions: [
-          {
-            label: 'Yes',
-            class: 'is-primary',
-            answer: 'yes'
-          },
-          {
-            label: 'No',
-            class: 'is-light',
-            answer: 'no'
-          }
-        ],
+  if (ans === 'confirm') {
+    let successCount = 0;
+    let msg = '';
+    const toBeEvaluated = Array.isArray(courses) && shouldEvaluateAll.value ? courses.slice() : [course];
+    const ratings = ratingAnswers.value.slice(0, totalQuestionsCount.value);
+    for (const i of toBeEvaluated.keys()) {
+      await mutateAsync({
+        ratings,
+        comments: comments.value,
+        classID: idQueries[i].data!.classID!,
+        classType: idQueries[i].data!.classType!,
+        instructorID: idQueries[i].data!.instructorID!
+      }, {
+        onSuccess: ({ data }) => {
+          successCount++
+          msg = data.message;
+        }
       });
-
-      if (ans === 'yes') {
-        isOpen.value = newOpen;
-        closeModal();
-      }
     }
-
-    // data
-    const ratingAnswers = ref([...Array(29).keys()].map(() => 0)); 
-    const comments = ref<[string, string, string]>(['', '', '']);
-    const submitEvaluation = async () => {
-      const ans = await showDialog({
-        title: 'Confirmation',
-        content: `By clicking "Confirm", you agree to the inputs of your evaluation for <b>${course.name}</b> is final.`,
-        actions: [
-          {
-            label: 'Confirm',
-            class: 'is-primary',
-            answer: 'confirm'
-          },
-          {
-            label: 'Cancel',
-            class: 'is-light',
-            answer: 'cancel'
-          }
-        ]
+    if (import.meta.env.DEV) {
+      console.log({toBeEvaluated, successCount});
+    }
+    if (successCount === toBeEvaluated.length) {
+      notify({
+        type: 'success',
+        text: msg
       });
-
-      if (ans === 'confirm') {
-        let successCount = 0;
-        let msg = '';
-        const toBeEvaluated = Array.isArray(courses) && shouldEvaluateAll.value ? courses.slice() : [course];
-        const ratings = ratingAnswers.value.slice(0, totalQuestionsCount.value);
-        for (const i of toBeEvaluated.keys()) {
-          await mutateAsync({
-            ratings,
-            comments: comments.value,
-            classID: idQueries[i].data!.classID!,
-            classType: idQueries[i].data!.classType!,
-            instructorID: idQueries[i].data!.instructorID!
-          }, {
-            onSuccess: ({ data }) => {
-              successCount++
-              msg = data.message;
-            }
-          });
-        }
-        if (import.meta.env.DEV) {
-          console.log({toBeEvaluated, successCount});
-        }
-        if (successCount === toBeEvaluated.length) {
-          notify({
-            type: 'success',
-            text: msg
-          });
-          isDone.value = true;
-          await queryClient.refetchQueries({ 
-            exact: true, 
-            queryKey: 'evaluation' 
-          });
-          closeModal();
-        }
-      }
-    }
-
-    const unwatchScroll = watch(step, () => {
-      panelRef.value?.$el.scrollTo({ top: 0 });
-    });
-
-    onBeforeUnmount(() => {
-      idQueries.forEach(q => q.remove());
-      questionnaireQuery.remove.value();
-      unwatchScroll();
-    });
-
-    return {
-      data,
-      isLoading,
-      shouldShowButtons,
-      isOpen,
-      getQIndex,
-      ratings,
-      panelRef,
-      isProcessing,
-      ratingAnswers,
-      comments,
-      courses,
-      course,
-      isSingle,
-      tabOffsetStart,
-      shouldEvaluateAll,
-      submitEvaluation,
-      warnUserOnClose,
-      commentQuestions,
-      shouldProceed,
-      step,
-      isDone
+      isDone.value = true;
+      await queryClient.refetchQueries({ 
+        exact: true, 
+        queryKey: 'evaluation' 
+      });
+      closeModal();
     }
   }
 }
+
+const unwatchScroll = watch(step, () => {
+  panelRef.value?.$el.scrollTo({ top: 0 });
+});
+
+onBeforeUnmount(() => {
+  idQueries.forEach(q => q.remove());
+  questionnaireQuery.remove.value();
+  unwatchScroll();
+});
 </script>

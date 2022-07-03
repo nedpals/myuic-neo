@@ -32,7 +32,7 @@
               <li>You certify that your submitted documents online are authentic.</li>
             </ol>
           </notification-container>
-          <form @submit="submitForm" ref="newPaymentForm" class="px-4 py-3">
+          <form @submit="(e) => submitForm(e as SubmitEvent)" ref="newPaymentForm" class="px-4 py-3">
             <div class="form-control">
               <label for="purpose">Purpose</label>
               <textarea
@@ -87,15 +87,15 @@
                 name="file_proof_of_payment"
                 id="file_proof_of_payment"
                 accept=".zip,.rar,.7zip, .pdf, image/*"
-                capture="camera">
+                capture="user">
             </div>
             <!-- Hidden stuff that should be automatically filled out -->
-            <input type="hidden" name="student_id" :value="student.number" />
-            <input type="hidden" name="first_name" :value="student.firstName" />
-            <input type="hidden" name="middle_name" :value="student.middleName" />
-            <input type="hidden" name="last_name" :value="student.lastName" />
-            <input type="hidden" name="email" :value="student.email" />
-            <input type="hidden" name="contact_number" :value="student.contactNumber" />
+            <input type="hidden" name="student_id" :value="student?.number" />
+            <input type="hidden" name="first_name" :value="student?.firstName" />
+            <input type="hidden" name="middle_name" :value="student?.middleName" />
+            <input type="hidden" name="last_name" :value="student?.lastName" />
+            <input type="hidden" name="email" :value="student?.email" />
+            <input type="hidden" name="contact_number" :value="student?.contactNumber" />
             <input type="hidden" name="department" :value="higherEducationDepartmentId" />
             <input type="hidden" name="payment_center" :value="miscData.paymentMethod" />
             <div class="form-control pt-8">
@@ -122,7 +122,7 @@
   </modal-window>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { useStudentQuery } from '../../stores/studentStore'
 import Loader from '../ui/Loader.vue';
 import LoadingContainer from '../ui/LoadingContainer.vue';
@@ -132,7 +132,7 @@ import IconCloseCircleOutline from '~icons/ion/ios-close-circle-outline';
 import IconUnknownCircleOutline from '~icons/ion/remove-circle-outline';
 import NotificationContainer from '../ui/NotificationContainer.vue';
 import { RadioGroup, RadioGroupLabel, RadioGroupOption } from '@headlessui/vue';
-import { ref } from 'vue';
+import { reactive, ref, defineEmits } from 'vue';
 
 // Payment Center Logo Icons
 import IconAUB from '~icons/payment-center-logos/aub';
@@ -145,93 +145,66 @@ import IconPaymaya from '~icons/payment-center-logos/paymaya';
 import IconRD from '~icons/payment-center-logos/rd';
 import IconSM from '~icons/payment-center-logos/sm';
 
-export default {
-  emits: ['update:open'],
-  components: { 
-    ModalWindow, 
-    LoadingContainer,
-    Loader,
-    IconCheckmarkCircleOutline,
-    IconCloseCircleOutline,
-    IconUnknownCircleOutline,
-    NotificationContainer,
-    RadioGroup,
-    RadioGroupLabel,
-    RadioGroupOption
-  },
-  setup() {
-    const { query: { data: student } } = useStudentQuery();
-    const newPaymentForm = ref<HTMLFormElement | null>(null);
-    return {
-      student,
-      newPaymentForm
-    }
-  },
-  data() {
-    return {
-      open: false,
-      formState: 'none', // none | processing | success | failed
-      isSuccess: false,
-      miscData: {
-        paymentMethod: 'Asia United Bank'
-      },
-    }
-  },
-  computed: {
-    paymentCenters() {
-      return [
-        'Asia United Bank',
-        'BDO Network Bank',
-        'Cebuana Lhullier',
-        'GCash',
-        'Metrobank',
-        'MLhuillier',
-        'PayMaya',
-        'RD Pawnshop',
-        'SM'
-      ]
-    },
-    paymentCenterIcons() {
-      return {
-        'Asia United Bank': IconAUB,
-        'BDO Network Bank': IconBDO,
-        'Cebuana Lhullier': IconCebuana,
-        'GCash': IconGcash,
-        'Metrobank': IconMetrobank,
-        'MLhuillier': IconML,
-        'PayMaya': IconPaymaya,
-        'RD Pawnshop': IconRD,
-        'SM': IconSM
-      }
-    },
-    higherEducationDepartmentId() {
-      // TODO: support basic ed and techvoc
-      return 1;
-    }
-  },
-  methods: {
-    openNewPaymentModal() {
-      this.setOpenState(true);
-    },
-    setOpenState(ev: boolean) {
-      this.open = ev;
-      this.$emit('update:open', ev);
-    },
-    triggerSubmitForm(e: Event) {
-      this.newPaymentForm?.requestSubmit();
-    },
-    submitForm(e: SubmitEvent) {
-      e.preventDefault();
-      this.formState = 'processing';
+const { query: { data: student } } = useStudentQuery();
+const newPaymentForm = ref<HTMLFormElement | null>(null);
 
-      setTimeout(() => {
-        this.formState = 'success';
-        setTimeout(() => {
-          this.formState = 'none';
-          this.setOpenState(false);
-        }, 1500);
-      }, 1000);
-    }
-  },
+const emit = defineEmits(['update:open']);
+const open = ref(false);
+const formState = ref<'none' | 'processing' | 'success' | 'failed'>('none')
+const miscData = reactive({
+  paymentMethod: 'Asia United Bank'
+});
+
+const paymentCenters = [
+  'Asia United Bank',
+  'BDO Network Bank',
+  'Cebuana Lhullier',
+  'GCash',
+  'Metrobank',
+  'MLhuillier',
+  'PayMaya',
+  'RD Pawnshop',
+  'SM'
+];
+
+const paymentCenterIcons = {
+  'Asia United Bank': IconAUB,
+  'BDO Network Bank': IconBDO,
+  'Cebuana Lhullier': IconCebuana,
+  'GCash': IconGcash,
+  'Metrobank': IconMetrobank,
+  'MLhuillier': IconML,
+  'PayMaya': IconPaymaya,
+  'RD Pawnshop': IconRD,
+  'SM': IconSM
+}
+
+// TODO: support basic ed and techvoc
+const higherEducationDepartmentId = 1;
+
+function openNewPaymentModal() {
+  setOpenState(true);
+}
+
+function setOpenState(ev: boolean) {
+  open.value = ev;
+  emit('update:open', ev);
+}
+
+function triggerSubmitForm(e: Event) {
+  newPaymentForm.value?.requestSubmit();
+}
+
+function submitForm(e: SubmitEvent) {
+  e.preventDefault();
+  formState.value = 'processing';
+
+  setTimeout(() => {
+    formState.value = 'success';
+    setTimeout(() => {
+      formState.value = 'none';
+      setOpenState(false);
+    }, 1500);
+  }, 1000);
 }
 </script>

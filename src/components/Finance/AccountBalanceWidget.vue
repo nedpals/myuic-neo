@@ -16,7 +16,7 @@
   </loading-container>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { inject } from 'vue';
 import { useFinancialRecordQuery } from '../../stores/financialStore';
 import { currentSemesterIdKey } from '../../stores/studentStore';
@@ -24,19 +24,6 @@ import Box from '../ui/Box.vue';
 import LoadingContainer from '../ui/LoadingContainer.vue';
 import Skeleton from '../ui/Skeleton.vue';
 
-export default {
-  components: { Box, Skeleton, LoadingContainer },
-  setup() {
-    const currentSemesterId = inject(currentSemesterIdKey);
-    const financialRecordQuery = useFinancialRecordQuery(currentSemesterId!);
-    const { accountBalance, lastUpdated, isLoading } = useFinancialRecordQuery(currentSemesterId!);
-
-    return { 
-      accountBalance,
-      lastUpdated,
-      isLoading,
-      financialRecordQuery
-    };
-  }
-}
+const currentSemesterId = inject(currentSemesterIdKey);
+const { accountBalance, lastUpdated, isLoading } = useFinancialRecordQuery(currentSemesterId!);
 </script>

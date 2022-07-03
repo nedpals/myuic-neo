@@ -149,26 +149,15 @@
   </main>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import LoadingContainer from '../../components/ui/LoadingContainer.vue';
 import { useGendersQuery, useNationalitiesQuery, useEthnicGroupsQuery, useReligionsQuery } from '../../stores/formStore';
 import { inject } from 'vue';
 import { studentInjectionKey } from '../../keys';
-export default {
-  components: { LoadingContainer },
-  setup() {
-    const student = inject(studentInjectionKey)!;
-    const gendersQuery = useGendersQuery();
-    const nationalitiesQuery = useNationalitiesQuery();
-    const ethnicGroupsQuery = useEthnicGroupsQuery();
-    const religionsQuery = useReligionsQuery();
-    return { 
-      student,
-      gendersQuery,
-      nationalitiesQuery,
-      ethnicGroupsQuery,
-      religionsQuery
-    }
-  }
-}
+
+const student = inject(studentInjectionKey)!;
+const gendersQuery = useGendersQuery();
+const nationalitiesQuery = useNationalitiesQuery();
+const ethnicGroupsQuery = useEthnicGroupsQuery();
+const religionsQuery = useReligionsQuery();
 </script>

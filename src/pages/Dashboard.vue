@@ -14,36 +14,25 @@
   </main>
 </template>
 
-<script>
+<script lang="ts" setup>
 import Navbar from '../components/ui/Navbar.vue'
 import { prefetchStudent, prefetchSemesterId, prefetchSemesterList, useSemesterQuery, currentSemesterIdKey } from '../stores/studentStore';
-import DashboardScaffold from '../components/ui/DashboardScaffold.vue';
 import LoadingContainer from '../components/ui/LoadingContainer.vue';
 import Loader from '../components/ui/Loader.vue';
 import { useQueryClient } from 'vue-query';
 import { useLogoutMutation } from '../composables/auth';
-import { provide } from 'vue-demi';
+import { onBeforeMount, provide } from 'vue-demi';
 
-export default {
-  components: { Navbar, DashboardScaffold, LoadingContainer, Loader },
-  setup() {
-    const queryClient = useQueryClient();
-    const { isLoading: isLogoutProcessing } = useLogoutMutation();
+const queryClient = useQueryClient();
+const { isLoading: isLogoutProcessing } = useLogoutMutation();
+const { currentSemesterId, hasSemesterId } = useSemesterQuery();
+provide(currentSemesterIdKey, currentSemesterId);
 
-    Promise.all([
-      prefetchSemesterId(queryClient),
-      prefetchSemesterList(queryClient),
-      prefetchStudent(queryClient),
-    ]);
-
-    const { currentSemesterId } = useSemesterQuery();
-    const { hasSemesterId } = useSemesterQuery();
-
-    provide(currentSemesterIdKey, currentSemesterId);
-    return {
-      hasSemesterId,
-      isLogoutProcessing
-    }
-  },
-}
+onBeforeMount(() => {
+  Promise.all([
+    prefetchSemesterId(queryClient),
+    prefetchSemesterList(queryClient),
+    prefetchStudent(queryClient),
+  ]);
+});
 </script>

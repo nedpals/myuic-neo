@@ -23,19 +23,23 @@
   </div>
 </template>
 
-<script>
-export default {
-  props: {
-    type: {
-      type: String,
-      validator: (v) => ['error', 'success', 'warning', 'info'].includes(v)
-    },
-    text: {
-      type: String
-    },
-    actions: {
-      type: Array,
-    }
+<script lang="ts" setup>
+import { defineProps, PropType } from 'vue';
+
+defineProps({
+  type: {
+    type: String,
+    default: 'info',
+    validator: (v: string) => ['error', 'success', 'warning', 'info'].includes(v)
+  },
+  text: {
+    type: String
+  },
+  actions: {
+    type: Array as PropType<{
+      onClick: () => void,
+      label: string
+    }[]>,
   }
-}
+});
 </script>

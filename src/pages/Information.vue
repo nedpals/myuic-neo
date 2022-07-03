@@ -18,7 +18,7 @@
   </dashboard-scaffold>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import LoadingContainer from '../components/ui/LoadingContainer.vue';
 import PromiseLoader from '../components/ui/PromiseLoader.vue';
 import Loader from '../components/ui/Loader.vue';
@@ -34,134 +34,128 @@ import { client } from '../client';
 import { deepReactiveUpdate } from '../utils';
 import { studentInjectionKey } from '../keys';
 
-export default {
-  components: { LoadingContainer, PromiseLoader, Loader, IconSave, DashboardScaffold },
-  setup() {
-    const { isLoading, query: { data: originalStudentData, refetch: refetchStudent } } = useStudentQuery();
-    const studentData = reactive<Student>({
-      LRN: '',
-      ACR: '',
-      ID: '',
-      number: '',
-      lastName: '',
-      firstName: '',
-      middleName: '',
-      suffix: '',
-      gender: 'Male',
-      birthDate: new Date(),
-      birthPlace: '',
-      religion: 'Roman Catholic',
-      ethnicGroup: '',
-      nationality: 'Afghan',
-      contactNumber: '',
-      email: '',
-      baptized: false,
-      confirmed: false,
-      address: {
-        address: '',
-        city: '',
-        region: '',
-        province: ''
-      },
-      guardianInformation: {
-        name: '',
-        address: {
-          address: '',
-          city: '',
-          region: '',
-          province: ''
-        },
-        contactNumber: ''
-      },
-      educationalBackground: {
-        gradeSchool: {
-          school: '',
-          schoolYear: ''
-        },
-        juniorHighSchool: {
-          school: '',
-          schoolYear: ''
-        },
-        seniorHighSchool: {
-          school: '',
-          schoolYear: ''
-        },
-        college: {
-          school: '',
-          schoolYear: ''
-        },
-        graduate: {
-          school: '',
-          schoolYear: ''
-        },
-        postGraduate: {
-          school: '',
-          schoolYear: ''
-        }
-      },
-      parentInformation: {
-        mother: {
-          name: '',
-          educationalAttainment: '',
-          employer: '',
-          occupation: '',
-          officeContactNumber: ''
-        },
-        father: {
-          name: '',
-          educationalAttainment: '',
-          employer: '',
-          occupation: '',
-          officeContactNumber: ''
-        },
-        status: 'Living Together',
-        address: {
-          address: '',
-          city: '',
-          region: '',
-          province: ''
-        },
-        contactNumber: '',
-        incomeGroup: 'less than 10,000 / month'
-      },
-    });
-
-    const { mutateAsync, isLoading: isProcessing } = useMutation((s: Student) => client.updateStudent(s), {
-      onMutate: () => {
-        notify({
-          type: 'info',
-          text: 'Saving your information...',
-        });
-      },
-    });
-
-    const saveInformation = async () => {
-      await mutateAsync(studentData, {
-        onSuccess: async ({ message }) => {
-          notify({
-            type: 'success',
-            text: message,
-          });
-          const { data: newData } = await refetchStudent.value();
-          replaceStudentData(newData!);
-        }
-      });
-    }
-
-    const replaceStudentData = (newData: Student) => {
-      deepReactiveUpdate(newData, studentData);
-    }
-
-    // triggered only once student data is received.
-    const unwatchOrigData = watch(originalStudentData, (newData, oldData) => {
-      if (typeof newData !== 'undefined') {
-        replaceStudentData(newData);
-        unwatchOrigData();
-      }
-    });
-
-    provide(studentInjectionKey, studentData);
-    return { isLoading, isProcessing, saveInformation }
+const { isLoading, query: { data: originalStudentData, refetch: refetchStudent } } = useStudentQuery();
+const studentData = reactive<Student>({
+  LRN: '',
+  ACR: '',
+  ID: '',
+  number: '',
+  lastName: '',
+  firstName: '',
+  middleName: '',
+  suffix: '',
+  gender: 'Male',
+  birthDate: new Date(),
+  birthPlace: '',
+  religion: 'Roman Catholic',
+  ethnicGroup: '',
+  nationality: 'Afghan',
+  contactNumber: '',
+  email: '',
+  baptized: false,
+  confirmed: false,
+  address: {
+    address: '',
+    city: '',
+    region: '',
+    province: ''
   },
+  guardianInformation: {
+    name: '',
+    address: {
+      address: '',
+      city: '',
+      region: '',
+      province: ''
+    },
+    contactNumber: ''
+  },
+  educationalBackground: {
+    gradeSchool: {
+      school: '',
+      schoolYear: ''
+    },
+    juniorHighSchool: {
+      school: '',
+      schoolYear: ''
+    },
+    seniorHighSchool: {
+      school: '',
+      schoolYear: ''
+    },
+    college: {
+      school: '',
+      schoolYear: ''
+    },
+    graduate: {
+      school: '',
+      schoolYear: ''
+    },
+    postGraduate: {
+      school: '',
+      schoolYear: ''
+    }
+  },
+  parentInformation: {
+    mother: {
+      name: '',
+      educationalAttainment: '',
+      employer: '',
+      occupation: '',
+      officeContactNumber: ''
+    },
+    father: {
+      name: '',
+      educationalAttainment: '',
+      employer: '',
+      occupation: '',
+      officeContactNumber: ''
+    },
+    status: 'Living Together',
+    address: {
+      address: '',
+      city: '',
+      region: '',
+      province: ''
+    },
+    contactNumber: '',
+    incomeGroup: 'less than 10,000 / month'
+  },
+});
+
+const { mutateAsync, isLoading: isProcessing } = useMutation((s: Student) => client.updateStudent(s), {
+  onMutate: () => {
+    notify({
+      type: 'info',
+      text: 'Saving your information...',
+    });
+  },
+});
+
+const saveInformation = async () => {
+  await mutateAsync(studentData, {
+    onSuccess: async ({ message }) => {
+      notify({
+        type: 'success',
+        text: message,
+      });
+      const { data: newData } = await refetchStudent.value();
+      replaceStudentData(newData!);
+    }
+  });
 }
+
+const replaceStudentData = (newData: Student) => {
+  deepReactiveUpdate(newData, studentData);
+}
+
+// triggered only once student data is received.
+const unwatchOrigData = watch(originalStudentData, (newData, oldData) => {
+  if (typeof newData !== 'undefined') {
+    replaceStudentData(newData);
+    unwatchOrigData();
+  }
+});
+
+provide(studentInjectionKey, studentData);
 </script>

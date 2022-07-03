@@ -46,7 +46,7 @@
   </loading-container>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { inject, ref } from 'vue';
 import { useSchedulesQuery, days } from '../../stores/scheduleStore';
 import Box from '../ui/Box.vue';
@@ -56,25 +56,14 @@ import { formatDatetime, now } from '../../utils';
 import IconCalendar from '~icons/ion/calendar-clear-outline';
 import { currentSemesterIdKey } from '../../stores/studentStore';
 
-export default {
-  components: { Box, LoadingContainer, Skeleton, IconCalendar },
-  setup() {
-    const currentSemesterId = inject(currentSemesterIdKey);
-    const { getScheduleByDay, isLoading } = useSchedulesQuery(currentSemesterId!);
-    const currentScheduleDay = ref(formatDatetime(now, 'EEE'));
-    if (currentScheduleDay.value === 'Sun') {
-      currentScheduleDay.value = 'Mon';
-    }
-
-    const currentSchedule = getScheduleByDay(currentScheduleDay);
-    return {
-      isLoading,
-      currentSchedule,
-      currentScheduleDay,
-      days
-    }
-  }
+const currentSemesterId = inject(currentSemesterIdKey);
+const { getScheduleByDay, isLoading } = useSchedulesQuery(currentSemesterId!);
+const currentScheduleDay = ref(formatDatetime(now, 'EEE'));
+if (currentScheduleDay.value === 'Sun') {
+  currentScheduleDay.value = 'Mon';
 }
+
+const currentSchedule = getScheduleByDay(currentScheduleDay);
 </script>
 
 <style lang="postcss" scoped>

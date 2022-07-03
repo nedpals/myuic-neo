@@ -114,10 +114,9 @@
   </dashboard-scaffold>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import DashboardScaffold from '../components/ui/DashboardScaffold.vue';
 import LoadingContainer from '../components/ui/LoadingContainer.vue';
-import PromiseLoader from '../components/ui/PromiseLoader.vue';
 import { generateAcademicRecordsPDF, useAcademicRecordsQuery } from '../stores/academicRecordStore';
 import IconPrint from '~icons/ion/print';
 import { catchAndNotifyError } from '../utils';
@@ -127,58 +126,42 @@ import { computed, inject, readonly, ref } from 'vue';
 import computationFormulaImg from '../assets/computation-formula.png';
 import Skeleton from '../components/ui/Skeleton.vue';
 import { currentSemesterIdKey, useSemesterQuery } from '../stores/studentStore';
+import { notify } from 'notiwind';
 
-export default {
-  components: { PromiseLoader, LoadingContainer, DashboardScaffold, IconPrint, SelfModal, Skeleton },
-  setup() {
-    const currentSemesterId = inject(currentSemesterIdKey);
-    const { currentSemester } = useSemesterQuery(currentSemesterId);
-    const { 
-      isLoading, 
-      latestAcademicRecords, 
-      overallAverages,
-      overallUnits
-    } = useAcademicRecordsQuery(currentSemesterId!);
+const currentSemesterId = inject(currentSemesterIdKey);
+const { currentSemester } = useSemesterQuery(currentSemesterId);
+const { 
+  isLoading, 
+  latestAcademicRecords, 
+  overallAverages,
+  overallUnits
+} = useAcademicRecordsQuery(currentSemesterId!);
 
-    const semesterDisplayNames = computed(() => {
-      return [
-        currentSemester.value.display
-      ];
-    });
+const semesterDisplayNames = computed(() => {
+  return [
+    currentSemester.value.display
+  ];
+});
 
-    const gradeKeysAndLabels = readonly({
-      'prelimGrade': 'Prelim',
-      'midtermGrade': 'Midterms',
-      'finalsGrade': 'Finals'
-    });
+const gradeKeysAndLabels = readonly({
+  'prelimGrade': 'Prelim',
+  'midtermGrade': 'Midterms',
+  'finalsGrade': 'Finals'
+});
 
-    return {
-      latestAcademicRecords,
-      isLoading,
-      overallAverages,
-      overallUnits,
-      computationFormulaImg: ref(computationFormulaImg),
-      gradeKeysAndLabels,
-      currentSemesterId,
-      semesterDisplayNames
+async function printPdf() {
+  try {
+    const { close } = notify({ type: 'info', text: 'Downloading PDF...' }, Infinity);
+    const fileUrl = await generateAcademicRecordsPDF(currentSemesterId!.toString());
+    close();
+    const pdfPreviewTab = window.open(fileUrl, '_blank');
+    if (pdfPreviewTab) {
+      pdfPreviewTab.focus();
+    } else {
+      throw new Error('There was an error when opening the file.');
     }
-  },
-  methods: {
-    async printPdf() {
-      try {
-        const { close } = this.$notify({ type: 'info', text: 'Downloading PDF...' }, Infinity);
-        const fileUrl = await generateAcademicRecordsPDF(this.currentSemesterId!.toString());
-        close();
-        const pdfPreviewTab = window.open(fileUrl, '_blank');
-        if (pdfPreviewTab) {
-          pdfPreviewTab.focus();
-        } else {
-          throw new Error('There was an error when opening the file.');
-        }
-      } catch (e) {
-        catchAndNotifyError(e);
-      }
-    }
+  } catch (e) {
+    catchAndNotifyError(e);
   }
 }
 </script>

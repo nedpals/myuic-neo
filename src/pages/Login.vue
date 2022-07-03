@@ -17,7 +17,7 @@
     </div>
     <div class="w-full max-w-lg mx-auto relative flex flex-col">
       <h2 class="text-xl md:text-2xl font-bold pb-3 md:pb-6">Login</h2>
-      <form @submit.prevent="login" autocomplete="off">
+      <form @submit.prevent="(e) => loginFromForm(e as SubmitEvent)" autocomplete="off">
         <div class="flex flex-col space-y-2 py-2">
           <label for="student_id" class="font-lg">Student ID</label>
           <input 
@@ -40,42 +40,34 @@
   </main>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import Loader from '../components/ui/Loader.vue';
 import { useLoginMutation } from '../composables/auth';
 import IconLogo from '~icons/custom/logo';
 import DarkModeToggle from '../components/ui/DarkModeToggle.vue';
-import { useQueryClient } from 'vue-query';
 import { SafeArea } from 'capacitor-plugin-safe-area';
 import { onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
 
-export default {
-  components: { Loader, IconLogo, DarkModeToggle },
-  setup() {
-    const topInset = ref(0);
-      onMounted(() => {
-        SafeArea.getSafeAreaInsets().then(({ insets }) => {
-          topInset.value = insets.top;
-        });
-      });
-    const { login, isProcessing } = useLoginMutation();
-    const queryClient = useQueryClient();
-    return { login, isProcessing, queryClient, topInset };
-  },
-  methods: {
-    async login(e: SubmitEvent) {
-      try {
-        if (!e.target || !(e.target instanceof HTMLFormElement)) return;
-        const fd = new FormData(e.target);
-        const id = fd.get('student_id')?.toString()!;
-        const pw = fd.get('password')?.toString()!;
-        await this.login(id, pw);
-        e.target.reset();
-        this.$router.replace({ name: 'home' });
-      } catch (e) {
-        console.error(e);
-      }
-    }
+const router = useRouter();
+const topInset = ref(0);
+  onMounted(() => {
+    SafeArea.getSafeAreaInsets().then(({ insets }) => {
+      topInset.value = insets.top;
+    });
+  });
+const { login, isProcessing } = useLoginMutation();
+const loginFromForm = async (e: SubmitEvent) => {
+  try {
+    if (!e.target || !(e.target instanceof HTMLFormElement)) return;
+    const fd = new FormData(e.target);
+    const id = fd.get('student_id')?.toString()!;
+    const pw = fd.get('password')?.toString()!;
+    await login(id, pw);
+    e.target.reset();
+    router.replace({ name: 'home' });
+  } catch (e) {
+    console.error(e);
   }
 }
 </script>

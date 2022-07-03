@@ -20,22 +20,16 @@
   </self-modal>
 </template>
 
-<script>
+<script lang="ts" setup>
 import SelfModal from './SelfModal.vue';
-import pdfvuer from 'pdfvuer';
+import pdf from 'pdfvuer';
 import 'pdfjs-dist/build/pdf.worker.entry';
 import Loader from './Loader.vue';
 
-export default {
-  components: { 
-    SelfModal, 
-    pdf: pdfvuer, Loader 
-  },
-  props: {
-    src: {
-      type: [Object, String, Promise],
-      required: true
-    }
+defineProps({
+  src: {
+    type: [Object, String, Promise],
+    required: true
   }
-}
+});
 </script>

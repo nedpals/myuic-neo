@@ -19,30 +19,13 @@
   </main>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { inject } from 'vue';
 import { useStudentQuery } from '../../stores/studentStore';
 import { studentInjectionKey } from '../../keys';
-export default {
-  setup() {
-    const student = inject(studentInjectionKey)!;
-    const { isLoading } = useStudentQuery();
-    return { isLoading, student }
-  },
-  computed: {
-    propertyNames() {
-      return ['gradeSchool', 'juniorHighSchool', 'seniorHighSchool', 'college', 'graduateStudies', 'postGraduate']
-    },
-    list() {
-      return [
-        'Grade School',
-        'Junior High School',
-        'Senior High School',
-        'College (For Transferee / Graduates Only)',
-        'Graduate Studies',
-        'Post Graduate'
-      ]
-    }
-  }
-}
+
+const propertyNames = ['gradeSchool', 'juniorHighSchool', 'seniorHighSchool', 'college', 'graduateStudies', 'postGraduate'];
+const list = ['Grade School', 'Junior High School', 'Senior High School', 'College (For Transferee / Graduates Only)', 'Graduate Studies', 'Post Graduate']
+const student = inject(studentInjectionKey)!;
+const { isLoading } = useStudentQuery();
 </script>

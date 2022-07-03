@@ -1,6 +1,6 @@
 <template>
   <main>
-    <form @submit.prevent="updatePassword">
+    <form @submit.prevent="(e) => updatePassword(e as SubmitEvent)">
       <div>
         <div class="form-group-info">
           <h2 class="title">Change Password</h2>
@@ -26,28 +26,20 @@
   </main>
 </template>
 
-<script lang="ts">
-import { inject } from 'vue';
-import { studentInjectionKey } from '../../keys';
+<script lang="ts" setup>
 import { useChangePasswordMutation } from '../../stores/studentStore';
 import { useRouter } from 'vue-router';
-export default {
-  setup() {
-    const student = inject(studentInjectionKey)!;
-    const { mutateAsync: changePassword } = useChangePasswordMutation();
-    const router = useRouter();
 
-    const updatePassword = async (e: SubmitEvent) => {
-      if (!e.target || !(e.target instanceof HTMLFormElement)) return;
-      const fd = new FormData(e.target);
-      const newPassword = fd.get('new_password')?.toString()!;
-      const confirmNewPassword = fd.get('confirm_new_password')?.toString()!;
-      await changePassword({ newPassword, confirmNewPassword });
-      e.target.reset();
-      router.go(0);
-    }
+const { mutateAsync: changePassword } = useChangePasswordMutation();
+const router = useRouter();
 
-    return { student, updatePassword }
-  }
+const updatePassword = async (e: SubmitEvent) => {
+  if (!e.target || !(e.target instanceof HTMLFormElement)) return;
+  const fd = new FormData(e.target);
+  const newPassword = fd.get('new_password')?.toString()!;
+  const confirmNewPassword = fd.get('confirm_new_password')?.toString()!;
+  await changePassword({ newPassword, confirmNewPassword });
+  e.target.reset();
+  router.go(0);
 }
 </script>

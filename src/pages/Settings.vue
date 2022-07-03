@@ -6,10 +6,6 @@
   </dashboard-scaffold>
 </template>
 
-<script>
-import DashboardScaffold from '../components/ui/DashboardScaffold.vue'
-export default {
-  components: { DashboardScaffold },
-
-}
+<script lang="ts" setup>
+import DashboardScaffold from '../components/ui/DashboardScaffold.vue';
 </script>

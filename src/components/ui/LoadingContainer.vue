@@ -2,20 +2,15 @@
   <slot :isLoading="isLoading"></slot>
 </template>
 
-<script>
-import { computed } from 'vue';
+<script lang="ts" setup>
+import { computed, defineProps, provide } from 'vue';
 
-export default {
-  props: {
-    isLoading: {
-      type: Boolean,
-      default: false
-    }
-  },
-  provide() {
-    return {
-      __loadState: computed(() => this.isLoading)
-    }
+const props = defineProps({
+  isLoading: {
+    type: Boolean,
+    default: false
   }
-}
+});
+
+provide('__loadState', computed(() => props.isLoading));
 </script>

@@ -27,67 +27,63 @@
   </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { notify } from 'notiwind';
 import { LocalNotifications } from '@capacitor/local-notifications';
 import { useSchedulesQuery } from '../../stores/scheduleStore';
-export default {
-  setup() {
-    const { activateNotifications } = useSchedulesQuery();
-    const testNotify = async () => {
-      try {
-        notify({ type: 'info', text: 'Creating test notification...' }, 5 * 1000);
-        const { display: status } = await LocalNotifications.checkPermissions();
-        notify({ type: 'info', text: 'Notif status: ' + status }, 5 * 1000);
+import { currentSemesterIdKey } from '../../stores/studentStore';
+import { inject } from 'vue';
 
-        if (status === 'denied') return;
-        if (status === 'prompt' || status === 'prompt-with-rationale') {
-          const { display: promptStatus } = await LocalNotifications.requestPermissions();
-          if (promptStatus === 'denied') {
-            return;
-          }
+const currentSemesterId = inject(currentSemesterIdKey)!;
+const { activateNotifications: activateScheduleNotifications } = useSchedulesQuery(currentSemesterId);
+const testNotify = async () => {
+  try {
+    notify({ type: 'info', text: 'Creating test notification...' }, 5 * 1000);
+    const { display: status } = await LocalNotifications.checkPermissions();
+    notify({ type: 'info', text: 'Notif status: ' + status }, 5 * 1000);
+
+    if (status === 'denied') return;
+    if (status === 'prompt' || status === 'prompt-with-rationale') {
+      const { display: promptStatus } = await LocalNotifications.requestPermissions();
+      if (promptStatus === 'denied') {
+        return;
+      }
+    }
+
+    await LocalNotifications.schedule({
+      notifications: [
+        {
+          title: 'Incoming: Subject Name',
+          body: 'CC111 | 8:00AM - 11:00AM',
+          id: new Date().getTime()
         }
-
-        await LocalNotifications.schedule({
-          notifications: [
-            {
-              title: 'Incoming: Subject Name',
-              body: 'CC111 | 8:00AM - 11:00AM',
-              id: new Date().getTime()
-            }
-          ]
-        });
-      } catch (e) {
-        notify({
-          type: 'error',
-          text: e instanceof Error ? e.message : (<any>e).toString()
-        }, 5000);
-      }
-    }
-
-    const resetNotifs = async () => {
-      try {
-        notify({ type: 'info', text: 'Clearing notifications...' }, 2000);
-        const { notifications } = await LocalNotifications.getPending();
-        await LocalNotifications.cancel({ notifications });
-        notify({ type: 'success', text: `${notifications.length} have been cleared.` }, 2000);
-      } catch (e) {
-        notify({
-          type: 'error',
-          text: e instanceof Error ? e.message : (<any>e).toString()
-        }, 5000);
-      }
-    }
-
-    return {
-      testNotify,
-      resetNotifs,
-      activateNotifications: () => {
-        // TODO: add check if notif is activated.
-        activateNotifications();
-        notify({ type: 'info', text: 'Schedule notifications have been activated.' }, 3000);
-      }
-    }
+      ]
+    });
+  } catch (e) {
+    notify({
+      type: 'error',
+      text: e instanceof Error ? e.message : (<any>e).toString()
+    }, 5000);
   }
+}
+
+const resetNotifs = async () => {
+  try {
+    notify({ type: 'info', text: 'Clearing notifications...' }, 2000);
+    const { notifications } = await LocalNotifications.getPending();
+    await LocalNotifications.cancel({ notifications });
+    notify({ type: 'success', text: `${notifications.length} have been cleared.` }, 2000);
+  } catch (e) {
+    notify({
+      type: 'error',
+      text: e instanceof Error ? e.message : (<any>e).toString()
+    }, 5000);
+  }
+}
+
+const activateNotifications = () => {
+  // TODO: add check if notif is activated.
+  activateScheduleNotifications();
+  notify({ type: 'info', text: 'Schedule notifications have been activated.' }, 3000);
 }
 </script>

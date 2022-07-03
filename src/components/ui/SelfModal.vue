@@ -15,30 +15,22 @@
   </modal>
 </template>
 
-<script>
-import Modal from './Modal.vue'
-export default {
-  components: { Modal },
-  props: {
-    title: {
-      type: String,
-    },
-    modalClass: {
-      type: String
-    },
-    contentClass: {
-      type: String
-    }
+<script lang="ts" setup>
+import { ref } from 'vue';
+import Modal from './Modal.vue';
+
+defineProps({
+  title: {
+    type: String,
   },
-  data() {
-    return {
-      open: false
-    }
+  modalClass: {
+    type: String
   },
-  methods: {
-    openModal() {
-      this.open = true;
-    }
+  contentClass: {
+    type: String
   }
-}
+});
+
+const open = ref(false);
+const openModal = () => { open.value = true; }
 </script>

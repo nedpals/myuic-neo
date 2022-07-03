@@ -62,7 +62,7 @@
   </dashboard-scaffold>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import Box from '../components/ui/Box.vue';
 import LoadingContainer from '../components/ui/LoadingContainer.vue';
 import PromiseLoader from '../components/ui/PromiseLoader.vue';
@@ -76,45 +76,25 @@ import IconPrint from '~icons/ion/print';
 import { generateSchedulePDF, useSchedulesQuery, days } from '../stores/scheduleStore';
 import { notify } from 'notiwind';
 
-export default {
-  components: { PromiseLoader, Box, LoadingContainer, DashboardScaffold, Skeleton, IconPrint },
-  setup() {
-    const currentSemesterId = inject(currentSemesterIdKey);
-    const { currentSemester, hasSemesterId } = useSemesterQuery(currentSemesterId);
-    const currentDay = ref(formatDatetime(now, 'EEE'));
-    const currentDate = ref(formatDatetime(now, 'MMMM d, yyyy'));
-    const formattedDate = ref(formatDatetime(now, 'yyyy-MM-d'));
-    const { scheduleList, hasAlternates, isAlternate, isLoading } = useSchedulesQuery(currentSemesterId!);
-    const { data: fileUrl, isSuccess, refetch } = generateSchedulePDF(currentSemesterId!);
-    const printPdf = async () => {
-      if (!hasSemesterId) return;
-      const { close } = notify({ type: 'info', text: 'Downloading PDF...' }, Infinity);
-      await refetch.value();
-      close();
-      if (!isSuccess.value) return;
-      const pdfPreviewTab = window.open(fileUrl.value, '_blank');
-      if (!pdfPreviewTab) {
-        catchAndNotifyError(
-          new Error('There was an error when opening the file.')
-        );
-        return;
-      }
-      pdfPreviewTab.focus();
-    }
-
-    return {
-      days,
-      scheduleList,
-      hasAlternates,
-      isAlternate,
-      isLoading,
-      currentDay,
-      currentDate,
-      currentSemester,
-      filterSemesterLabel,
-      formattedDate,
-      printPdf
-    }
-  },
+const currentSemesterId = inject(currentSemesterIdKey);
+const { currentSemester, hasSemesterId } = useSemesterQuery(currentSemesterId);
+const currentDay = ref(formatDatetime(now, 'EEE'));
+const currentDate = ref(formatDatetime(now, 'MMMM d, yyyy'));
+const { scheduleList, hasAlternates, isAlternate, isLoading } = useSchedulesQuery(currentSemesterId!);
+const { data: fileUrl, isSuccess, refetch } = generateSchedulePDF(currentSemesterId!);
+const printPdf = async () => {
+  if (!hasSemesterId) return;
+  const { close } = notify({ type: 'info', text: 'Downloading PDF...' }, Infinity);
+  await refetch.value();
+  close();
+  if (!isSuccess.value) return;
+  const pdfPreviewTab = window.open(fileUrl.value, '_blank');
+  if (!pdfPreviewTab) {
+    catchAndNotifyError(
+      new Error('There was an error when opening the file.')
+    );
+    return;
+  }
+  pdfPreviewTab.focus();
 }
 </script>
