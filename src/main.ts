@@ -18,13 +18,24 @@ import { Storage } from '@capacitor/storage'
 
 import { VueQueryPlugin } from 'vue-query'
 import { customClientOptions } from './client'
+import { SafeArea } from 'capacitor-plugin-safe-area'
 
 Storage.configure({
   group: APP_PREFIX
 });
 
+async function setDeviceSafeAreas() {
+  const safeAreas = await SafeArea.getSafeAreaInsets();
+
+  for (var pos in safeAreas.insets) {
+    document.documentElement.style
+      .setProperty(`--safe-area-inset-${pos}`, `${safeAreas.insets[pos]}px`);
+  }
+}
+
 async function startApp() {
   try {
+    await setDeviceSafeAreas();
     // await SplashScreen.hide();
     await registerSW({ immediate: true })(true);
   } catch (e) {

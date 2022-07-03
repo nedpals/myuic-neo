@@ -1,5 +1,5 @@
 <template>
-  <main :style="{paddingTop: `calc(3rem + ${topInset}px)`}" class="relative flex flex-col h-screen max-w-7xl px-8 pb-8 mx-auto md:border-x border-gray-300 dark:border-primary-700">
+  <main style="padding-top: calc(3rem + var(--safe-area-inset-top))" class="relative flex flex-col h-screen max-w-7xl px-8 pb-8 mx-auto md:border-x border-gray-300 dark:border-primary-700">
     <div 
       v-if="isProcessing" 
       class="z-10 bg-white dark:bg-primary-900 bg-opacity-50 dark:bg-opacity-50 h-full max-w-7xl mx-auto absolute inset-0 rounded-lg flex items-center justify-center">
@@ -50,12 +50,6 @@ import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
-const topInset = ref(0);
-  onMounted(() => {
-    SafeArea.getSafeAreaInsets().then(({ insets }) => {
-      topInset.value = insets.top;
-    });
-  });
 const { login, isProcessing } = useLoginMutation();
 const loginFromForm = async (e: SubmitEvent) => {
   try {

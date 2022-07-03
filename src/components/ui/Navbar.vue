@@ -2,6 +2,7 @@
   <aside 
     :class="[isMenuOpen ? '<md:block w-full' : '<md:hidden']" 
     class="main-navbar md:border-l md:border-r border-gray-300 dark:border-primary-700 md:h-full md:w-24 lg:w-64 fixed h-screen z-40 transition pt-2 bg-white dark:bg-primary-900 overflow-y-auto scrollbar-thin">
+    <div style="width: var(--safe-area-inset-top); height: var(--safe-area-inset-top)"></div>
     <div class="flex flex-row md:flex-col lg:flex-row justify-between px-2 w-full">
       <div class="flex flex-col space-y-2 py-2 pl-4 pr-2">
         <loading-container :is-loading="isStudentLoading" v-slot="{ isLoading }">
@@ -169,6 +170,7 @@
       class="flex-1 px-4 py-2 flex flex-col items-center space-y-1 hover:bg-primary-100 dark:hover:bg-primary-600 text-sm">
       <component :is="isExactActive ? link.activeIcon : link.icon" class="text-primary-600 dark:text-primary-200 text-[1.15rem]" />
       <span class="text-xs">{{ link.title }}</span>
+      <div style="width: 2px; height: var(--safe-area-inset-bottom)"></div>
     </router-link>
     <button 
       @click="isMenuOpen = !isMenuOpen"

@@ -18,7 +18,7 @@
   <dialog-manager />
 
   <notification-group>
-    <div class="fixed inset-x-0 top-0 flex flex-col" style="z-index: 9999999">
+    <div class="fixed inset-x-0 flex flex-col" style="z-index: 9999999; top: var(--safe-area-inset-top);">
       <notification
         v-slot="{ notifications, close }"
         enter="transform ease-out transition-transform"
