@@ -21,18 +21,16 @@ import LoadingContainer from '../components/ui/LoadingContainer.vue';
 import Loader from '../components/ui/Loader.vue';
 import { useQueryClient } from 'vue-query';
 import { useLogoutMutation } from '../composables/auth';
-import { onBeforeMount, provide } from 'vue-demi';
-
+import { provide } from 'vue';
 const queryClient = useQueryClient();
+
+Promise.all([
+  prefetchSemesterId(queryClient),
+  prefetchSemesterList(queryClient),
+  prefetchStudent(queryClient),
+]);
+
 const { isLoading: isLogoutProcessing } = useLogoutMutation();
 const { currentSemesterId, hasSemesterId } = useSemesterQuery();
 provide(currentSemesterIdKey, currentSemesterId);
-
-onBeforeMount(() => {
-  Promise.all([
-    prefetchSemesterId(queryClient),
-    prefetchSemesterList(queryClient),
-    prefetchStudent(queryClient),
-  ]);
-});
 </script>
