@@ -159,7 +159,9 @@
     </div>
   </modal-window>
 
-  <div class="bg-white dark:bg-primary-900 flex border-t dark:border-primary-700 fixed bottom-0 inset-x-0 md:hidden z-50">
+  <div 
+    style="padding-bottom: var(--safe-area-inset-bottom);" 
+    class="bg-white dark:bg-primary-900 flex border-t dark:border-primary-700 fixed bottom-0 inset-x-0 md:hidden z-50">
     <router-link 
       :key="'link_' + i"
       v-for="(link, i) in mobileMenuLinks"
@@ -170,7 +172,6 @@
       class="flex-1 px-4 py-2 flex flex-col items-center space-y-1 hover:bg-primary-100 dark:hover:bg-primary-600 text-sm">
       <component :is="isExactActive ? link.activeIcon : link.icon" class="text-primary-600 dark:text-primary-200 text-[1.15rem]" />
       <span class="text-xs">{{ link.title }}</span>
-      <div style="width: 2px; height: var(--safe-area-inset-bottom)"></div>
     </router-link>
     <button 
       @click="isMenuOpen = !isMenuOpen"
@@ -231,7 +232,7 @@ const isAboutModalOpen = ref(false);
 const { isLoading: isStudentLoading, normalizedFirstName: studentFirstName, query: { data: student } } = useStudentQuery();
 const { mutate: destroy } = useLogoutMutation();
 const currentSemesterId = inject(currentSemesterIdKey);
-const { semesterList, currentSemester, idQuery } = useSemesterQuery(currentSemesterId);
+const { semesterList, currentSemester } = useSemesterQuery(currentSemesterId);
 
 if (IS_NATIVE) {
   App.getInfo().then((info) => {

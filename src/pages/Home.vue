@@ -1,6 +1,6 @@
 <template>
   <dashboard-scaffold container-class="max-w-3xl mx-auto w-full <md:px-4 <lg:px-2">
-    <div class="text-center py-8 md:py-12 flex flex-col items-center">
+    <div style="margin-top: var(--safe-area-inset-top)" class="text-center py-8 md:py-12 flex flex-col items-center">
       <loading-container :is-loading="isStudentLoading" v-slot="{ isLoading }">
         <div
           :style="isLoading ? {} : {backgroundImage: 'url(./default_avatar.png)'}"
