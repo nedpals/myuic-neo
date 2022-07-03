@@ -73,7 +73,7 @@ export default {
     const unsubscribeModalChange = subscribeModalChange();
 
     useReloadPrompt();
-    useTitle('MyUIC');
+    useTitle('MyUIC Neo');
 
     let backButtonPlugin: PluginListenerHandle;
 
