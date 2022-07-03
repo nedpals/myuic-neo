@@ -40,8 +40,8 @@ export default defineConfig({
         background_color: config.theme.colors.primary["500"],
         //@ts-ignore
         theme_color: config.theme.colors.primary["500"],
-        name: "MyUIC Concept",
-        short_name: 'MyUIC Concept',
+        name: "MyUIC Neo",
+        short_name: 'MyUIC Neo',
         display: "standalone",
         icons: [
           { "src": "/icons/favicon.ico", "type": "image/x-icon", "sizes": "16x16 32x32" },
