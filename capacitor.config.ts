@@ -1,7 +1,7 @@
 /// <reference types="@capacitor/local-notifications" />
 //// <reference types="@capacitor/splash-screen" />
 import { CapacitorConfig } from '@capacitor/cli';
-import windiConfig from './windi.config';
+import colorPalette from './color_palette';
 
 const config: CapacitorConfig = {
   appId: 'xyz.nedpals.myuic',
@@ -11,8 +11,7 @@ const config: CapacitorConfig = {
   plugins: {
     LocalNotifications: {
       smallIcon: "ic_stat_icon",
-      //@ts-ignore
-      iconColor: windiConfig.theme.colors.primary["500"]
+      iconColor: colorPalette.primary[500]
     },
     SplashScreen: {
       launchAutoHide: false,
