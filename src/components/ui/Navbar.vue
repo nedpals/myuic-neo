@@ -59,7 +59,7 @@
             leave-to-class="transform scale-95 opacity-0"
           >
             <listbox-options class="absolute z-10 mt-1 w-full border dark:border-primary-700 bg-white dark:bg-primary-800 shadow-lg max-h-56 rounded-md py-1 text-base overflow-auto focus:outline-none sm:text-sm">
-              <listbox-option as="template" v-slot="{ active, selected }" :key="semester.id" :value="semester.id" v-for="semester in semesterList">
+              <listbox-option as="template" :key="semester.id" :value="semester.id" v-for="semester in semesterList">
                 <li :class="[currentSemesterId == semester.id ? 'bg-primary-100 dark:bg-primary-600' : '', 'hover:bg-gray-200 dark:hover:bg-primary-700 cursor-default select-none relative py-2 pl-3 pr-9']">
                   <div
                     :class="{ 'space-y-2': isLoading }"
