@@ -6,7 +6,7 @@ import { FileSystemIconLoader } from 'unplugin-icons/loaders';
 import { VitePWA } from 'vite-plugin-pwa';
 
 import { readFileSync } from 'fs';
-import config from './windi.config';
+import colorPalette from './color_palette';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -36,10 +36,8 @@ export default defineConfig({
     VitePWA({
       includeManifestIcons: true,
       manifest: {
-        //@ts-ignore
-        background_color: config.theme.colors.primary["500"],
-        //@ts-ignore
-        theme_color: config.theme.colors.primary["500"],
+        background_color: "#FFFFFF",
+        theme_color: colorPalette.primary[500],
         name: "MyUIC Neo",
         short_name: 'MyUIC Neo',
         display: "standalone",
