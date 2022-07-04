@@ -33,7 +33,7 @@
                     <skeleton custom-class="w-13 h-13 -ml-1 bg-gray-400 dark:bg-primary-600 rounded-full">
                       <div class="w-16 h-16">
                         <component
-                          :is="mDue.status === 'Paid' || mDue.status === 'Partially Paid' ? 'icon-paid' : 'icon-pending'"
+                          :is="mDue.status === 'Paid' || mDue.status === 'Partially Paid' ? IconPaid : IconPending"
                           class="w-full h-full -ml-2"
                           :class="{ 
                             'text-success-400': mDue.status === 'Paid', 
@@ -187,6 +187,8 @@ import SelfModalWindow from '../components/ui/SelfModalWindow.vue';
 import Skeleton from '../components/ui/Skeleton.vue';
 import AccountBalanceWidget from '../components/Finance/AccountBalanceWidget.vue';
 import IconPlus from '~icons/ion/plus';
+import IconPaid from '~icons/ion/checkmark-circle';
+import IconPending from '~icons/ion/ios-circle-outline';
 import Loader from '../components/ui/Loader.vue';
 import { computed, inject, ref } from 'vue';
 import PaymentHistory from '../components/Finance/PaymentHistory.vue';
