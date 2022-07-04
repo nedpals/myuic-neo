@@ -5,7 +5,7 @@
       class="fixed inset-0 bg-white dark:bg-primary-900 bg-opacity-40 z-50 flex items-center justify-center" 
       @click.self="closeModal">
       <box class="flex flex-col <md:w-screen <md:rounded-none <md:h-full max-h-screen !shadow-lg" :class="modalClass" no-padding>
-        <div class="md:px-6">
+        <div class="md:px-6" style="padding-top: var(--safe-area-inset-top);">
           <div class="py-3 md:py-4 border-b dark:border-primary-600 relative flex items-center md:justify-center">
             <h2 class="text-xl font-bold <md:ml-12 text-left md:text-center overflow-ellipsis whitespace-nowrap <md:w-3/4 overflow-hidden">{{ title }}</h2>
             <button 
@@ -19,7 +19,7 @@
         <div class="w-full flex-1" :class="contentClass">
           <slot></slot>
         </div>
-        <div class="border-t dark:border-primary-600" :class="footerClass" v-if="isSlotVisible($slots.footer)">
+        <div class="border-t dark:border-primary-600" style="padding-bottom: var(--safe-area-inset-bottom);" :class="footerClass" v-if="isSlotVisible($slots.footer)">
           <slot name="footer"></slot>
         </div>
       </box>
