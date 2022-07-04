@@ -54,6 +54,8 @@
     "fflate": "^0.7.3",
     "miragejs": "^0.1.43",
     "puppeteer-core": "^15.1.1",
+    "stylelint": "^14.9.1",
+    "stylelint-config-standard": "^26.0.0",
     "typescript": "^4.5.4",
     "unplugin-icons": "^0.13.2",
     "vite": "^2.8.0",
