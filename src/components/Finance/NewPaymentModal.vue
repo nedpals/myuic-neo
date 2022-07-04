@@ -11,7 +11,7 @@
         <template v-if="formState == 'success' || formState == 'failed'">
           <div class="flex flex-col items-center text-center pb-8">
             <component
-              :is="formState == 'success' ? 'icon-checkmark-circle-outline' : 'icon-close-circle-outline'"
+              :is="formState == 'success' ? IconCheckmarkCircleOutline : IconCloseCircleOutline"
               :class="[formState == 'success' ? 'text-success-400' : 'text-danger-400']"
               class="h-42 w-42 mb-2" />
             
@@ -127,6 +127,8 @@ import { useStudentQuery } from '../../stores/studentStore'
 import Loader from '../ui/Loader.vue';
 import LoadingContainer from '../ui/LoadingContainer.vue';
 import ModalWindow from '../ui/ModalWindow.vue';
+import IconCheckmarkCircleOutline from '~icons/ion/ios-checkmark-circle-outline';
+import IconCloseCircleOutline from '~icons/ion/ios-close-circle-outline';
 import NotificationContainer from '../ui/NotificationContainer.vue';
 import { RadioGroup, RadioGroupLabel, RadioGroupOption } from '@headlessui/vue';
 import { reactive, ref, defineEmits } from 'vue';
