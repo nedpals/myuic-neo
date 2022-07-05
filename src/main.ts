@@ -1,5 +1,4 @@
 import { createApp } from 'vue'
-import { createPinia } from 'pinia'
 
 import Notifications from 'notiwind'
 import FloatingVue from 'floating-vue'
@@ -43,7 +42,6 @@ async function startApp() {
   } finally {
     const app = createApp(App)
       .use(VueQueryPlugin, customClientOptions)
-      .use(createPinia())
       .use(router)
       .use(Notifications)
       .use(FloatingVue);
