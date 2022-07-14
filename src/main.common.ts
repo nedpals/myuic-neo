@@ -26,7 +26,7 @@ export async function startApp(initialize: () => Promise<void>, customAppEvents?
       }
     }
 
-    Storage.configure({
+    await Storage.configure({
       group: APP_PREFIX
     });
   
