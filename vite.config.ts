@@ -10,6 +10,9 @@ import colorPalette from './color_palette';
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  server: {
+    port: 3000
+  },
   plugins: [
     vue(),
     WindiCSS({
