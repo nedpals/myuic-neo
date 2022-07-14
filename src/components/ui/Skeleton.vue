@@ -3,21 +3,18 @@
   <slot v-else></slot>
 </template>
 
-<script lang="ts">
-export default {
-  inject: {
-    __loadState: {
-      default: false
-    }
+<script lang="ts" setup>
+import { inject, ref, Ref } from 'vue';
+
+const __loadState = inject<Ref<boolean>>('__loadState', ref(false));
+
+defineProps({
+  isLoading: {
+    type: Boolean,
+    default: false
   },
-  props: {
-    isLoading: {
-      type: Boolean,
-      default: false
-    },
-    customClass: {
-      type: String
-    }
+  customClass: {
+    type: String
   }
-}
+});
 </script>
