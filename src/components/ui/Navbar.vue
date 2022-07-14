@@ -148,20 +148,9 @@
         </button>
       </div>
     </nav>
-  </aside>
+  </aside>  
 
-  <modal-window title="About" v-model:open="isAboutModalOpen" modal-class="max-w-4xl w-full">
-    <div class="max-w-lg w-full mx-auto flex flex-col justify-center text-center items-center py-6">
-      <icon-logo class="text-primary-400 h-36 w-36 mb-4" />
-      <h1 class="text-4xl font-bold mb-2">MyUIC <span class="font-medium">Neo</span></h1>
-      <p class="max-w-sm text-gray-600 dark:text-primary-200 text-2xl">A new student portal concept for UICians in the 21st century.</p>
-
-      <div class="mt-24">
-        <p class="mb-18">Version {{ appVersion }}</p>
-        <p>Copyright &copy; 2022 by Ned Palacios and its contributors. Licensed under the <a class="text-primary-500 underline" href="https://github.com/nedpals/myuic-neo/blob/master/LICENSE">AGPL3 license</a>.</p>
-      </div>
-    </div>
-  </modal-window>
+  <about-modal v-model:open="isAboutModalOpen" />
 
   <div 
     style="padding-bottom: var(--safe-area-inset-bottom);" 
@@ -219,14 +208,12 @@ import IconSettingsOutline from '~icons/ion/settings-outline';
 import DarkModeToggle from './DarkModeToggle.vue';
 import LoadingContainer from './LoadingContainer.vue';
 import Skeleton from './Skeleton.vue';
-import ModalWindow from './ModalWindow.vue';
+import AboutModal from '../AboutModal.vue';
 import { Listbox, ListboxButton, ListboxOptions, ListboxOption } from '@headlessui/vue';
 import { currentSemesterIdKey, useStudentQuery } from '../../stores/studentStore';
 
 import { IS_NATIVE } from '../../utils';
-import { App } from '@capacitor/app';
 import { computed, inject, ref } from 'vue';
-import { Capacitor } from '@capacitor/core';
 import { useLogoutMutation } from '../../composables/auth';
 import { useSemesterQuery } from '../../stores/studentStore';
 import { useRoute } from 'vue-router';
@@ -234,7 +221,6 @@ import { avatarBaseUrl } from '../../client';
 
 const route = useRoute();
 const isMenuOpen = ref(false);
-const appVersion = ref('1.0.0 Web');
 const isAboutModalOpen = ref(false);
 const { isLoading: isStudentLoading, normalizedFirstName: studentFirstName, query: { data: student } } = useStudentQuery();
 const { mutate: destroy } = useLogoutMutation();
@@ -246,12 +232,6 @@ function loadFallbackImage(evt: Event) {
     evt.target.src = '/default_avatar.png';
   }
 }
-
-if (IS_NATIVE) {
-  App.getInfo().then((info) => {
-    appVersion.value = `${info.version} ${info.id} ${info.build} ${Capacitor.getPlatform()}`
-  });
-} 
 
 const getParentRouteName = () => {
   if (route.matched.length < 2) return 'dashboard';
