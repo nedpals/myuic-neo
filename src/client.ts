@@ -8,7 +8,11 @@ import appEvents from './event';
 
 export { eventbus } from '@myuic-api/client/lib/event';
 
-export const backendUrl = import.meta.env.VITE_API_URL || 'http://api.my.uic.edu.ph'; // latter is a dummy URL
+export const mockBackendUrl = 'http://api.uic';
+export const backendUrl = import.meta.env.VITE_API_URL || mockBackendUrl;
+
+export const isMock = backendUrl === mockBackendUrl;
+
 export const client = (() => {
   const client = newClient({ 
     baseUrl: backendUrl,

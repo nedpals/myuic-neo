@@ -1,8 +1,8 @@
 import { AcademicRecord, CourseEvaluationEntry, ethnicGroups, genders, incomeGroups, nationalities, Nationality, ParentRelationship, parentRelationshipStatus, questionnaires, Religion, religions, RoutePath } from "@myuic-api/types";
 import { createServer, Response as MirageResponse } from "miragejs";
-import { backendUrl } from "./client";
+import { backendUrl, isMock } from "./client";
 
-export const enableMockServer = !import.meta.env.VITE_API_URL || import.meta.env.VITE_API_URL.length === 0;
+export const enableMockServer = isMock;
 
 function reduceKV<T>(arr: readonly T[], offset: number = 1): Record<number, T> {
   return arr.reduce((p, v, i) => {
