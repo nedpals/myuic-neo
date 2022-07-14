@@ -2,6 +2,25 @@ import { createRouter, createWebHashHistory } from 'vue-router';
 import { client } from './client';
 import { IS_NATIVE } from './utils';
 
+// icons
+import IconHomeOutline from '~icons/ion/home-outline';
+import IconHome from '~icons/ion/home';
+import IconCalendar from '~icons/ion/calendar';
+import IconCalendarOutline from '~icons/ion/calendar-outline';
+import IconCash from '~icons/ion/cash';
+import IconCashOutline from '~icons/ion/cash-outline';
+import IconPerson from '~icons/ion/person';
+import IconPersonOutline from '~icons/ion/person-outline';
+import IconReceipt from '~icons/ion/receipt';
+import IconReceiptOutline from '~icons/ion/receipt-outline';
+import IconBallot from '~icons/ic/baseline-ballot';
+import IconBallotOutline from '~icons/ic/outline-ballot';
+import IconFeedback from '~icons/fluent/person-feedback-16-filled';
+import IconFeedbackOutline from '~icons/fluent/person-feedback-16-regular';
+import IconReport from '~icons/ion/stats-chart';
+import IconReportOutline from '~icons/ion/stats-chart-outline';
+import IconOnlineEnrollment from '~icons/fluent/compose-16-filled';
+
 const router = createRouter({
   history: createWebHashHistory(),
   scrollBehavior(to, from, savedPosition) {
@@ -31,7 +50,13 @@ const router = createRouter({
           component: () => import('./pages/Home.vue'),
           meta: {
             pageTitle: 'Home',
-            useHeader: false
+            useHeader: false,
+            navLink: {
+              group: 'Student',
+              title: 'Home',
+              icon: IconHomeOutline,
+              activeIcon: IconHome,
+            }
           }
         },
         // ...(IS_NATIVE ? [
@@ -57,11 +82,17 @@ const router = createRouter({
         //   } as RouteRecordRaw,
         // ] : []),
         {
-          name: 'finance',
-          path: '/finance',
-          component: () => import('./pages/Finance.vue'),
+          name: 'schedule',
+          path: '/schedule',
+          component: () => import('./pages/Schedule.vue'),
           meta: {
-            pageTitle: 'Finance'
+            pageTitle: 'Class Schedule',
+            navLink: {
+              group: 'Student',
+              title: 'Schedule',
+              icon: IconCalendarOutline,
+              activeIcon: IconCalendar,
+            }
           }
         },
         {
@@ -69,7 +100,41 @@ const router = createRouter({
           path: '/reports',
           component: () => import('./pages/Report.vue'),
           meta: {
-            pageTitle: 'Reports'
+            pageTitle: 'Reports',
+            navLink: {
+              group: 'Student',
+              title: 'Reports',
+              icon: IconReportOutline,
+              activeIcon: IconReport,
+            }
+          }
+        },
+        {
+          name: 'finance',
+          path: '/finance',
+          component: () => import('./pages/Finance.vue'),
+          meta: {
+            pageTitle: 'Finance',
+            navLink: {
+              group: 'Student',
+              title: 'Finance',
+              icon: IconCashOutline,
+              activeIcon: IconCash,
+            }
+          }
+        },
+        {
+          name: 'clearance',
+          path: '/clearance',
+          component: () => import('./pages/Clearance.vue'),
+          meta: {
+            pageTitle: 'Clearance',
+            navLink: {
+              group: 'Student',
+              title: 'Clearance',
+              icon: IconReceiptOutline,
+              activeIcon: IconReceipt,
+            }
           }
         },
         {
@@ -78,7 +143,13 @@ const router = createRouter({
           component: () => import('./pages/Information.vue'),
           redirect: { name: 'basic-information' },
           meta: {
-            pageTitle: 'Information'
+            pageTitle: 'Information',
+            navLink: {
+              group: 'Student',
+              title: 'Information',
+              icon: IconPersonOutline,
+              activeIcon: IconPerson,
+            }
           },
           children: [
             {
@@ -124,27 +195,17 @@ const router = createRouter({
           ]
         },
         {
-          name: 'schedule',
-          path: '/schedule',
-          component: () => import('./pages/Schedule.vue'),
-          meta: {
-            pageTitle: 'Class Schedule'
-          }
-        },
-        {
-          name: 'clearance',
-          path: '/clearance',
-          component: () => import('./pages/Clearance.vue'),
-          meta: {
-            pageTitle: 'Clearance'
-          }
-        },
-        {
           name: 'election-app',
           path: '/apps/election',
           component: () => import('./pages/App.vue'),
           meta: {
-            pageTitle: 'Election'
+            pageTitle: 'Election',
+            navLink: {
+              group: 'Apps',
+              title: 'Election',
+              icon: IconBallotOutline,
+              activeIcon: IconBallot,
+            }
           }
         },
         {
@@ -152,7 +213,13 @@ const router = createRouter({
           path: '/apps/course-evaluation',
           component: () => import('./pages/Apps/Evaluation.vue'),
           meta: {
-            pageTitle: 'Course Evaluation'
+            pageTitle: 'Course Evaluation',
+            navLink: {
+              group: 'Apps',
+              title: 'Course Evaluation',
+              icon: IconFeedbackOutline,
+              activeIcon: IconFeedback,
+            }
           }
         },
         {
@@ -160,7 +227,13 @@ const router = createRouter({
           path: '/apps/online-enrollment',
           component: () => import('./pages/App.vue'),
           meta: {
-            pageTitle: 'Online Enrollment'
+            pageTitle: 'Online Enrollment',
+            navLink: {
+              group: 'Apps',
+              title: 'Online Enrollment',
+              icon: IconOnlineEnrollment,
+              activeIcon: IconOnlineEnrollment,
+            }
           }
         },
         // ...(IS_NATIVE ? [

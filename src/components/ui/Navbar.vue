@@ -84,13 +84,15 @@
       </listbox>
     </loading-container>
 
-    <nav class="pt-6 pb-24 mt-2 md:pb-8 pl-4 md:h-[87%] flex flex-col">
-      <div :key="'links_' + j" v-for="(linkGroup, j) in linkGroups" :class="{ 'mt-10': j > 0 }">
-        <span class="uppercase text-sm font-bold pb-4 block pl-2 text-gray-500 dark:text-primary-200 md:hidden lg:block">{{ linkGroup.name }}</span>
+    <nav class="pt-6 pb-24 mt-2 md:pb-8 pl-4 md:h-[70%] flex flex-col space-y-5">
+      <div :key="`links_${groupName}`" v-for="(groupName, groupIdx) in linkGroups.groups">
+        <span class="uppercase text-sm font-bold pb-4 block pl-2 text-gray-500 dark:text-primary-200 md:hidden lg:block">
+          {{ groupName }}
+        </span>
         <div class="space-y-3">
           <router-link
-            :key="'link_' + (j + i)"
-            v-for="(link, i) in linkGroup.links"
+            :key="`link_${groupName}_${i}`"
+            v-for="(link, i) in linkGroups.links[groupIdx]"
             :to="link.to"
             @click="isMenuOpen = false"
             :class="[
@@ -157,14 +159,14 @@
     class="bg-white dark:bg-primary-900 flex border-t dark:border-primary-700 fixed bottom-0 inset-x-0 md:hidden z-50">
     <router-link 
       :key="'link_' + i"
-      v-for="(link, i) in mobileMenuLinks"
-      :to="link.to" 
+      v-for="i in 4"
+      :to="linkGroups.links[0][i].to" 
       @click="isMenuOpen = false"
       v-slot="{ isExactActive }"
       exact-active-class="text-primary-600 dark:text-white bg-primary-100 !hover:bg-primary-200 dark:bg-primary-700 !dark:hover:bg-primary-800"
       class="flex-1 px-4 py-2 flex flex-col items-center space-y-1 hover:bg-primary-100 dark:hover:bg-primary-600 text-sm">
-      <component :is="isExactActive ? link.activeIcon : link.icon" class="text-primary-600 dark:text-primary-200 text-[1.15rem]" />
-      <span class="text-xs">{{ link.title }}</span>
+      <component :is="isExactActive ? linkGroups.links[0][i].activeIcon : linkGroups.links[0][i].icon" class="text-primary-600 dark:text-primary-200 text-[1.15rem]" />
+      <span class="text-xs">{{ linkGroups.links[0][i].title }}</span>
     </router-link>
     <button 
       @click="isMenuOpen = !isMenuOpen"
@@ -181,26 +183,9 @@
 </template>
 
 <script lang="ts" setup>
-import IconHomeOutline from '~icons/ion/home-outline';
-import IconHome from '~icons/ion/home';
-import IconCalendar from '~icons/ion/calendar';
-import IconCalendarOutline from '~icons/ion/calendar-outline';
-import IconCash from '~icons/ion/cash';
-import IconCashOutline from '~icons/ion/cash-outline';
-import IconPerson from '~icons/ion/person';
-import IconPersonOutline from '~icons/ion/person-outline';
-import IconReceipt from '~icons/ion/receipt';
-import IconReceiptOutline from '~icons/ion/receipt-outline';
-import IconBallot from '~icons/ic/baseline-ballot';
-import IconBallotOutline from '~icons/ic/outline-ballot';
-import IconFeedback from '~icons/fluent/person-feedback-16-filled';
-import IconFeedbackOutline from '~icons/fluent/person-feedback-16-regular';
-import IconReport from '~icons/ion/stats-chart';
-import IconReportOutline from '~icons/ion/stats-chart-outline';
 import IconMenu from '~icons/ion/apps';
 import IconLogoutOutline from '~icons/ion/log-out-outline';
 import IconLogo from '~icons/custom/logo';
-import IconOnlineEnrollment from '~icons/fluent/compose-16-filled';
 import IconAboutOutline from '~icons/ion/help-circle-outline';
 import IconChevronRight from '~icons/ion/chevron-right';
 import IconSettings from '~icons/ion/settings';
@@ -213,12 +198,13 @@ import { Listbox, ListboxButton, ListboxOptions, ListboxOption } from '@headless
 import { currentSemesterIdKey, useStudentQuery } from '../../stores/studentStore';
 
 import { IS_NATIVE } from '../../utils';
-import { computed, inject, ref } from 'vue';
+import { computed, FunctionalComponent, inject, ref } from 'vue';
 import { useLogoutMutation } from '../../composables/auth';
 import { useSemesterQuery } from '../../stores/studentStore';
-import { useRoute } from 'vue-router';
+import { RouteRecordName, RouteRecordNormalized, RouteRecordRaw, useRoute, useRouter } from 'vue-router';
 import { avatarBaseUrl } from '../../client';
 
+const router = useRouter();
 const route = useRoute();
 const isMenuOpen = ref(false);
 const isAboutModalOpen = ref(false);
@@ -239,82 +225,46 @@ const getParentRouteName = () => {
 }
 
 const currentRouteName = computed(() => getParentRouteName()?.toString() ?? 'home');
-const linkGroups = [
-  {
-    name: 'Student',
-    links: [
-      {
-        title: 'Home',
-        to: { name: 'home' },
-        icon: IconHomeOutline,
-        activeIcon: IconHome,
-      },
-      {
-        title: 'Schedule',
-        to: { name: 'schedule' },
-        icon: IconCalendarOutline,
-        activeIcon: IconCalendar,
-      },
-      {
-        title: 'Reports',
-        to: { name: 'reports' },
-        icon: IconReportOutline,
-        activeIcon: IconReport,
-      },
-      {
-        title: 'Finance',
-        to: { name: 'finance' },
-        icon: IconCashOutline,
-        activeIcon: IconCash,
-      },
-      {
-        title: 'Clearance',
-        to: { name: 'clearance' },
-        icon: IconReceiptOutline,
-        activeIcon: IconReceipt,
-      },
-      {
-        title: 'Information',
-        to: { name: 'information' },
-        icon: IconPersonOutline,
-        activeIcon: IconPerson,
-      }
-    ]
-  },
-  {
-    name: 'Apps',
-    links: [
-      {
-        title: 'Election',
-        to: { name: 'election-app' },
-        icon: IconBallotOutline,
-        activeIcon: IconBallot,
-      },
-      {
-        title: 'Course Evaluation',
-        to: { name: 'course-evaluation-app' },
-        icon: IconFeedbackOutline,
-        activeIcon: IconFeedback,
-      },
-      {
-        title: 'Online Enrollment',
-        to: { name: 'online-enrollment-app' },
-        icon: IconOnlineEnrollment,
-        activeIcon: IconOnlineEnrollment,
-      },
-      ...(IS_NATIVE ? [
-        {
-          title: 'Test App',
-          to: { name: 'test-app' },
-          icon: IconLogo,
-          activeIcon: IconLogo,
-        }
-      ]: []),
-    ]
-  }
-];
+const collectNavLinks = (routes: (RouteRecordRaw | RouteRecordNormalized)[]) => {
+  const links: {
+    to: { name: RouteRecordName }
+    group: string
+    title: string
+    icon: FunctionalComponent
+    activeIcon: FunctionalComponent
+  }[] = [];
 
-const mobileMenuLinks = linkGroups[0].links.slice(0, 4);
+  for (const route of routes) {
+    if (route.meta && route.meta.navLink) {
+      links.push({
+        ...route.meta.navLink,
+        to: { name: route.name ?? '' }
+      });
+    }
+  }
+
+  return links;
+}
+
+const linkGroups = (() => {
+  const links = collectNavLinks(router.getRoutes());
+  return links.sort((a, b) => b.group.localeCompare(a.group)).reduce<{
+    groups: string[],
+    links: ReturnType<typeof collectNavLinks>[]
+  }>((m, l) => {
+    let groupIdx = m.groups.indexOf(l.group);
+    if (groupIdx == -1) {
+      m.groups.push(l.group);
+      m.links.push([]);
+      groupIdx = m.groups.length - 1;
+    }
+    m.links[groupIdx].push(l);
+    return m;
+  }, {
+    groups: [],
+    links: []
+  });
+})();
 </script>
 
 <style lang="postcss" scoped>
