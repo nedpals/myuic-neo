@@ -10,6 +10,7 @@ declare module '*.vue' {
 interface ImportMetaEnv {
   readonly VITE_API_URL: string;
   readonly VITE_FEEDBACK_URL: string;
+  readonly VITE_AVATAR_BASE_URL: string;
 }
 
 interface ImportMeta {

@@ -10,11 +10,15 @@
             <div class="h-12 w-12 lg:h-13 lg:w-13">
               <icon-logo @click="isAboutModalOpen = true" class="cursor-pointer w-full h-full text-primary-400 hover:text-primary-500 transition-colors" />
             </div>
-            <div
-              class="h-12 w-12 lg:h-13 lg:w-13 rounded-full bg-gray-200 bg-cover"
-              :class="{ 'animate-pulse': isLoading }"
-              :style="[!isLoading ? 'background-image: url(./default_avatar.png)' : '']"
-            ></div>
+
+            <skeleton 
+              custom-class="h-12 w-12 lg:h-13 lg:w-13 rounded-full bg-gray-200 dark:bg-uic-500">
+              <img 
+                class="h-12 w-12 lg:h-13 lg:w-13 object-cover rounded-full"
+                @error="loadFallbackImage" 
+                :src="avatarBaseUrl + '/images/100x102/' + (student?.number ?? '0') + '.jpg'" 
+                :alt="student?.number">
+            </skeleton>
           </div>
           <div
             :class="{ 'space-y-2 pt-2': isLoading }"
@@ -226,6 +230,7 @@ import { Capacitor } from '@capacitor/core';
 import { useLogoutMutation } from '../../composables/auth';
 import { useSemesterQuery } from '../../stores/studentStore';
 import { useRoute } from 'vue-router';
+import { avatarBaseUrl } from '../../client';
 
 const route = useRoute();
 const isMenuOpen = ref(false);
@@ -235,6 +240,12 @@ const { isLoading: isStudentLoading, normalizedFirstName: studentFirstName, quer
 const { mutate: destroy } = useLogoutMutation();
 const currentSemesterId = inject(currentSemesterIdKey);
 const { semesterList, currentSemester } = useSemesterQuery(currentSemesterId);
+
+function loadFallbackImage(evt: Event) {
+  if (evt.target instanceof HTMLImageElement) {
+    evt.target.src = '/default_avatar.png';
+  }
+}
 
 if (IS_NATIVE) {
   App.getInfo().then((info) => {

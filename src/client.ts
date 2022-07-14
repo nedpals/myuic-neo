@@ -10,8 +10,8 @@ export { eventbus } from '@myuic-api/client/lib/event';
 
 export const mockBackendUrl = 'http://api.uic';
 export const backendUrl = import.meta.env.VITE_API_URL || mockBackendUrl;
-
 export const isMock = backendUrl === mockBackendUrl;
+export const avatarBaseUrl = isMock ? backendUrl : import.meta.env.VITE_AVATAR_BASE_URL;
 
 export const client = (() => {
   const client = newClient({ 
