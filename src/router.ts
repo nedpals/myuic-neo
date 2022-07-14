@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
+import { createRouter, createWebHashHistory } from 'vue-router';
 import { client } from './client';
 import { IS_NATIVE } from './utils';
 
@@ -34,28 +34,28 @@ const router = createRouter({
             useHeader: false
           }
         },
-        ...(IS_NATIVE ? [
-          {
-            name: 'settings',
-            path: '/settings',
-            component: () => import('./pages/Settings.vue'),
-            redirect: { name: 'notification-settings' },
-            meta: {
-              pageTitle: 'Settings',
-              nativeOnly: true
-            },
-            children: [
-              {
-                name: 'notification-settings',
-                path: 'notifications',
-                meta: {
-                  pageTitle: 'Notifications',
-                },
-                component: () => import('./pages/Settings/Notification.vue')
-              }
-            ]
-          } as RouteRecordRaw,
-        ] : []),
+        // ...(IS_NATIVE ? [
+        //   {
+        //     name: 'settings',
+        //     path: '/settings',
+        //     component: () => import('./pages/Settings.vue'),
+        //     redirect: { name: 'notification-settings' },
+        //     meta: {
+        //       pageTitle: 'Settings',
+        //       nativeOnly: true
+        //     },
+        //     children: [
+        //       {
+        //         name: 'notification-settings',
+        //         path: 'notifications',
+        //         meta: {
+        //           pageTitle: 'Notifications',
+        //         },
+        //         component: () => import('./pages/Settings/Notification.vue')
+        //       }
+        //     ]
+        //   } as RouteRecordRaw,
+        // ] : []),
         {
           name: 'finance',
           path: '/finance',
@@ -163,17 +163,17 @@ const router = createRouter({
             pageTitle: 'Online Enrollment'
           }
         },
-        ...(IS_NATIVE ? [
-          {
-            name: 'test-app',
-            path: '/apps/test',
-            component: () => import('./pages/Apps/Test.vue'),
-            meta: {
-              pageTitle: 'Test Page',
-              nativeOnly: true,
-            }
-          }
-        ] : [])
+        // ...(IS_NATIVE ? [
+        //   {
+        //     name: 'test-app',
+        //     path: '/apps/test',
+        //     component: () => import('./pages/Apps/Test.vue'),
+        //     meta: {
+        //       pageTitle: 'Test Page',
+        //       nativeOnly: true,
+        //     }
+        //   }
+        // ] : [])
       ]
     }
   ]
