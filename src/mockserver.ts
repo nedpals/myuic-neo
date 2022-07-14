@@ -923,6 +923,42 @@ export const useMockServer = () => {
       this.get(RoutePath('semesterList'), () => [
         {
           id: "484",
+          label: "Summer 2019",
+          fromYear: 2019,
+          toYear: null,
+        },
+        {
+          id: "485",
+          label: "First Semester 2019-2020",
+          fromYear: 2019,
+          toYear: 2020,
+        },
+        {
+          id: "486",
+          label: "Second Semester 2019-2020",
+          fromYear: 2019,
+          toYear: 2020,
+        },
+        {
+          id: "484",
+          label: "Summer 2020",
+          fromYear: 2020,
+          toYear: null,
+        },
+        {
+          id: "485",
+          label: "First Semester 2020-2021",
+          fromYear: 2020,
+          toYear: 2021,
+        },
+        {
+          id: "486",
+          label: "Second Semester 2020-2021",
+          fromYear: 2020,
+          toYear: 2021,
+        },
+        {
+          id: "484",
           label: "Summer 2021",
           fromYear: 2021,
           toYear: null,
@@ -956,6 +992,42 @@ export const useMockServer = () => {
           label: "Second Semester 2022-2023",
           fromYear: 2022,
           toYear: 2023,
+        },
+        {
+          id: "488",
+          label: "Summer 2023",
+          fromYear: 2023,
+          toYear: null,
+        },
+        {
+          id: "489",
+          label: "First Semester 2023-2024",
+          fromYear: 2023,
+          toYear: 2024,
+        },
+        {
+          id: "490",
+          label: "Second Semester 2023-2024",
+          fromYear: 2023,
+          toYear: 2024,
+        },
+        {
+          id: "488",
+          label: "Summer 2024",
+          fromYear: 2024,
+          toYear: null,
+        },
+        {
+          id: "489",
+          label: "First Semester 2024-2025",
+          fromYear: 2024,
+          toYear: 2025,
+        },
+        {
+          id: "490",
+          label: "Second Semester 2024-2025",
+          fromYear: 2024,
+          toYear: 2025,
         },
       ]);
 
