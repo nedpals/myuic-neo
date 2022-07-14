@@ -14,99 +14,99 @@
             </div>
 
             <div class="flex flex-col">
-              <self-modal-window
+              <div
                 :key="'monthlyDue_' + i"
                 v-for="(mDue, i) in data!.monthlyDues"
-                :title="isLoading ? 'Loading...' : 'Month ' + mDue.month">
-                <template #default="{ openModal }">
-                  <div
-                    @click="openModal"
-                    class="flex px-6 py-3 border-t dark:border-primary-700"
-                    :class="{
-                      'bg-success-50 dark:bg-success-800 hover:bg-success-100 dark:hover:bg-success-900': !isLoading && mDue.status === 'Paid',
-                      'bg-warning-50 dark:bg-warning-800 hover:bg-warning-100 dark:hover:bg-warning-900': !isLoading && mDue.status === 'Partially Paid',
-                      'hover:bg-gray-100 dark:hover:bg-primary-800': !isLoading && mDue.status.length === 0,
-                      'cursor-pointer': !isLoading,
-                      'rounded-b-lg': i === data!.monthlyDues.length - 1
-                    }">
-                    
-                    <skeleton custom-class="w-13 h-13 -ml-1 bg-gray-400 dark:bg-primary-600 rounded-full">
-                      <div class="w-16 h-16">
-                        <component
-                          :is="mDue.status === 'Paid' || mDue.status === 'Partially Paid' ? IconPaid : IconPending"
-                          class="w-full h-full -ml-2"
-                          :class="{ 
-                            'text-success-400': mDue.status === 'Paid', 
-                            'text-warning-400': mDue.status === 'Partially Paid', 
-                            'text-gray-400 dark:text-primary-600': mDue.status.length === 0 
-                          }" />
-                      </div>
-                    </skeleton>
-                    <div class="flex-1" :class="{ 'pl-4': isLoading }">
-                      <div class="flex justify-between mb-1">
-                        <div>
-                          <skeleton custom-class="h-4 w-28 mb-2">
-                            <h2 class="font-semibold">Month {{ mDue.month }}</h2>
-                          </skeleton>
-                          <skeleton custom-class="h-3 w-20">
-                            <p :class="{ 
-                              'text-success-700 dark:text-success-400': mDue.status === 'Paid', 
-                              'text-amber-700 dark:text-amber-400': mDue.status === 'Partially Paid' 
-                            }" class="text-sm">
-                              {{ mDue.status.length ? mDue.status : 'Pending' }}
-                            </p>
-                          </skeleton>
-                        </div>
-                        <div class="text-right">
-                          <skeleton custom-class="h-4 w-20 rounded-full">
-                            <p>{{ moneyFormatter.format(mDue.amount - mDue.balance) }} / <span class="font-semibold">{{ moneyFormatter.format(mDue.amount) }}</span></p>
-                          </skeleton>
-                        </div>
-                      </div>
-                      <skeleton custom-class="h-3 w-full rounded-full bg-gray-200 mt-4">
-                        <progress class="due-progress" :value="((mDue.amount - mDue.balance) / mDue.amount) * 100" max="100"></progress>
+                @click="() => selectedMonthlyDueIdx = i"
+                class="flex px-6 py-3 border-t dark:border-primary-700"
+                :class="{
+                  'bg-success-50 dark:bg-success-800 hover:bg-success-100 dark:hover:bg-success-900': !isLoading && mDue.status === 'Paid',
+                  'bg-warning-50 dark:bg-warning-800 hover:bg-warning-100 dark:hover:bg-warning-900': !isLoading && mDue.status === 'Partially Paid',
+                  'hover:bg-gray-100 dark:hover:bg-primary-800': !isLoading && mDue.status.length === 0,
+                  'cursor-pointer': !isLoading,
+                  'rounded-b-lg': i === data!.monthlyDues.length - 1
+                }">
+                
+                <skeleton custom-class="w-13 h-13 -ml-1 bg-gray-400 dark:bg-primary-600 rounded-full">
+                  <div class="w-16 h-16">
+                    <component
+                      :is="mDue.status === 'Paid' || mDue.status === 'Partially Paid' ? IconPaid : IconPending"
+                      class="w-full h-full -ml-2"
+                      :class="{ 
+                        'text-success-400': mDue.status === 'Paid', 
+                        'text-warning-400': mDue.status === 'Partially Paid', 
+                        'text-gray-400 dark:text-primary-600': mDue.status.length === 0 
+                      }" />
+                  </div>
+                </skeleton>
+                <div class="flex-1" :class="{ 'pl-4': isLoading }">
+                  <div class="flex justify-between mb-1">
+                    <div>
+                      <skeleton custom-class="h-4 w-28 mb-2">
+                        <h2 class="font-semibold">Month {{ mDue.month }}</h2>
+                      </skeleton>
+                      <skeleton custom-class="h-3 w-20">
+                        <p :class="{ 
+                          'text-success-700 dark:text-success-400': mDue.status === 'Paid', 
+                          'text-amber-700 dark:text-amber-400': mDue.status === 'Partially Paid' 
+                        }" class="text-sm">
+                          {{ mDue.status.length ? mDue.status : 'Pending' }}
+                        </p>
+                      </skeleton>
+                    </div>
+                    <div class="text-right">
+                      <skeleton custom-class="h-4 w-20 rounded-full">
+                        <p>{{ moneyFormatter.format(mDue.amount - mDue.balance) }} / <span class="font-semibold">{{ moneyFormatter.format(mDue.amount) }}</span></p>
                       </skeleton>
                     </div>
                   </div>
-                </template>
+                  <skeleton custom-class="h-3 w-full rounded-full bg-gray-200 mt-4">
+                    <progress class="due-progress" :value="((mDue.amount - mDue.balance) / mDue.amount) * 100" max="100"></progress>
+                  </skeleton>
+                </div>
+              </div>
 
-                <template #modal-content>
-                  <div v-if="isLoading" class="flex flex-col items-center justify-center py-12">
-                    <loader class="h-12 w-12" />
-                  </div>
-                  <div v-else class="flex flex-col divide-y">
-                    <div class="flex pt-3">
-                      <div class="w-1/2 pl-0 pb-4 text-center">
-                        <skeleton custom-class="w-16 h-4 bg-gray-200 mb-2">
-                          <p class="text-lg mb-1">Amount</p>
-                        </skeleton>
-                        <skeleton custom-class="w-8 h-3.5 bg-gray-200">
-                          <p class="font-semibold text-4xl">{{ moneyFormatter.format(mDue.amount) }}</p>
-                        </skeleton>
-                      </div>
-
-                      <div class="w-1/2 pl-0 pb-4 text-center">
-                        <skeleton custom-class="w-16 h-4 bg-gray-200 mb-2">
-                          <p class="text-lg mb-1">Balance</p>
-                        </skeleton>
-                        <skeleton custom-class="w-8 h-3.5 bg-gray-200">
-                          <p class="font-semibold text-4xl">{{ moneyFormatter.format(mDue.balance) }}</p>
-                        </skeleton>
-                      </div>
+              <modal-window
+                open
+                v-if="selectedMonthlyDueIdx !== -1"
+                :key="'selectedMonthlyDue_' + selectedMonthlyDueIdx"
+                @update:open="() => selectedMonthlyDueIdx = -1"
+                :title="isLoading ? 'Loading...' : 'Month ' + selectedMonthlyDue.month">
+                <div v-if="isLoading" class="flex flex-col items-center justify-center py-12">
+                  <loader class="h-12 w-12" />
+                </div>
+                <div v-else class="flex flex-col divide-y">
+                  <div class="flex pt-3">
+                    <div class="w-1/2 pl-0 pb-4 text-center">
+                      <skeleton custom-class="w-16 h-4 bg-gray-200 mb-2">
+                        <p class="text-lg mb-1">Amount</p>
+                      </skeleton>
+                      <skeleton custom-class="w-8 h-3.5 bg-gray-200">
+                        <p class="font-semibold text-4xl">{{ moneyFormatter.format(selectedMonthlyDue.amount) }}</p>
+                      </skeleton>
                     </div>
-                    <div class="flex flex-col divide-y">
-                      <div class="flex justify-between py-2">
-                        <p>Status</p>
-                        <p class="font-bold">{{ mDue.status.length ? mDue.status : 'Pending' }}</p>
-                      </div>
-                      <div v-if="mDue.remarks.length" class="flex justify-between py-2">
-                        <p>Remarks</p>
-                        <p class="font-bold">{{ mDue.remarks }}</p>
-                      </div>
+
+                    <div class="w-1/2 pl-0 pb-4 text-center">
+                      <skeleton custom-class="w-16 h-4 bg-gray-200 mb-2">
+                        <p class="text-lg mb-1">Balance</p>
+                      </skeleton>
+                      <skeleton custom-class="w-8 h-3.5 bg-gray-200">
+                        <p class="font-semibold text-4xl">{{ moneyFormatter.format(selectedMonthlyDue.balance) }}</p>
+                      </skeleton>
                     </div>
                   </div>
-                </template>
-              </self-modal-window>
+                  <div class="flex flex-col divide-y">
+                    <div class="flex justify-between py-2">
+                      <p>Status</p>
+                      <p class="font-bold">{{ selectedMonthlyDue.status.length ? selectedMonthlyDue.status : 'Pending' }}</p>
+                    </div>
+                    <div v-if="selectedMonthlyDue.remarks.length" class="flex justify-between py-2">
+                      <p>Remarks</p>
+                      <p class="font-bold">{{ selectedMonthlyDue.remarks }}</p>
+                    </div>
+                  </div>
+                </div>
+              </modal-window>
             </div>
           </div>
 
@@ -183,7 +183,7 @@
 import DashboardScaffold from '../components/ui/DashboardScaffold.vue';
 import NewPaymentModal from '../components/Finance/NewPaymentModal.vue';
 import LoadingContainer from '../components/ui/LoadingContainer.vue';
-import SelfModalWindow from '../components/ui/SelfModalWindow.vue';
+import ModalWindow from '../components/ui/ModalWindow.vue';
 import Skeleton from '../components/ui/Skeleton.vue';
 import AccountBalanceWidget from '../components/Finance/AccountBalanceWidget.vue';
 import IconPlus from '~icons/ion/plus';
@@ -201,6 +201,8 @@ const { query: { data }, isLoading, paidTotal, assessmentTotal } = useFinancialR
 const formKey = ref(0);
 const breakdownKeys = computed(() => ['tuition', 'misc', 'others', 'receivables']);
 const breakdownLabels = computed(() => ['Tuition', 'Miscellanous', 'Other Fees', 'Back Account']);
+const selectedMonthlyDueIdx = ref(-1);
+const selectedMonthlyDue = computed(() => data.value!.monthlyDues[selectedMonthlyDueIdx.value]);
 
 function onPaymentFormOpenUpdate(isOpen: boolean) {
   if (!isOpen) {
