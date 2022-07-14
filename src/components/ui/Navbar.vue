@@ -140,7 +140,7 @@
         </router-link>
 
         <button
-          @click="logout"
+          @click="() => logout()"
           class="w-full hover:bg-danger-100 dark:hover:bg-danger-900 bg-danger-50 dark:bg-danger-800 py-2 px-4 flex items-center max-h-12 space-x-4 rounded-l-full" 
           style="transition: ease 150ms background-color">
             <icon-logout-outline class="text-danger-500 dark:text-white text-[1.3rem]" />
@@ -223,7 +223,7 @@ const route = useRoute();
 const isMenuOpen = ref(false);
 const isAboutModalOpen = ref(false);
 const { isLoading: isStudentLoading, normalizedFirstName: studentFirstName, query: { data: student } } = useStudentQuery();
-const { mutate: destroy } = useLogoutMutation();
+const { mutate: logout } = useLogoutMutation();
 const currentSemesterId = inject(currentSemesterIdKey);
 const { semesterList, currentSemester } = useSemesterQuery(currentSemesterId);
 
@@ -237,8 +237,6 @@ const getParentRouteName = () => {
   if (route.matched.length < 2) return 'dashboard';
   return route.matched[1].name;
 }
-
-const logout = () => destroy();
 
 const currentRouteName = computed(() => getParentRouteName()?.toString() ?? 'home');
 const linkGroups = [
