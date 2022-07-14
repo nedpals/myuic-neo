@@ -65,7 +65,7 @@ const pageTitle = computed(() => {
 })
 
 watch(() => route.fullPath, () => {
-  useTitle(`${pageTitle.value} | MyUIC`);
+  useTitle(`${pageTitle.value} | MyUIC Neo`);
 }, {
   immediate: true
 });
