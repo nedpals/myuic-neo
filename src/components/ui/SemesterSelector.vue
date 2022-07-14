@@ -62,7 +62,9 @@ const firstEnrolledYear = computed(() => 2000 + parseInt((student.value?.number 
 const lastEnrolledYear = computed(() => firstEnrolledYear.value + 4);
 const filteredSemesterList = computed(() => {
   return semesterList.value.filter(s => {
-    return s.fromYear >= firstEnrolledYear.value && (s.toYear < lastEnrolledYear.value || (!s.label.startsWith('Summer') && s.toYear === lastEnrolledYear.value))
+    return s.fromYear >= firstEnrolledYear.value 
+      && ((s.toYear && s.toYear <= lastEnrolledYear.value) 
+      || (s.label.startsWith('Summer') && s.fromYear < lastEnrolledYear.value))
   });
 });
 </script>
