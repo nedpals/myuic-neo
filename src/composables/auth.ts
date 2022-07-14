@@ -37,8 +37,6 @@ export function subscribeAuth() {
   eventbus.on('sessionRefresh', handleSessionRefresh);
   eventbus.on('sessionExpired', handleSessionExpired);
 
-  retrieve();
-
   return () => {
     eventbus.off('changeAuthenticatedStatus', handleChangeAuthenticatedStatus);
     eventbus.off('sessionRefresh', handleSessionRefresh);

@@ -17,6 +17,7 @@ import { VueQueryPlugin } from 'vue-query'
 import { customClientOptions } from './client'
 
 import defaultAppEvents, { AppEvents } from './event'
+import { retrieve } from './composables/auth'
 
 export async function startApp(initialize: () => Promise<void>, customAppEvents?: Partial<AppEvents>) {
   try {
@@ -26,10 +27,8 @@ export async function startApp(initialize: () => Promise<void>, customAppEvents?
       }
     }
 
-    await Storage.configure({
-      group: APP_PREFIX
-    });
-  
+    await Storage.configure({ group: APP_PREFIX });
+    await retrieve();
     await initialize();
   } catch (e) {
     console.error(e);
