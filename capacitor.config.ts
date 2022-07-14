@@ -6,7 +6,7 @@ import colorPalette from './color_palette';
 const config: CapacitorConfig = {
   appId: 'xyz.nedpals.myuic',
   appName: 'MyUIC Neo',
-  webDir: 'dist',
+  webDir: 'dist_mobile_app',
   bundledWebRuntime: false,
   plugins: {
     LocalNotifications: {

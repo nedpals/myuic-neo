@@ -3,16 +3,10 @@ import vue from '@vitejs/plugin-vue'
 import WindiCSS from 'vite-plugin-windicss'
 import Icons from 'unplugin-icons/vite';
 import { FileSystemIconLoader } from 'unplugin-icons/loaders';
-import { VitePWA } from 'vite-plugin-pwa';
-
 import { readFileSync } from 'fs';
-import colorPalette from './color_palette';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  server: {
-    port: 3000
-  },
   plugins: [
     vue(),
     WindiCSS({
@@ -35,23 +29,6 @@ export default defineConfig({
           props.width = '1.8em';
         }
       }
-    }),
-    VitePWA({
-      includeManifestIcons: true,
-      manifest: {
-        background_color: "#FFFFFF",
-        theme_color: colorPalette.primary[500],
-        name: "MyUIC Neo",
-        short_name: 'MyUIC Neo',
-        display: "standalone",
-        icons: [
-          { "src": "/icons/favicon.ico", "type": "image/x-icon", "sizes": "16x16 32x32" },
-          { "src": "/icons/icon-192.png", "type": "image/png", "sizes": "192x192" },
-          { "src": "/icons/icon-512.png", "type": "image/png", "sizes": "512x512" },
-          { "src": "/icons/icon-192-maskable.png", "type": "image/png", "sizes": "192x192", "purpose": "maskable" },
-          { "src": "/icons/icon-512-maskable.png", "type": "image/png", "sizes": "512x512", "purpose": "maskable" }
-        ],
-      },
     }),
   ],
 });

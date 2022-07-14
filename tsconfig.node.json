@@ -4,5 +4,11 @@
     "module": "esnext",
     "moduleResolution": "node"
   },
-  "include": ["vite.config.ts", "windi.config.ts", "color_palette.ts"]
+  "include": [
+    "vite.config.ts", 
+    "vite.mobile_app.config.ts", 
+    "vite.web.config.ts", 
+    "windi.config.ts", 
+    "color_palette.ts"
+  ]
 }

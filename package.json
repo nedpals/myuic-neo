@@ -4,9 +4,10 @@
   "version": "1.0.0",
   "license": "AGPL-3.0-or-later",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
+    "dev": "vite -c vite.web.config.ts",
+    "build": "vite -c vite.web.config.ts build",
+    "preview": "vite -c vite.web.config.ts preview",
+    "build-mobile-app": "vite -c vite.mobile_app.config.ts build",
     "start-android": "npm run build && npm run build-app-assets && cap run android",
     "start-ios": "npm run build && npm run build-app-assets && cap run ios",
     "build-app-assets": "node generate-app-icon.js"

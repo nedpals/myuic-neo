@@ -13,7 +13,7 @@ export default function() {
     notify({
       type: 'info',
       text: 'App ready to work offline.',
-    });
+    }, 3000);
   });
   
   watch(needRefresh, () => {
@@ -28,6 +28,6 @@ export default function() {
           }
         ]
       }
-    });
+    }, 3000);
   });
 }
