@@ -3,13 +3,10 @@ import { Storage } from '@capacitor/storage';
 import { useMutation, useQueryClient } from 'vue-query';
 import { useRouter } from 'vue-router';
 import { notify } from 'notiwind';
-import { IS_NATIVE } from '../utils';
-import { SecureStoragePlugin } from 'capacitor-secure-storage-plugin';
+import appEvents from '../event';
 
 const SESSION_NAME = 'session';
 const SESSION_SEP = '||-||';
-export const SESSION_NATIVE_ID_KEY = { key: 'id' };
-export const SESSION_NATIVE_PW_KEY = { key: 'password' };
 
 export function subscribeAuth() {
   const queryClient = useQueryClient();
@@ -33,7 +30,7 @@ export function subscribeAuth() {
     notify({
       type: 'error',
       text: 'Your session has expired. Please log in again.'
-    });
+    }, 3000);
   };
 
   eventbus.on('changeAuthenticatedStatus', handleChangeAuthenticatedStatus);
@@ -63,13 +60,7 @@ export function useLoginMutation() {
   {
     onSuccess: async ({ token, refreshToken }, { id, password }) => {
       persistTokens(token, refreshToken);
-
-      if (IS_NATIVE) {
-        await Promise.all([
-          SecureStoragePlugin.set({ ...SESSION_NATIVE_ID_KEY, value: id }),
-          SecureStoragePlugin.set({ ...SESSION_NATIVE_PW_KEY, value: password })
-        ]);
-      }
+      await appEvents.onAuthSuccess?.({ id, password });
     }
   });
 
@@ -79,12 +70,19 @@ export function useLoginMutation() {
   }
 }
 
+export async function retrieveFromStorage() {
+  const { value: sessionCreds } = await Storage.get({ key: SESSION_NAME });
+  if (!sessionCreds) 
+    return { accessToken: '', refreshToken: '' };
+
+  const [accessToken, refreshToken] = sessionCreds.split(SESSION_SEP);
+  return { accessToken, refreshToken };
+}
+
 export async function retrieve() {
   if (client.isAuthenticated()) return;
-  const { value: sessionCreds } = await Storage.get({ key: SESSION_NAME });
-  
-  if (!sessionCreds) return;
-  const [accessToken, refreshToken] = sessionCreds.split(SESSION_SEP);
+  const { accessToken, refreshToken } = await retrieveFromStorage();
+  if (!accessToken || !refreshToken) return;
   client.setAuthCredentials(accessToken, refreshToken);
 }
 
@@ -92,11 +90,7 @@ export function useLogoutMutation() {
   const router = useRouter();
   return useMutation(() => client.logout(), {
     onSuccess: async () => {
-      if (IS_NATIVE) 
-        await Promise.all([
-          SecureStoragePlugin.remove(SESSION_NATIVE_ID_KEY),
-          SecureStoragePlugin.remove(SESSION_NATIVE_PW_KEY)
-        ]);
+      await appEvents.onAuthDestroy?.();
       await Storage.remove({ key: SESSION_NAME });
       router.replace({ name: 'login' });
     }

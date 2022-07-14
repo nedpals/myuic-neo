@@ -13,7 +13,7 @@
             <div
               class="h-12 w-12 lg:h-13 lg:w-13 rounded-full bg-gray-200 bg-cover"
               :class="{ 'animate-pulse': isLoading }"
-              :style="[!isLoading ? 'background-image: url(./default_avatar.png)': '']"
+              :style="[!isLoading ? 'background-image: url(./default_avatar.png)' : '']"
             ></div>
           </div>
           <div

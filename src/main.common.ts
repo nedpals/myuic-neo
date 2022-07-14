@@ -16,8 +16,16 @@ import { Storage } from '@capacitor/storage'
 import { VueQueryPlugin } from 'vue-query'
 import { customClientOptions } from './client'
 
-export async function startApp(initialize: () => Promise<void>) {
+import defaultAppEvents, { AppEvents } from './event'
+
+export async function startApp(initialize: () => Promise<void>, customAppEvents?: Partial<AppEvents>) {
   try {
+    if (customAppEvents) {
+      for (const event in customAppEvents) {
+        defaultAppEvents[event] = customAppEvents[event];
+      }
+    }
+
     Storage.configure({
       group: APP_PREFIX
     });

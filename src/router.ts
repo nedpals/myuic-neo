@@ -1,5 +1,5 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
-import { client, eventbus } from './client';
+import { client } from './client';
 import { IS_NATIVE } from './utils';
 
 const router = createRouter({

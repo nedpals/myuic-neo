@@ -1,10 +1,11 @@
 import { newClient } from '@myuic-api/client';
 import { APIResponse, APIResponseError } from '@myuic-api/client/lib/fetch';
-import { SecureStoragePlugin } from 'capacitor-secure-storage-plugin';
 import { QueryFunction, QueryKey } from 'react-query/types/core';
 import { useQuery, UseQueryOptions, VueQueryPluginOptions } from 'vue-query';
-import { persistTokens, SESSION_NATIVE_ID_KEY, SESSION_NATIVE_PW_KEY } from './composables/auth';
-import { catchAndNotifyError, IS_NATIVE, twentyFourHoursInMs } from './utils';
+import { persistTokens } from './composables/auth';
+import { catchAndNotifyError, twentyFourHoursInMs } from './utils';
+import appEvents from './event';
+
 export { eventbus } from '@myuic-api/client/lib/event';
 
 export const backendUrl = import.meta.env.VITE_API_URL || 'http://api.my.uic.edu.ph'; // latter is a dummy URL
@@ -14,24 +15,15 @@ export const client = (() => {
   });
 
   client.onRefresh = async (refresh) => {
-    if (IS_NATIVE) {
-      let id = '';
-      let password = '';
-      try {
-        const { value: rawId } = await SecureStoragePlugin.get(SESSION_NATIVE_ID_KEY);
-        id = rawId;
-      } catch {}
+    const creds = await (() => {
+      if (appEvents.onAuthRefresh) {
+        return appEvents.onAuthRefresh({ client, refresh });
+      } else {
+        return refresh();
+      }
+    })();
 
-      try {
-        const { value: rawPassword } = await SecureStoragePlugin.get(SESSION_NATIVE_PW_KEY);
-        password = rawPassword;
-      } catch {}
-      const creds = await client.login(id, password);
-      // TODO: @myuic-api/client : Add event for getting successful login
-      persistTokens(creds.token, creds.refreshToken);
-      return creds;
-    }
-    const creds = await refresh();
+    // TODO: @myuic-api/client : Add event for getting successful login
     persistTokens(creds.token, creds.refreshToken);
     return creds;
   }

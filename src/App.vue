@@ -53,13 +53,11 @@ import { useDarkMode } from './composables/ui';
 import { computed, onBeforeUnmount } from 'vue';
 import useReloadPrompt from './composables/sw';
 import NotificationContainer from './components/ui/NotificationContainer.vue';
-import { IS_NATIVE } from './utils';
 import IconFeedback from '~icons/ion/chatbox-ellipses';
 import { useRouter } from 'vue-router';
-import { App } from '@capacitor/app';
 import { useModalManager } from './composables/modal';
-import { PluginListenerHandle } from '@capacitor/core';
 import DialogManager from './components/ui/DialogManager.vue';
+import appEvents from './event';
 
 export default {
   components: { NotificationContainer, IconFeedback, DialogManager },
@@ -75,26 +73,18 @@ export default {
     useReloadPrompt();
     useTitle('MyUIC Neo');
 
-    let backButtonPlugin: PluginListenerHandle;
-
-    if (IS_NATIVE) {
-      backButtonPlugin = App.addListener('backButton', (evt) => {
-        if (modalCount.value != 0) {
-          closeLastModal();
-          return;
-        } else if (evt.canGoBack) {
-          router.back();
-        } else {
-          App.minimizeApp();
-        }
-      });
-    }
+    const destroyPopNavigation = appEvents.onNavigationPop?.({ 
+      modalCount,
+      closeModal: closeLastModal, 
+      goBack: router.back 
+    });
 
     onBeforeUnmount(() => {
       unsubscribeModalChange();
       unsubscribeDarkMode();
       unsubscribeAuth();
-      if (backButtonPlugin) backButtonPlugin.remove();
+      if (destroyPopNavigation)
+        destroyPopNavigation();
     });
 
     return { feedbackUrl }

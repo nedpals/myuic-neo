@@ -135,9 +135,9 @@ export interface NotifyAction {
 
 export function catchAndNotifyError(e: unknown) {
   if (e instanceof Error && e.message) {
-    notify({ type: 'error', text: e.message });
+    notify({ type: 'error', text: e.message }, 3000);
   } else {
-    notify({ type: 'error', text: `Unknown error.` });
+    notify({ type: 'error', text: `Unknown error.` }, 3000);
   }
 }
 
