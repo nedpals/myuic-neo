@@ -63,7 +63,7 @@ export default {
   components: { NotificationContainer, IconFeedback, DialogManager },
   setup() {
     const router = useRouter();
-    const feedbackUrl = computed(() => import.meta.env.VITE_FEEDBACK_URL ?? null);
+    const feedbackUrl = computed(() => `${import.meta.env.VITE_FEEDBACK_URL}`);
     const { subscribeDarkMode } = useDarkMode();
     const unsubscribeDarkMode = subscribeDarkMode();
     const unsubscribeAuth = subscribeAuth();
