@@ -47,24 +47,50 @@
 </template>
 
 <script setup lang="ts">
-import { computed, inject, ref, Ref } from 'vue';
+import { computed, inject, onBeforeUnmount, ref, Ref, watch } from 'vue';
 import { currentSemesterIdKey, useSemesterQuery, useStudentQuery } from '../../stores/studentStore';
 
 import { Listbox, ListboxButton, ListboxOptions, ListboxOption } from '@headlessui/vue';
 import IconChevronRight from '~icons/ion/chevron-right';
 import Skeleton from './Skeleton.vue';
 
+const emit = defineEmits(['update:semesterId']);
 const isLoading = inject<Ref<boolean>>('__loadState', ref(false));
 const currentSemesterId = inject(currentSemesterIdKey);
 const { semesterList, currentSemester } = useSemesterQuery(currentSemesterId);
 const { query: { data: student } } = useStudentQuery();
 const firstEnrolledYear = computed(() => 2000 + parseInt((student.value?.number ?? '20123').substring(0, 2)));
-const lastEnrolledYear = computed(() => firstEnrolledYear.value + 4);
+const currentYear = new Date().getFullYear();
+const graduateYear = computed(() => firstEnrolledYear.value + 4);
+const lastEnrolledYear = computed(() => {
+  if (currentYear <= graduateYear.value) {
+    return currentYear;
+  } else {
+    return graduateYear.value;
+  }
+});
 const filteredSemesterList = computed(() => {
   return semesterList.value.filter(s => {
-    return s.fromYear >= firstEnrolledYear.value 
-      && ((s.toYear && s.toYear <= lastEnrolledYear.value) 
-      || (s.label.startsWith('Summer') && s.fromYear < lastEnrolledYear.value))
+    const isSummer = s.label.startsWith('Summer');
+    // do not show if:
+    // - summer of the first enrolled year or summer of the graduated year
+    // - scope is beyond between the first and the last enrolled year
+    //   - if the current year is not graduate year, past the current year
+    if (s.fromYear < firstEnrolledYear.value || s.fromYear > lastEnrolledYear.value || (isSummer && s.fromYear === firstEnrolledYear.value)) {
+      return false;
+    } else if (isSummer && s.fromYear === graduateYear.value) {
+      return false;
+    } else if (s.toYear && s.toYear > lastEnrolledYear.value) {
+      return false;
+    }
+    return true;
   });
 });
+
+const unwatch = watch(currentSemesterId!, (newId, oldId) => {
+  if (newId === oldId) return;
+  emit('update:semesterId', newId);
+});
+
+onBeforeUnmount(unwatch);
 </script>

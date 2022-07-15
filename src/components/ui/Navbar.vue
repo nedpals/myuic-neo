@@ -37,7 +37,7 @@
     </div>
 
     <loading-container :is-loading="isStudentLoading">
-      <semester-selector />
+      <semester-selector @update:semesterId="isMenuOpen = false" />
     </loading-container>
 
     <nav class="pt-6 pb-24 mt-2 md:pb-8 pl-4 md:h-[70%] flex flex-col space-y-5">
