@@ -7,7 +7,8 @@ export function useInfoQuery() {
   return useQuery(['app_info'], async () => {
     if (Capacitor.getPlatform() === 'web') {
       return {
-        version: APP_VERSION
+        version: APP_VERSION,
+        build: APP_BUILD_COMMIT
       } as AppInfo
     }
 
@@ -21,9 +22,9 @@ export const useMeta = () => {
   const fullVersion = computed(() => {
     if (data.value) {
       if (platform === 'web') {
-        return `${data.value.version} ${platform}`
+        return `${platform} ${data.value.version} (Build ${data.value.build} ${APP_BUILD_DATE})`
       } else {
-        return `${data.value.version} ${data.value.id} ${data.value.build} ${platform}`;
+        return `${platform} ${data.value.version} (Build ${data.value.build}-${data.value.id} ${APP_BUILD_DATE})`;
       }
     }
 

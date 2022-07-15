@@ -2,6 +2,8 @@
 
 declare const APP_VERSION: string;
 declare const APP_NAME: string;
+declare const APP_BUILD_COMMIT: string;
+declare const APP_BUILD_DATE: string;
 
 declare module '*.vue' {
   import type { DefineComponent } from 'vue'

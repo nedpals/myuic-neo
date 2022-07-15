@@ -4,11 +4,18 @@ import WindiCSS from 'vite-plugin-windicss'
 import Icons from 'unplugin-icons/vite';
 import { FileSystemIconLoader } from 'unplugin-icons/loaders';
 import { readFileSync } from 'fs';
+import { execSync } from 'child_process';
 
 // https://vitejs.dev/config/
 export default defineConfig({
   define: {
     APP_VERSION: JSON.stringify(process.env.npm_package_version),
+    APP_BUILD_COMMIT: JSON.stringify(execSync('git rev-parse --short HEAD').toString().trim()),
+    APP_BUILD_DATE: JSON.stringify((() => {
+      const date = new Date();
+      const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`
+      return formattedDate;
+    })())
   },
   plugins: [
     vue(),
