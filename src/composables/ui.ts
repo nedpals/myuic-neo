@@ -1,5 +1,6 @@
 import { Storage } from '@capacitor/storage';
-import { ref, watch } from 'vue';
+import { ref, watch, Ref, isRef } from 'vue';
+import appEvents from "../event";
 
 export const DARK_MODE_KEY = 'dark_mode';
 export const darkModeQuery = () => window.matchMedia('(prefers-color-scheme: dark)');
@@ -46,13 +47,22 @@ export const useDarkMode = () => {
     if (darkModeState.value === '2') {
       toggleDarkModeCss(darkModeState.value);
     }
+
+    void appEvents.onDarkModeChange?.(darkModeState.value);
   }
-  
+
+  const executeDarkModeChanges = (darkModeState: Ref<string> | string) => {
+    const darkModeValue = isRef(darkModeState) ? darkModeState.value : darkModeState;
+    toggleDarkModeCss(darkModeValue);
+    if (appEvents.onDarkModeChange)
+      void appEvents.onDarkModeChange(darkModeValue);
+  }
+
   const subscribeDarkMode = () => {
     fetchDarkMode();
-    toggleDarkModeCss(darkModeState.value);
+    executeDarkModeChanges(darkModeState);
 
-    const unsubscribeWatch = watch(darkModeState, toggleDarkModeCss);
+    const unsubscribeWatch = watch(darkModeState, executeDarkModeChanges);
     darkModeQuery().addEventListener('change', handleDarkModeChange);
 
     return () => {

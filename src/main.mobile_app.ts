@@ -2,6 +2,8 @@ import { SafeArea } from 'capacitor-plugin-safe-area';
 import { startApp } from './main.common';
 import { SecureStoragePlugin } from 'capacitor-secure-storage-plugin';
 import { App } from '@capacitor/app';
+import { StatusBar, Style } from '@capacitor/status-bar';
+import { darkModeQuery } from './composables/ui';
 
 const SESSION_NATIVE_ID_KEY = { key: 'id' };
 const SESSION_NATIVE_PW_KEY = { key: 'password' };
@@ -15,8 +17,13 @@ async function setDeviceSafeAreas() {
   }
 }
 
+async function setupStatusBar() {
+    await StatusBar.setOverlaysWebView({ overlay: true });
+}
+
 startApp(async () => {
   await setDeviceSafeAreas();
+  await setupStatusBar();
 }, {
   onAuthSuccess: async ({ id, password }) => {
     await Promise.all([
@@ -51,8 +58,15 @@ startApp(async () => {
       } else if (evt.canGoBack) {
         goBack();
       } else {
-        App.minimizeApp();
+        void App.minimizeApp();
       }
     }).remove;
+  },
+  async onDarkModeChange(mode) {
+    if (mode === '1' || (mode === '2' && darkModeQuery().matches)) {
+      await StatusBar.setStyle({ style: Style.Dark });
+    } else {
+      await StatusBar.setStyle({ style: Style.Light });
+    }
   }
 })
