@@ -6,6 +6,6 @@ public class MainActivity extends BridgeActivity {
     @Override
     public void onStart() {
         super.onStart();
-        this.bridge.getWebView().getSettings().setTextZoom(70);
+        this.bridge.getWebView().getSettings().setTextZoom(85);
     }
 }
