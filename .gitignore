@@ -38,3 +38,5 @@ android/app/build
 android/app/src/main/assets/public
 
 public/icons
+
+private
