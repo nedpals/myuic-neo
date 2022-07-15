@@ -1,11 +1,11 @@
 <template>
-  <main style="padding-top: calc(3rem + var(--safe-area-inset-top))" class="relative flex flex-col h-screen max-w-7xl px-8 pb-8 mx-auto md:border-x border-gray-300 dark:border-primary-700">
+  <main style="padding-top: calc(var(--safe-area-inset-top) + 3rem)" class="relative flex flex-col h-screen max-w-7xl px-8 pb-8 mx-auto md:border-x border-gray-300 dark:border-primary-700">
     <div 
       v-if="isProcessing" 
       class="z-10 bg-white dark:bg-primary-900 bg-opacity-50 dark:bg-opacity-50 h-full max-w-7xl mx-auto absolute inset-0 rounded-lg flex items-center justify-center">
       <loader class="h-16 w-16" />
     </div>
-    <div class="pt-6 pr-6 md:pr-8 absolute top-0 left-0 flex justify-end mb-8 w-full">
+    <div style="top: var(--safe-area-inset-top)" class="pt-6 pr-6 md:pr-8 absolute left-0 flex justify-end mb-8 w-full">
       <dark-mode-toggle class="self-start" />
     </div>
     <div class="md:mt-8 flex flex-col items-center text-center mb-12">
@@ -59,7 +59,7 @@ const loginFromForm = async (e: SubmitEvent) => {
     const pw = fd.get('password')?.toString()!;
     await login(id, pw);
     e.target.reset();
-    router.replace({ name: 'home' });
+    await router.replace({ name: 'home' });
   } catch (e) {
     console.error(e);
   }
