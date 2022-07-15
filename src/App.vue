@@ -130,6 +130,13 @@ export default {
        url('/fonts/commissioner-v11-latin-900.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
 
+:root {
+  --safe-area-inset-top: 0px;
+  --safe-area-inset-bottom: 0px;
+  --safe-area-inset-left: 0px;
+  --safe-area-inset-right: 0px;
+}
+
 body {
   @apply text-gray-700 font-sans-2 dark:text-white;
 }
