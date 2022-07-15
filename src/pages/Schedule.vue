@@ -59,6 +59,8 @@
           </div>
         </div>
       </loading-container>
+
+      <pdf-viewer ref="pdfViewer" :default-pdf-name="`Schedule - ${currentSemester.label}`" />
   </dashboard-scaffold>
 </template>
 
@@ -74,7 +76,9 @@ import { catchAndNotifyError } from '../utils';
 import IconPrint from '~icons/ion/print';
 import { generateSchedulePDF, useSchedulesQuery, days } from '../stores/scheduleStore';
 import { notify } from 'notiwind';
+import PdfViewer from "../components/ui/PdfViewer.vue";
 
+const pdfViewer = ref<InstanceType<typeof PdfViewer>>();
 const currentSemesterId = inject(currentSemesterIdKey);
 const { currentSemester, hasSemesterId } = useSemesterQuery(currentSemesterId);
 const currentDay = ref(formatDatetime(now, 'EEE'));
@@ -87,13 +91,7 @@ const printPdf = async () => {
   await refetch.value();
   close();
   if (!isSuccess.value) return;
-  const pdfPreviewTab = window.open(fileUrl.value, '_blank');
-  if (!pdfPreviewTab) {
-    catchAndNotifyError(
-      new Error('There was an error when opening the file.')
-    );
-    return;
-  }
-  pdfPreviewTab.focus();
+  pdfViewer.value.open(fileUrl.value);
+
 }
 </script>

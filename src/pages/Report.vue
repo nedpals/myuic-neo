@@ -111,6 +111,8 @@
         </div>
       </section>
     </loading-container>
+
+    <pdf-viewer ref="pdfViewer" :default-pdf-name="`Report - ${currentSemester.label}`" />
   </dashboard-scaffold>
 </template>
 
@@ -121,18 +123,20 @@ import { generateAcademicRecordsPDF, useAcademicRecordsQuery } from '../stores/a
 import IconPrint from '~icons/ion/print';
 import { catchAndNotifyError } from '../utils';
 import SelfModal from '../components/ui/SelfModal.vue';
-import { computed, inject, readonly } from 'vue';
+import { computed, inject, readonly, ref } from 'vue';
 
 import computationFormulaImg from '../assets/computation-formula.png';
 import Skeleton from '../components/ui/Skeleton.vue';
 import { currentSemesterIdKey, useSemesterQuery } from '../stores/studentStore';
 import { notify } from 'notiwind';
+import PdfViewer from "../components/ui/PdfViewer.vue";
 
+const pdfViewer = ref<InstanceType<typeof PdfViewer>>();
 const currentSemesterId = inject(currentSemesterIdKey);
 const { currentSemester } = useSemesterQuery(currentSemesterId);
-const { 
-  isLoading, 
-  latestAcademicRecords, 
+const {
+  isLoading,
+  latestAcademicRecords,
   overallAverages,
   overallUnits
 } = useAcademicRecordsQuery(currentSemesterId!);
@@ -154,12 +158,8 @@ async function printPdf() {
     const { close } = notify({ type: 'info', text: 'Downloading PDF...' }, Infinity);
     const fileUrl = await generateAcademicRecordsPDF(currentSemesterId!.toString());
     close();
-    const pdfPreviewTab = window.open(fileUrl, '_blank');
-    if (pdfPreviewTab) {
-      pdfPreviewTab.focus();
-    } else {
-      throw new Error('There was an error when opening the file.');
-    }
+
+    pdfViewer.value.open(fileUrl);
   } catch (e) {
     catchAndNotifyError(e);
   }

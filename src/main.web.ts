@@ -14,4 +14,14 @@ startApp(async () => {
   } finally {
     await registerSW({ immediate: true })(true);
   }
+}, {
+  async onDownloadURL({ url, fileName }) {
+    var link = document.createElement("a");
+    link.download = fileName;
+    link.href = url;
+    link.click();
+  },
+  async onPrintPage(url) {
+    window.open(url, '_blank');
+  }
 });
