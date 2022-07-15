@@ -1,9 +1,10 @@
-import { SafeArea } from 'capacitor-plugin-safe-area';
-import { startApp } from './main.common';
-import { SecureStoragePlugin } from 'capacitor-secure-storage-plugin';
-import { App } from '@capacitor/app';
-import { StatusBar, Style } from '@capacitor/status-bar';
-import { darkModeQuery } from './composables/ui';
+import {SafeArea} from 'capacitor-plugin-safe-area';
+import {startApp} from './main.common';
+import {SecureStoragePlugin} from 'capacitor-secure-storage-plugin';
+import {App} from '@capacitor/app';
+import {StatusBar, Style} from '@capacitor/status-bar';
+import { Browser } from '@capacitor/browser';
+import {darkModeQuery} from './composables/ui';
 
 const SESSION_NATIVE_ID_KEY = { key: 'id' };
 const SESSION_NATIVE_PW_KEY = { key: 'password' };
@@ -68,5 +69,19 @@ startApp(async () => {
     } else {
       await StatusBar.setStyle({ style: Style.Light });
     }
+  },
+  async onDownloadURL({ url, fileName }) {
+    await Browser.open({ url });
+    // let status = await Filesystem.checkPermissions();
+    // if (status.publicStorage !== 'granted') {
+    //   status = await Filesystem.requestPermissions();
+    //   if (status.publicStorage !== 'granted') return;
+    // }
+
+    // await Filesystem.writeFile({
+    //   path: fileName,
+    //   directory: Directory.Documents,
+    //   encoding: Encoding.UTF8
+    // });
   }
 })
