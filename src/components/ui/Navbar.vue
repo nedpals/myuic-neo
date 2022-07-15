@@ -116,13 +116,13 @@
     <router-link 
       :key="'link_' + i"
       v-for="i in 4"
-      :to="linkGroups.links[0][i].to" 
+      :to="linkGroups.links[0][i - 1].to"
       @click="isMenuOpen = false"
       v-slot="{ isExactActive }"
       exact-active-class="text-primary-600 dark:text-white bg-primary-100 !hover:bg-primary-200 dark:bg-primary-700 !dark:hover:bg-primary-800"
       class="flex-1 px-4 py-2 flex flex-col items-center space-y-1 hover:bg-primary-100 dark:hover:bg-primary-600 text-sm">
-      <component :is="isExactActive ? linkGroups.links[0][i].activeIcon : linkGroups.links[0][i].icon" class="text-primary-600 dark:text-primary-200 text-[1.15rem]" />
-      <span class="text-xs">{{ linkGroups.links[0][i].title }}</span>
+      <component :is="isExactActive ? linkGroups.links[0][i - 1].activeIcon : linkGroups.links[0][i - 1].icon" class="text-primary-600 dark:text-primary-200 text-[1.15rem]" />
+      <span class="text-xs">{{ linkGroups.links[0][i - 1].title }}</span>
     </router-link>
     <button 
       @click="isMenuOpen = !isMenuOpen"
