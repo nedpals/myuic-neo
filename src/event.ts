@@ -8,7 +8,7 @@ export type AppEvents = {
   onNavigationPop: (params: { modalCount: Ref<number>, closeModal: () => void, goBack: () => void }) => (() => Promise<void>);
   onDarkModeChange: (params: string) => Promise<void>;
   onDownloadURL: (params: { url: string, fileName: string }) => Promise<void>;
-  onPrintPage: (params: string) => Promise<void>
+  onPrintPage: (params: string) => Promise<boolean>
 }
 
 const appEvents: Partial<AppEvents> = {

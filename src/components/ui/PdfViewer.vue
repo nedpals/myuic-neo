@@ -15,7 +15,7 @@
 
         <div class="ml-auto flex items-center space-x-2 mr-4 md:mr-12">
           <button @click="downloadDocument" class="button is-light h-full" v-tooltip="'Download'"><icon-download /></button>
-          <button v-if="supportsPrinting" @click="() => appEvents.onPrintPage(src)" :disabled="hasError || isLoading" class="button is-light h-full space-x-2 flex items-center">
+          <button v-if="supportsPrinting" @click="() => printDocument()" :disabled="hasError || isLoading" class="button is-light h-full space-x-2 flex items-center">
             <icon-print />
             <span>Print</span>
           </button>
@@ -96,6 +96,15 @@ const pdfName = computed(() => {
   }
   return pdfRegex.exec(src.value)![1];
 });
+
+async function printDocument() {
+  if (!appEvents.onPrintPage) return;
+
+  const shouldClose = await appEvents.onPrintPage(src.value!);
+  if (shouldClose) {
+    src.value = null;
+  }
+}
 
 function downloadDocument() {
   if (!src.value) return;

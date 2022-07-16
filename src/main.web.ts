@@ -22,6 +22,7 @@ startApp(async () => {
     link.click();
   },
   async onPrintPage(url) {
-    window.open(url, '_blank');
+    const newTab = window.open(url, '_blank');
+    return !!newTab;
   }
 });

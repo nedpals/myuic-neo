@@ -1,9 +1,11 @@
 import {SafeArea} from 'capacitor-plugin-safe-area';
-import {startApp} from './main.common';
 import {SecureStoragePlugin} from 'capacitor-secure-storage-plugin';
 import {App} from '@capacitor/app';
 import {StatusBar, Style} from '@capacitor/status-bar';
 import { Browser } from '@capacitor/browser';
+import { Printer } from '@awesome-cordova-plugins/printer';
+
+import {startApp} from './main.common';
 import {darkModeQuery} from './composables/ui';
 
 const SESSION_NATIVE_ID_KEY = { key: 'id' };
@@ -83,5 +85,18 @@ startApp(async () => {
     //   directory: Directory.Documents,
     //   encoding: Encoding.UTF8
     // });
+  },
+  async onPrintPage(url) {
+    const isPrinterAvailable = await Printer.isAvailable();
+    if (isPrinterAvailable) {
+      try {
+        await Printer.print(url);
+        return true;
+      } catch (e) {
+        console.error(e);
+      }
+      return false;
+    }
+    return true;
   }
 })
