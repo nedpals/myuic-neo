@@ -79,16 +79,6 @@ npm run start-ios
 
 This will build the web app, inject it's contents, and install the app to your simulator or your device.
 
-## Connecting to the real API
-By default, the web server will load the mock server. The mock server is a fake "server" that emulates the real API for development and in order to avoid unnecessary load to the real server when trying out for the first time.
-
-To use the real API, simply create an `.env` file and copy the following:
-```
-VITE_API_URL=https://pinkschool-api.herokuapp.com
-```
-
-Paste the contents to `.env` file and restart the web server.
-
 ## Additional Resources
 Wanna contribute? Here are the following resources you can use when working on the MyUIC Neo codebase:
 - Vue3 Docs: https://vuejs.org/guide/introduction.html
