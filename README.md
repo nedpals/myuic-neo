@@ -92,8 +92,8 @@ Paste the contents to `.env` file and restart the web server.
 ## Additional Resources
 Wanna contribute? Here are the following resources you can use when working on the MyUIC Neo codebase:
 - Vue3 Docs: https://vuejs.org/guide/introduction.html
-- Pinia Docs: https://pinia.vuejs.org/core-concepts/
 - ViteJS Docs: https://vitejs.dev/guide/
+- Vue Query Docs: https://vue-query.vercel.app/#/
 - Typescript Handbook: https://www.typescriptlang.org/docs/handbook/intro.html
 - WindiCSS Docs: https://windicss.org/guide/
 - TailwindCSS Docs (For additional information): https://tailwindcss.com/docs/aspect-ratio
