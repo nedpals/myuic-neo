@@ -45,8 +45,7 @@
     "pdfjs-dist": "^2.14.305",
     "vue": "^3.2.25",
     "vue-query": "^1.22.3",
-    "vue-router": "^4.0.12",
-    "vuex": "^4.0.2"
+    "vue-router": "^4.0.12"
   },
   "devDependencies": {
     "@capacitor/cli": "^3.4.3",
