@@ -2,19 +2,23 @@ import {SafeArea} from 'capacitor-plugin-safe-area';
 import {SecureStoragePlugin} from 'capacitor-secure-storage-plugin';
 import {App} from '@capacitor/app';
 import {StatusBar, Style} from '@capacitor/status-bar';
-import { Browser } from '@capacitor/browser';
-import { Printer } from '@awesome-cordova-plugins/printer';
+import {AppLauncher} from '@capacitor/app-launcher';
+import {Printer} from '@awesome-cordova-plugins/printer';
+import {Directory, Encoding, Filesystem} from '@capacitor/filesystem';
+import writeBlob from 'capacitor-blob-writer';
 
 import {startApp} from './main.common';
 import {darkModeQuery} from './composables/ui';
+import {LocalNotifications} from "@capacitor/local-notifications";
 
 const SESSION_NATIVE_ID_KEY = { key: 'id' };
 const SESSION_NATIVE_PW_KEY = { key: 'password' };
+const textDec = new TextDecoder();
 
 async function setDeviceSafeAreas() {
   const safeAreas = await SafeArea.getSafeAreaInsets();
 
-  for (var pos in safeAreas.insets) {
+  for (const pos in safeAreas.insets) {
     document.documentElement.style
       .setProperty(`--safe-area-inset-${pos}`, `${safeAreas.insets[pos]}px`);
   }
@@ -72,28 +76,69 @@ startApp(async () => {
       await StatusBar.setStyle({ style: Style.Light });
     }
   },
-  async onDownloadURL({ url, fileName }) {
-    await Browser.open({ url });
-    // let status = await Filesystem.checkPermissions();
-    // if (status.publicStorage !== 'granted') {
-    //   status = await Filesystem.requestPermissions();
-    //   if (status.publicStorage !== 'granted') return;
-    // }
+  async onDownloadURL({ url, data, fileName }) {
+    if (url) {
+      await AppLauncher.openUrl({ url });
+    } else if (data) {
+      let status = await Filesystem.checkPermissions();
+      if (status.publicStorage !== 'granted') {
+        status = await Filesystem.requestPermissions();
+        if (status.publicStorage !== 'granted') return;
+      }
 
-    // await Filesystem.writeFile({
-    //   path: fileName,
-    //   directory: Directory.Documents,
-    //   encoding: Encoding.UTF8
-    // });
+      const pending = await LocalNotifications.schedule({
+        notifications: [
+          {
+            title: `Downloading ${fileName}`,
+            ongoing: true,
+            body: '',
+            id: new Date().getTime()
+          }
+        ]
+      });
+
+      await writeBlob({
+        path: fileName,
+        directory: Directory.Documents,
+        blob: new Blob([data.buffer], {
+          type: fileName.endsWith('.pdf') ? 'application/pdf' : 'application/octet-stream'
+        })
+      });
+
+      await LocalNotifications.cancel({
+        notifications: pending.notifications
+      });
+
+      await LocalNotifications.schedule({
+        notifications: [
+          {
+            title: fileName,
+            body: 'Download complete.',
+            id: new Date().getTime()
+          }
+        ]
+      });
+    }
   },
-  async onPrintPage(url) {
+  async onPrintPage({ url, data}) {
     const isPrinterAvailable = await Printer.isAvailable();
     if (isPrinterAvailable) {
       try {
-        await Printer.print(url);
+        if (url) {
+          await Printer.print(url);
+        } else if (data) {
+          const resultUri = await writeBlob({
+            path: 'unknown.pdf',
+            directory: Directory.Cache,
+            blob: new Blob([data.buffer], { type: 'application/pdf' })
+          });
+
+          await Printer.print(resultUri);
+        }
         return true;
       } catch (e) {
         console.error(e);
+        throw e;
       }
       return false;
     }

@@ -68,11 +68,10 @@
 import Box from '../components/ui/Box.vue';
 import LoadingContainer from '../components/ui/LoadingContainer.vue';
 import { useSemesterQuery, filterSemesterLabel, currentSemesterIdKey } from '../stores/studentStore';
-import { formatDatetime, now } from '../utils';
+import {catchAndNotifyError, formatDatetime, now} from '../utils';
 import DashboardScaffold from '../components/ui/DashboardScaffold.vue';
 import Skeleton from '../components/ui/Skeleton.vue';
 import { inject, ref } from 'vue';
-import { catchAndNotifyError } from '../utils';
 import IconPrint from '~icons/ion/print';
 import { generateSchedulePDF, useSchedulesQuery, days } from '../stores/scheduleStore';
 import { notify } from 'notiwind';
@@ -84,14 +83,18 @@ const { currentSemester, hasSemesterId } = useSemesterQuery(currentSemesterId);
 const currentDay = ref(formatDatetime(now, 'EEE'));
 const currentDate = ref(formatDatetime(now, 'MMMM d, yyyy'));
 const { scheduleList, hasAlternates, isAlternate, isLoading } = useSchedulesQuery(currentSemesterId!);
-const { data: fileUrl, isSuccess, refetch } = generateSchedulePDF(currentSemesterId!);
+const { data: pdfData, isSuccess, refetch } = generateSchedulePDF(currentSemesterId!);
 const printPdf = async () => {
-  if (!hasSemesterId) return;
-  const { close } = notify({ type: 'info', text: 'Downloading PDF...' }, Infinity);
-  await refetch.value();
-  close();
-  if (!isSuccess.value) return;
-  pdfViewer.value.open(fileUrl.value);
+  try {
+    if (!hasSemesterId) return;
+    const { close } = notify({ type: 'info', text: 'Downloading PDF...' }, Infinity);
+    await refetch.value();
+    close();
 
+    if (!isSuccess.value) return;
+    pdfViewer.value.open(pdfData.value);
+  } catch (e) {
+    catchAndNotifyError(e);
+  }
 }
 </script>

@@ -77,12 +77,12 @@ export const useAcademicRecordsQuery = (semesterId: Ref<string | number | undefi
   }
 }
 
-export async function generateAcademicRecordsPDF(semesterId: string): Promise<string> {
-  const data = await client.academicRecordPDF(semesterId);
-  if (data instanceof Blob && window.URL.createObjectURL) {
-    const fileUrl = window.URL.createObjectURL(data);
-    return fileUrl;
+export async function generateAcademicRecordsPDF(semesterId: string): Promise<Uint8Array> {
+  const blob = await client.classSchedulePDF(semesterId);
+  if (blob instanceof Blob) {
+    const pdfBuf = await blob.arrayBuffer();
+    return new Uint8Array(pdfBuf);
   } else {
-    throw new Error('There was an error downloading the file.');
+    throw new Error('Your device does not support downloading PDF files.');
   }
 }

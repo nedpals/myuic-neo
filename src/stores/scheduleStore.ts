@@ -168,13 +168,15 @@ export function generateSchedulePDF(semesterId: Ref<string | number | undefined>
   return useQuery(
     ['schedule_pdf', semesterId],
     async () => {
-      if (!window.URL.createObjectURL) {
-        throw new Error('Downloading PDF files is not supported.');
+      const blob = await client.classSchedulePDF(semesterId.value!.toString());
+      if (blob instanceof Blob) {
+        const pdfBuf = await blob.arrayBuffer();
+        return new Uint8Array(pdfBuf);
+      } else {
+        throw new Error('Your device does not support downloading PDF files.');
       }
-      return client.classSchedulePDF(semesterId.value!.toString());
     }, {
-      enabled: false,
-      select: window.URL.createObjectURL
+      enabled: false
     }
   );
 }

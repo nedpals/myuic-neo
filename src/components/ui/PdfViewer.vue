@@ -2,7 +2,7 @@
   <modal-window
       open
       v-if="src != null"
-      :key="src.toString()"
+      :key="typeof src === 'string' ? src : 'unknown_src'"
       modal-class="max-w-6xl w-full"
       content-class="relative min-h-[90vh] max-h-[90vh] md:min-h-[80vh] md:max-h-[80vh]"
       @update:open="() => src = null">
@@ -48,7 +48,7 @@
               <icon-download />
               <span>Download</span>
             </button>
-            <a :href="src" target="_blank" class="button is-primary is-medium">Open in New Tab</a>
+            <a v-if="typeof src == 'string'" :href="src" target="_blank" class="button is-primary is-medium">Open in New Tab</a>
           </div>
         </div>
 
@@ -86,21 +86,24 @@ const props = defineProps({
 });
 
 const supportsPrinting = !!appEvents.onPrintPage;
-const src = ref<string | null>(null);
+const src = ref<string | Uint8Array | null>(null);
 const isLoading = ref<boolean>(true);
 const hasError = ref<boolean>(false);
 const pdfRegex = /([a-zA-Z0-9_@]+\.pdf)/;
 const pdfName = computed(() => {
-  if (!src.value || !pdfRegex.test(src.value)) {
+  if (!src.value || typeof src.value !== 'string' || !pdfRegex.test(src.value)) {
     return props.defaultPdfName + ".pdf";
   }
   return pdfRegex.exec(src.value)![1];
 });
 
 async function printDocument() {
-  if (!appEvents.onPrintPage) return;
-
-  const shouldClose = await appEvents.onPrintPage(src.value!);
+  if (!appEvents.onPrintPage || !src.value) return;
+  const shouldClose = await appEvents.onPrintPage(
+      typeof src.value === 'string'
+          ? { url: src.value }
+          : { data: src.value }
+  );
   if (shouldClose) {
     src.value = null;
   }
@@ -108,7 +111,13 @@ async function printDocument() {
 
 function downloadDocument() {
   if (!src.value) return;
-  appEvents.onDownloadURL?.({ url: src.value, fileName: pdfName.value });
+
+  if (typeof src.value === 'string') {
+    appEvents.onDownloadURL?.({ url: src.value, fileName: pdfName.value });
+  } else {
+    appEvents.onDownloadURL?.({ data: src.value as Uint8Array, fileName: pdfName.value });
+  }
+
 }
 
 function resizeViewers() {
@@ -170,9 +179,9 @@ async function renderPage(doc: PDFDocumentProxy, pageNumber: number) {
   await renderPage(doc, pageNumber + 1);
 }
 
-async function open(newSrc: string) {
+async function open(newSrc: string | Uint8Array) {
   if (newSrc === src.value) return;
-  src.value = newSrc;
+  src.value = typeof newSrc === 'string' ? newSrc : markRaw(newSrc);
 
   try {
     hasError.value = false;

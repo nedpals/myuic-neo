@@ -10,18 +10,26 @@ async function initializeServer() {
 
 startApp(async () => {
   try {
-    initializeServer();
+    await initializeServer();
   } finally {
     await registerSW({ immediate: true })(true);
   }
 }, {
-  async onDownloadURL({ url, fileName }) {
+  async onDownloadURL({ url, data, fileName }) {
     var link = document.createElement("a");
     link.download = fileName;
-    link.href = url;
+
+    if (data) {
+      if (fileName.endsWith('.pdf')) {
+        link.href = URL.createObjectURL(new Blob([data.buffer], { type: 'application/pdf' }));
+      }
+    } else if (url) {
+      link.href = url;
+    }
+
     link.click();
   },
-  async onPrintPage(url) {
+  async onPrintPage({ url, data}) {
     const newTab = window.open(url, '_blank');
     return !!newTab;
   }
