@@ -156,7 +156,7 @@ const gradeKeysAndLabels = readonly({
 async function printPdf() {
   try {
     const { close } = notify({ type: 'info', text: 'Downloading PDF...' }, Infinity);
-    const fileUrl = await generateAcademicRecordsPDF(currentSemesterId!.toString());
+    const fileUrl = await generateAcademicRecordsPDF(currentSemesterId!.value!.toString());
     close();
 
     pdfViewer.value.open(fileUrl);
