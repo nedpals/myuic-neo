@@ -120,7 +120,7 @@ startApp(async () => {
       });
     }
   },
-  async onPrintPage({ url, data}) {
+  async onPrintPage({ url, data }) {
     const isPrinterAvailable = await Printer.isAvailable();
     if (isPrinterAvailable) {
       try {
@@ -135,13 +135,11 @@ startApp(async () => {
 
           await Printer.print(resultUri);
         }
-        return true;
       } catch (e) {
         console.error(e);
         throw e;
       }
-      return false;
     }
-    return true;
+    return false;
   }
 })
