@@ -29,8 +29,13 @@ startApp(async () => {
 
     link.click();
   },
-  async onPrintPage({ url, data}) {
-    const newTab = window.open(url, '_blank');
-    return !!newTab;
+  async onPrintPage({ url, data }) {
+    if (data) {
+      const blob = new Blob([data.buffer]);
+      window.open(URL.createObjectURL(blob), '_blank');
+    } else {
+      window.open(url, '_blank');
+    }
+    return false;
   }
 });
