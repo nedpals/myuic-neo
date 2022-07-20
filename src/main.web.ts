@@ -1,6 +1,8 @@
 import { registerSW } from 'virtual:pwa-register';
 import { isMock } from './client';
-import { startApp } from './main.common'
+import { startApp } from './main.common';
+
+import printJS from 'print-js';
 
 async function initializeServer() {
   if (!import.meta.env.PROD || isMock) {
@@ -32,9 +34,9 @@ startApp(async () => {
   async onPrintPage({ url, data }) {
     if (data) {
       const blob = new Blob([data.buffer], { type: 'application/pdf' });
-      window.open(URL.createObjectURL(blob), '_blank');
-    } else {
-      window.open(url, '_blank');
+      printJS(URL.createObjectURL(blob));
+    } else if (url) {
+      printJS(url);
     }
     return false;
   }
