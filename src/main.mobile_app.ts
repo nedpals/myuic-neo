@@ -13,7 +13,7 @@ import {LocalNotifications} from "@capacitor/local-notifications";
 
 const SESSION_NATIVE_ID_KEY = { key: 'id' };
 const SESSION_NATIVE_PW_KEY = { key: 'password' };
-const textDec = new TextDecoder();
+const textDec = new TextDecoder('utf8');
 
 async function setDeviceSafeAreas() {
   const safeAreas = await SafeArea.getSafeAreaInsets();
@@ -127,13 +127,7 @@ startApp(async () => {
         if (url) {
           await Printer.print(url);
         } else if (data) {
-          const resultUri = await writeBlob({
-            path: 'unknown.pdf',
-            directory: Directory.Cache,
-            blob: new Blob([data.buffer], { type: 'application/pdf' })
-          });
-
-          await Printer.print(resultUri);
+          await Printer.print(`base64://${btoa(textDec.decode(data))}`);
         }
       } catch (e) {
         console.error(e);
