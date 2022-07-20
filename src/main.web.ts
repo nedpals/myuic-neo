@@ -31,7 +31,7 @@ startApp(async () => {
   },
   async onPrintPage({ url, data }) {
     if (data) {
-      const blob = new Blob([data.buffer]);
+      const blob = new Blob([data.buffer], { type: 'application/pdf' });
       window.open(URL.createObjectURL(blob), '_blank');
     } else {
       window.open(url, '_blank');
