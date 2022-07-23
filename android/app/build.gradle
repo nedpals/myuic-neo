@@ -1,13 +1,16 @@
 apply plugin: 'com.android.application'
 
+def appProperties = new Properties();
+file("app.properties").withInputStream { appProperties.load(it) }
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     defaultConfig {
         applicationId "xyz.nedpals.myuic"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode appProperties.getProperty("versionCode").toInteger()
+        versionName appProperties.getProperty("versionName")
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.

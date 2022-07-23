@@ -4,12 +4,14 @@
   "version": "1.0.0",
   "license": "AGPL-3.0-or-later",
   "scripts": {
-    "dev": "vite -c vite.web.config.ts",
-    "build": "vite -c vite.web.config.ts build",
+    "sync-version": "node sync-version.js",
+    "capacitor:copy:before": "npm run sync-version",
+    "dev": "npm run sync-version && vite -c vite.web.config.ts",
+    "build": "npm run sync-version && vite -c vite.web.config.ts build",
     "preview": "vite -c vite.web.config.ts preview",
-    "build-mobile-app": "vite -c vite.mobile_app.config.ts build",
-    "start-android": "npm run build && npm run build-app-assets && cap run android",
-    "start-ios": "npm run build && npm run build-app-assets && cap run ios",
+    "build-mobile-app": "npm run sync-version && vite -c vite.mobile_app.config.ts build",
+    "start-android": "npm run build-mobile-app && npm run build-app-assets && cap run android",
+    "start-ios": "npm run build-mobile-app && npm run build-app-assets && cap run ios",
     "build-app-assets": "node generate-app-icon.js"
   },
   "unused": {
@@ -60,6 +62,7 @@
     "extract-zip": "^2.0.1",
     "fflate": "^0.7.3",
     "miragejs": "^0.1.43",
+    "plist": "^3.0.6",
     "puppeteer-core": "^15.1.1",
     "rxjs": "^7.5.6",
     "stylelint": "^14.9.1",

@@ -1,10 +1,5 @@
 /// <reference types="vite/client" />
 
-declare const APP_VERSION: string;
-declare const APP_NAME: string;
-declare const APP_BUILD_COMMIT: string;
-declare const APP_BUILD_DATE: string;
-
 declare module '*.vue' {
   import type { DefineComponent } from 'vue'
   // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/ban-types
@@ -16,6 +11,9 @@ interface ImportMetaEnv {
   readonly VITE_API_URL: string;
   readonly VITE_FEEDBACK_URL: string;
   readonly VITE_AVATAR_BASE_URL: string;
+  readonly VITE_APP_VERSION_NAME: string;
+  readonly VITE_APP_VERSION_CODE: string;
+  readonly VITE_APP_BUILD_DATE: string;
 }
 
 interface ImportMeta {
