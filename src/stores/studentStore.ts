@@ -1,4 +1,4 @@
-import { client, useClientQuery } from '../client';
+import {avatarBaseUrl, client, useClientQuery} from '../client';
 import { nameCase } from '@foundernest/namecase';
 import { RoutePath } from '@myuic-api/types';
 import { semesterRegex } from '../utils';
@@ -20,8 +20,13 @@ export const useStudentQuery = () => {
     return nameCase(splitted[0]);
   });
 
+  const avatarUrl = computed(() => {
+    return `${avatarBaseUrl}/images/100x102/${query.data.value?.number ?? '0'}.jpg`;
+  });
+
   return {
     query,
+    avatarUrl,
     isLoading,
     normalizedFirstName
   }

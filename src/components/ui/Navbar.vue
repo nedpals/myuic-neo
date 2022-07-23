@@ -11,14 +11,7 @@
               <icon-logo @click="isAboutModalOpen = true" class="cursor-pointer w-full h-full text-primary-400 hover:text-primary-500 transition-colors" />
             </div>
 
-            <skeleton 
-              custom-class="h-12 w-12 lg:h-13 lg:w-13 rounded-full bg-gray-200 dark:bg-uic-500">
-              <img 
-                class="h-12 w-12 lg:h-13 lg:w-13 object-cover rounded-full"
-                @error="loadFallbackImage" 
-                :src="avatarBaseUrl + '/images/100x102/' + (student?.number ?? '0') + '.jpg'" 
-                :alt="student?.number">
-            </skeleton>
+            <avatar class="h-12 w-12 lg:h-13 lg:w-13" :src="avatarUrl" :alt="student?.number" />
           </div>
           <div
             :class="{ 'space-y-2 pt-2': isLoading }"
@@ -27,7 +20,7 @@
               <span class="font-semibold">{{ studentFirstName }}'s MyUIC</span>
             </skeleton>
             <skeleton custom-class="h-3.5 w-24 bg-gray-200">
-              <span class="text-sm">{{ student!.number }}</span>
+              <span class="text-sm">{{ student.number }}</span>
             </skeleton>
           </div>
         </loading-container>
@@ -57,7 +50,7 @@
               :  'hover:bg-primary-100 dark:hover:bg-primary-800'
             ]"
             class="py-2 px-4 flex items-center max-h-12 space-x-4 rounded-l-full" 
-            style="transition: ease 150ms background-color">
+            style="transition: background-color 150ms ease">
             <component 
               :is="link.to.name === currentRouteName ? link.activeIcon : link.icon" 
               :class="[link.to.name !== currentRouteName ? 'text-primary-500' : 'dark:text-primary-300']" 
@@ -74,7 +67,7 @@
           v-if="IS_NATIVE"
           @click="isAboutModalOpen = true"
           class="w-full hover:bg-primary-100 dark:hover:bg-primary-800 py-2 px-4 flex items-center max-h-12 space-x-4 rounded-l-full" 
-          style="transition: ease 150ms background-color">
+          style="transition: background-color 150ms ease">
             <icon-about-outline class="text-primary-500 text-[1.3rem]" />
             <span class="md:hidden lg:block">About</span>
         </button>
@@ -89,7 +82,7 @@
             :  'hover:bg-primary-100 dark:hover:bg-primary-800'
           ]"
           class="py-2 px-4 flex items-center max-h-12 space-x-4 rounded-l-full" 
-          style="transition: ease 150ms background-color">
+          style="transition: background-color 150ms ease">
           <component 
             :is="currentRouteName === 'settings' ? IconSettings : IconSettingsOutline" 
             :class="[currentRouteName !== 'settings' ? 'text-primary-500' : 'dark:text-primary-300']" 
@@ -100,7 +93,7 @@
         <button
           @click="() => logout()"
           class="w-full hover:bg-danger-100 dark:hover:bg-danger-900 bg-danger-50 dark:bg-danger-800 py-2 px-4 flex items-center max-h-12 space-x-4 rounded-l-full" 
-          style="transition: ease 150ms background-color">
+          style="transition: background-color 150ms ease">
             <icon-logout-outline class="text-danger-500 dark:text-white text-[1.3rem]" />
             <span class="md:hidden lg:block">Logout</span>
         </button>
@@ -149,27 +142,21 @@ import DarkModeToggle from './DarkModeToggle.vue';
 import LoadingContainer from './LoadingContainer.vue';
 import Skeleton from './Skeleton.vue';
 import AboutModal from '../AboutModal.vue';
-import { useStudentQuery } from '../../stores/studentStore';
+import Avatar from './Avatar.vue';
 
+import { useStudentQuery } from '../../stores/studentStore';
 import { IS_NATIVE } from '../../utils';
 import { computed, FunctionalComponent, ref } from 'vue';
 import { useLogoutMutation } from '../../composables/auth';
 import { RouteRecordName, RouteRecordNormalized, RouteRecordRaw, useRoute, useRouter } from 'vue-router';
-import { avatarBaseUrl } from '../../client';
 import SemesterSelector from './SemesterSelector.vue';
 
 const router = useRouter();
 const route = useRoute();
 const isMenuOpen = ref(false);
 const isAboutModalOpen = ref(false);
-const { isLoading: isStudentLoading, normalizedFirstName: studentFirstName, query: { data: student } } = useStudentQuery();
+const { isLoading: isStudentLoading, avatarUrl, normalizedFirstName: studentFirstName, query: { data: student } } = useStudentQuery();
 const { mutate: logout } = useLogoutMutation();
-
-function loadFallbackImage(evt: Event) {
-  if (evt.target instanceof HTMLImageElement) {
-    evt.target.src = '/default_avatar.png';
-  }
-}
 
 const getParentRouteName = () => {
   if (route.matched.length < 2) return 'dashboard';

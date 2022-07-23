@@ -2,10 +2,9 @@
   <dashboard-scaffold container-class="max-w-3xl mx-auto w-full <md:px-4 <lg:px-2">
     <div style="margin-top: var(--safe-area-inset-top)" class="text-center py-8 md:py-12 flex flex-col items-center">
       <loading-container :is-loading="isStudentLoading" v-slot="{ isLoading }">
-        <div
-          :style="isLoading ? {} : {backgroundImage: 'url(./default_avatar.png)'}"
-          :class="[isLoading ? 'animate-pulse bg-gray-200' : 'bg-primary-200']"
-          class="h-32 w-32 md:h-42 md:w-42 rounded-full mb-4 md:mb-8 bg-cover"></div>
+        <div class="mb-4 md:mb-8">
+          <avatar class="h-32 w-32 md:h-42 md:w-42" :src="avatarUrl" :alt="student?.number" />
+        </div>
         <skeleton custom-class="h-9 min-w-64 max-w-90 w-full bg-gray-200 mb-5 rounded-2xl">
           <h1 class="text-4xl font-semibold mb-2">
             {{ welcomeGreeting }}, {{ studentFirstName }}!
@@ -119,6 +118,7 @@ import IconReceiptOutline from '~icons/ion/receipt-outline';
 import IconCashOutline from '~icons/ion/cash-outline';
 import IconGClassroom from '~icons/custom/google-classroom';
 
+import Avatar from '../components/ui/Avatar.vue';
 import { currentSemesterIdKey, useResourceLinkQuery, useStudentQuery } from '../stores/studentStore';
 import SelfModal from '../components/ui/SelfModal.vue';
 import { formatDatetime, getPeriod, now } from '../utils';
@@ -133,7 +133,7 @@ import IconChevronRight from '~icons/ion/chevron-right';
 import { useClearanceQuery } from '../stores/clearanceStore';
 
 const currentSemesterId = inject(currentSemesterIdKey);
-const { isLoading: isStudentLoading, normalizedFirstName: studentFirstName } = useStudentQuery();
+const { isLoading: isStudentLoading, query: { data: student }, avatarUrl, normalizedFirstName: studentFirstName } = useStudentQuery();
 const { isFetching: isRLinksFetching, isIdle: isRLinksIdle, data: resourceLinks } = useResourceLinkQuery();
 const { isCleared: isClearanceCleared, isLoading: isClearanceLoading } = useClearanceQuery(currentSemesterId!);
 
