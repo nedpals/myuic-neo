@@ -20,7 +20,7 @@ const info = {
 // Set dotenv
 writeFileSync(join(__dirname, '.env'), `
 VITE_APP_VERSION_NAME="${info.APP_VERSION_NAME}"
-VITE_APP_VERSION_CODE="${info.APP_VERSION_CODE}",
+VITE_APP_VERSION_CODE="${info.APP_VERSION_CODE}"
 VITE_APP_BUILD_DATE="${info.APP_BUILD_DATE}"
 `.trim(), {
     encoding: 'utf-8',
