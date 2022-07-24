@@ -106,7 +106,7 @@
 
   <div 
     style="padding-bottom: var(--safe-area-inset-bottom);" 
-    class="bg-white dark:bg-primary-900 flex border-t dark:border-primary-700 fixed bottom-0 inset-x-0 md:hidden z-50">
+    class="bg-white dark:bg-primary-900 flex border-t dark:border-primary-800 fixed bottom-0 inset-x-0 md:hidden z-50">
     <router-link 
       :key="'link_' + i"
       v-for="i in 4"
