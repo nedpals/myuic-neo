@@ -2,7 +2,7 @@
   <component 
     :is="statusIcon(status)" 
     :class="[status == 'cleared' 
-      ? 'text-success-600'
+      ? 'text-success-600 dark:text-success-400'
       : status == 'not_cleared'
       ? 'text-danger-400'
       : 'text-gray-400']" />

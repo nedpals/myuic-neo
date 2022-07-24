@@ -1,114 +1,109 @@
 <template>
   <dashboard-scaffold>
     <loading-container :is-loading="isLoading" v-slot="{ isLoading }">
-      <div class="relative">
+      <section class="p-4 max-w-4xl mx-auto">
         <div 
-          style="z-index:-1; opacity: 0.2;" 
-          :class="[isLoading ? 'from-transparent' : isCleared ? 'from-success-400' : 'from-danger-400']"
-          class="bg-gradient-to-b to-transparent h-[40vh] absolute inset-x-0 top-0"></div>
+          :class="[isLoading ? 'from-white' : isCleared ? 'from-success-200' : 'from-danger-200']"
+          class="border dark:border-primary-600 rounded-lg bg-gradient-to-b dark:from-primary-800 to-white dark:to-primary-800 text-center shadow <md:px-8 py-12 flex flex-col items-center mb-8">
 
-        <section class="p-4 max-w-4xl mx-auto">
-          <div class="text-center py-8 md:py-8 flex flex-col items-center">
-            <skeleton 
-              :is-loading="!hasSemesterId" 
-              custom-class="h-4.5 md:h-5 w-72 rounded-lg mb-8">
-              <span class="text-gray-600 dark:text-primary-200 text-lg md:text-xl mb-8">
-                {{ currentSemester.label ?? 'Unknown Semester' }}
-              </span>
-            </skeleton>
+          <skeleton 
+            :is-loading="!hasSemesterId" 
+            custom-class="h-4.5 md:h-5 w-72 rounded-lg mb-8">
+            <span class="text-gray-600 dark:text-primary-200 text-lg md:text-xl mb-8">
+              {{ currentSemester.label ?? 'Unknown Semester' }}
+            </span>
+          </skeleton>
 
-          
-            <clearance-status-icon
-              :status="isLoading ? 'unknown' : isCleared ? 'cleared' : 'not_cleared'"
-              class="h-42 w-42 md:h-48 md:w-48 mb-4" />
+          <clearance-status-icon
+            :status="isLoading ? 'unknown' : isCleared ? 'cleared' : 'not_cleared'"
+            class="h-42 w-42 md:h-48 md:w-48 mb-4" />
 
-            <skeleton custom-class="h-7.5 md:h-9 w-96 mb-4">
-              <h1 class="text-3xl md:text-4xl font-semibold mb-2">
-                {{ isCleared ? 'You\'re cleared' : 'You\'re not cleared' }}, {{ studentFirstName }}!
-              </h1>
-            </skeleton>
+          <skeleton custom-class="h-7.5 md:h-9 w-96 mb-4">
+            <h1 class="text-3xl md:text-4xl font-semibold mb-2">
+              {{ isCleared ? 'You\'re cleared' : 'You\'re not cleared' }}, {{ studentFirstName }}!
+            </h1>
+          </skeleton>
 
-            <skeleton custom-class="h-5 md:h-6 w-72">
-              <h2 class="text-xl md:text-2xl text-gray-600 dark:text-primary-200 mb-8">
-                {{
-                  isCleared
-                  ? 'All of the requirements for this semester have been met.'
-                  : 'Comply first all of the requirements before you proceed.'
-                }}
-              </h2>
-            </skeleton>
+          <skeleton custom-class="h-5 md:h-6 w-72">
+            <h2 class="text-xl md:text-2xl text-gray-600 dark:text-primary-200 mb-8">
+              {{
+                isCleared
+                ? 'All of the requirements for this semester have been met.'
+                : 'Comply first all of the requirements before you proceed.'
+              }}
+            </h2>
+          </skeleton>
 
-            <button
-              v-if="!isLoading && isCleared"
-              @click="printPdf"
-              class="button is-medium is-primary px-12 rounded-full">
-              Print Permit
-            </button>
-          </div>
+          <button
+            v-if="!isLoading && isCleared"
+            @click="printPdf"
+            class="button is-medium is-primary px-12 rounded-full">
+            Print Permit
+          </button>
+        </div>
 
-          <div v-if="!isLoading && data!.items.length" class="bg-gray-50 dark:bg-primary-800 shadow border dark:border-primary-600 rounded-lg">
-            <div class="flex flex-col divide-y dark:divide-primary-600">
-              <div
-                v-for="(clearanceItem, i) in data!.items"
-                :key="'item_' + i" 
-                @click="() => selectedClearanceItemIdx = i"
-                class="flex justify-between cursor-pointer px-6 py-4 transition-colors hover:bg-gray-100 dark:hover:bg-primary-700">
-                <p>{{ clearanceItem.label }}</p>
-                <div class="flex space-x-2 items-center">
-                  <p class="font-bold">
-                    <template v-if="clearanceItem.status === 'not_cleared'">
-                      {{ `${clearedRequirementsCount(clearanceItem)} / ${clearanceItem.requirements.length}` }}
-                    </template>
-                    <span class="<md:hidden ml-1">
-                      {{ clearanceItem.status === 'not_cleared' ? 'requirements' : statusText(clearanceItem.status) }}
-                    </span>
-                  </p>
+        <div v-if="!isLoading && data!.items.length" class="bg-gray-50 dark:bg-primary-800 shadow border dark:border-primary-600 rounded-lg">
+          <div class="flex flex-col divide-y dark:divide-primary-600">
+            <div
+              v-for="(clearanceItem, i) in data!.items"
+              :key="'item_' + i" 
+              @click="() => selectedClearanceItemIdx = i"
+              class="flex justify-between cursor-pointer px-6 py-4 transition-colors hover:bg-gray-100 dark:hover:bg-primary-700">
+              <p>{{ clearanceItem.label }}</p>
+              <div class="flex space-x-2 items-center">
+                <p class="font-bold">
+                  <template v-if="clearanceItem.status === 'not_cleared'">
+                    {{ `${clearedRequirementsCount(clearanceItem)} / ${clearanceItem.requirements.length}` }}
+                  </template>
+                  <span class="<md:hidden ml-1">
+                    {{ clearanceItem.status === 'not_cleared' ? 'requirements' : statusText(clearanceItem.status) }}
+                  </span>
+                </p>
 
-                  <clearance-status-icon :status="clearanceItem.status" class="text-xl" />
-                </div>
+                <clearance-status-icon :status="clearanceItem.status" class="text-xl" />
+              </div>
+            </div>
+
+            <modal-window
+              open
+              v-if="selectedClearanceItemIdx !== -1"
+              @update:open="() => selectedClearanceItemIdx = -1"
+              :key="'selectedClearanceItem_' + selectedClearanceItemIdx"
+              :title="selectedClearanceItem.label + ' Requirements'">
+              <div v-if="isLoading" class="flex justify-center py-8">
+                <loader class="h-14 w-14" />
               </div>
 
-              <modal-window
-                open
-                v-if="selectedClearanceItemIdx !== -1"
-                @update:open="() => selectedClearanceItemIdx = -1"
-                :key="'selectedClearanceItem_' + selectedClearanceItemIdx"
-                :title="selectedClearanceItem.label + ' Requirements'">
-                <div v-if="isLoading" class="flex justify-center py-8">
-                  <loader class="h-14 w-14" />
+              <div v-else class="flex flex-col divide-y">
+                <div class="pl-0 py-4 text-center">
+                  <skeleton custom-class="w-16 h-4 bg-gray-200 mb-2">
+                    <p class="text-lg mb-1">Status</p>
+                  </skeleton>
+                  <skeleton custom-class="w-8 h-3.5 bg-gray-200">
+                    <p class="font-semibold text-4xl" :class="statusColor(selectedClearanceItem.status)">
+                      {{ statusText(selectedClearanceItem.status) }}
+                    </p>
+                  </skeleton>
+                </div>
+
+                <div v-if="selectedClearanceItem.requirements.length == 0" class="text-center text-gray-500 py-3">
+                  <span class="block text-2xl">No requirements found.</span>
                 </div>
 
                 <div v-else class="flex flex-col divide-y">
-                  <div class="pl-0 py-4 text-center">
-                    <skeleton custom-class="w-16 h-4 bg-gray-200 mb-2">
-                      <p class="text-lg mb-1">Status</p>
-                    </skeleton>
-                    <skeleton custom-class="w-8 h-3.5 bg-gray-200">
-                      <p class="font-semibold text-4xl" :class="statusColor(selectedClearanceItem.status)">
-                        {{ statusText(selectedClearanceItem.status) }}
-                      </p>
-                    </skeleton>
-                  </div>
-
-                  <div v-if="selectedClearanceItem.requirements.length == 0" class="text-center text-gray-500 py-3">
-                    <span class="block text-2xl">No requirements found.</span>
-                  </div>
-
-                  <div v-else class="flex flex-col divide-y">
-                    <div :key="'requirement_' + i" v-for="(r, i) in selectedClearanceItem.requirements" class="flex justify-between py-2">
-                      <p>{{ r.remarks }}</p>
-                      <div class="flex space-x-2 items-center">
-                        <p class="font-bold">{{ statusText(r.status) }}</p>
-                        <clearance-status-icon :status="r.status" />
-                      </div>
+                  <div :key="'requirement_' + i" v-for="(r, i) in selectedClearanceItem.requirements" class="flex justify-between py-2">
+                    <p>{{ r.remarks }}</p>
+                    <div class="flex space-x-2 items-center">
+                      <p class="font-bold">{{ statusText(r.status) }}</p>
+                      <clearance-status-icon :status="r.status" />
                     </div>
                   </div>
                 </div>
-              </modal-window>
-            </div>
+              </div>
+            </modal-window>
           </div>
-        </section>
-      </div>
+        </div>
+      </section>
     </loading-container>
   </dashboard-scaffold>
 </template>
