@@ -8,7 +8,9 @@
         <loading-container :is-loading="isStudentLoading" v-slot="{ isLoading }">
           <div class="w-full flex flex-row space-x-2 md:flex-col md:space-y-2 md:space-x-0 lg:flex-row lg:space-y-0 lg:space-x-2">
             <div class="h-12 w-12 lg:h-13 lg:w-13">
-              <icon-logo @click="isAboutModalOpen = true" class="cursor-pointer w-full h-full text-primary-400 hover:text-primary-500 transition-colors" />
+              <icon-logo 
+                @click="isAboutModalOpen = true" 
+                class="cursor-pointer w-full h-full text-primary-400 hover:text-primary-500 transition-colors" />
             </div>
 
             <avatar class="h-12 w-12 lg:h-13 lg:w-13" :src="avatarUrl" :alt="student?.number" />
@@ -20,7 +22,7 @@
               <span class="font-semibold">{{ studentFirstName }}'s MyUIC</span>
             </skeleton>
             <skeleton custom-class="h-3.5 w-24 bg-gray-200">
-              <span class="text-sm">{{ student.number }}</span>
+              <span class="text-sm">{{ student?.number }}</span>
             </skeleton>
           </div>
         </loading-container>
@@ -64,7 +66,6 @@
 
       <div class="pb-4 space-y-3">
         <button
-          v-if="IS_NATIVE"
           @click="isAboutModalOpen = true"
           class="w-full hover:bg-primary-100 dark:hover:bg-primary-800 py-2 px-4 flex items-center max-h-12 space-x-4 rounded-l-full" 
           style="transition: background-color 150ms ease">
