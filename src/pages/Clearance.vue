@@ -1,7 +1,7 @@
 <template>
   <dashboard-scaffold>
     <loading-container :is-loading="isLoading" v-slot="{ isLoading }">
-      <section class="p-4 max-w-4xl mx-auto">
+      <section class="px-4 max-w-4xl mx-auto">
         <div 
           :class="[isLoading ? 'from-white' : isCleared ? 'from-success-200' : 'from-danger-200']"
           class="border dark:border-primary-600 rounded-lg bg-gradient-to-b dark:from-primary-800 to-white dark:to-primary-800 text-center shadow <md:px-8 py-12 flex flex-col items-center mb-8">
