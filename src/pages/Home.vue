@@ -43,29 +43,27 @@
                 <icon-g-classroom />
                 <span>Classroom</span>
               </a>
-              <self-modal title="Resources">
-                <template #default="{ openModal }">
-                  <button @click="openModal" class="quick-link-item">
-                    <icon-bookmark-outline />
-                    <span>Resources</span>
-                  </button>
-                </template>
-                <template #modal-content>
-                  <div class="flex flex-col md:flex-row w-full flex-wrap justify-center mt-4">
-                    <a
-                      :href="link.href"
-                      :key="'link_' + li" v-for="(link, li) in resourceLinks"
-                      target="_blank"
-                      class="p-3 flex flex-row md:flex-col text-center md:justify-center items-center w-full md:w-1/4 <md:space-x-4 md:space-y-4 hover:bg-gray-200 dark:hover:bg-primary-900 rounded-lg">
-                      <div class="max-w-10">
-                        <img :src="link.iconUrl" class="h-auto w-full" :alt="link.label" />
-                      </div>
-                      <p>{{ link.label }}</p>
-                    </a>
-                  </div>
-                  <p class="text-center pt-8">You will be redirected to a new window / tab upon clicking the link.</p>
-                </template>
-              </self-modal>
+              
+              <button @click="isResourcesModalOpen = true" class="quick-link-item">
+                <icon-bookmark-outline />
+                <span>Resources</span>
+              </button>
+
+              <modal-window v-model:open="isResourcesModalOpen" title="Resources">
+                <p class="text-center pt-8">You will be redirected to a new window / tab upon clicking the link.</p>
+                <div class="flex flex-col w-full flex-wrap justify-center mt-4">
+                  <a
+                    :href="link.href"
+                    :key="'link_' + li" v-for="(link, li) in resourceLinks"
+                    target="_blank"
+                    class="p-3 flex flex-row text-center items-center w-full space-x-4 hover:bg-gray-200 dark:hover:bg-primary-900 rounded-lg">
+                    <div class="max-w-10">
+                      <img :src="link.iconUrl" class="h-auto w-full" :alt="link.label" />
+                    </div>
+                    <p>{{ link.label }}</p>
+                  </a>
+                </div>
+              </modal-window>
             </template>
             <div v-else :key="i" v-for="i in 6" disabled class="quick-link-item text-center">
               <div class="h-12 w-12 rounded-full bg-primary-400 mb-2"></div>
@@ -125,13 +123,16 @@ import { formatDatetime, getPeriod, now } from '../utils';
 import DashboardScaffold from '../components/ui/DashboardScaffold.vue';
 import Skeleton from '../components/ui/Skeleton.vue';
 import AccountBalanceWidget from '../components/Finance/AccountBalanceWidget.vue';
-import { computed, inject } from 'vue';
+import { computed, inject, ref } from 'vue';
 import PaymentHistory from '../components/Finance/PaymentHistory.vue';
 import ScheduleList from '../components/Schedule/ScheduleList.vue';
 import ClearanceStatusIcon from '../components/Clearance/ClearanceStatusIcon.vue';
 import IconChevronRight from '~icons/ion/chevron-right';
+import ModalWindow from '../components/ui/ModalWindow.vue';
+
 import { useClearanceQuery } from '../stores/clearanceStore';
 
+const isResourcesModalOpen = ref(false);
 const currentSemesterId = inject(currentSemesterIdKey);
 const { isLoading: isStudentLoading, query: { data: student }, avatarUrl, normalizedFirstName: studentFirstName } = useStudentQuery();
 const { isFetching: isRLinksFetching, isIdle: isRLinksIdle, data: resourceLinks } = useResourceLinkQuery();

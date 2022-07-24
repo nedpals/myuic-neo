@@ -8,21 +8,18 @@
     </template>
 
     <div class="flex justify-end -mb-8">
-      <self-modal title="Computation">
-        <template #default="{ openModal }">
-          <button
-            @click="openModal"
-            class="text-primary-600 hover:text-primary-600 dark:text-primary-100 dark:hover:text-primary-200 font-semibold underline">
-            How to compute your GWA
-          </button>
-        </template>
-        <template #modal-content>
-          <div class="py-2 space-y-4">
-            <p>In order to compute for the GWA (General Weighted Average), the following formula is used:</p>
-            <img :src="computationFormulaImg" class="filter invert dark:invert-0 h-full w-auto" />
-          </div>
-        </template>
-      </self-modal>
+      <button
+        @click="isComputationModalOpen = true"
+        class="text-primary-600 hover:text-primary-600 dark:text-primary-100 dark:hover:text-primary-200 font-semibold underline">
+        How to compute your GWA
+      </button>
+
+      <modal v-model:open="isComputationModalOpen" title="Computation">
+        <div class="py-2 space-y-4">
+          <p>In order to compute for the GWA (General Weighted Average), the following formula is used:</p>
+          <img :src="computationFormulaImg" class="filter invert dark:invert-0 h-full w-auto" />
+        </div>
+      </modal>
     </div>
 
     <loading-container :is-loading="isLoading" v-slot="{ isLoading }">
@@ -119,18 +116,21 @@
 <script lang="ts" setup>
 import DashboardScaffold from '../components/ui/DashboardScaffold.vue';
 import LoadingContainer from '../components/ui/LoadingContainer.vue';
-import { generateAcademicRecordsPDF, useAcademicRecordsQuery } from '../stores/academicRecordStore';
 import IconPrint from '~icons/ion/print';
+import Skeleton from '../components/ui/Skeleton.vue';
+import PdfViewer from "../components/ui/PdfViewer.vue";
+import Modal from '../components/ui/Modal.vue';
+
+import { generateAcademicRecordsPDF, useAcademicRecordsQuery } from '../stores/academicRecordStore';
 import { catchAndNotifyError } from '../utils';
-import SelfModal from '../components/ui/SelfModal.vue';
 import { computed, inject, readonly, ref } from 'vue';
 
-import computationFormulaImg from '../assets/computation-formula.png';
-import Skeleton from '../components/ui/Skeleton.vue';
 import { currentSemesterIdKey, useSemesterQuery } from '../stores/studentStore';
 import { notify } from 'notiwind';
-import PdfViewer from "../components/ui/PdfViewer.vue";
 
+import computationFormulaImg from '../assets/computation-formula.png';
+
+const isComputationModalOpen = ref(false);
 const pdfViewer = ref<InstanceType<typeof PdfViewer>>();
 const currentSemesterId = inject(currentSemesterIdKey);
 const { currentSemester } = useSemesterQuery(currentSemesterId);
@@ -158,7 +158,7 @@ async function printPdf() {
     const { close } = notify({ type: 'info', text: 'Downloading PDF...' }, Infinity);
     const pdfData = await generateAcademicRecordsPDF(currentSemesterId!.value!.toString());
     close();
-    pdfViewer.value.open(pdfData);
+    pdfViewer.value?.open(pdfData);
   } catch (e) {
     catchAndNotifyError(e);
   }
