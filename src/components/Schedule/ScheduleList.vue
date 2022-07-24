@@ -23,17 +23,18 @@
         </div>
 
         <div v-else class="flex flex-col divide-y dark:divide-primary-400 py-2">
-          <div
-            :key="'sched_' + si" v-for="(sub, si) in currentSchedule"
-            :class="{ 'hover:bg-gray-100 dark:hover:bg-primary-700 transition-colors cursor-pointer': !isLoading }"
-            class="flex-col rounded-lg -mx-3 px-4 py-3">
-            <skeleton custom-class="h-4 w-32 bg-gray-200 mb-2">
-              <p class="mb-2 font-semibold">{{ sub.name }}</p>
-            </skeleton>
-            <skeleton custom-class="h-3.5 w-24 bg-gray-200">
-              <p class="text-gray-600 dark:text-primary-200 text-sm">{{ sub.fromTime }}-{{ sub.toTime }}</p>
-            </skeleton>
-          </div>
+          <article :key="'sched_' + si" v-for="(sub, si) in currentSchedule">
+            <div
+              :class="[isLoading ? 'py-4' : 'py-3 hover:bg-gray-100 dark:hover:bg-primary-700 transition-colors']"
+              class="flex-col rounded-lg -mx-3 px-4">
+              <skeleton custom-class="h-4 w-32 bg-gray-200 mb-2">
+                <p class="mb-2 font-semibold">{{ sub.name }}</p>
+              </skeleton>
+              <skeleton custom-class="h-3.5 w-24 bg-gray-200">
+                <p class="text-gray-600 dark:text-primary-200 text-sm">{{ sub.fromTime }}-{{ sub.toTime }}</p>
+              </skeleton>
+            </div>
+          </article>
         </div>
         
         <div class="mt-auto">
