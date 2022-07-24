@@ -1,6 +1,6 @@
 <template>
   <div class="sticky inset-x-0 top-0 z-1">
-    <div style="padding-top: var(--safe-area-inset-top);" class="bg-white dark:bg-primary-900 border-b border-gray-300 dark:border-primary-700 px-3 md:px-5" v-if="title ? true : $route.meta.useHeader ?? true">
+    <div style="padding-top: var(--safe-area-inset-top);" class="bg-white dark:bg-primary-900 px-4 md:px-5" v-if="title ? true : $route.meta.useHeader ?? true">
       <div class="flex justify-between py-3 md:py-5">
         <span class="text-xl font-bold block">{{ pageTitle ?? 'Unknown page name' }}</span>
         <div class="dashboard-scaffold-actions">
@@ -13,8 +13,8 @@
             <router-link
               :to="r"
               style="transition: ease 150ms background-color "
-              exact-active-class="bg-primary-100 dark:bg-primary-700 !border-primary-500 !dark:border-primary-600 hover:bg-primary-200 dark:hover:bg-primary-800"
-              class="px-4 py-2 md:py-3 hover:bg-primary-100 dark:hover:bg-primary-800 rounded-t-lg border-b-4 border-transparent">
+              exact-active-class="bg-primary-100 dark:bg-primary-700 hover:bg-primary-200 dark:hover:bg-primary-600"
+              class="px-4 py-2 md:py-3 bg-primary-100 hover:bg-primary-200 bg-primary-800 dark:hover:bg-primary-700 rounded-lg">
               {{ r.meta?.pageTitle ?? r.name }}
             </router-link>
           </li>
@@ -73,6 +73,6 @@ watch(() => route.fullPath, () => {
 
 <style lang="postcss">
 .dashboard-scaffold-actions .button {
-  @apply text-primary-400 hover:text-primary-500 flex items-center space-x-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-900 px-3 py-3 -my-3 -mx-3 dark:hover:bg-opacity-20;
+  @apply text-primary-300 hover:text-primary-400 flex items-center space-x-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-900 px-3 py-3 -my-3 -mx-3 dark:hover:bg-opacity-20;
 }
 </style>

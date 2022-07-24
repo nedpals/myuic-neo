@@ -1,7 +1,7 @@
 <template>
-  <dashboard-scaffold container-class="max-w-3xl mx-auto w-full <md:px-4 <lg:px-2">
+  <dashboard-scaffold container-class="max-w-3xl mx-auto w-full px-4 md:px-5">
     <div style="margin-top: var(--safe-area-inset-top)" class="text-center py-8 md:py-12 flex flex-col items-center">
-      <loading-container :is-loading="isStudentLoading" v-slot="{ isLoading }">
+      <loading-container :is-loading="isStudentLoading">
         <div class="mb-4 md:mb-8">
           <avatar class="h-32 w-32 md:h-42 md:w-42" :src="avatarUrl" :alt="student?.number" />
         </div>
