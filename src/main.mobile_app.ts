@@ -29,6 +29,18 @@ async function setupStatusBar() {
 }
 
 startApp(async () => {
+  // disable zoom
+  const viewportElement = document.querySelector('meta[name=viewport]');
+  const disableZoomViewport = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+  if (viewportElement && viewportElement instanceof HTMLMetaElement) {
+          viewportElement.content = disableZoomViewport;
+  } else {
+      const newViewportElement = document.createElement('meta');
+      newViewportElement.name = 'viewport';
+      newViewportElement.content = disableZoomViewport;
+      document.getElementsByTagName('head')[0].appendChild(newViewportElement);
+  }
+
   await setDeviceSafeAreas();
   await setupStatusBar();
 }, {
