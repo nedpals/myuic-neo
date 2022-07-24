@@ -8,7 +8,10 @@
         <div class="md:px-6" style="padding-top: var(--safe-area-inset-top);">
           <div class="py-3 md:py-4 border-b dark:border-primary-600 relative flex items-center md:justify-center">
             <slot name="customTitle" :closeModal="closeModal">
-              <h2 class="text-xl font-bold <md:ml-12 text-left md:text-center overflow-ellipsis whitespace-nowrap <md:w-3/4 overflow-hidden">{{ title }}</h2>
+              <div class="mx-auto px-12 text-center whitespace-nowrap overflow-ellipsis overflow-hidden">
+                <h2 class="text-lg md:text-xl font-bold">{{ title }}</h2>
+                <h3 v-if="subtitle" class="text-sm">{{ subtitle }}</h3>
+              </div>
               <button
                 @click="closeModal"
                 class="absolute <md:left-2 md:right-0 md:bg-gray-200 md:dark:bg-primary-600 hover:bg-gray-200 md:hover:bg-gray-300 dark:hover:bg-primary-600 md:dark:hover:bg-primary-700 rounded-full p-2">
@@ -41,6 +44,9 @@ const emit = defineEmits(['update:open']);
 const props = defineProps({
   title: {
     type: String,
+  },
+  subtitle: {
+    type: String
   },
   open: {
     type: Boolean

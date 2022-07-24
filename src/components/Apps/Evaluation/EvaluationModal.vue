@@ -1,6 +1,7 @@
 <template>
   <modal-window
-    :title="course.name + ' / ' + course.code" 
+    title="Evaluate Course"
+    :subtitle="course.name + ' / ' + course.code" 
     :open="isOpen"
     @update:open="warnUserOnClose"
     content-class="flex overflow-hidden"
