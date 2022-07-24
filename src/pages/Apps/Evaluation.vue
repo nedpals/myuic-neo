@@ -1,6 +1,6 @@
 <template>
   <dashboard-scaffold>
-    <main class="max-w-2xl mx-auto px-4 md:px-5 pt-2">
+    <main class="max-w-2xl mx-auto px-4 md:px-5">
       <loading-container :is-loading="isLoading" v-slot="{ isLoading }">
         <skeleton custom-class="h-8 w-24 mt-2">
           <h2 class="text-3xl font-semibold">Available for Evaluation</h2>

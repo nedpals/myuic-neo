@@ -1,5 +1,5 @@
 <template>
-  <dashboard-scaffold container-class="px-4 md:px-5 pt-2 flex flex-col">
+  <dashboard-scaffold container-class="px-4 md:px-5 flex flex-col">
     <template #actions>
       <button @click="printPdf" class="button">
         <icon-print />
