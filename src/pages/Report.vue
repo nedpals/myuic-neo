@@ -5,22 +5,21 @@
         <icon-print />
         <span>Print PDF</span>
       </button>
-    </template>
 
-    <div class="flex justify-end -mb-8">
       <button
         @click="isComputationModalOpen = true"
-        class="text-primary-600 hover:text-primary-600 dark:text-primary-100 dark:hover:text-primary-200 font-semibold underline">
-        How to compute your GWA
+        class="button">
+        <icon-formula />
+        <span>View formula</span>
       </button>
+    </template>
 
-      <modal v-model:open="isComputationModalOpen" title="Computation">
-        <div class="py-2 space-y-4">
-          <p>In order to compute for the GWA (General Weighted Average), the following formula is used:</p>
-          <img :src="computationFormulaImg" class="filter invert dark:invert-0 h-full w-auto" />
-        </div>
-      </modal>
-    </div>
+    <modal v-model:open="isComputationModalOpen" title="Computation">
+      <div class="py-2 space-y-4">
+        <p>In order to compute for the GWA (General Weighted Average), the following formula is used:</p>
+        <img :src="computationFormulaImg" class="filter invert dark:invert-0 h-full w-auto" />
+      </div>
+    </modal>
 
     <loading-container :is-loading="isLoading" v-slot="{ isLoading }">
       <section 
@@ -120,6 +119,7 @@ import IconPrint from '~icons/ion/print';
 import Skeleton from '../components/ui/Skeleton.vue';
 import PdfViewer from "../components/ui/PdfViewer.vue";
 import Modal from '../components/ui/Modal.vue';
+import IconFormula from '~icons/fluent/math-formula-16-filled';
 
 import { generateAcademicRecordsPDF, useAcademicRecordsQuery } from '../stores/academicRecordStore';
 import { catchAndNotifyError } from '../utils';
