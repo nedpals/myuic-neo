@@ -24,7 +24,7 @@
         <div class="w-full flex-1" :class="contentClass">
           <slot></slot>
         </div>
-        <div class="border-t dark:border-primary-600" style="padding-bottom: var(--safe-area-inset-bottom);" :class="footerClass" v-if="isSlotVisible($slots.footer)">
+        <div class="border-t dark:border-primary-600" :class="footerClass" v-if="isSlotVisible($slots.footer)">
           <slot name="footer"></slot>
         </div>
       </box>
@@ -57,7 +57,7 @@ const props = defineProps({
   },
   footerClass: {
     type: String,
-    default: 'px-4 md:px-6 py-4'
+    default: 'px-4 md:px-6 py-2'
   },
   modalClass: {
     type: String,
