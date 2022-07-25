@@ -30,16 +30,16 @@
             :is="action" />
         </div>
 
-        <span class="text-xl text-center font-bold block">{{ pageTitle ?? 'Unknown page name' }}</span>
+        <span class="text-xl <md:text-center font-bold block">{{ pageTitle ?? 'Unknown page name' }}</span>
       </div>
       <div class="overflow-x-auto">
         <ul class="flex space-x-2">
           <li :key="r.name" v-for="r in childRouteLinks" class="inline-flex flex-shrink-0">
             <router-link
               :to="r"
-              style="transition: ease 150ms background-color "
-              exact-active-class="bg-primary-100 dark:bg-primary-700 hover:bg-primary-200 dark:hover:bg-primary-600"
-              class="px-4 py-2 md:py-3 bg-primary-100 hover:bg-primary-200 bg-primary-800 dark:hover:bg-primary-700 rounded-lg">
+              style="transition: ease 150ms background-color"
+              exact-active-class="!bg-primary-200 !dark:bg-primary-700 !hover:bg-primary-300 !dark:hover:bg-primary-600"
+              class="px-4 py-2 md:py-3 bg-primary-50 hover:bg-primary-100 dark:bg-primary-800 dark:hover:bg-primary-700 rounded-lg">
               {{ r.meta?.pageTitle ?? r.name }}
             </router-link>
           </li>
@@ -129,7 +129,7 @@ watch(() => route.fullPath, () => {
 }
 
 .dashboard-scaffold-actions > .button {
-  @apply text-primary-300 hover:text-primary-400 rounded-lg hover:bg-gray-100 dark:hover:bg-primary-600 px-3 py-3 -my-3 -mx-3 dark:hover:bg-opacity-20;
+  @apply text-primary-400 hover:text-primary-500 rounded-lg hover:bg-gray-100 dark:hover:bg-primary-600 px-3 py-3 -my-3 -mx-3 dark:hover:bg-opacity-20;
 }
 
 .dashboard-scaffold-actions.has-more-button > .button:not(.more-button) {
