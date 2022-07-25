@@ -1,7 +1,5 @@
 <template>
-  <slot :openNewPaymentModal="openNewPaymentModal"></slot>
-
-  <modal-window :open="open" @update:open="setOpenState" content-class="max-h-[93vh] overflow-y-auto" title="New Payment">
+  <modal-window :ref="(modalWindow as any)" content-class="max-h-[93vh] overflow-y-auto" title="New Payment">
     <loading-container :isLoading="formState == 'processing'" v-slot="{ isLoading }">
       <div v-if="isLoading" class="flex justify-center py-8">
         <loader class="h-14 w-14" />
@@ -114,7 +112,7 @@
         <button v-if="formState !== 'success'" @click="triggerSubmitForm" class="button is-primary ml-auto px-6">
           Submit
         </button>
-        <button v-else @click="setOpenState(false)" class="button is-primary ml-auto px-6">
+        <button v-else @click="modalWindow?.$emit('update:open', false)" class="button is-primary ml-auto px-6">
           Close
         </button>
       </div>
@@ -146,9 +144,7 @@ import IconSM from '~icons/payment-center-logos/sm';
 
 const { query: { data: student } } = useStudentQuery();
 const newPaymentForm = ref<HTMLFormElement | null>(null);
-
-const emit = defineEmits(['update:open']);
-const open = ref(false);
+const modalWindow = ref<InstanceType<typeof ModalWindow> | null>(null);
 const formState = ref<'none' | 'processing' | 'success' | 'failed'>('none')
 const miscData = reactive({
   paymentMethod: 'Asia United Bank'
@@ -181,15 +177,6 @@ const paymentCenterIcons = {
 // TODO: support basic ed and techvoc
 const higherEducationDepartmentId = 1;
 
-function openNewPaymentModal() {
-  setOpenState(true);
-}
-
-function setOpenState(ev: boolean) {
-  open.value = ev;
-  emit('update:open', ev);
-}
-
 function triggerSubmitForm(_e: Event) {
   newPaymentForm.value?.requestSubmit();
 }
@@ -202,7 +189,7 @@ function submitForm(e: SubmitEvent) {
     formState.value = 'success';
     setTimeout(() => {
       formState.value = 'none';
-      setOpenState(false);
+      modalWindow.value?.$emit('update:open', false);
     }, 1500);
   }, 1000);
 }

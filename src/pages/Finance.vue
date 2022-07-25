@@ -1,5 +1,19 @@
 <template>
   <dashboard-scaffold container-class="px-4 mx-auto w-full md:px-5">
+    <template #actions>
+      <button
+        @click="isPaymentModalOpen = true"
+        class="button">
+        <icon-plus />
+        <span>New Payment</span>  
+      </button>
+    </template>
+
+    <new-payment-modal 
+      :open="isPaymentModalOpen"
+      @update:open="onPaymentFormOpenUpdate" 
+      :key="'form_' + formKey" />
+
     <loading-container :is-loading="isLoading" v-slot="{ isLoading }">
       <div class="flex flex-col-reverse lg:flex-row lg:space-x-4">
         <div class="w-full lg:w-2/3 flex flex-col space-y-2">
@@ -159,20 +173,6 @@
         <div class="w-full lg:w-1/3 flex flex-col space-y-2 <lg:pb-4">
           <account-balance-widget />
           <payment-history />
-
-          <!-- TODO: make it skeleton -->
-          <new-payment-modal 
-            @update:open="onPaymentFormOpenUpdate" 
-            :key="'form_' + formKey"  
-            v-if="!isLoading" 
-            v-slot="{ openNewPaymentModal }">
-            <button
-              @click="openNewPaymentModal"
-              class="button is-light dark:is-primary flex items-center justify-center space-x-3">
-              <icon-plus class="text-primary-400 dark:text-white" />
-              <span>New Payment</span>  
-            </button>
-          </new-payment-modal>
         </div>
       </div>
     </loading-container>
@@ -203,9 +203,11 @@ const breakdownKeys = computed(() => ['tuition', 'misc', 'others', 'receivables'
 const breakdownLabels = computed(() => ['Tuition', 'Miscellanous', 'Other Fees', 'Back Account']);
 const selectedMonthlyDueIdx = ref(-1);
 const selectedMonthlyDue = computed(() => data.value!.monthlyDues[selectedMonthlyDueIdx.value]);
+const isPaymentModalOpen = ref(false);
 
 function onPaymentFormOpenUpdate(isOpen: boolean) {
-  if (!isOpen) {
+  isPaymentModalOpen.value = isOpen;
+  if (!isPaymentModalOpen.value) {
     formKey.value++;
   }
 }
