@@ -1,5 +1,5 @@
 <template>
-  <dashboard-scaffold :subtitle="currentSemester.label" container-class="px-4 md:px-5 space-y-12">
+  <dashboard-scaffold :subtitle="currentSemester.label" container-class="px-4 md:px-5 space-y-4">
     <template #actions>
       <button @click="printPdf" class="button">
         <icon-print />
@@ -21,48 +21,38 @@
       </div>
     </modal>
 
-    <loading-container :is-loading="isLoading" v-slot="{ isLoading }">
+    <loading-container :is-loading="isLoading">
+      <div class="flex space-x-3">
+        <section class="flex-1 border border-primary-200 dark:border-primary-600 rounded-xl shadow-md bg-gradient-to-r from-primary-100 to-primary-50 dark:from-primary-700 dark:to-primary-900 px-6 py-4 flex flex-col md:flex-row justify-between items-center pb-4">
+          <div class="flex flex-col text-center mx-auto">
+            <span class="text-lg block cursor-default">Units</span>
+            <skeleton custom-class="w-18 h-7.5 md:h-12 bg-primary-300">
+              <p class="font-semibold text-3xl md:text-5xl">{{ overallUnits }}</p>
+            </skeleton>
+          </div>
+        </section>
+
+        <section class="flex-1 border border-primary-200 dark:border-primary-600 rounded-xl shadow-md bg-gradient-to-r from-primary-100 to-primary-50 dark:from-primary-700 dark:to-primary-900 px-6 py-4 flex flex-col md:flex-row justify-between items-center pb-4">
+          <div class="flex flex-col text-center mx-auto">
+            <span 
+              class="text-lg block underline underline-dotted underline-offset-2 cursor-default" 
+              v-tooltip="isIncomplete ? 'Partial General Weighted Average' : 'General Weighted Average'">{{ isIncomplete ? 'Partial GWA' : 'GWA' }}</span>
+            <skeleton custom-class="w-18 h-7.5 md:h-12 bg-primary-300">
+              <p class="font-semibold text-3xl md:text-5xl">{{ overallAverage }}</p>
+            </skeleton>
+          </div>
+        </section>
+      </div>
+
       <section 
-        :key="'sem_' + j" v-for="(r, j) in latestAcademicRecords" 
-        :class="{'border-primary-400': j === 0}" 
         class="bg-white dark:bg-primary-800 border dark:border-primary-600 rounded-xl shadow-md">
-        <div 
-          :class="[j === 0 ? 'bg-gradient-to-r from-primary-100 to-primary-50 dark:from-primary-700 dark:to-primary-900' : 'border-b dark:border-primary-600']" 
-          class="rounded-t-xl px-6 py-4 flex flex-col md:flex-row justify-between items-center pb-4">
-          <div class="flex flex-row text-center md:flex-col md:text-left <md:space-x-1 <md:mb-2">
-            <skeleton :custom-class="'w-24 h-4 md:h-6 md:mb-2 ' + (j === 0 ? 'bg-primary-300' : '')">
-              <h2 class="font-semibold md:text-2xl">
-                {{ semesterDisplayNames[j].semester }}
-              </h2>
-            </skeleton>
-            <skeleton :custom-class="'w-16 h-4 ' + (j === 0 ? 'bg-primary-300' : '')">
-              <p>{{ semesterDisplayNames[j].year }}</p>
-            </skeleton>
-          </div>
-          <div class="flex flex-row space-x-6 md:text-right">
-            <div class="flex flex-col text-center md:flex-row md:space-x-2 md:text-right">
-              <span class="text-lg block cursor-default">Units</span>
-              <skeleton :custom-class="'w-18 h-7.5 md:h-12 ' + (j === 0 ? 'bg-primary-300' : '')">
-                <p class="font-semibold text-3xl md:text-5xl">{{ overallUnits[j] }}</p>
-              </skeleton>
-            </div>
-            <div class="flex flex-col text-center md:flex-row md:space-x-2 md:text-right">
-              <span 
-                class="text-lg block underline underline-dotted underline-offset-2 cursor-default" 
-                v-tooltip="'General Weighted Average'">GWA</span>
-              <skeleton :custom-class="'w-18 h-7.5 md:h-12 ' + (j === 0 ? 'bg-primary-300' : '')">
-                <p class="font-semibold text-3xl md:text-5xl">{{ overallAverages[j] }}</p>
-              </skeleton>
-            </div>
-          </div>
-        </div>
         <div class="rounded-b-xl">
           <div class="flex flex-col divide-y dark:divide-primary-600">
-            <div class="flex items-center justify-center" v-if="r.report.courses.length == 0">
+            <div class="flex items-center justify-center" v-if="reportData!.report.courses.length == 0">
               <p class="text-center text-2xl py-8">No grades found.</p>
             </div>
             
-            <div :key="'sem_' + j + '_sub_' + i" v-for="(ar, i) in r.report.courses" class="flex items-center">
+            <div :key="'_sub_' + i" v-for="(ar, i) in reportData!.report.courses" class="flex items-center">
               <div class="<md:hidden w-1/9 px-3 md:px-6 py-2 md:py-4">
                 <skeleton custom-class="w-8 md:w-11 h-5 md:h-7.5 bg-gray-400">
                   <p class="font-semibold">{{ ar.code }}</p>
@@ -123,7 +113,7 @@ import IconFormula from '~icons/fluent/math-formula-16-filled';
 
 import { generateAcademicRecordsPDF, useAcademicRecordsQuery } from '../stores/academicRecordStore';
 import { catchAndNotifyError } from '../utils';
-import { computed, inject, readonly, ref } from 'vue';
+import { inject, readonly, ref } from 'vue';
 
 import { currentSemesterIdKey, useSemesterQuery } from '../stores/studentStore';
 import { notify } from 'notiwind';
@@ -136,16 +126,11 @@ const currentSemesterId = inject(currentSemesterIdKey);
 const { currentSemester } = useSemesterQuery(currentSemesterId);
 const {
   isLoading,
-  latestAcademicRecords,
-  overallAverages,
-  overallUnits
+  reportData,
+  overallAverage,
+  overallUnits,
+  isIncomplete
 } = useAcademicRecordsQuery(currentSemesterId!);
-
-const semesterDisplayNames = computed(() => {
-  return [
-    currentSemester.value.display
-  ];
-});
 
 const gradeKeysAndLabels = readonly({
   'prelimGrade': 'Prelim',

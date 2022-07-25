@@ -1,5 +1,5 @@
-import { AcademicRecord, CourseReport } from "@myuic-api/types";
-import { computed, Ref } from "vue";
+import { CourseReport } from "@myuic-api/types";
+import { computed, ref, Ref } from "vue";
 import { useQuery } from "vue-query"
 import { client } from "../client";
 
@@ -29,51 +29,44 @@ export const useAcademicRecordsQuery = (semesterId: Ref<string | number | undefi
     }
   );
 
-  const { isFetching, isIdle, data } = query;
+  const { isFetching, isIdle, data: reportData } = query;
   const isLoading = computed(() => isFetching.value || isIdle.value);
+  const isIncomplete = ref(false);
 
-  const latestAcademicRecords = computed(() => {
-    if (!data.value) return [];
-    return [data.value];
-  })
+  const overallAverage = computed(() => {
+    if (isLoading.value) return 0;
+    // As per recommendation:
+    // (Sum of all product of overall/final grade and units) / total units
+    let totalUnits = 0;
+    let sumOfAllProduct = 0;
 
-  const overallAverages = computed(() => {
-    if (isLoading.value) return [];
-    return latestAcademicRecords.value.map((r: AcademicRecord) => {
-      // As per recommendation:
-      // (Sum of all product of overall/final grade and units) / total units
-      let totalUnits = 0;
-      let sumOfAllProduct = 0;
+    for (const s of reportData.value!.report.courses) {
+      const units = (s.units ?? 0);
+      totalUnits += units;
 
-      for (const s of r.report.courses) {
-        const units = (s.units ?? 0);
-        totalUnits += units;
-        sumOfAllProduct += ((s.overallGrade ?? 0) * units);
+      if (!s.overallGrade) {
+        isIncomplete.value = true;
       }
 
-      const avg = sumOfAllProduct / totalUnits;
-      return avg > 59 ? Math.round((avg + Number.EPSILON) * 100) / 100 : '--';
-    });
+      sumOfAllProduct += ((s.overallGrade ?? 0) * units);
+    }
+
+    const avg = sumOfAllProduct / totalUnits;
+    return avg > 59 ? Math.round((avg + Number.EPSILON) * 100) / 100 : '--';
   });
 
   const overallUnits = computed(() => {
-    if (isLoading.value) return [];
-    return latestAcademicRecords.value.map((r) => {
-      let totalUnits = 0;
-      for (const s of r.report.courses) {
-        const units = (s.units ?? 0);
-        totalUnits += units;
-      }
-      return totalUnits;
-    });
+    if (isLoading.value) return 0;
+    return reportData.value!.report.courses.reduce((c, s) => c + (s.units ?? 0), 0);
   });
 
   return {
     query,
     isLoading,
-    overallAverages,
-    latestAcademicRecords,
-    overallUnits
+    overallAverage,
+    overallUnits,
+    reportData,
+    isIncomplete: computed(() => isIncomplete.value)
   }
 }
 
