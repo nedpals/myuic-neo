@@ -1,7 +1,7 @@
 <template>
   <dashboard-scaffold container-class="px-4 mx-auto w-full md:px-5">
     <loading-container :is-loading="isLoading" v-slot="{ isLoading }">
-      <div class="flex flex-col-reverse lg:flex-row <lg:space-y-4 lg:space-x-4">
+      <div class="flex flex-col-reverse lg:flex-row lg:space-x-4">
         <div class="w-full lg:w-2/3 flex flex-col space-y-2">
           <div class="border dark:border-primary-700 rounded-lg bg-white dark:bg-primary-800 shadow pt-4">
             <div class="flex justify-between items-start px-6 pb-4">
