@@ -93,7 +93,7 @@ const printPdf = async () => {
     close();
 
     if (!isSuccess.value) return;
-    pdfViewer.value.open(pdfData.value);
+    pdfViewer.value!.open(pdfData.value!);
   } catch (e) {
     catchAndNotifyError(e);
   }
