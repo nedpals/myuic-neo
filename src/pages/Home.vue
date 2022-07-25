@@ -20,8 +20,7 @@
       <div class="w-full px-6">
         <loading-container :is-loading="isRLinksLoading" v-slot="{ isLoading }">
           <div 
-            class="flex pt-2 flex-wrap justify-center flex-wrap" 
-            :class="{ 'animate-pulse': isLoading }">
+            class="flex pt-2 flex-wrap justify-center flex-wrap">
             <template v-if="!isLoading">
               <router-link :to="{ name: 'finance' }" class="quick-link-item">
                 <icon-cash-outline />
@@ -65,7 +64,10 @@
                 </div>
               </modal-window>
             </template>
-            <div v-else :key="i" v-for="i in 6" disabled class="quick-link-item text-center">
+            <div 
+              v-else :key="i" v-for="i in 6" disabled 
+              :style="{ 'animation-delay': `${i * 0.15}s` }" 
+              class="quick-link-item animate-pulse text-center">
               <div class="h-12 w-12 rounded-full bg-primary-400 mb-2"></div>
               <div class="h-4 w-20 bg-gray-200 rounded-lg"></div>
             </div>
@@ -118,7 +120,6 @@ import IconGClassroom from '~icons/custom/google-classroom';
 
 import Avatar from '../components/ui/Avatar.vue';
 import { currentSemesterIdKey, useResourceLinkQuery, useStudentQuery } from '../stores/studentStore';
-import SelfModal from '../components/ui/SelfModal.vue';
 import { formatDatetime, getPeriod, now } from '../utils';
 import DashboardScaffold from '../components/ui/DashboardScaffold.vue';
 import Skeleton from '../components/ui/Skeleton.vue';
