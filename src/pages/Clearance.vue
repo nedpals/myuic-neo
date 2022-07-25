@@ -6,25 +6,17 @@
           :class="[isLoading ? 'from-white' : isCleared ? 'from-success-200' : 'from-danger-200']"
           class="border dark:border-primary-600 rounded-lg bg-gradient-to-b dark:from-primary-800 to-white dark:to-primary-800 text-center shadow <md:px-8 py-12 flex flex-col items-center mb-8">
 
-          <skeleton 
-            :is-loading="!hasSemesterId" 
-            custom-class="h-4.5 md:h-5 w-72 rounded-lg mb-8">
-            <span class="text-gray-600 dark:text-primary-200 text-lg md:text-xl mb-8">
-              {{ currentSemester.label ?? 'Unknown Semester' }}
-            </span>
-          </skeleton>
-
           <clearance-status-icon
             :status="isLoading ? 'unknown' : isCleared ? 'cleared' : 'not_cleared'"
             class="h-42 w-42 md:h-48 md:w-48 mb-4" />
 
-          <skeleton custom-class="h-7.5 md:h-9 w-96 mb-4">
+          <skeleton custom-class="h-7.5 md:h-9 w-full max-w-96 mb-4">
             <h1 class="text-3xl md:text-4xl font-semibold mb-2">
               {{ isCleared ? 'You\'re cleared' : 'You\'re not cleared' }}, {{ studentFirstName }}!
             </h1>
           </skeleton>
 
-          <skeleton custom-class="h-5 md:h-6 w-72">
+          <skeleton custom-class="h-5 md:h-6 w-full max-w-72">
             <h2 class="text-xl md:text-2xl text-gray-600 dark:text-primary-200 mb-8">
               {{
                 isCleared
