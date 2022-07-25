@@ -1,7 +1,7 @@
 <template>
   <div class="sticky inset-x-0 top-0 z-1">
     <div style="padding-top: var(--safe-area-inset-top);" class="bg-white dark:bg-primary-900 px-4 md:px-5" v-if="title ? true : $route.meta.useHeader ?? true">
-      <div class="relative flex-0 py-3 md:py-5">
+      <div class="relative flex-0" :class="[subtitle ? 'py-1 mb-2' : 'py-3 md:py-5']">
         <div class="absolute right-0 top-4 md:top-5 dashboard-scaffold-actions" :class="{ 'has-more-button': shouldActionsBeDropdown }">
           <Menu v-if="shouldActionsBeDropdown">
             <menu-button class="more-button button">
@@ -30,7 +30,12 @@
             :is="action" />
         </div>
 
-        <span class="text-xl <md:text-center font-bold block">{{ pageTitle ?? 'Unknown page name' }}</span>
+        <div class="flex flex-col block <md:text-center">
+          <span :class="[subtitle ? 'md:text-lg' : 'text-xl']" class="font-bold">
+            {{ pageTitle ?? 'Unknown page name' }}
+          </span>
+          <span v-if="subtitle" class="text-xs md:text-sm">{{ subtitle }}</span>
+        </div>
       </div>
       <div class="overflow-x-auto">
         <ul class="flex space-x-2">
@@ -63,8 +68,11 @@ import { useRoute, useRouter } from 'vue-router';
 
 defineEmits(['reload']);
 
-const { title } = defineProps({
+const { title, subtitle } = defineProps({
   title: {
+    type: String
+  },
+  subtitle: {
     type: String
   },
   containerClass: {

@@ -1,5 +1,5 @@
 <template>
-  <dashboard-scaffold>
+  <dashboard-scaffold :subtitle="currentSemester.label">
     <loading-container :is-loading="isLoading" v-slot="{ isLoading }">
       <section class="px-4 max-w-4xl mx-auto">
         <div 

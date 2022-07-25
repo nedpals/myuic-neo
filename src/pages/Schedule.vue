@@ -1,5 +1,5 @@
 <template>
-  <dashboard-scaffold container-class="px-4 md:px-5 flex flex-col">
+  <dashboard-scaffold :subtitle="currentSemester.label" container-class="px-4 md:px-5 flex flex-col">
     <template #actions>
       <button @click="printPdf" class="button">
         <icon-print />
@@ -22,10 +22,11 @@
     <loading-container :is-loading="isLoading" v-slot="{ isLoading }">
       <button 
         :disabled="!hasAlternates || isLoading"
-        v-tooltip="!hasAlternates ? 'All of your courses does not have alternate class times.' : null"
         @click="isAlternate = !isAlternate"
         class="mb-4 self-end button"
-        :class="[isAlternate ? 'is-primary' : 'is-light']">Alternate Schedule</button>
+        :class="[isAlternate ? 'is-primary' : 'is-light']">
+        Alternate Schedule
+      </button>
       
       <div class="flex flex-col space-y-4">
           <div
