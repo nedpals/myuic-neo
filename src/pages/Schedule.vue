@@ -7,19 +7,10 @@
       </button>
     </template>
 
-    <div class="flex justify-between">
-      <div class="mb-6">
-        <h2 class="text-2xl md:text-4xl font-bold">Today</h2>
-        <p class="md:text-xl md:mt-2">{{ currentDate }}</p>
-      </div>
+    <div class="mb-2 text-center">
+      <p class="text-2xl mb-0">Today is</p>
+      <p class="text-3xl md:mt-2 font-bold mb-8">{{ currentDate }}</p>
 
-      <div class="mb-6 text-right" v-if="currentSemester"> 
-        <h2 class="text-2xl md:text-4xl font-bold">{{ filterSemesterLabel(currentSemester.label) }}</h2>
-        <p class="md:text-xl md:mt-2">{{ currentSemester.fromYear }} - {{ currentSemester.toYear }}</p>
-      </div>
-    </div>
-
-    <loading-container :is-loading="isLoading" v-slot="{ isLoading }">
       <button 
         :disabled="!hasAlternates || isLoading"
         @click="isAlternate = !isAlternate"
@@ -27,18 +18,24 @@
         :class="[isAlternate ? 'is-primary' : 'is-light']">
         Alternate Schedule
       </button>
-      
+    </div>
+
+    <loading-container :is-loading="isLoading">
       <div class="flex flex-col space-y-4">
           <div
             class="w-full flex flex-col md:flex-row <md:space-y-2 md:space-x-2"
-            v-for="(courses, day) in scheduleList" :key="'sched_' + day">
+            v-for="(courses, day) in scheduleList" 
+            :key="'sched_' + day">
 
             <span 
               :class="[days[day] === currentDay ? 'bg-primary-500 dark:bg-primary-700 text-white' : 'bg-gray-200 dark:bg-primary-800']"
               class="flex items-start px-3 py-1 rounded-full md:rounded-xl w-full md:w-1/5">
               {{ days[day] }}
             </span>
+
             <div class="flex flex-col w-full md:w-4/5 space-y-2">
+              <box v-if="courses.length === 0"><p>No Class</p></box>
+
               <box 
                 :key="day + '_courses_' + i" 
                 v-for="(sub, i) in courses" 
@@ -68,7 +65,7 @@
 <script lang="ts" setup>
 import Box from '../components/ui/Box.vue';
 import LoadingContainer from '../components/ui/LoadingContainer.vue';
-import { useSemesterQuery, filterSemesterLabel, currentSemesterIdKey } from '../stores/studentStore';
+import { useSemesterQuery, currentSemesterIdKey } from '../stores/studentStore';
 import {catchAndNotifyError, formatDatetime, now} from '../utils';
 import DashboardScaffold from '../components/ui/DashboardScaffold.vue';
 import Skeleton from '../components/ui/Skeleton.vue';
