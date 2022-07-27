@@ -10,7 +10,7 @@
       </skeleton>
 
       <skeleton custom-class="h-3.5 w-32 bg-primary-100 rounded-lg">
-        <span class="text-sm font-semibold text-primary-100">Updated: {{ lastUpdated }}</span>
+        <span v-if="!isLoading && lastUpdated" class="text-sm font-semibold text-primary-100">Updated: {{ lastUpdated }}</span>
       </skeleton>
     </box>
   </loading-container>
