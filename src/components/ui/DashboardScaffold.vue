@@ -125,7 +125,7 @@ watch(() => route.fullPath, () => {
 }
 
 .dashboard-scaffold-actions-dropdown > .button > svg {
-  @apply text-primary-400
+  @apply text-primary-400;
 }
 
 .dashboard-scaffold-actions .button {
@@ -136,8 +136,12 @@ watch(() => route.fullPath, () => {
   @apply <md:hidden;
 }
 
+.dashboard-scaffold-actions > .button > svg {
+  @apply text-primary-400 hover:text-primary-500;
+}
+
 .dashboard-scaffold-actions > .button {
-  @apply text-primary-400 hover:text-primary-500 rounded-lg hover:bg-gray-100 dark:hover:bg-primary-600 px-3 py-3 -my-3 -mx-3 dark:hover:bg-opacity-20;
+  @apply rounded-lg hover:bg-gray-100 dark:hover:bg-primary-600 p-3 -m-3 dark:hover:bg-opacity-20;
 }
 
 .dashboard-scaffold-actions.has-more-button > .button:not(.more-button) {
