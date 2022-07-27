@@ -139,6 +139,10 @@
             </div>
             <div class="bg-gray-50 dark:bg-primary-800 rounded-b-lg px-6 py-2">
               <div class="flex flex-col divide-y dark:divide-primary-600">
+                <div v-if="breakdownKeys.length == 0">
+                    <p class="text-center text-xl py-4">No breakdown found.</p>
+                </div>
+
                 <div :key="'breakdown_' + bKey" v-for="(bKey, bi) in breakdownKeys" class="flex flex-col py-2">
                   <div class="flex justify-between">
                     <skeleton custom-class="h-4 w-32 rounded-xl bg-gray-400">
@@ -150,12 +154,12 @@
                       </p>
                     </skeleton>
                   </div>
-                  <div class="flex flex-col space-y-2">
+                  <div class="flex flex-col space-y-3">
                     <div
                       v-if="!isLoading"
                       :key="'entry_' + ai + '_' + bKey"
                       v-for="(aEntry, ai) in data!.assessments[bKey]"
-                      class="flex justify-between text-sm mb-2">
+                      class="flex justify-between text-sm">
                       <skeleton custom-class="h-3.5 w-24 rounded-xl">
                         <p>{{ aEntry.description }}</p>
                       </skeleton>
@@ -199,7 +203,11 @@ import { currentSemesterIdKey } from '../stores/studentStore';
 const currentSemesterId = inject(currentSemesterIdKey);
 const { query: { data }, isLoading, paidTotal, assessmentTotal } = useFinancialRecordQuery(currentSemesterId!);
 const formKey = ref(0);
-const breakdownKeys = computed(() => ['tuition', 'misc', 'others', 'receivables']);
+const breakdownKeys = computed(() => {
+  const keys = ['tuition', 'misc', 'others', 'receivables'];
+  if (isLoading.value || !data.value) return keys;
+  return keys.filter(k => data.value.assessments[k].length !== 0);
+});
 const breakdownLabels = computed(() => ['Tuition', 'Miscellanous', 'Other Fees', 'Back Account']);
 const selectedMonthlyDueIdx = ref(-1);
 const selectedMonthlyDue = computed(() => data.value!.monthlyDues[selectedMonthlyDueIdx.value]);
