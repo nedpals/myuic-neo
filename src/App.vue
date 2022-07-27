@@ -46,7 +46,7 @@
   </main>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { subscribeAuth } from './composables/auth';
 import { useTitle } from '@vueuse/core';
 import { useDarkMode } from './composables/ui';
@@ -59,37 +59,30 @@ import { useModalManager } from './composables/modal';
 import DialogManager from './components/ui/DialogManager.vue';
 import appEvents from './event';
 
-export default {
-  components: { NotificationContainer, IconFeedback, DialogManager },
-  setup() {
-    const router = useRouter();
-    const feedbackUrl = computed(() => `${import.meta.env.VITE_FEEDBACK_URL ?? ''}`);
-    const { subscribeDarkMode } = useDarkMode();
-    const unsubscribeDarkMode = subscribeDarkMode();
-    const unsubscribeAuth = subscribeAuth();
-    const { modalCount, closeLastModal, subscribeModalChange } = useModalManager();
-    const unsubscribeModalChange = subscribeModalChange();
+const router = useRouter();
+const feedbackUrl = computed(() => `${import.meta.env.VITE_FEEDBACK_URL ?? ''}`);
+const { subscribeDarkMode } = useDarkMode();
+const unsubscribeDarkMode = subscribeDarkMode();
+const unsubscribeAuth = subscribeAuth();
+const { modalCount, closeLastModal, subscribeModalChange } = useModalManager();
+const unsubscribeModalChange = subscribeModalChange();
 
-    useReloadPrompt();
-    useTitle('MyUIC Neo');
+useReloadPrompt();
+useTitle('MyUIC Neo');
 
-    const destroyPopNavigation = appEvents.onNavigationPop?.({ 
-      modalCount,
-      closeModal: closeLastModal, 
-      goBack: router.back 
-    });
+const destroyPopNavigation = appEvents.onNavigationPop?.({ 
+  modalCount,
+  closeModal: closeLastModal, 
+  goBack: router.back 
+});
 
-    onBeforeUnmount(() => {
-      unsubscribeModalChange();
-      unsubscribeDarkMode();
-      unsubscribeAuth();
-      if (destroyPopNavigation)
-        destroyPopNavigation();
-    });
-
-    return { feedbackUrl }
-  }
-}
+onBeforeUnmount(() => {
+  unsubscribeModalChange();
+  unsubscribeDarkMode();
+  unsubscribeAuth();
+  if (destroyPopNavigation)
+    destroyPopNavigation();
+});
 </script>
 
 <style lang="postcss">
