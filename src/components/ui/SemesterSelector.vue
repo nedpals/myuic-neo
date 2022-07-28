@@ -76,7 +76,9 @@ const filteredSemesterList = computed(() => {
     // - summer of the first enrolled year or summer of the graduated year
     // - scope is beyond between the first and the last enrolled year
     //   - if the current year is not graduate year, past the current year
-    if (s.fromYear < firstEnrolledYear.value || s.fromYear > lastEnrolledYear.value || (isSummer && s.fromYear === firstEnrolledYear.value)) {
+    if (currentSemesterId && currentSemesterId.value == s.id) {
+      return true;
+    } else if (s.fromYear < firstEnrolledYear.value || s.fromYear > lastEnrolledYear.value || (isSummer && s.fromYear === firstEnrolledYear.value)) {
       return false;
     } else if (isSummer && s.fromYear === graduateYear.value) {
       return false;
