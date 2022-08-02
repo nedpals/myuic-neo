@@ -17,6 +17,7 @@ def capacitor_pods
   pod 'CapacitorStorage', :path => '../../node_modules/@capacitor/storage'
   pod 'HugotomaziCapacitorNavigationBar', :path => '../../node_modules/@hugotomazi/capacitor-navigation-bar'
   pod 'CapacitorBlobWriter', :path => '../../node_modules/capacitor-blob-writer'
+  pod 'CapacitorNativeBiometric', :path => '../../node_modules/capacitor-native-biometric'
   pod 'CapacitorPluginSafeArea', :path => '../../node_modules/capacitor-plugin-safe-area'
   pod 'CapacitorSecureStoragePlugin', :path => '../../node_modules/capacitor-secure-storage-plugin'
   pod 'CordovaPlugins', :path => '../capacitor-cordova-ios-plugins'

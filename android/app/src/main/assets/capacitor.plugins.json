@@ -36,6 +36,10 @@
 		"classpath": "com.equimaps.capacitorblobwriter.BlobWriter"
 	},
 	{
+		"pkg": "capacitor-native-biometric",
+		"classpath": "com.epicshaggy.biometric.NativeBiometric"
+	},
+	{
 		"pkg": "capacitor-plugin-safe-area",
 		"classpath": "com.zhuxian.safearea.SafeAreaPlugin"
 	},

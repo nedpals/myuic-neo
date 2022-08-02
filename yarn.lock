@@ -1892,6 +1892,13 @@ capacitor-blob-writer@^1.1.0:
   resolved "https://registry.yarnpkg.com/capacitor-blob-writer/-/capacitor-blob-writer-1.1.0.tgz#adae9177f2bea8d4812df48120d2d3ffab87ee15"
   integrity sha512-p3j7KcvD9CuTqbBug0oMXDmZStq0XmJaVbtdxmXBf5HgSdVlLEnMCuKF5m1d7IoYxdH2goUMmO8r9WCCqC28nQ==
 
+capacitor-native-biometric@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/capacitor-native-biometric/-/capacitor-native-biometric-3.1.1.tgz#7bc6a4ddee0d5bc42cf944b3333cd04d08d893cd"
+  integrity sha512-yfFrwEWRX3E/CjVaTH/YuvDDQH660P8OC/XC9xzX0Us6t8jbc1qjTJqOdDRbvlNzYCFHkArPmDnKcpXzpo8Klg==
+  dependencies:
+    "@capacitor/core" "^3.4.3"
+
 capacitor-plugin-safe-area@^0.0.3:
   version "0.0.3"
   resolved "https://registry.yarnpkg.com/capacitor-plugin-safe-area/-/capacitor-plugin-safe-area-0.0.3.tgz#ca5539390015d80bfdbeb734285f86b9fdd1f706"

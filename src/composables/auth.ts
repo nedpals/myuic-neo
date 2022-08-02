@@ -53,7 +53,7 @@ export function persistTokens(token: string, refreshToken: string) {
 }
 
 export function useLoginMutation() {
-  const { mutateAsync, isLoading } = useMutation(
+  const { mutate, isLoading } = useMutation(
     ({ id, password }:{ id: string, password: string }) => client.login(id, password), 
   {
     onSuccess: async ({ token, refreshToken }, { id, password }) => {
@@ -63,7 +63,7 @@ export function useLoginMutation() {
   });
 
   return {
-    login: (id: string, password: string) => mutateAsync({ id, password }),
+    login: mutate,
     isProcessing: isLoading
   }
 }
@@ -99,7 +99,7 @@ export interface Profile {
   avatarUrl: string
   name?: string
   id: string
-  password?: string
+  hasBiometrics: boolean
 }
 
 const profilesSuffixKey = 'profiles/'

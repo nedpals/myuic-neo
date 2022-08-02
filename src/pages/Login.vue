@@ -33,26 +33,37 @@
         </div>
 
         <button type="submit" :ref="el => loginButton = el" class="button is-primary is-medium w-full mt-12">Login</button>
-        <button v-if="profiles && profiles.length !== 0" type="button" @click="fillLoginForm('', ''); showForm = false" class="self-start mt-12 mx-auto hover:underline text-primary-500">Login via profiles</button>
+        <button type="button" v-if="supportsBiometrics" @click="loginFromBiometrics" class="button is-light mt-2 is-medium flex items-center justify-center space-x-2">
+          <icon-biometrics class="text-primary-500" />
+          <span>Login with biometrics</span>
+        </button>
+
+        <button 
+          v-if="profiles && profiles.length !== 0" type="button" 
+          @click="fillLoginForm(false, ''); showForm = false" 
+          class="self-start mt-12 mx-auto hover:underline text-primary-500">
+          Login via profiles
+        </button>
       </form>
 
       <div v-show="!showForm" class="flex flex-col divide-y-1 -mx-2">
         <div v-for="profile in profiles" :key="'profile_' + profile.id" class="py-1 flex">
-          <button @click="fillLoginForm(profile.id, profile.password)" class="hover:bg-gray-100 p-2 flex rounded-md w-full h-full flex-1">
+          <button @click="fillLoginForm(profile.hasBiometrics, profile.id)" class="hover:bg-gray-100 p-2 flex rounded-md w-full h-full flex-1">
             <div class="aspect-square w-16">
               <avatar :src="profile.avatarUrl" />
             </div>
             <div class="flex-1 pl-3 flex flex-col h-full justify-center items-start">
               <span class="block text-xl font-bold">{{ profile.id }}</span>
-              <span class="block text-gray-500">{{ profile.name }}</span>
+              <span class="block text-gray-500 dark:text-primary-300">{{ profile.name }}</span>
+              <span v-if="profile.hasBiometrics" class="block text-sm text-gray-400 dark:text-primary-400 italic">Supports biometrics</span>
             </div>
           </button>
 
-          <button v-tooltip="'Delete profile'" class="text-danger-500 px-2 hover:bg-gray-200 rounded-md" @click="deleteProfile(profile.id)"><icon-trash /></button>
+          <button v-tooltip="'Delete profile'" class="text-danger-500 px-2 hover:bg-gray-200 rounded-md" @click="deleteProfile(profile.id, profile.hasBiometrics)"><icon-trash /></button>
         </div>
 
         <div class="py-1">
-          <button @click="fillLoginForm('', '')" class="hover:bg-gray-100 px-3 py-3 flex items-center justify-between rounded-md w-full h-full">
+          <button @click="fillLoginForm(false, '')" class="hover:bg-gray-100 px-3 py-3 flex items-center justify-between rounded-md w-full h-full">
             <span>Login manually</span>
             <icon-right class="text-primary-400" />
           </button>
@@ -69,100 +80,176 @@
 import IconLogo from '~icons/custom/logo';
 import IconRight from '~icons/ion/chevron-right';
 import IconTrash from '~icons/ion/trash';
+import IconBiometrics from '~icons/ion/finger-print';
 import Loader from '../components/ui/Loader.vue';
 import { useLoginMutation, useProfiles, useProfileMutation, removeProfile } from '../composables/auth';
 import DarkModeToggle from '../components/ui/DarkModeToggle.vue';
 import { useRouter } from 'vue-router';
-import { ref, watch } from 'vue';
+import { onBeforeUnmount, ref, watch } from 'vue';
 import Avatar from '../components/ui/Avatar.vue';
 import { showDialog } from '../composables/modal';
-import { IS_NATIVE } from '../utils';
+import appEvents from '../event';
+import { notify } from 'notiwind';
+import { catchAndNotifyError } from '../utils.js';
 
 const { data: profiles, isLoading: isProfilesLoading, refetch } = useProfiles();
 const showForm = ref(false);
 const loginButton = ref();
 const loginForm = ref();
 const router = useRouter();
+const supportsBiometrics = ref(false);
 
 const { login, isProcessing } = useLoginMutation();
 const { mutateAsync: saveProfile } = useProfileMutation();
 
-const deleteProfile = async (id: string) => {
+const deleteProfile = async (id: string, hasBiometrics: boolean) => {
   await removeProfile(id);
   await refetch.value();
+  await appEvents.onDestroyProfile?.({ hasBiometrics });
 }
 
-const fillLoginForm = (id: string, password?: string) => {
+const fillLoginForm = async (hasBiometrics: boolean, id: string, password?: string) => {
   if (!(loginForm.value instanceof HTMLFormElement) || !(loginButton.value instanceof HTMLButtonElement)) {
     return;
   }
 
   showForm.value = true;
+  supportsBiometrics.value = hasBiometrics;
 
   const studentIdField = loginForm.value.querySelector('input[name="student_id"]');
   if (studentIdField && studentIdField instanceof HTMLInputElement) {
     studentIdField.value = id;
+    if (id) {
+      studentIdField.readOnly = true;
+    } else {
+      studentIdField.readOnly = false;
+    }
   }
 
   const passwordField = loginForm.value.querySelector('input[name="password"]');
   if (passwordField && passwordField instanceof HTMLInputElement) {
     if (password) {
       passwordField.value = password;
+    } else if (hasBiometrics) {
+      const credsFromBiometrics = await fetchCredsFromBiometrics();
+      if (credsFromBiometrics) {
+        passwordField.value = credsFromBiometrics.password;
+      }
+    }
+
+    if (passwordField.value) {
       loginButton.value.click();
-    } else {
-      passwordField.focus();
     }
   }
 }
 
 const loginFromForm = async (e: SubmitEvent) => {
-  try {
-    if (!e.target || !(e.target instanceof HTMLFormElement)) return;
-    const fd = new FormData(e.target);
-    const id = fd.get('student_id')?.toString()!;
-    const pw = fd.get('password')?.toString()!;
-    await login(id, pw);
-    e.target.reset();
-    await router.replace({ name: 'home' });
-    if (profiles.value && profiles.value.findIndex(p => p.id === id) === -1) {
-      const answer = await showDialog({
-        title: 'Save Profile',
-        content: 'Would you like to save your profile? Saving your profile helps you login faster the next time around.',
-        actions: [
-          {
-            answer: 'yes',
-            class: 'is-primary',
-            label: 'Yes'
-          },
-          {
-            answer: 'no',
-            class: 'is-light',
-            label: 'No'
-          }
-        ]
-      });
+  if (!e.target || !(e.target instanceof HTMLFormElement)) return;
+  const fd = new FormData(e.target);
+  const id = fd.get('student_id')?.toString()!;
+  const password = fd.get('password')?.toString()!;
+  
+  if (supportsBiometrics.value && !password) {
+    await fillLoginForm(true, id);
+    return;
+  }
+  
+  login({ id, password }, {
+    onSuccess: async () => {
+      (e.target! as HTMLFormElement).reset();
+      await router.replace({ name: 'home' });
+      await maybePromptSaveProfile(id, password);
+    },
+    onError: (err) => {
+      console.error(err);
+    }
+  });
+}
 
-      if (answer === 'yes') {
-        await saveProfile({
-          avatarUrl: '',
-          id: id,
-          password: IS_NATIVE ? pw : undefined
-        });
+const fetchCredsFromBiometrics = async () => {
+  if (!supportsBiometrics.value) return;
 
-        await refetch.value();
+  try {  
+    if (appEvents.onFetchCredentials) {
+      await appEvents.onAuthenticateProfile?.({ isSave: false });
+      return await appEvents.onFetchCredentials();
+    }
+
+    throw Error();
+  } catch(err) {
+    
+    notify({
+      type: 'error',
+      //@ts-ignore
+      text: `Unable to authenticate with biometrics. Reason: ${err.toString()}`
+    });
+
+    console.error(err);
+    return null;
+  }
+}
+
+const loginFromBiometrics = async () => {
+  const creds = await fetchCredsFromBiometrics();
+  if (creds) {
+    fillLoginForm(false, creds.id, creds.password);
+  }
+}
+
+const maybePromptSaveProfile = async (id: string, password: string) => {
+  if (!profiles.value || profiles.value.findIndex(p => p.id === id) !== -1) {
+    return;
+  }
+
+  const answer = await showDialog({
+    title: 'Save Profile',
+    content: 'Would you like to save your profile? Saving your profile helps you login faster the next time around.',
+    actions: [
+      {
+        answer: 'yes',
+        class: 'is-primary',
+        label: 'Yes'
+      },
+      {
+        answer: 'no',
+        class: 'is-light',
+        label: 'No'
+      }
+    ]
+  });
+
+  if (answer === 'yes') {
+    let hasBiometrics = false;
+    if (profiles.value.every(p => !p.hasBiometrics) && appEvents.onAuthenticateProfile) {
+      try {
+        await appEvents.onAuthenticateProfile({ isSave: true, id, password });
+        if (appEvents.onFetchCredentials && await appEvents.onFetchCredentials()) {
+          hasBiometrics = true;
+        }
+      } catch(e) {
+        catchAndNotifyError(e);
+        hasBiometrics = false;
       }
     }
-  } catch (e) {
-    console.error(e);
+    
+    await saveProfile({
+      avatarUrl: '',
+      id: id,
+      hasBiometrics
+    });
+
+    await refetch.value();
   }
 }
 
 const unsubscribe = watch(profiles, (profiles) => {
   if (profiles && profiles.length === 0) {
     showForm.value = true;
-    unsubscribe();
+    loginForm.value.reset();
   }
 });
+
+onBeforeUnmount(unsubscribe)
 </script>
 
 <style lang="postcss" scoped>

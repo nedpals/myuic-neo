@@ -8,13 +8,13 @@ import {Directory, Filesystem} from '@capacitor/filesystem';
 import {LocalNotifications} from "@capacitor/local-notifications";
 import writeBlob from 'capacitor-blob-writer';
 import {NavigationBar} from '@hugotomazi/capacitor-navigation-bar';
+import {NativeBiometric} from 'capacitor-native-biometric';
 
 import {startApp} from './main.common';
 import {darkModeQuery} from './composables/ui';
 import color_palette from '../color_palette';
+import { backendHost } from './client';
 
-const SESSION_NATIVE_ID_KEY = { key: 'id' };
-const SESSION_NATIVE_PW_KEY = { key: 'password' };
 const textDec = new TextDecoder('utf8');
 
 async function setDeviceSafeAreas() {
@@ -29,6 +29,8 @@ async function setDeviceSafeAreas() {
 async function setupStatusBar() {
     await StatusBar.setOverlaysWebView({ overlay: true });
 }
+
+const credsConfig = { server: backendHost };
 
 startApp(async () => {
   // disable zoom
@@ -47,29 +49,13 @@ startApp(async () => {
   await setupStatusBar();
 }, {
   onAuthSuccess: async ({ id, password }) => {
-    await Promise.all([
-      SecureStoragePlugin.set({ ...SESSION_NATIVE_ID_KEY, value: id }),
-      SecureStoragePlugin.set({ ...SESSION_NATIVE_PW_KEY, value: password })
-    ]);
+    // NOTE: let onAuthenticateProfile do its job
   },
   onAuthDestroy: async () => {
-    await Promise.all([
-      SecureStoragePlugin.remove(SESSION_NATIVE_ID_KEY),
-      SecureStoragePlugin.remove(SESSION_NATIVE_PW_KEY)
-    ]);
+    // NOTE: let onDeleteProfile do its job
   },
   onAuthRefresh: async ({ client }) => {
-    let id = '';
-    let password = '';
-    try {
-      const { value: rawId } = await SecureStoragePlugin.get(SESSION_NATIVE_ID_KEY);
-      id = rawId;
-    } catch {}
-
-    try {
-      const { value: rawPassword } = await SecureStoragePlugin.get(SESSION_NATIVE_PW_KEY);
-      password = rawPassword;
-    } catch {}
+    const { username: id, password } = await NativeBiometric.getCredentials(credsConfig);
     return await client.login(id, password);
   },
   onNavigationPop: ({ modalCount, closeModal, goBack }) => {
@@ -151,5 +137,30 @@ startApp(async () => {
       }
     }
     return false;
-  }
+  },
+  async onAuthenticateProfile({ isSave, id, password }) {
+    const biometricsAvailableResult = await NativeBiometric.isAvailable();
+    if (!biometricsAvailableResult.isAvailable) {
+      return;
+    }
+
+    if (isSave && id && password) {
+      await NativeBiometric.setCredentials({
+        ...credsConfig,
+        username: id,
+        password
+      });
+    } else {
+      await NativeBiometric.verifyIdentity();
+    }
+  },
+  async onFetchCredentials() {
+    const { username: id, password } = await NativeBiometric.getCredentials(credsConfig);
+    return { id, password }
+  },
+  async onDestroyProfile({ hasBiometrics }) {
+    if (hasBiometrics) {
+      await NativeBiometric.deleteCredentials(credsConfig);
+    }
+  },
 })
