@@ -57,18 +57,12 @@ import Skeleton from './Skeleton.vue';
 const emit = defineEmits(['update:semesterId']);
 const isLoading = inject<Ref<boolean>>('__loadState', ref(false));
 const currentSemesterId = inject(currentSemesterIdKey);
-const { semesterList, currentSemester } = useSemesterQuery(currentSemesterId);
+const { semesterList, currentSemester, idQuery } = useSemesterQuery(currentSemesterId);
 const { query: { data: student } } = useStudentQuery();
 const firstEnrolledYear = computed(() => 2000 + parseInt((student.value?.number ?? '20123').substring(0, 2)));
 const currentYear = new Date().getFullYear();
 const graduateYear = computed(() => firstEnrolledYear.value + 4);
-const lastEnrolledYear = computed(() => {
-  if (currentYear <= graduateYear.value) {
-    return currentYear;
-  } else {
-    return graduateYear.value;
-  }
-});
+const lastEnrolledYear = computed(() => Math.min(currentYear, graduateYear.value));
 const filteredSemesterList = computed(() => {
   return semesterList.value.filter(s => {
     const isSummer = s.label.startsWith('Summer');
@@ -76,15 +70,16 @@ const filteredSemesterList = computed(() => {
     // - summer of the first enrolled year or summer of the graduated year
     // - scope is beyond between the first and the last enrolled year
     //   - if the current year is not graduate year, past the current year
-    if (currentSemesterId && currentSemesterId.value == s.id) {
-      return true;
-    } else if (s.fromYear < firstEnrolledYear.value || s.fromYear > lastEnrolledYear.value || (isSummer && s.fromYear === firstEnrolledYear.value)) {
+    if (isSummer && (s.fromYear === firstEnrolledYear.value || s.fromYear === graduateYear.value)) {
       return false;
-    } else if (isSummer && s.fromYear === graduateYear.value) {
+    } else if (s.fromYear < firstEnrolledYear.value || s.fromYear > lastEnrolledYear.value) {
       return false;
-    } else if (s.toYear && s.toYear > lastEnrolledYear.value) {
+    } else if (idQuery.data.value && s.id > idQuery.data.value) {
       return false;
     }
+    // else if (s.toYear && s.toYear > lastEnrolledYear.value) {
+    //   return false;
+    // } 
     return true;
   });
 });
