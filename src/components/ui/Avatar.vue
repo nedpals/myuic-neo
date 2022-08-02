@@ -1,11 +1,11 @@
 <template>
   <skeleton
-      :custom-class="attrs.class.toString() + ' rounded-full bg-gray-200 dark:bg-uic-500'">
+      :custom-class="(attrs.class ? attrs.class.toString() : '') + ' rounded-full bg-gray-200 dark:bg-uic-500'">
     <img
         @error="loadFallbackImage"
-        :class="attrs.class.toString()"
+        :class="attrs.class ? attrs.class.toString() : ''"
         class="bg-primary-200 rounded-full object-cover"
-        :src="src" :alt="alt"/>
+        :src="src ? src : fallbackSrc" :alt="alt"/>
   </skeleton>
 </template>
 

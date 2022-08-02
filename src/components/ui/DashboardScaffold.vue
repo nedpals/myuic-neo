@@ -65,6 +65,8 @@ import IconMore from '~icons/ion/more';
 import { useTitle } from '@vueuse/core';
 import { computed, watch, defineEmits, defineProps, useSlots } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { useStudentQuery } from '../../stores/studentStore.js';
+import { useProfileMutation, useProfiles } from '../../composables/auth.js';
 
 defineEmits(['reload']);
 
@@ -108,6 +110,24 @@ watch(() => route.fullPath, () => {
   useTitle(`${pageTitle.value} | MyUIC Neo`);
 }, {
   immediate: true
+});
+
+// Inject details to student
+const { mutate: saveProfileSync } = useProfileMutation();
+const { data: profiles } = useProfiles();
+const { query: { data: student }, avatarUrl } = useStudentQuery();
+const unwatchProfile = watch(student, (student) => {
+  if (student && profiles.value) {
+    const existingProfile = profiles.value.find(p => p.id === student.number);
+    if (existingProfile) {
+      saveProfileSync({
+        ...existingProfile,
+        avatarUrl: avatarUrl.value,
+        name: `${student.lastName}, ${student.firstName}`
+      });
+    }
+    unwatchProfile();
+  }
 });
 </script>
 

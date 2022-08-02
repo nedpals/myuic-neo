@@ -1,6 +1,6 @@
 import { client, eventbus } from '../client';
 import { Storage } from '@capacitor/storage';
-import { useMutation, useQueryClient } from 'vue-query';
+import { useMutation, useQuery, useQueryClient } from 'vue-query';
 import { useRouter } from 'vue-router';
 import { notify } from 'notiwind';
 import appEvents from '../event';
@@ -93,4 +93,45 @@ export function useLogoutMutation() {
       router.replace({ name: 'login' });
     }
   });
+}
+
+export interface Profile {
+  avatarUrl: string
+  name?: string
+  id: string
+  password?: string
+}
+
+const profilesSuffixKey = 'profiles/'
+
+async function getProfiles(): Promise<Profile[]> {
+  const profiles: Profile[] = [];
+
+  const { keys } = await Storage.keys();
+  const rawProfiles = await Promise.all(keys.filter(k => k.startsWith(profilesSuffixKey)).map(key => Storage.get({ key })));
+
+  for (const { value: rawProfile } of rawProfiles) {
+    if (rawProfile) {
+      profiles.push(JSON.parse(rawProfile));
+    }
+  }
+
+  return profiles;
+}
+
+export function useProfiles() {
+  return useQuery(['profiles'], getProfiles);
+}
+
+export function useProfileMutation() {
+  return useMutation(async (profile: Profile) => {
+    await Storage.set({
+      key: profilesSuffixKey + profile.id,
+      value: JSON.stringify(profile)
+    });
+  });
+}
+
+export async function removeProfile(id: string) {
+  await Storage.remove({ key: profilesSuffixKey + id });
 }
