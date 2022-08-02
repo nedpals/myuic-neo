@@ -24,6 +24,10 @@
 		"classpath": "com.capacitorjs.plugins.storage.StoragePlugin"
 	},
 	{
+		"pkg": "@hugotomazi/capacitor-navigation-bar",
+		"classpath": "br.com.tombus.capacitor.plugin.navigationbar.NavigationBarPlugin"
+	},
+	{
 		"pkg": "@robingenz/capacitor-android-dark-mode-support",
 		"classpath": "dev.robingenz.capacitor.androiddarkmodesupport.AndroidDarkModeSupportPlugin"
 	},

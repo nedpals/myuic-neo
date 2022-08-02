@@ -31,6 +31,7 @@
     "@capacitor/storage": "^1.2.5",
     "@foundernest/namecase": "^1.0.5",
     "@headlessui/vue": "^1.5.0",
+    "@hugotomazi/capacitor-navigation-bar": "^1.1.1",
     "@iconify-json/mdi": "^1.1.2",
     "@myuic-api/client": "^1.5.1",
     "@myuic-api/types": "^1.5.0",

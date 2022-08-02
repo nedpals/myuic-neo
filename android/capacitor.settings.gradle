@@ -20,6 +20,9 @@ project(':capacitor-status-bar').projectDir = new File('../node_modules/@capacit
 include ':capacitor-storage'
 project(':capacitor-storage').projectDir = new File('../node_modules/@capacitor/storage/android')
 
+include ':hugotomazi-capacitor-navigation-bar'
+project(':hugotomazi-capacitor-navigation-bar').projectDir = new File('../node_modules/@hugotomazi/capacitor-navigation-bar/android')
+
 include ':robingenz-capacitor-android-dark-mode-support'
 project(':robingenz-capacitor-android-dark-mode-support').projectDir = new File('../node_modules/@robingenz/capacitor-android-dark-mode-support/android')
 

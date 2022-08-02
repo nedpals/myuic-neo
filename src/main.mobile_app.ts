@@ -4,12 +4,14 @@ import {App} from '@capacitor/app';
 import {StatusBar, Style} from '@capacitor/status-bar';
 import {AppLauncher} from '@capacitor/app-launcher';
 import {Printer} from '@awesome-cordova-plugins/printer';
-import {Directory, Encoding, Filesystem} from '@capacitor/filesystem';
+import {Directory, Filesystem} from '@capacitor/filesystem';
+import {LocalNotifications} from "@capacitor/local-notifications";
 import writeBlob from 'capacitor-blob-writer';
+import {NavigationBar} from '@hugotomazi/capacitor-navigation-bar';
 
 import {startApp} from './main.common';
 import {darkModeQuery} from './composables/ui';
-import {LocalNotifications} from "@capacitor/local-notifications";
+import color_palette from '../color_palette';
 
 const SESSION_NATIVE_ID_KEY = { key: 'id' };
 const SESSION_NATIVE_PW_KEY = { key: 'password' };
@@ -84,8 +86,10 @@ startApp(async () => {
   async onDarkModeChange(mode) {
     if (mode === '1' || (mode === '2' && darkModeQuery().matches)) {
       await StatusBar.setStyle({ style: Style.Dark });
+      await NavigationBar.setColor({ color: color_palette.primary[900], darkButtons: false });
     } else {
       await StatusBar.setStyle({ style: Style.Light });
+      await NavigationBar.setColor({ color: '#FFFFFF', darkButtons: true });
     }
   },
   async onDownloadURL({ url, data, fileName }) {
