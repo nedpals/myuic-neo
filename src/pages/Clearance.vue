@@ -67,7 +67,7 @@
                 <loader class="h-14 w-14" />
               </div>
 
-              <div v-else class="flex flex-col divide-y">
+              <div v-else class="flex flex-col divide-y dark:divide-primary-600">
                 <div class="pl-0 py-4 text-center">
                   <skeleton custom-class="w-16 h-4 bg-gray-200 mb-2">
                     <p class="text-lg mb-1">Status</p>
@@ -79,11 +79,11 @@
                   </skeleton>
                 </div>
 
-                <div v-if="selectedClearanceItem.requirements.length == 0" class="text-center text-gray-500 py-3">
+                <div v-if="selectedClearanceItem.requirements.length == 0" class="text-center text-gray-500 dark:text-primary-50 py-3">
                   <span class="block text-2xl">No requirements found.</span>
                 </div>
 
-                <div v-else class="flex flex-col divide-y">
+                <div v-else class="flex flex-col divide-y dark:divide-primary-600">
                   <div :key="'requirement_' + i" v-for="(r, i) in selectedClearanceItem.requirements" class="flex justify-between py-2">
                     <p>{{ r.remarks }}</p>
                     <div class="flex space-x-2 items-center">
@@ -151,10 +151,10 @@ const statusText = (status: 'cleared' | 'not_cleared' | 'unknown' | 'promisory')
 
 const statusColor = (status: 'cleared' | 'not_cleared' | 'unknown' | 'promisory') => {
   return status == 'cleared' || status == 'promisory' 
-    ? 'text-success-600'
+    ? 'text-success-600 dark:text-success-400'
     : status == 'not_cleared'
     ? 'text-danger-400'
-    : 'text-gray-600';
+    : 'text-gray-600 dark:text-primary-200';
 }
 
 const clearedRequirementsCount = (item: ClearanceItem) => {
