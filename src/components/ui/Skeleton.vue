@@ -1,5 +1,5 @@
 <template>
-  <div :class="customClass" class="skeleton" v-if="isLoading || __loadState"></div>
+  <div :style="{'animation-delay': `${delay}ms`}" :class="customClass" class="skeleton" v-if="isLoading || __loadState"></div>
   <slot v-else></slot>
 </template>
 
@@ -12,6 +12,10 @@ defineProps({
   isLoading: {
     type: Boolean,
     default: false
+  },
+  delay: {
+    type: Number,
+    default: 0
   },
   customClass: {
     type: String
