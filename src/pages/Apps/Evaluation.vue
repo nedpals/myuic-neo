@@ -8,14 +8,15 @@
 
         <div class="flex flex-col space-y-4 py-8">
           <box 
-            :key="'sub_' + sub.code + '_' + sub.type" v-for="sub in openedEvaluationList" 
+            :key="'sub_' + sub.code + '_' + sub.type" v-for="(sub, sub_idx) in openedEvaluationList" 
             :disabled="isLoading"
             class="hover:bg-gray-100 dark:hover:bg-uic-900 hover:border-uic-500 dark:hover:border-uic-700 cursor-pointer" 
-            @click="evaluateCourse([sub])">
+            @click="evaluateCourse(sub)">
             <div class="flex flex-row justify-between items-center">
               <div class="flex space-x-4" :class="[isLoading ? 'items-center' : 'items-start']">
                 <div class="h-13 w-13 flex-shrink-0">
                   <skeleton
+                      :delay="(sub_idx + 1) * 250"
                       custom-class="bg-gray-200 dark:bg-uic-500 rounded-full h-full w-full">
                     <div 
                       :style="{ backgroundImage: `url(${sub.instructorImageUrl})` }"
@@ -23,10 +24,10 @@
                   </skeleton>
                 </div>
                 <div>
-                  <skeleton custom-class="h-5 w-8 mb-2">
+                  <skeleton :delay="(sub_idx + 1) * 250" custom-class="h-5 w-8 mb-2">
                     <h3 class="text-xl font-semibold">{{ sub.name }}</h3>
                   </skeleton>
-                  <skeleton custom-class="h-4 w-16">
+                  <skeleton :delay="(sub_idx + 1) * 250" custom-class="h-4 w-16">
                     <p>{{ sub.instructor }} • {{ sub.type }}</p>
                   </skeleton>
                 </div>
@@ -79,7 +80,7 @@ const closeCourseEvaluation = (c: CourseEvaluationEntry) => {
   currentlyEvaluated.value.splice(idx, 1);
 }
 
-const evaluateCourse = (c: Entries) => {
+const evaluateCourse = (...c: Entries) => {
   const additionalEntry = openedEvaluationList.value.find(cc => cc.code === c[0].code && cc.type !== c[0].type);
   const finalEntries : CourseEvaluationEntry[] = [];
   if (typeof additionalEntry !== 'undefined') {
