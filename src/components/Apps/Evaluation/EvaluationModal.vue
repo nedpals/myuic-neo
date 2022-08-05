@@ -92,11 +92,13 @@
                     class="border-t flex" 
                     :class="{ 'border-b': qi == cat.questions.length - 1 }" 
                     :key="'q_' + i + '_' + qi" v-for="(q, qi) in cat.questions">
-                    <div class="flex items-center justify-center border-r px-3 md:px-6 py-3 w-1/8">
-                      <span>{{ qi + 1 }}</span>
+                    <div class="pl-4 py-4">
+                      <span
+                        :class="{ 'border-primary-400 bg-primary-400 text-white': ratingAnswers[getQIndex(i, qi)] > 0 }" 
+                        class="block text-center rounded-full p-2 border dark:border-primary-600 h-10 w-10">{{ qi + 1 }}</span>
                     </div>
                     
-                    <div class="flex flex-col w-7/8 px-3 md:px-6 py-2 md:py-4">
+                    <div class="flex flex-col flex-1 p-4">
                       <p class="pb-3">{{ q }}</p>
                       
                       <div 
