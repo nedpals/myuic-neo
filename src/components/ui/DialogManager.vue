@@ -1,23 +1,24 @@
 <template>
-  <d-dialog 
-    v-for="(d, dIdx) in dialogs"
+  <Dialog
+    v-for="(d) in dialogs"
     :key="'dialog_' + d.id" 
     :data="d"
-    @update:data="handleUpdateDialog"
-    @update:open="handleDialogOpen(dIdx, $event)"  />
+    @update:data="handleUpdateDialog"  />
 </template>
 
 <script lang="ts" setup>
 import { dialogs, DialogModal, modalEventBus } from '../../composables/modal';
-import DDialog from './Dialog.vue';
+import Dialog from './Dialog.vue';
 
 const handleUpdateDialog = (d: DialogModal) => {
   const idx = dialogs.value.findIndex(dd => dd.id === d.id);
   if (idx === -1) return;
   dialogs.value[idx] = d;
+  handleDialogOpen(idx, false);
 }
 
 const handleDialogOpen = (dialogIdx: number, newOpen: boolean) => {
+  if (!dialogs.value[dialogIdx]) return;
   dialogs.value[dialogIdx].isOpen = newOpen;
 
   if (!newOpen) {

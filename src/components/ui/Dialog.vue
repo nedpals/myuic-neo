@@ -1,5 +1,5 @@
 <template>
-  <Modal :m-id="data.id" :open="data.isOpen" :title="data.title">
+  <Modal :m-id="data.id" v-model:open="isOpen" :title="data.title">
     <div class="pt-4" v-html="data.content"></div>
 
     <template #footer>
@@ -30,9 +30,12 @@ const props = defineProps({
   }
 });
 
+const isOpen = ref(props.data.isOpen);
+
 const handleDialogAction = (d: DialogModal, action: DialogAction) => {
   const result = typeof action.answer === 'function' ? action.answer() : action.answer;
+  emit('update:data', { ...props.data, isOpen: false, hasActionPressed: true } as DialogModal);
+  isOpen.value = false;
   modalEventBus.emit('dialog_closed', { id: d.id, result });
-  emit('update:data', { ...props.data, isOpen: false, hasActionPressed: true } as DialogModal)
 }
 </script>
