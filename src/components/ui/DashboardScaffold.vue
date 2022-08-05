@@ -63,7 +63,7 @@ import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue';
 import IconMore from '~icons/ion/more';
 
 import { useTitle } from '@vueuse/core';
-import { computed, watch, defineEmits, defineProps, useSlots } from 'vue';
+import { computed, watch, defineEmits, defineProps, useSlots, onBeforeUnmount } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useStudentQuery } from '../../stores/studentStore.js';
 import { useProfileMutation, useProfiles } from '../../composables/auth.js';
@@ -106,7 +106,7 @@ const pageTitle = computed(() => {
   return currentRouteData.meta.pageTitle;
 })
 
-watch(() => route.fullPath, () => {
+const unwatchTitle = watch(() => route.fullPath, () => {
   useTitle(`${pageTitle.value} | MyUIC Neo`);
 }, {
   immediate: true
@@ -129,6 +129,10 @@ const unwatchProfile = watch(student, (student) => {
     unwatchProfile();
   }
 });
+
+onBeforeUnmount(() => {
+  unwatchProfile();
+})
 </script>
 
 <style lang="postcss">

@@ -142,6 +142,7 @@ export interface Dialog {
 
 export interface DialogModal extends Dialog, ModalInfo {
   isOpen: boolean
+  hasActionPressed?: boolean
 }
 
 export const dialogs = ref<DialogModal[]>([]);

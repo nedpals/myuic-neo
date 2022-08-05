@@ -1,49 +1,31 @@
 <template>
-  <modal 
-    @update:open="handleDialogOpen(d, $event)" 
-    :m-id="d.id"
-    :open="d.isOpen"
-    :key="'dialog_' + d.id" v-for="d in dialogs" :title="d.title">
-    <div class="pt-4" v-html="d.content"></div>
-
-    <template #footer>
-      <div class="flex justify-end items-center space-x-2">
-        <button 
-          :key="'action_' + ai" 
-          @click="handleDialogAction(d, action)"
-          class="button"
-          :class="action.class"
-          v-for="(action, ai) in d.actions">
-          {{ action.label }}
-        </button>
-      </div>
-    </template>
-  </modal>
+  <d-dialog 
+    v-for="(d, dIdx) in dialogs"
+    :key="'dialog_' + d.id" 
+    :data="d"
+    @update:data="handleUpdateDialog"
+    @update:open="handleDialogOpen(dIdx, $event)"  />
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
-import { dialogs, DialogModal, modalEventBus, DialogAction } from '../../composables/modal';
-import Modal from './Modal.vue';
+import { dialogs, DialogModal, modalEventBus } from '../../composables/modal';
+import DDialog from './Dialog.vue';
 
-const hasActionPressed = ref(false);
-const handleDialogAction = (d: DialogModal, action: DialogAction) => {
-  hasActionPressed.value = true;
-  const result = typeof action.answer === 'function' ? action.answer() : action.answer;
-  modalEventBus.emit('dialog_closed', { id: d.id, result });
+const handleUpdateDialog = (d: DialogModal) => {
+  const idx = dialogs.value.findIndex(dd => dd.id === d.id);
+  if (idx === -1) return;
+  dialogs.value[idx] = d;
 }
 
-const handleDialogOpen = (d: DialogModal, newOpen: boolean) => {
-  d.isOpen = newOpen;
+const handleDialogOpen = (dialogIdx: number, newOpen: boolean) => {
+  dialogs.value[dialogIdx].isOpen = newOpen;
 
   if (!newOpen) {
-    if (!hasActionPressed.value) {
+    const d = dialogs.value[dialogIdx];
+    if (!d.hasActionPressed) {
       modalEventBus.emit('dialog_closed', { id: d.id, result: null });
     }
-    const idx = dialogs.value.findIndex(dd => dd.id === d.id);
-    if (idx !== -1) {
-      dialogs.value.splice(idx, 1);
-    }
+    dialogs.value.splice(dialogIdx, 1);
   }
 }
 </script>
