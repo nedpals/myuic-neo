@@ -41,7 +41,7 @@
                   'rounded-b-lg': i === data!.monthlyDues.length - 1
                 }">
                 
-                <skeleton custom-class="w-13 h-13 -ml-1 bg-gray-400 dark:bg-primary-600 rounded-full">
+                <skeleton :delay="(i + 1) * 350" custom-class="w-13 h-13 -ml-1 bg-gray-400 dark:bg-primary-600 rounded-full">
                   <div class="w-16 h-16">
                     <component
                       :is="mDue.status === 'Paid' || mDue.status === 'Partially Paid' ? IconPaid : IconPending"
@@ -56,10 +56,10 @@
                 <div class="flex-1" :class="{ 'pl-4': isLoading }">
                   <div class="flex justify-between mb-1">
                     <div>
-                      <skeleton custom-class="h-4 w-28 mb-2">
+                      <skeleton :delay="(i + 1) * 350" custom-class="h-4 w-28 mb-2">
                         <h2 class="font-semibold">Month {{ mDue.month }}</h2>
                       </skeleton>
-                      <skeleton custom-class="h-3 w-20">
+                      <skeleton :delay="(i + 1) * 350" custom-class="h-3 w-20">
                         <p :class="{ 
                           'text-success-700 dark:text-success-400': mDue.status === 'Paid', 
                           'text-amber-700 dark:text-amber-400': mDue.status === 'Partially Paid' 
@@ -69,12 +69,12 @@
                       </skeleton>
                     </div>
                     <div class="text-right">
-                      <skeleton custom-class="h-4 w-20 rounded-full">
+                      <skeleton :delay="(i + 1) * 350" custom-class="h-4 w-20 rounded-full">
                         <p>{{ moneyFormatter.format(mDue.amount - mDue.balance) }} / <span class="font-semibold">{{ moneyFormatter.format(mDue.amount) }}</span></p>
                       </skeleton>
                     </div>
                   </div>
-                  <skeleton custom-class="h-3 w-full rounded-full bg-gray-200 mt-4">
+                  <skeleton :delay="(i + 1) * 350" custom-class="h-3 w-full rounded-full bg-gray-200 mt-4">
                     <progress class="due-progress" :value="((mDue.amount - mDue.balance) / mDue.amount) * 100" max="100"></progress>
                   </skeleton>
                 </div>
@@ -95,7 +95,7 @@
                       <skeleton custom-class="w-16 h-4 bg-gray-200 mb-2">
                         <p class="text-lg mb-1">Amount</p>
                       </skeleton>
-                      <skeleton custom-class="w-8 h-3.5 bg-gray-200">
+                      <skeleton :delay="350" custom-class="w-8 h-3.5 bg-gray-200">
                         <p class="font-semibold text-4xl">{{ moneyFormatter.format(selectedMonthlyDue.amount) }}</p>
                       </skeleton>
                     </div>
@@ -104,7 +104,7 @@
                       <skeleton custom-class="w-16 h-4 bg-gray-200 mb-2">
                         <p class="text-lg mb-1">Balance</p>
                       </skeleton>
-                      <skeleton custom-class="w-8 h-3.5 bg-gray-200">
+                      <skeleton :delay="350" custom-class="w-8 h-3.5 bg-gray-200">
                         <p class="font-semibold text-4xl">{{ moneyFormatter.format(selectedMonthlyDue.balance) }}</p>
                       </skeleton>
                     </div>
@@ -145,10 +145,10 @@
 
                 <div :key="'breakdown_' + bKey" v-for="(bKey, bi) in breakdownKeys" class="flex flex-col py-2">
                   <div class="flex justify-between">
-                    <skeleton custom-class="h-4 w-32 rounded-xl bg-gray-400">
+                    <skeleton :delay="(bi + 1) * 350" custom-class="h-4 w-32 rounded-xl bg-gray-400">
                       <p class="mb-3">{{ breakdownLabels[bi] }}</p>
                     </skeleton>
-                    <skeleton custom-class="h-4 w-24 rounded-xl bg-gray-400">
+                    <skeleton :delay="(bi + 1) * 350" custom-class="h-4 w-24 rounded-xl bg-gray-400">
                       <p class="font-bold">
                         {{ !isLoading ? moneyFormatter.format(getBreakdownSubtotal(data!.assessments[bKey])) : '--' }}
                       </p>
@@ -156,14 +156,14 @@
                   </div>
                   <div class="flex flex-col space-y-3">
                     <div
-                      v-if="!isLoading"
                       :key="'entry_' + ai + '_' + bKey"
                       v-for="(aEntry, ai) in data!.assessments[bKey]"
-                      class="flex justify-between text-sm">
-                      <skeleton custom-class="h-3.5 w-24 rounded-xl">
+                      class="flex justify-between text-sm" :class="{'mt-3': isLoading}">
+                      <skeleton :delay="(ai + bi + 1) * 350" custom-class="h-3.5 w-24 rounded-xl">
                         <p>{{ aEntry.description }}</p>
                       </skeleton>
-                      <skeleton custom-class="h-3.5 w-16 rounded-xl">
+
+                      <skeleton :delay="(ai + bi + 1) * 350" custom-class="h-3.5 w-16 rounded-xl">
                         <p class="text-gray-600 dark:text-primary-300 font-semibold">{{ moneyFormatter.format(aEntry.amount) }}</p>
                       </skeleton>
                     </div>

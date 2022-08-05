@@ -11,20 +11,20 @@
               :class="{ 'hover:bg-gray-100 dark:hover:bg-primary-700': !isLoading }"
               class="flex justify-between items-center rounded-lg -mx-3 px-3 py-3 cursor-pointer">
               <div>
-                <skeleton :custom-class="isShort ? 'bg-gray-200 h-3.5 w-24' : 'w-16 h-4 bg-gray-200 mb-2'">
+                <skeleton :delay="i * 250" :custom-class="isShort ? 'bg-gray-200 h-3.5 w-24' : 'w-16 h-4 bg-gray-200 mb-2'">
                   <p class="font-semibold">{{ formattedAmount(entry) }}</p>
                 </skeleton>
-                <skeleton v-if="!isShort" custom-class="w-8 h-3.5 bg-gray-200">
+                <skeleton :delay="i * 250" v-if="!isShort" custom-class="w-8 h-3.5 bg-gray-200">
                   <p class="text-sm">{{ entry.cashier }}</p>
                 </skeleton>
               </div>
               <div :class="[isLoading ? 'space-y-2 flex flex-col items-end' : 'text-right']">
-                <skeleton :custom-class="isShort ? 'bg-gray-200 h-3.5 w-16' : 'w-16 h-4 bg-gray-200'">
+                <skeleton :delay="i * 250" :custom-class="isShort ? 'bg-gray-200 h-3.5 w-16' : 'w-16 h-4 bg-gray-200'">
                   <span class="text-gray-600 dark:text-primary-200 block">
                     {{ isShort ? formattedPaidAt(entry) : humanizedPaidAt(entry) }}
                   </span>
                 </skeleton>
-                <skeleton v-if="!isShort" custom-class="bg-gray-200 w-8 h-3.5">
+                <skeleton :delay="i * 250" v-if="!isShort" custom-class="bg-gray-200 w-8 h-3.5">
                   <span class="text-sm block">{{ paymentOr(entry) }}</span>
                 </skeleton>
               </div>
