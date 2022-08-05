@@ -1,12 +1,11 @@
 <template>
-  <aside 
-    :class="[isMenuOpen ? '<md:block w-full' : '<md:hidden']" 
-    class="main-navbar md:border-l md:border-r border-gray-300 dark:border-primary-700 md:h-full md:w-24 lg:w-64 fixed h-screen z-40 transition pt-2 bg-white dark:bg-primary-900 overflow-y-auto scrollbar-thin">
-    <div style="width: var(--safe-area-inset-top); height: var(--safe-area-inset-top)"></div>
-    <div class="flex flex-row md:flex-col lg:flex-row justify-between px-2 w-full">
-      <div class="flex flex-col space-y-2 py-2 pl-4 pr-2">
+  <aside :class="{'is-expanded': isMenuExpanded, 'is-open': isMenuOpen}" class="main-navbar">
+    <div class="padding-filler"></div>
+
+    <section class="top-portion">
+      <div class="account-header">
         <loading-container :is-loading="isStudentLoading" v-slot="{ isLoading }">
-          <div class="w-full flex flex-row space-x-2 md:flex-col md:space-y-2 md:space-x-0 lg:flex-row lg:space-y-0 lg:space-x-2">
+          <div class="logo-and-avatar">
             <div class="h-12 w-12 lg:h-13 lg:w-13">
               <icon-logo 
                 @click="isAboutModalOpen = true" 
@@ -15,9 +14,7 @@
 
             <avatar class="h-12 w-12 lg:h-13 lg:w-13" :src="avatarUrl" :alt="student?.number" />
           </div>
-          <div
-            :class="{ 'space-y-2 pt-2': isLoading }"
-            class="flex-col flex md:hidden lg:flex">
+          <div :class="{ 'space-y-2 pt-2': isLoading }" class="account-info">
             <skeleton :delay="250" custom-class="h-4 w-36 bg-gray-200">
               <span class="font-semibold">{{ studentFirstName }}'s MyUIC</span>
             </skeleton>
@@ -28,36 +25,33 @@
         </loading-container>
       </div>
 
-      <dark-mode-toggle class="self-start md:self-center md:mt-4 lg:mt-0 lg:self-start" />
-    </div>
+      <div class="ui-buttons">
+        <dark-mode-toggle />
+      </div>
+    </section>
 
     <loading-container :is-loading="isStudentLoading">
       <semester-selector @update:semesterId="isMenuOpen = false" />
     </loading-container>
 
-    <nav class="pt-6 pb-24 mt-2 md:pb-8 pl-4 md:h-[70%] flex flex-col space-y-5">
-      <div :key="`links_${groupName}`" v-for="(groupName, groupIdx) in linkGroups.groups">
-        <span class="uppercase text-sm font-bold pb-4 block pl-2 text-gray-500 dark:text-primary-200 md:hidden lg:block">
-          {{ groupName }}
-        </span>
+    <nav class="menu">
+      <button @click="isMenuExpanded = !isMenuExpanded" v-tooltip.right="menuExpandedTooltip" class="hidden @md:flex menu-item">
+        <icon-menu />
+        <span>Collapse Menu</span>
+      </button>
+
+      <div class="menu-group" :key="`links_${groupName}`" v-for="(groupName, groupIdx) in linkGroups.groups">
+        <span class="group-name">{{ groupName }}</span>
         <div class="space-y-3">
           <router-link
-            :key="`link_${groupName}_${i}`"
             v-for="(link, i) in linkGroups.links[groupIdx]"
+            :key="`link_${groupName}_${i}`"
             :to="link.to"
             @click="isMenuOpen = false"
-            :class="[
-              link.to.name === currentRouteName
-              ?  'text-white bg-primary-500 hover:bg-primary-600 dark:bg-primary-700 dark:hover:bg-primary-800'
-              :  'hover:bg-primary-100 dark:hover:bg-primary-800'
-            ]"
-            class="py-2 px-4 flex items-center max-h-12 space-x-4 rounded-l-full" 
-            style="transition: background-color 150ms ease">
-            <component 
-              :is="link.to.name === currentRouteName ? link.activeIcon : link.icon" 
-              :class="[link.to.name !== currentRouteName ? 'text-primary-500' : 'dark:text-primary-300']" 
-              class="text-[1.3rem]" />
-            <span class="md:hidden lg:block">{{ link.title }}</span>
+            :class="{'is-active': link.to.name === currentRouteName}"
+            class="menu-item">
+            <component :is="link.to.name === currentRouteName ? link.activeIcon : link.icon" />
+            <span>{{ link.title }}</span>
           </router-link>
         </div>
       </div>
@@ -65,38 +59,22 @@
       <div class="block h-8 flex-shrink-0"></div>
 
       <div class="pb-4 space-y-3">
-        <button
-          @click="isAboutModalOpen = true"
-          class="w-full hover:bg-primary-100 dark:hover:bg-primary-800 py-2 px-4 flex items-center max-h-12 space-x-4 rounded-l-full" 
-          style="transition: background-color 150ms ease">
-            <icon-about-outline class="text-primary-500 text-[1.3rem]" />
-            <span class="md:hidden lg:block">About</span>
+        <button @click="isAboutModalOpen = true" class="menu-item">
+            <icon-about-outline />
+            <span>About</span>
         </button>
 
-        <router-link
-          v-if="IS_NATIVE"
-          :to="{ name: 'settings' }"
+        <router-link v-if="IS_NATIVE" :to="{ name: 'settings' }"
           @click="isMenuOpen = false"
-          :class="[
-            currentRouteName === 'settings'
-            ?  'text-white bg-primary-500 hover:bg-primary-600 dark:bg-primary-700 dark:hover:bg-primary-800'
-            :  'hover:bg-primary-100 dark:hover:bg-primary-800'
-          ]"
-          class="py-2 px-4 flex items-center max-h-12 space-x-4 rounded-l-full" 
-          style="transition: background-color 150ms ease">
-          <component 
-            :is="currentRouteName === 'settings' ? IconSettings : IconSettingsOutline" 
-            :class="[currentRouteName !== 'settings' ? 'text-primary-500' : 'dark:text-primary-300']" 
-            class="text-[1.3rem]" />
-          <span class="md:hidden lg:block">Settings</span>
+          :class="{ 'is-active': currentRouteName === 'settings' }"
+          class="menu-item">
+          <component :is="currentRouteName === 'settings' ? IconSettings : IconSettingsOutline" />
+          <span>Settings</span>
         </router-link>
 
-        <button
-          @click="() => logout()"
-          class="w-full hover:bg-danger-100 dark:hover:bg-danger-900 bg-danger-50 dark:bg-danger-800 py-2 px-4 flex items-center max-h-12 space-x-4 rounded-l-full" 
-          style="transition: background-color 150ms ease">
-            <icon-logout-outline class="text-danger-500 dark:text-white text-[1.3rem]" />
-            <span class="md:hidden lg:block">Logout</span>
+        <button @click="() => logout()" class="menu-item is-logout">
+            <icon-logout-outline />
+            <span>Logout</span>
         </button>
       </div>
     </nav>
@@ -104,36 +82,27 @@
 
   <about-modal v-model:open="isAboutModalOpen" />
 
-  <div 
-    style="padding-bottom: var(--safe-area-inset-bottom);" 
-    class="bg-white dark:bg-primary-900 flex border-t dark:border-primary-800 fixed bottom-0 inset-x-0 md:hidden z-50">
+  <div class="menu is-mobile"> 
     <router-link 
-      :key="'link_' + i"
       v-for="i in 4"
+      :key="'link_' + i"
       :to="linkGroups.links[0][i - 1].to"
       @click="isMenuOpen = false"
       v-slot="{ isExactActive }"
-      exact-active-class="text-primary-600 dark:text-white bg-primary-100 !hover:bg-primary-200 dark:bg-primary-700 !dark:hover:bg-primary-800"
-      class="flex-1 px-4 py-2 flex flex-col items-center space-y-1 hover:bg-primary-100 dark:hover:bg-primary-600 text-sm">
-      <component :is="isExactActive ? linkGroups.links[0][i - 1].activeIcon : linkGroups.links[0][i - 1].icon" class="text-primary-600 dark:text-primary-200 text-[1.15rem]" />
-      <span class="text-xs">{{ linkGroups.links[0][i - 1].title }}</span>
+      exact-active-class="is-active"
+      class="menu-item">
+      <component :is="isExactActive ? linkGroups.links[0][i - 1].activeIcon : linkGroups.links[0][i - 1].icon" />
+      <span>{{ linkGroups.links[0][i - 1].title }}</span>
     </router-link>
-    <button 
-      @click="isMenuOpen = !isMenuOpen"
-      :class="[
-        isMenuOpen
-        ?  'text-primary-600 dark:text-white bg-primary-100 dark:bg-primary-600 hover:bg-primary-200 dark:hover:bg-primary-800'
-        :  'hover:bg-primary-100 dark:hover:bg-primary-600'
-      ]"
-      class="flex-1 px-4 py-2 flex flex-col items-center space-y-1 text-sm">
-      <icon-menu class="text-primary-600 dark:text-primary-200 text-[1.15rem]" />
-      <span class="text-xs">Menu</span>
+    <button @click="isMenuOpen = !isMenuOpen" :class="{'is-active': isMenuOpen}" class="menu-item">
+      <icon-menu />
+      <span>Menu</span>
     </button>
   </div>
 </template>
 
 <script lang="ts" setup>
-import IconMenu from '~icons/ion/apps';
+import IconMenu from '~icons/ion/menu';
 import IconLogoutOutline from '~icons/ion/log-out-outline';
 import IconLogo from '~icons/custom/logo';
 import IconAboutOutline from '~icons/ion/help-circle-outline';
@@ -147,7 +116,7 @@ import Avatar from './Avatar.vue';
 
 import { useStudentQuery } from '../../stores/studentStore';
 import { IS_NATIVE } from '../../utils';
-import { computed, FunctionalComponent, ref } from 'vue';
+import { computed, FunctionalComponent, onBeforeUnmount, ref, watch } from 'vue';
 import { useLogoutMutation } from '../../composables/auth';
 import { RouteRecordName, RouteRecordNormalized, RouteRecordRaw, useRoute, useRouter } from 'vue-router';
 import SemesterSelector from './SemesterSelector.vue';
@@ -156,6 +125,8 @@ const router = useRouter();
 const route = useRoute();
 const isMenuOpen = ref(false);
 const isAboutModalOpen = ref(false);
+const isMenuExpanded = ref(false);
+const menuExpandedTooltip = computed(() => !isMenuExpanded.value ? 'Expand menu' : null)
 const { isLoading: isStudentLoading, avatarUrl, normalizedFirstName: studentFirstName, query: { data: student } } = useStudentQuery();
 const { mutate: logout } = useLogoutMutation();
 
@@ -205,10 +176,185 @@ const linkGroups = (() => {
     links: []
   });
 })();
+
+const unwatchIsExpanded = watch(isMenuExpanded, (newExpanded) => {
+  if (newExpanded) {
+    document.body.classList.add('navbar-has-expanded');
+  } else {
+    document.body.classList.remove('navbar-has-expanded');
+  }
+  
+  if (isMenuOpen.value !== newExpanded) {
+    isMenuOpen.value = newExpanded;
+  }
+});
+
+const unwatchIsOpen = watch(isMenuOpen, (newOpen) => {
+  isMenuExpanded.value = newOpen;
+});
+
+onBeforeUnmount(() => {
+  unwatchIsExpanded();
+  unwatchIsOpen();
+});
 </script>
+
+<style lang="postcss">
+body.navbar-has-expanded {
+  @apply !@md:overflow-hidden;
+}
+</style>
 
 <style lang="postcss" scoped>
 .main-navbar::-webkit-scrollbar {
   display: none;
+}
+
+.main-navbar {
+  @apply md:border-l md:border-r border-gray-300 dark:border-primary-700 md:h-full md:w-24 lg:w-64 fixed h-screen z-40 transition pt-2 bg-white dark:bg-primary-900 overflow-y-auto scrollbar-thin;
+  transition: width ease 150ms;
+}
+
+.main-navbar.is-open {
+  @apply <md:block <md:w-full;
+}
+
+.main-navbar:not(.is-open) {
+  @apply <md:hidden;
+}
+
+.main-navbar.is-expanded {
+  @apply @md:w-1/2;
+}
+
+.main-navbar .padding-filler {
+  width: var(--safe-area-inset-top); 
+  height: var(--safe-area-inset-top)
+}
+
+.main-navbar .top-portion {
+  @apply flex flex-row md:flex-col lg:flex-row justify-between px-2 w-full;
+}
+
+.main-navbar.is-expanded .top-portion {
+  @apply flex-row
+}
+
+.main-navbar .top-portion .account-header {
+  @apply flex flex-col space-y-2 py-2 pl-4 pr-2;
+}
+
+.account-header .logo-and-avatar {
+  @apply w-full flex flex-row space-x-2 md:flex-col md:space-y-2 md:space-x-0 lg:flex-row lg:space-y-0 lg:space-x-2;
+}
+
+.main-navbar.is-expanded .account-header .logo-and-avatar {
+  @apply flex-row space-y-0 space-x-2;
+}
+
+.main-navbar:not(.is-expanded) .account-header .user-avatar {
+  @apply @md:hidden;
+}
+
+.main-navbar .account-header .account-info {
+  @apply flex-col flex @md:hidden;
+}
+
+.main-navbar.is-expanded .account-header .account-info {
+  @apply flex;
+}
+
+.main-navbar .top-portion .ui-buttons {
+  @apply flex flex-col <lg:space-y-4 lg:flex-row self-start md:self-center md:mt-4 lg:mt-0 lg:self-start;
+}
+
+.main-navbar.is-expanded .top-portion .ui-buttons {
+  @apply flex-row self-start mt-0;
+}
+
+.ui-buttons button {
+  @apply rounded-full p-2 hover:bg-primary-100 dark:hover:bg-primary-800;
+}
+
+.ui-buttons button svg {
+  @apply h-6 w-6 text-primary-500 dark:text-primary-300;
+}
+
+.main-navbar .menu {
+  @apply pt-6 pb-24 mt-2 md:pb-8 pl-4 md:h-[70%] flex flex-col space-y-5;
+}
+
+.menu .menu-group .group-name {
+  @apply uppercase text-sm font-bold pb-4 block pl-2 text-gray-500 dark:text-primary-200 md:hidden lg:block;
+}
+
+.menu .menu-item {
+  @apply py-4 px-4 items-center max-h-12 space-x-4 rounded-l-full;
+  transition: background-color 150ms ease;
+}
+
+.menu .menu-item:not(.hidden) {
+  @apply flex;
+}
+
+.menu button.menu-item {
+  @apply w-full;
+}
+
+.menu .menu-item svg {
+  @apply text-primary-500 text-[1.3rem];
+}
+
+.menu .menu-item span {
+  @apply md:hidden lg:block;
+}
+
+.main-navbar.is-expanded .menu .menu-item span {
+  @apply block;
+}
+
+.menu .menu-item.is-active {
+  @apply text-white bg-primary-500 hover:bg-primary-600 dark:bg-primary-700 dark:hover:bg-primary-800;
+}
+
+.menu .menu-item.is-active svg {
+  @apply text-white dark:text-primary-300;
+}
+
+.menu .menu-item:not(.is-active) {
+  @apply hover:bg-primary-100 dark:hover:bg-primary-800;
+}
+
+.menu .menu-item.is-logout {
+  @apply hover:bg-danger-100 dark:hover:bg-danger-900 bg-danger-50 dark:bg-danger-800;
+}
+
+.menu .menu-item.is-logout svg {
+  @apply text-danger-500 dark:text-white;
+}
+
+.menu.is-mobile {
+  @apply bg-white dark:bg-primary-900 border-t dark:border-primary-800 fixed bottom-0 inset-x-0 md:hidden z-50 flex;
+  padding-bottom: var(--safe-area-inset-bottom);
+}
+
+.menu.is-mobile .menu-item {
+  @apply flex-1 max-h-none rounded-none flex-col justify-center items-center space-x-0 space-y-1 px-4 py-2;
+}
+
+.menu.is-mobile .menu-item svg {
+  @apply text-primary-600 text-[1.15rem] flex-shrink-0;
+}
+
+.menu.is-mobile .menu-item span {
+  @apply text-xs;
+}
+
+.menu.is-mobile .menu-item.is-active {
+  @apply text-primary-600 dark:text-white bg-primary-100 !hover:bg-primary-200 dark:bg-primary-700 !dark:hover:bg-primary-800;
+}
+
+.menu.is-mobile button.menu-item {
+  @apply w-auto;
 }
 </style>

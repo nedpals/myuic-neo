@@ -4,7 +4,7 @@
     <img
         @error="loadFallbackImage"
         :class="attrs.class ? attrs.class.toString() : ''"
-        class="bg-primary-200 rounded-full object-cover"
+        class="user-avatar bg-primary-200 rounded-full object-cover"
         :src="src ? src : fallbackSrc" :alt="alt"/>
   </skeleton>
 </template>
