@@ -89,7 +89,7 @@ onBeforeUnmount(unsubscribe);
   opacity: 0;
 }
 
-@keyframes zoomIn {
+@keyframes bottomToCenter {
     0% {
         opacity: 0;
         transform: translateY(20%);
@@ -100,17 +100,33 @@ onBeforeUnmount(unsubscribe);
     }
 }
 
+@keyframes centerToTop {
+    0% {
+        opacity: 1;
+        transform: translateY(0%);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-10%);
+    }
+}
+
 .modal-enter-active {
-  animation: zoomIn 150ms ease;
+  animation: bottomToCenter 150ms ease;
 }
 
 .modal-leave-active {
-  animation: zoomIn 150ms ease reverse;
+  animation: centerToTop 150ms ease;
 }
 
-.modal-enter-from,
-.modal-leave-to {
+
+.modal-enter-from {
   opacity: 0;
   transform: translateY(20%);
+}
+
+.modal-leave-to {
+  opacity: 0;
+  transform: translateY(-10%);
 }
 </style>
