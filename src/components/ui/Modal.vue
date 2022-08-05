@@ -1,28 +1,32 @@
 <template>
   <teleport to="body">
-    <div 
-      v-if="open" 
-      class="fixed inset-0 bg-white dark:bg-primary-900 bg-opacity-40 z-50 flex items-center justify-center" 
-      @click.self="closeModal">
-      <box class="flex flex-col max-h-screen !shadow-lg" :class="modalClass" no-padding>
-        <div class="px-6">
-          <div class="py-3 py-4 border-b dark:border-primary-600 relative flex items-center justify-center">
-            <h2 class="text-xl font-bold text-center overflow-ellipsis whitespace-nowrap overflow-hidden">{{ title }}</h2>
-            <button 
-              @click="closeModal" 
-              class="absolute right-0 bg-gray-200 dark:bg-primary-600 hover:bg-gray-200 hover:bg-gray-300 dark:hover:bg-primary-600 dark:hover:bg-primary-700 rounded-full p-2">
-              <icon-close />
-            </button>
-          </div>
-        </div>
-        <div class="w-full flex-1" :class="contentClass">
-          <slot></slot>
-        </div>
-        <div class="border-t dark:border-primary-600" :class="footerClass" v-if="isSlotVisible($slots.footer)">
-          <slot name="footer"></slot>
-        </div>
-      </box>
-    </div>
+    <transition name="modal-overlay" @enter="showModal = true">
+      <div 
+        v-if="open" 
+        class="fixed inset-0 bg-white dark:bg-primary-900 bg-opacity-40 z-50 flex items-center justify-center" 
+        @click.self="partiallyCloseModal">
+        <transition name="modal" @after-leave="closeModal">
+          <box v-if="showModal" class="flex flex-col max-h-screen !shadow-lg" :class="modalClass" no-padding>
+            <div class="px-6">
+              <div class="py-3 py-4 border-b dark:border-primary-600 relative flex items-center justify-center">
+                <h2 class="text-xl font-bold text-center overflow-ellipsis whitespace-nowrap overflow-hidden">{{ title }}</h2>
+                <button 
+                  @click="partiallyCloseModal" 
+                  class="absolute right-0 bg-gray-200 dark:bg-primary-600 hover:bg-gray-200 hover:bg-gray-300 dark:hover:bg-primary-600 dark:hover:bg-primary-700 rounded-full p-2">
+                  <icon-close />
+                </button>
+              </div>
+            </div>
+            <div class="w-full flex-1" :class="contentClass">
+              <slot></slot>
+            </div>
+            <div class="border-t dark:border-primary-600" :class="footerClass" v-if="isSlotVisible($slots.footer)">
+              <slot name="footer"></slot>
+            </div>
+          </box>
+        </transition>
+      </div>
+    </transition>
   </teleport>
 </template>
 
@@ -30,7 +34,7 @@
 import Box from './Box.vue';
 import IconClose from '~icons/ion/close';
 import { isSlotVisible } from '../../utils';
-import { computed, onBeforeUnmount, defineEmits, defineProps } from 'vue';
+import { computed, onBeforeUnmount, defineEmits, defineProps, onMounted, ref } from 'vue';
 import { useModal } from '../../composables/modal';
 
 const emit = defineEmits(['update:open']);
@@ -54,9 +58,12 @@ const props = defineProps({
   },
   modalClass: {
     type: String,
-    default: 'max-w-xl w-full'
+    default: 'max-w-xl w-11/12 md:w-full'
   }
 });
+
+const showModal = ref(false);
+const partiallyCloseModal = () => { showModal.value = false }
 
 const { closeModal, unsubscribe } = useModal(
   computed(() => props.open), 
@@ -64,5 +71,46 @@ const { closeModal, unsubscribe } = useModal(
   props.mId
 );
 
+onMounted(() => {
+  showModal.value = props.open;
+});
+
 onBeforeUnmount(unsubscribe);
 </script>
+
+<style scoped>
+.modal-overlay-enter-active,
+.modal-overlay-leave-active {
+  transition: opacity 0.25s ease;
+}
+
+.modal-overlay-enter-from,
+.modal-overlay-leave-to {
+  opacity: 0;
+}
+
+@keyframes zoomIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20%);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0%);
+    }
+}
+
+.modal-enter-active {
+  animation: zoomIn 150ms ease;
+}
+
+.modal-leave-active {
+  animation: zoomIn 150ms ease reverse;
+}
+
+.modal-enter-from,
+.modal-leave-to {
+  opacity: 0;
+  transform: translateY(20%);
+}
+</style>
