@@ -8,7 +8,7 @@
     </template>
 
     <loading-container :is-loading="isLoading" v-slot="{ isLoading }">
-      <div class="p-6 max-w-2xl mx-auto" v-if="!isLoading">
+      <div class="p-6 max-w-4xl mx-auto" v-if="!isLoading">
         <router-view></router-view>
       </div>
       <div class="flex items-center justify-center p-8 mx-auto" v-else>
