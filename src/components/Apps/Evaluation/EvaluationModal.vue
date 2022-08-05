@@ -13,46 +13,22 @@
 
         <div class="flex w-full h-full" v-else-if="!isDone">
           <tab-group vertical manual :selected-index="step" @change="step = $event">
-            <tab-list class="w-1/4 flex flex-col border-r <md:hidden">
-              <tab v-slot="{ selected }" as="div" class="w-full">
-                <button 
-                  :class="{ 'text-primary-500 bg-gradient-to-r from-transparent to-primary-100': selected }" 
-                  class="w-full px-6 py-4 hover:bg-gray-100 font-semibold text-left">
-                  Reminders
-                </button>
-              </tab>
-              <tab v-if="!isSingle" v-slot="{ selected }" as="div" class="w-full">
-                <button 
-                  :disabled="1 > step"
-                  :class="{ 'text-primary-500 bg-gradient-to-r from-transparent to-primary-100': selected }" 
-                  class="w-full px-6 py-4 disabled:cursor-default disabled:text-gray-300 not-disabled:hover:bg-gray-100 font-semibold text-left">
-                  Notice
-                </button>
-              </tab>
-              <tab v-slot="{ selected }" as="div" class="w-full" :key="cat.title" v-for="(cat, ci) in data!.categories">
-                <button 
-                  :disabled="ci + tabOffsetStart > step"
-                  :class="{ 'text-primary-500 bg-gradient-to-r from-transparent to-primary-100': selected }" 
-                  class="w-full px-6 py-4 disabled:cursor-default disabled:text-gray-300 not-disabled:hover:bg-gray-100 font-semibold text-left">
-                  {{ cat.title }}
-                </button>
-              </tab>
-              <tab v-slot="{ selected }" as="div" class="w-full">
-                <button 
-                  :disabled="data!.categories.length + tabOffsetStart > step"
-                  :class="{ 'text-primary-500 bg-gradient-to-r from-transparent to-primary-100': selected }" 
-                  class="w-full px-6 py-4 disabled:cursor-default disabled:text-gray-300 not-disabled:hover:bg-gray-100 font-semibold text-left">
-                  Comments
-                </button>
-              </tab>
-              <tab v-slot="{ selected }" as="div" class="w-full">
-                <button 
-                  :disabled="data!.categories.length + tabOffsetStart + 1 > step"
-                  :class="{ 'text-primary-500 bg-gradient-to-r from-transparent to-primary-100': selected }" 
-                  class="w-full px-6 py-4 disabled:cursor-default disabled:text-gray-300 not-disabled:hover:bg-gray-100 font-semibold text-left">
-                  Summary
-                </button>
-              </tab>
+            <tab-list class="steps-nav">
+              <Tab as="div">
+                <button class="tab-section-link">Reminders</button>
+              </Tab>
+              <Tab v-if="!isSingle" as="div">
+                <button class="tab-section-link" :disabled="1 > step">Notice</button>
+              </Tab>
+              <Tab v-for="(cat, ci) in data!.categories" :key="cat.title" as="div">
+                <button class="tab-section-link" :disabled="ci + tabOffsetStart > step">{{ cat.title }}</button>
+              </Tab>
+              <Tab as="div">
+                <button class="tab-section-link" :disabled="data!.categories.length + tabOffsetStart > step">Comments</button>
+              </Tab>
+              <Tab as="div">
+                <button class="tab-section-link" :disabled="data!.categories.length + tabOffsetStart + 1 > step">Summary</button>
+              </Tab>
             </tab-list>
             <tab-panels ref="panelRef" class="w-full lg:w-3/4 md:min-h-[60vh] md:max-h-[60vh] pt-3 pb-6 overflow-y-auto">
               <tab-panel class="px-3 md:px-6">
@@ -397,3 +373,21 @@ onBeforeUnmount(() => {
   unwatchScroll();
 });
 </script>
+
+<style lang="postcss" scoped>
+.steps-nav {
+  @apply w-1/4 flex flex-col border-r <md:hidden;
+}
+
+.steps-nav > div {
+  @apply w-full;
+}
+
+.tab-section-link {
+  @apply w-full px-6 py-4 font-semibold text-left disabled:cursor-default disabled:text-gray-300 not-disabled:hover:bg-gray-100;
+}
+
+.tab-section-link.is-selected, .steps-nav > div[aria-selected="true"] > .tab-section-link {
+  @apply text-primary-500 bg-gradient-to-r from-transparent to-primary-100;
+}
+</style>
