@@ -41,7 +41,7 @@ import Box from './Box.vue';
 import IconClose from '~icons/ion/close';
 import IconBack from '~icons/ion/chevron-left';
 import { isSlotVisible } from '../../utils';
-import { computed, onBeforeUnmount, defineEmits, defineProps, ref, onMounted } from 'vue';
+import { computed, onBeforeUnmount, defineEmits, defineProps, ref, onMounted, PropType } from 'vue';
 import { useModal } from '../../composables/modal';
 
 const showModal = ref(false);
@@ -67,10 +67,20 @@ const props = defineProps({
   modalClass: {
     type: String,
     default: 'md:max-w-xl w-full'
+  },
+  shouldClose: {
+    type: Function as PropType<() => Promise<boolean>>,
+    default: () => true
   }
 });
 
-const partiallyCloseModal = () => { showModal.value = false }
+const partiallyCloseModal = () => {
+  props.shouldClose()
+    .then(result => {
+      if (result)
+        showModal.value = false;
+    });
+}
 
 const { closeModal, unsubscribe } = useModal(
   computed(() => props.open), 

@@ -3,7 +3,8 @@
     title="Evaluate Course"
     :subtitle="course.name + ' / ' + course.code" 
     :open="isOpen"
-    @update:open="warnUserOnClose"
+    :should-close="warnUserOnClose"
+    @update:open="handleModal"
     content-class="flex overflow-hidden"
     modal-class="max-w-4xl w-full">
       <loading-container :is-loading="isLoading || isProcessing" v-slot="{ isLoading }">
@@ -274,14 +275,18 @@ const commentQuestions = readonly([
   'Additional comments'
 ]);
 
-const closeModal = () => {
-  emit('close');
+const handleModal = (newOpen: boolean) => {
+  isOpen.value = newOpen;
+
+  if (!newOpen)
+    emit('close');
 }
 
-const warnUserOnClose = async (newOpen: boolean) => {
-  if (isDone.value || isOpen.value === newOpen || isProcessing.value) {
-    return;
+const warnUserOnClose = async () => {
+  if (isDone.value || isProcessing.value) {
+    return false;
   }
+
   const ans = await showDialog({
     title: 'Warning',
     content: 'Closing this will lose your progress. Would you like to proceed?',
@@ -299,10 +304,7 @@ const warnUserOnClose = async (newOpen: boolean) => {
     ],
   });
 
-  if (ans === 'yes') {
-    isOpen.value = newOpen;
-    closeModal();
-  }
+  return ans === 'yes';
 }
 
 // data
