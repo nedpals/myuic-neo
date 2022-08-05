@@ -8,10 +8,10 @@
         <div
           :class="{ 'space-y-2': isLoading }"
           class="flex-col flex md:hidden lg:flex">
-          <skeleton custom-class="h-4 w-36 bg-gray-200">
+          <skeleton :delay="3 * 250" custom-class="h-4 w-36 bg-gray-200">
             <span class="font-semibold">{{ currentSemester.display.semester }}</span>
           </skeleton>
-          <skeleton custom-class="h-3.5 w-24 bg-gray-200">
+          <skeleton :delay="3 * 250" custom-class="h-3.5 w-24 bg-gray-200">
             <span class="text-sm">{{ currentSemester.display.year }}</span>
           </skeleton>
         </div>
@@ -26,15 +26,15 @@
         leave-to-class="transform scale-95 opacity-0"
       >
         <listbox-options class="absolute z-10 mt-1 w-full border dark:border-primary-700 bg-white dark:bg-primary-800 shadow-lg max-h-56 rounded-md py-1 text-base overflow-auto focus:outline-none sm:text-sm">
-          <listbox-option as="template" :key="semester.id" :value="semester.id" v-for="semester in filteredSemesterList">
+          <listbox-option as="template" :key="semester.id" :value="semester.id" v-for="(semester, si) in filteredSemesterList">
             <li :class="[currentSemesterId == semester.id ? 'bg-primary-100 dark:bg-primary-600' : '', 'hover:bg-gray-200 dark:hover:bg-primary-700 cursor-default select-none relative py-2 pl-3 pr-9']">
               <div
                 :class="{ 'space-y-2': isLoading }"
                 class="flex-col flex md:hidden lg:flex">
-                <skeleton custom-class="h-4 w-36 bg-gray-200">
+                <skeleton :delay="(4 + (si + 1)) * 250" custom-class="h-4 w-36 bg-gray-200">
                   <span class="font-semibold">{{ semester.display.semester }}</span>
                 </skeleton>
-                <skeleton custom-class="h-3.5 w-24 bg-gray-200">
+                <skeleton :delay="(4 + (si + 1)) * 250" custom-class="h-3.5 w-24 bg-gray-200">
                   <span class="text-sm">{{ semester.display.year }}</span>
                 </skeleton>
               </div>

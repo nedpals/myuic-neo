@@ -18,10 +18,10 @@
           <div
             :class="{ 'space-y-2 pt-2': isLoading }"
             class="flex-col flex md:hidden lg:flex">
-            <skeleton custom-class="h-4 w-36 bg-gray-200">
+            <skeleton :delay="250" custom-class="h-4 w-36 bg-gray-200">
               <span class="font-semibold">{{ studentFirstName }}'s MyUIC</span>
             </skeleton>
-            <skeleton custom-class="h-3.5 w-24 bg-gray-200">
+            <skeleton :delay="2 * 250" custom-class="h-3.5 w-24 bg-gray-200">
               <span class="text-sm">{{ student?.number }}</span>
             </skeleton>
           </div>
