@@ -8,15 +8,16 @@
 
           <clearance-status-icon
             :status="isLoading ? 'unknown' : isCleared ? 'cleared' : 'not_cleared'"
+            :class="{ 'animate-pulse': isLoading }"
             class="h-42 w-42 md:h-48 md:w-48 mb-4" />
 
-          <skeleton custom-class="h-7.5 md:h-9 w-full max-w-96 mb-4">
+          <skeleton :delay="2 * 250" custom-class="h-7.5 md:h-9 w-full max-w-96 mb-4">
             <h1 class="text-3xl md:text-4xl font-semibold mb-2">
               {{ isCleared ? 'You\'re cleared' : 'You\'re not cleared' }}, {{ studentFirstName }}!
             </h1>
           </skeleton>
 
-          <skeleton custom-class="h-5 md:h-6 w-full max-w-72">
+          <skeleton :delay="3 * 250" custom-class="h-5 md:h-6 w-full max-w-72">
             <h2 class="text-xl md:text-2xl text-gray-600 dark:text-primary-200 mb-8">
               {{
                 isCleared

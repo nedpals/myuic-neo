@@ -7,6 +7,7 @@
             v-if="isLoading"
             :key="'day_' + j"
             v-for="j in 6"
+            :delay="j * 250" 
             custom-class="bg-gray-200 flex-1 px-3 py-1 rounded-full h-7 w-auto" />
           <button
             v-else
@@ -27,10 +28,10 @@
             <div
               :class="[isLoading ? 'py-4' : 'py-3 hover:bg-gray-100 dark:hover:bg-primary-700 transition-colors']"
               class="flex-col rounded-lg -mx-3 px-4">
-              <skeleton custom-class="h-4 w-32 bg-gray-200 mb-2">
+              <skeleton :delay="(si + 1) * 250" custom-class="h-4 w-32 bg-gray-200 mb-2">
                 <p class="mb-2 font-semibold">{{ sub.name }}</p>
               </skeleton>
-              <skeleton custom-class="h-3.5 w-24 bg-gray-200">
+              <skeleton :delay="(si + 1) * 250" custom-class="h-3.5 w-24 bg-gray-200">
                 <p class="text-gray-600 dark:text-primary-200 text-sm">{{ sub.fromTime }}-{{ sub.toTime }}</p>
               </skeleton>
             </div>
@@ -38,7 +39,7 @@
         </div>
         
         <div class="mt-auto">
-          <skeleton custom-class="h-4 w-24 bg-primary-400">
+          <skeleton :delay="(currentSchedule.length + 1) * 250" custom-class="h-4 w-24 bg-primary-400">
             <router-link :to="{ name: 'schedule' }" class="hover:underline text-primary-500 dark:text-primary-200">See full schedule</router-link>
           </skeleton>
         </div>
