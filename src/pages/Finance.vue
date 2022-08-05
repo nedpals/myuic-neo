@@ -223,7 +223,7 @@ function onPaymentFormOpenUpdate(isOpen: boolean) {
 
 <style lang="postcss" scoped>
 progress.due-progress {
-  @apply w-full rounded-full border h-3;
+  @apply w-full rounded-full border dark:border-0 h-3;
 }
 
 progress.due-progress::-webkit-progress-bar {
