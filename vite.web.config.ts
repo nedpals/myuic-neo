@@ -19,6 +19,7 @@ export default defineConfig({
   plugins: [
     ...plugins,
     VitePWA({
+      registerType: 'autoUpdate',
       includeManifestIcons: true,
       manifest: {
         background_color: "#FFFFFF",
