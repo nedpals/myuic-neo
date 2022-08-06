@@ -70,7 +70,7 @@ const props = defineProps({
   },
   shouldClose: {
     type: Function as PropType<() => Promise<boolean>>,
-    default: () => true
+    default: () => Promise.resolve(true)
   }
 });
 
