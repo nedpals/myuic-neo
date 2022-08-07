@@ -54,7 +54,7 @@
               <div class="flex flex-wrap -mx-1">
                 <radio-group-option
                   class="w-1/2 md:w-1/3 p-1"
-                  :key="`payment_center_${pci}`"
+                  :key="'payment_center_' + pci"
                   v-for="(pc, pci) in paymentCenters" 
                   :value="pc"
                   v-slot="{ checked }">
