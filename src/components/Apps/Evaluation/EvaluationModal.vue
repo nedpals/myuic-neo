@@ -362,7 +362,6 @@ const submitEvaluation = async () => {
         exact: true, 
         queryKey: 'evaluation' 
       });
-      closeModal();
     }
   }
 }
