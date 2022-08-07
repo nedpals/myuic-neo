@@ -26,7 +26,7 @@
       </div>
 
       <div class="ui-buttons">
-        <dark-mode-toggle />
+        <dark-mode-toggle v-tooltip.right="menuExpandedTooltip('Toggle dark mode')" />
       </div>
     </section>
 
@@ -35,7 +35,7 @@
     </loading-container>
 
     <nav class="menu">
-      <button @click="isMenuExpanded = !isMenuExpanded" v-tooltip.right="menuExpandedTooltip" class="hidden @md:flex menu-item">
+      <button @click="isMenuExpanded = !isMenuExpanded" v-tooltip.right="menuExpandedTooltip('Expand menu')" class="hidden @md:flex menu-item">
         <icon-menu />
         <span>Collapse Menu</span>
       </button>
@@ -49,7 +49,8 @@
             :to="link.to"
             @click="isMenuOpen = false"
             :class="{'is-active': link.to.name === currentRouteName}"
-            class="menu-item">
+            class="menu-item"
+            v-tooltip.right="menuExpandedTooltip(link.title)" >
             <component :is="link.to.name === currentRouteName ? link.activeIcon : link.icon" />
             <span>{{ link.title }}</span>
           </router-link>
@@ -59,7 +60,7 @@
       <div class="block h-8 flex-shrink-0"></div>
 
       <div class="pb-4 space-y-3">
-        <button @click="isAboutModalOpen = true" class="menu-item">
+        <button @click="isAboutModalOpen = true" class="menu-item" v-tooltip.right="menuExpandedTooltip('About')" >
             <icon-about-outline />
             <span>About</span>
         </button>
@@ -67,12 +68,13 @@
         <router-link v-if="IS_NATIVE" :to="{ name: 'settings' }"
           @click="isMenuOpen = false"
           :class="{ 'is-active': currentRouteName === 'settings' }"
-          class="menu-item">
+          class="menu-item"
+          v-tooltip.right="menuExpandedTooltip('Settings')" >
           <component :is="currentRouteName === 'settings' ? IconSettings : IconSettingsOutline" />
           <span>Settings</span>
         </router-link>
 
-        <button @click="() => logout()" class="menu-item is-logout">
+        <button @click="() => logout()" class="menu-item is-logout" v-tooltip.right="menuExpandedTooltip('Logout')" >
             <icon-logout-outline />
             <span>Logout</span>
         </button>
@@ -126,7 +128,7 @@ const route = useRoute();
 const isMenuOpen = ref(false);
 const isAboutModalOpen = ref(false);
 const isMenuExpanded = ref(false);
-const menuExpandedTooltip = computed(() => !isMenuExpanded.value ? 'Expand menu' : null)
+const menuExpandedTooltip = (label: string) => !isMenuExpanded.value ? label : null;
 const { isLoading: isStudentLoading, avatarUrl, normalizedFirstName: studentFirstName, query: { data: student } } = useStudentQuery();
 const { mutate: logout } = useLogoutMutation();
 
