@@ -21,7 +21,7 @@ export const useMockServer = () => {
       this.passthrough('/@windicss-devtools-update');
 
       this.urlPrefix = backendUrl;
-      this.timing = 2000;
+      // this.timing = 2000;
       
       this.post(RoutePath('login'), (schema, request) => {
         const creds = JSON.parse(request.requestBody);

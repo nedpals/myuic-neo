@@ -1,186 +1,163 @@
 <template>
   <modal-window :ref="(modalWindow as any)" content-class="max-h-[93vh] overflow-y-auto" title="New Payment">
-    <loading-container :isLoading="formState == 'processing'" v-slot="{ isLoading }">
-      <div v-if="isLoading" class="flex justify-center py-8">
-        <loader class="h-14 w-14" />
+    <div style="transition: height 150ms ease">
+      <div v-if="currentIdx === 0" class="p-4 flex flex-col space-y-2">
+        <button @click="amount = 5000; currentIdx++" class="p-4 shadow w-full border border-primary-500 hover:bg-gray-100 rounded-lg bg-gray flex items-center justify-between">
+          <div class="text-left">
+            <h3 class="font-bold">I would like to pay my enrollment downpayment</h3>
+            <p class="text-gray-500">Assumes that you will be paying {{ pesoFormatter.format(5000) }}</p>
+          </div>
+          <icon-chevron-right class="text-primary-500" />
+        </button>
+
+        <button @click="amount = rawAccountBalance; currentIdx++" class="p-4 shadow w-full border border-primary-500 hover:bg-gray-100 rounded-lg bg-gray flex items-center justify-between">
+          <div class="text-left">
+            <h3 class="font-bold">I would like to settle my remaining balance</h3>
+            <p class="text-gray-500">Assumes that you will be paying {{ pesoFormatter.format(rawAccountBalance) }}</p>
+          </div>
+          <icon-chevron-right class="text-primary-500" />
+        </button>
+
+        <button @click="currentIdx++" class="p-4 shadow w-full border border-primary-500 hover:bg-gray-100 rounded-lg bg-gray flex items-center justify-between">
+          <div class="text-left">
+            <h3 class="font-bold">I would like to pay a specific amount</h3>
+          </div>
+          <icon-chevron-right class="text-primary-500" />
+        </button>
       </div>
 
-      <template v-else>
-        <template v-if="formState == 'success' || formState == 'failed'">
-          <div class="flex flex-col items-center text-center pb-8">
-            <component
-              :is="formState == 'success' ? IconCheckmarkCircleOutline : IconCloseCircleOutline"
-              :class="[formState == 'success' ? 'text-success-400' : 'text-danger-400']"
-              class="h-42 w-42 mb-2" />
-            
-            <h2 class="font-semibold text-4xl mb-3">{{ formState == 'success' ? 'Success!' : 'Something went wrong.' }}</h2>
-            <p class="text-lg">{{ formState == 'success' ? 'Payment details were submitted. You will be notified shortly.' : 'There was an issue while submitting. Please try again.' }}</p>
-          </div>
-        </template>
+      <form :ref="(newPaymentForm as any)" v-else-if="currentIdx === 1" class="px-4 py-2 flex flex-col space-y-2">
+        <div class="form-control">
+          <label class="mb-4" for="amount">Enter amount:</label>
+          <input type="number" min="100" id="amount" class="text-2xl w-full" name="amount" v-model="amount" />
 
-        <template v-else-if="formState == 'none'">
-          <notification-container
-            type="info"
-            text="Not functional at this moment. For demonstration purposes only."
-            />
-          <notification-container type="warning">
-            <ol class="list-decimal pl-2">
-              <li>Your submission is still subject for review and verification.</li>
-              <li>Only upon verification shall your payment be processed and entered into the school information system.</li>
-              <li>You certify that your submitted documents online are authentic.</li>
-            </ol>
-          </notification-container>
-          <form @submit="(e) => submitForm(e as SubmitEvent)" ref="newPaymentForm" class="px-4 py-3">
-            <div class="form-control">
-              <label for="purpose">Purpose</label>
-              <textarea
-                type="text"
-                name="purpose"
-                id="purpose"
-                required />
-            </div>
-            <div class="form-control">
-              <label for="amount_paid">Amount Paid</label>
-              <input
-                type="text"
-                placeholder="etc. 10000 for P10,000"
-                name="amount_paid"
-                id="amount_paid"
-                required />
-            </div>
-            <radio-group class="form-control" v-model="miscData.paymentMethod">
-              <radio-group-label>Payment Method</radio-group-label>
+          <p class="hint-text" v-if="paymentCenters[paymentMethodIdx].note">NOTE: {{ paymentCenters[paymentMethodIdx].note!(amount) }}</p>
+        </div>
 
-              <div class="flex flex-wrap -mx-1">
-                <radio-group-option
-                  class="w-1/2 md:w-1/3 p-1"
-                  :key="`payment_center_${pci}`"
-                  v-for="(pc, pci) in paymentCenters" 
-                  :value="pc"
-                  v-slot="{ checked }">
-                  <div 
-                    :class="[checked ? 'border-primary-400 hover:border-primary-500' : 'hover:border-primary-400']" 
-                    class="border-2 rounded-lg px-2 py-3 cursor-pointer flex flex-row md:flex-col items-center justify-center">
-                    <component 
-                      :is="pc.icon" 
-                      class="text-xl <md:mr-2 md:text-3xl md:mb-2 md:mt-1"
-                      :class="{ 'text-primary-600': checked }" />
-                    <span class="text-center font-semibold text-sm block">{{ pc.name }}</span>
-                  </div>
-                </radio-group-option>
-              </div>
-            </radio-group>
-            <div class="form-control">
-              <!-- TODO: Change this depending on the payment method -->
-              <label for="receipt_number">Payment Slip / Receipt Number</label>
-              <input
-                type="text"
-                name="receipt_number"
-                id="receipt_number" required />
-            </div>
-            <div class="form-control">
-              <label for="file_proof_of_payment">Proof of Payment</label>
-              <input
-                type="file"
-                name="file_proof_of_payment"
-                id="file_proof_of_payment"
-                accept=".zip,.rar,.7zip, .pdf, image/*"
-                capture="user">
-            </div>
-            <!-- Hidden stuff that should be automatically filled out -->
-            <input type="hidden" name="student_id" :value="student?.number" />
-            <input type="hidden" name="first_name" :value="student?.firstName" />
-            <input type="hidden" name="middle_name" :value="student?.middleName" />
-            <input type="hidden" name="last_name" :value="student?.lastName" />
-            <input type="hidden" name="email" :value="student?.email" />
-            <input type="hidden" name="contact_number" :value="student?.contactNumber" />
-            <input type="hidden" name="department" :value="higherEducationDepartmentId" />
-            <input type="hidden" name="payment_center" :value="miscData.paymentMethod" />
-            <div class="form-control pt-8">
-              <p class="text-gray-500 dark:text-primary-200">
-                By clicking "Submit", I acknowledge that I have read, understood, and agreed to the terms and conditions for the processing of my payment.
-              </p>
-            </div>
-          </form>
-        </template>
+        <div class="form-control">
+          <label for="campus_branch">Branch</label>
+          <select name="campus_branch" id="campus_branch" v-model="campusBranchIdx">
+            <option v-for="(b, bIdx) in campusBranches" :value="bIdx">{{ b }}</option>
+          </select>
+        </div>
 
-      </template>
-    </loading-container>
+        <div class="mt-4">
+          <radio-group class="form-control" v-model="paymentMethodIdx">
+            <radio-group-label>Payment Method</radio-group-label>
+
+            <div class="flex flex-wrap -mx-1">
+              <radio-group-option
+                class="w-1/2 md:w-1/3 p-1"
+                :key="`payment_center_${pci}`"
+                v-for="(pc, pci) in paymentCenters" 
+                :value="pci"
+                v-slot="{ checked }">
+                <div 
+                  :class="[checked ? 'border-primary-400 hover:border-primary-500' : 'hover:border-primary-400']" 
+                  class="border-2 rounded-lg px-2 py-3 cursor-pointer flex flex-row md:flex-col items-center justify-center">
+                  <component 
+                    :is="pc.icon" 
+                    class="text-xl <md:mr-2 md:text-3xl md:mb-2 md:mt-1"
+                    :class="{ 'text-primary-600': checked }" />
+                  <span class="text-center font-semibold text-sm block">{{ pc.name }}</span>
+                </div>
+              </radio-group-option>
+            </div>
+          </radio-group>
+        </div>
+      </form>
+
+      <component 
+        v-else-if="currentIdx === 2" 
+        :is="paymentCenters[paymentMethodIdx].component" />
+    </div>
     
     <template #footer>
-      <div class="flex">
-        <Button theme="primary" v-if="formState !== 'success'" @click="triggerSubmitForm" class="ml-auto px-6" text="Submit" />
-        <Button theme="primary" v-else @click="modalWindow?.$emit('update:open', false)" class="ml-auto px-6" text="Close" />
+      <div class="w-full justify-end flex space-x-2" v-if="currentIdx !== 0">
+        <Button v-if="formState !== 'success'" @click="currentIdx--" class="px-6" text="Prev" />
+        <Button theme="primary" v-if="formState !== 'success'" @click="currentIdx++" class="px-6" text="Next" />
+        <Button theme="primary" v-else @click="modalWindow?.$emit('update:open', false)" class="px-6" text="Close" />
       </div>
     </template>
   </modal-window>
 </template>
 
 <script lang="ts" setup>
-import { useStudentQuery } from '../../stores/studentStore'
-import Loader from '../ui/Loader.vue';
-import LoadingContainer from '../ui/LoadingContainer.vue';
+import { pesoFormatter } from '../../utils';
+import { currentSemesterIdKey, useStudentQuery } from '../../stores/studentStore';
+import IconChevronRight from '~icons/ion/chevron-right';
 import ModalWindow from '../ui/ModalWindow.vue';
-import IconCheckmarkCircleOutline from '~icons/ion/ios-checkmark-circle-outline';
-import IconCloseCircleOutline from '~icons/ion/ios-close-circle-outline';
-import NotificationContainer from '../ui/NotificationContainer.vue';
 import Button from '../ui/Button.vue';
 import { RadioGroup, RadioGroupLabel, RadioGroupOption } from '@headlessui/vue';
-import { FunctionalComponent, reactive, ref, SVGAttributes } from 'vue';
+import { ComponentPublicInstance, DefineComponent, FunctionalComponent, inject, ref, SVGAttributes } from 'vue';
+import { useFinancialRecordQuery } from '../../stores/financialStore';
 
 // Payment Center Logo Icons
 import IconAUB from '~icons/payment-center-logos/aub';
 import IconBDO from '~icons/payment-center-logos/bdo';
 import IconCebuana from '~icons/payment-center-logos/cebuana';
-import IconGcash from '~icons/payment-center-logos/gcash';
+// import IconGcash from '~icons/payment-center-logos/gcash';
 import IconMetrobank from '~icons/payment-center-logos/metrobank';
 import IconML from '~icons/payment-center-logos/ml';
 import IconPaymaya from '~icons/payment-center-logos/paymaya';
 import IconRD from '~icons/payment-center-logos/rd';
 import IconSM from '~icons/payment-center-logos/sm';
 
+// Payment Center Screens
+import ScreenSM from './PaymentMethods/SM.vue';
+
 const { query: { data: student } } = useStudentQuery();
 const newPaymentForm = ref<HTMLFormElement | null>(null);
 const modalWindow = ref<InstanceType<typeof ModalWindow> | null>(null);
 const formState = ref<'none' | 'processing' | 'success' | 'failed'>('none')
-const miscData = reactive({
-  paymentMethod: 'Asia United Bank'
-});
+const currentSemesterId = inject(currentSemesterIdKey);
+const { rawAccountBalance } = useFinancialRecordQuery(currentSemesterId!);
+const currentIdx = ref(0);
+const amount = ref(0);
+const paymentMethodIdx = ref(0);
+const campusBranchIdx = ref(0);
 
 interface PaymentCenter {
   name: string
   icon: FunctionalComponent<SVGAttributes, {}>
+  note?: (amount: number) => string
+  charge?: (amount: number) => number
+  component: InstanceType<any>
 }
+
+const campusBranches = [
+  'Fr. Selga Main Campus',
+  'Bonifacio Campus',
+  'Bajada Campus',
+]
 
 const paymentCenters: PaymentCenter[] = [
-  {name: 'Asia United Bank', icon: IconAUB},
-  {name: 'BDO Network Bank', icon: IconBDO},
-  {name: 'Cebuana Lhullier', icon: IconCebuana},
-  {name: 'GCash', icon: IconGcash},
-  {name: 'Metrobank', icon: IconMetrobank},
-  {name: 'MLhuillier', icon: IconML},
-  {name: 'PayMaya', icon: IconPaymaya},
-  {name: 'RD Pawnshop', icon: IconRD},
-  {name: 'SM', icon: IconSM}
+  {name: 'Asia United Bank', icon: IconAUB, component: ScreenSM},
+  {name: 'BDO Network Bank', icon: IconBDO, component: ScreenSM},
+  {name: 'Cebuana Lhullier', icon: IconCebuana, component: ScreenSM},
+  // {name: 'GCash', icon: IconGcash},
+  {
+    name: 'Metrobank', 
+    icon: IconMetrobank, 
+    note: () => `Metrobank Online App payments will deduct ${pesoFormatter.format(10)} and over-the-counter (OTC) payments will deduct ${pesoFormatter.format(50)} to your amount.`,
+    charge: () => 10, 
+    component: ScreenSM
+  },
+  {name: 'MLhuillier', icon: IconML, component: ScreenSM},
+  {
+    name: 'Maya', 
+    icon: IconPaymaya, 
+    note: (amount) => `Maya will deduct 1% or ${pesoFormatter.format(amount * 0.01)} to your amount.`,
+    charge: (amount) => amount * 0.01, 
+    component: ScreenSM
+  },
+  {
+    name: 'RD Pawnshop', 
+    icon: IconRD,
+    note: () => `RD will deduct ${pesoFormatter.format(15)} to your amount as a service fee.`,
+    charge: () => 15, 
+    component: ScreenSM
+  },
+  {name: 'SM Davao / GenSan', icon: IconSM, component: ScreenSM}
 ];
-
-// TODO: support basic ed and techvoc
-const higherEducationDepartmentId = 1;
-
-function triggerSubmitForm(_e: Event) {
-  newPaymentForm.value?.requestSubmit();
-}
-
-function submitForm(e: SubmitEvent) {
-  e.preventDefault();
-  formState.value = 'processing';
-
-  setTimeout(() => {
-    formState.value = 'success';
-    setTimeout(() => {
-      formState.value = 'none';
-      modalWindow.value?.$emit('update:open', false);
-    }, 1500);
-  }, 1000);
-}
 </script>

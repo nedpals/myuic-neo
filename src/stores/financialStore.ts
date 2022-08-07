@@ -69,11 +69,12 @@ export const useFinancialRecordQuery = (semesterId: Ref<string | number | undefi
   );
   
   const isLoading = computed(() => query.isFetching.value || query.isIdle.value);
-  const accountBalance = computed(() => pesoFormatter.format(
-    query.data.value?.monthlyDues
+
+  const rawAccountBalance = computed(() => {
+    return query.data.value?.monthlyDues
       .map((md) => md.balance)
-      .reduce((p, v) => p + v, 0) ?? 0
-  ));
+      .reduce((p, v) => p + v, 0) ?? 0;
+  });
 
   const lastUpdated = computed(() => {
     const record = query.data.value;
@@ -111,7 +112,7 @@ export const useFinancialRecordQuery = (semesterId: Ref<string | number | undefi
   const formattedAmount = (pr: PaymentRecord) => pesoFormatter.format(pr.amount);
 
   return {
-    accountBalance,
+    rawAccountBalance,
     lastUpdated,
     paidTotal,
     assessmentTotal,
