@@ -109,12 +109,8 @@
     
     <template #footer>
       <div class="flex">
-        <button v-if="formState !== 'success'" @click="triggerSubmitForm" class="button is-primary ml-auto px-6">
-          Submit
-        </button>
-        <button v-else @click="modalWindow?.$emit('update:open', false)" class="button is-primary ml-auto px-6">
-          Close
-        </button>
+        <Button theme="primary" v-if="formState !== 'success'" @click="triggerSubmitForm" class="ml-auto px-6" text="Submit" />
+        <Button theme="primary" v-else @click="modalWindow?.$emit('update:open', false)" class="ml-auto px-6" text="Close" />
       </div>
     </template>
   </modal-window>
@@ -128,6 +124,7 @@ import ModalWindow from '../ui/ModalWindow.vue';
 import IconCheckmarkCircleOutline from '~icons/ion/ios-checkmark-circle-outline';
 import IconCloseCircleOutline from '~icons/ion/ios-close-circle-outline';
 import NotificationContainer from '../ui/NotificationContainer.vue';
+import Button from '../ui/Button.vue';
 import { RadioGroup, RadioGroupLabel, RadioGroupOption } from '@headlessui/vue';
 import { FunctionalComponent, reactive, ref, SVGAttributes } from 'vue';
 

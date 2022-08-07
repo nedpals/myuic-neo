@@ -130,6 +130,7 @@ export const useModal = (isOpen: ComputedRef<boolean>, updateFn: (state: boolean
 // Dialog
 export interface DialogAction {
   label: string
+  theme?: 'light' | 'primary' | 'danger' | 'warning' | 'success' | 'info'
   class?: string
   answer: string | (() => string)
 }

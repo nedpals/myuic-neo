@@ -4,9 +4,7 @@
       <div class="relative flex-0" :class="[subtitle ? 'py-1 mb-2' : 'py-3 md:py-5']">
         <div class="absolute right-0 top-4 md:top-5 dashboard-scaffold-actions" :class="{ 'has-more-button': shouldActionsBeDropdown }">
           <Menu v-if="shouldActionsBeDropdown">
-            <menu-button class="more-button button">
-              <icon-more />
-            </menu-button>
+            <menu-button :as="Button" class="more-button" :icon="IconMore" />
 
             <transition
               enter-active-class="transition duration-100 ease-out"
@@ -61,6 +59,7 @@
 <script lang="ts" setup>
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue';
 import IconMore from '~icons/ion/more';
+import Button from './Button.vue';
 
 import { useTitle } from '@vueuse/core';
 import { computed, watch, defineEmits, defineProps, useSlots, onBeforeUnmount } from 'vue';
@@ -135,40 +134,36 @@ onBeforeUnmount(() => {
 })
 </script>
 
-<style lang="postcss">
+<style lang="postcss" scoped>
 .dashboard-scaffold-actions {
   @apply flex space-x-1;
 }
 
-.dashboard-scaffold-actions .more-button.button {
+.dashboard-scaffold-actions :deep(.button.more-button) {
   @apply md:hidden;
 }
 
-.dashboard-scaffold-actions-dropdown > .button {
-  @apply w-full hover:bg-gray-200 dark:hover:bg-primary-700 cursor-default py-2 pl-3 pr-9 rounded-none;
+.dashboard-scaffold-actions-dropdown > :deep(.button) {
+  @apply justify-start w-full shadow-none bg-none border-none hover:bg-gray-200 dark:hover:bg-primary-700 dark:text-white cursor-default !py-2 !pl-3 !pr-9 rounded-none;
 }
 
-.dashboard-scaffold-actions-dropdown > .button > svg {
+.dashboard-scaffold-actions-dropdown > :deep(.button.with-icon) > svg {
   @apply text-primary-400;
 }
 
-.dashboard-scaffold-actions .button {
-  @apply flex items-center space-x-2 text-left;
-}
-
-.dashboard-scaffold-actions > .button span {
+.dashboard-scaffold-actions > :deep(.button.with-icon) span {
   @apply <md:hidden;
 }
 
-.dashboard-scaffold-actions > .button > svg {
+.dashboard-scaffold-actions > :deep(.button.with-icon) > svg {
   @apply text-primary-400 hover:text-primary-500;
 }
 
-.dashboard-scaffold-actions > .button {
-  @apply rounded-lg hover:bg-gray-100 dark:hover:bg-primary-600 p-3 -m-3 dark:hover:bg-opacity-20;
+.dashboard-scaffold-actions > :deep(.button) {
+  @apply shadow-none rounded-lg bg-none border-none hover:bg-gray-100 dark:hover:bg-primary-600 dark:text-white p-3 -m-3 dark:hover:bg-opacity-20;
 }
 
-.dashboard-scaffold-actions.has-more-button > .button:not(.more-button) {
+.dashboard-scaffold-actions.has-more-button > :deep(.button:not(.more-button)) {
   @apply <md:hidden;
 }
 </style>

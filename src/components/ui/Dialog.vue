@@ -4,14 +4,14 @@
 
     <template #footer>
       <div class="flex justify-end items-center space-x-2">
-        <button 
+        <Button 
           :key="'action_' + ai" 
           @click="handleDialogAction(data, action)"
-          class="button"
+          :theme="action.theme ?? 'light'"
           :class="action.class"
           v-for="(action, ai) in data.actions">
           {{ action.label }}
-        </button>
+        </Button>
       </div>
     </template>
   </Modal>
@@ -21,6 +21,7 @@
 import { PropType, ref } from 'vue';
 import { DialogAction, DialogModal, modalEventBus } from '../../composables/modal';
 import Modal from './Modal.vue';
+import Button from './Button.vue';
 
 const emit = defineEmits(['update:data']);
 const props = defineProps({

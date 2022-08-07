@@ -1,11 +1,12 @@
 <template>
   <dashboard-scaffold title="Test Page" class="p-4">
-    <button class="button is-primary" @click="testNotify">Test Notification</button>
+    <Button theme="primary" @click="testNotify">Test Notification</Button>
   </dashboard-scaffold>
 </template>
 
 <script lang="ts" setup>
 import { notify } from 'notiwind';
+import Button from '../../components/ui/Button.vue';
 import DashboardScaffold from '../../components/ui/DashboardScaffold.vue';
 import { LocalNotifications } from '@capacitor/local-notifications';
 

@@ -1,17 +1,8 @@
 <template>
   <dashboard-scaffold :subtitle="currentSemester.label" container-class="px-4 md:px-5 space-y-4">
     <template #actions>
-      <button @click="printPdf" class="button">
-        <icon-print />
-        <span>Print PDF</span>
-      </button>
-
-      <button
-        @click="isComputationModalOpen = true"
-        class="button">
-        <icon-formula />
-        <span>View formula</span>
-      </button>
+      <Button @click="printPdf" :icon="IconPrint" text="Print PDF" />
+      <Button @click="isComputationModalOpen = true" :icon="IconFormula" text="View formula" />
     </template>
 
     <modal v-model:open="isComputationModalOpen" title="Computation">
@@ -110,6 +101,7 @@ import Skeleton from '../components/ui/Skeleton.vue';
 import PdfViewer from "../components/ui/PdfViewer.vue";
 import Modal from '../components/ui/Modal.vue';
 import IconFormula from '~icons/fluent/math-formula-16-filled';
+import Button from '../components/ui/Button.vue';
 
 import { generateAcademicRecordsPDF, useAcademicRecordsQuery } from '../stores/academicRecordStore';
 import { catchAndNotifyError } from '../utils';

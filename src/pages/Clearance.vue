@@ -27,12 +27,13 @@
             </h2>
           </skeleton>
 
-          <button
+          <Button
+            theme="primary"
+            size="medium"
             v-if="!isLoading && isCleared"
             @click="printPdf"
-            class="button is-medium is-primary px-12 rounded-full">
-            Print Permit
-          </button>
+            class="px-12 rounded-full"
+            text="Print Permit" />
         </div>
 
         <div v-if="!isLoading && data!.items.length" class="bg-gray-50 dark:bg-primary-800 shadow border dark:border-primary-600 rounded-lg">
@@ -103,6 +104,7 @@
 
 <script lang="ts" setup>
 import { ClearanceItem } from '@myuic-api/types';
+import Button from '../components/ui/Button.vue';
 import DashboardScaffold from '../components/ui/DashboardScaffold.vue';
 import Loader from '../components/ui/Loader.vue';
 import LoadingContainer from '../components/ui/LoadingContainer.vue';

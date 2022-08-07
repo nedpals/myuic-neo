@@ -32,11 +32,11 @@
           <input type="password" name="password" id="password" placeholder="Enter your password" required />
         </div>
 
-        <button type="submit" :ref="el => loginButton = el" class="button is-primary is-medium w-full mt-12">Login</button>
-        <button type="button" v-if="supportsBiometrics" @click="loginFromBiometrics" class="button is-light mt-2 is-medium flex items-center justify-center space-x-2">
+        <Button type="submit" theme="primary" size="medium" :ref="el => loginButton = el as any" class="w-full mt-12" text="Login" />
+        <Button type="button" theme="light" size="medium" v-if="supportsBiometrics" @click="loginFromBiometrics" class="mt-2" with-icon>
           <icon-biometrics class="text-primary-500" />
           <span>Login with biometrics</span>
-        </button>
+        </Button>
 
         <button 
           v-if="profiles && profiles.length !== 0" type="button" 
@@ -77,6 +77,7 @@
 </template>
 
 <script lang="ts" setup>
+import Button from '../components/ui/Button.vue';
 import IconLogo from '~icons/custom/logo';
 import IconRight from '~icons/ion/chevron-right';
 import IconTrash from '~icons/ion/trash';
@@ -94,7 +95,7 @@ import { catchAndNotifyError } from '../utils.js';
 
 const { data: profiles, isLoading: isProfilesLoading, refetch } = useProfiles();
 const showForm = ref(false);
-const loginButton = ref();
+const loginButton = ref<InstanceType<typeof Button>>();
 const loginForm = ref();
 const router = useRouter();
 const supportsBiometrics = ref(false);
@@ -109,7 +110,7 @@ const deleteProfile = async (id: string, hasBiometrics: boolean) => {
 }
 
 const fillLoginForm = async (hasBiometrics: boolean, id: string, password?: string) => {
-  if (!(loginForm.value instanceof HTMLFormElement) || !(loginButton.value instanceof HTMLButtonElement)) {
+  if (!(loginForm.value instanceof HTMLFormElement) || (!loginButton.value || !(loginButton.value.$el instanceof HTMLButtonElement))) {
     return;
   }
 
@@ -138,7 +139,7 @@ const fillLoginForm = async (hasBiometrics: boolean, id: string, password?: stri
     }
 
     if (passwordField.value) {
-      loginButton.value.click();
+      loginButton.value.$el.click();
     }
   }
 }
@@ -207,12 +208,12 @@ const maybePromptSaveProfile = async (id: string, password: string) => {
     actions: [
       {
         answer: 'yes',
-        class: 'is-primary',
+        theme: 'primary',
         label: 'Yes'
       },
       {
         answer: 'no',
-        class: 'is-light',
+        theme: 'light',
         label: 'No'
       }
     ]

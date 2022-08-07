@@ -1,13 +1,15 @@
 <template>
   <div v-if="feedbackUrl" class="fixed bottom-[9%] md:bottom-[7%] right-[5%] z-10">
     <v-tooltip>
-      <a 
+      <Button
+        as="a"
         :href="feedbackUrl" 
         target="_blank"
-        class="button is-primary <md:rounded-full <md:h-16 <md:w-16 md:is-medium flex items-center justify-center space-x-2">
+        theme="primary"
+        class="<md:rounded-full <md:h-16 <md:w-16 md:is-medium flex items-center justify-center space-x-2">
         <icon-feedback class="<md:text-xl" />
         <span class="hidden md:inline">Feedback</span>
-      </a>
+      </Button>
 
       <template #popper>
         We would like to hear your feedback!
@@ -58,6 +60,7 @@ import { useRouter } from 'vue-router';
 import { useModalManager } from './composables/modal';
 import DialogManager from './components/ui/DialogManager.vue';
 import appEvents from './event';
+import Button from './components/ui/Button.vue';
 
 const router = useRouter();
 const feedbackUrl = computed(() => `${import.meta.env.VITE_FEEDBACK_URL ?? ''}`);

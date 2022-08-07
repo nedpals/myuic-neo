@@ -1,12 +1,7 @@
 <template>
   <dashboard-scaffold container-class="px-4 mx-auto w-full md:px-5">
     <template #actions>
-      <button
-        @click="isPaymentModalOpen = true"
-        class="button">
-        <icon-plus />
-        <span>New Payment</span>  
-      </button>
+      <Button @click="isPaymentModalOpen = true" :icon="IconPlus" text="New Payment" />
     </template>
 
     <new-payment-modal 
@@ -194,6 +189,7 @@ import IconPlus from '~icons/ion/plus';
 import IconPaid from '~icons/ion/checkmark-circle';
 import IconPending from '~icons/ion/ios-circle-outline';
 import Loader from '../components/ui/Loader.vue';
+import Button from '../components/ui/Button.vue';
 import { computed, inject, ref } from 'vue';
 import PaymentHistory from '../components/Finance/PaymentHistory.vue';
 import { getBreakdownSubtotal, useFinancialRecordQuery } from '../stores/financialStore';

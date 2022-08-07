@@ -1,10 +1,7 @@
 <template>
   <dashboard-scaffold>
     <template #actions>
-      <button v-if="$route.name !== 'account-information'" @click="saveInformation" class="button">
-        <icon-save />
-        <span>Save</span>
-      </button>
+      <Button v-if="$route.name !== 'account-information'" @click="saveInformation" :icon="IconSave" text="Save" />
     </template>
 
     <loading-container :is-loading="isLoading" v-slot="{ isLoading }">
@@ -22,9 +19,10 @@
 import LoadingContainer from '../components/ui/LoadingContainer.vue';
 import Loader from '../components/ui/Loader.vue';
 import IconSave from '~icons/ion/save';
+import DashboardScaffold from '../components/ui/DashboardScaffold.vue';
+import Button from '../components/ui/Button.vue';
 
 import { useStudentQuery } from '../stores/studentStore';
-import DashboardScaffold from '../components/ui/DashboardScaffold.vue';
 import { provide, reactive, watch } from 'vue';
 import { Student } from '@myuic-api/types';
 import { notify } from 'notiwind';

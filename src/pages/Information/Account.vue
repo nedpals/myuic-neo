@@ -18,7 +18,7 @@
             <input type="password" name="confirm_new_password" id="confirm_new_password" required>
           </div>
           <div class="form-control ml-auto">
-            <button class="button is-primary" type="submit">Change Password</button>
+            <Button theme="primary" type="submit">Change Password</Button>
           </div>
         </div>
       </div>
@@ -29,6 +29,7 @@
 <script lang="ts" setup>
 import { useChangePasswordMutation } from '../../stores/studentStore';
 import { useRouter } from 'vue-router';
+import Button from '../../components/ui/Button.vue';
 
 const { mutateAsync: changePassword } = useChangePasswordMutation();
 const router = useRouter();

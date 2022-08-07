@@ -104,15 +104,15 @@
                       <div 
                         :disabled="qi != 0 && ratingAnswers[getQIndex(i, qi - 1)] == 0" 
                         class="disabled:opacity-40 w-full flex md:space-x-2 <sm:space-y-2 <sm:flex-wrap">
-                        <button 
+                        <Button 
                           v-for="(rLabel, r) in ratings" 
                           @click="ratingAnswers[getQIndex(i, qi)] = r"
                           :key="'r_' + r" 
                           :disabled="qi != 0 && ratingAnswers[getQIndex(i, qi - 1)] == 0"
-                          :class="[ratingAnswers[getQIndex(i, qi)] === r  ? 'is-primary' : 'is-light']" 
-                          class="button w-full md:flex-1">
+                          :theme="ratingAnswers[getQIndex(i, qi)] === r  ? 'primary' : 'light'"
+                          class="w-full md:flex-1">
                           {{ rLabel }}
-                        </button>
+                        </Button>
                       </div>
                     </div>
                   </div>
@@ -176,9 +176,9 @@
 
     <template #footer>
       <div v-if="shouldShowButtons" class="flex justify-end space-x-2">
-        <button v-if="step > 0" @click="step--" class="button is-light">Previous</button>
-        <button v-if="step < 5 + tabOffsetStart" @click="step++" :disabled="!shouldProceed(step)" class="button is-primary px-6 py-2">Next</button>
-        <button v-else @click="submitEvaluation" class="button is-primary px-6 py-2">Submit</button>
+        <Button v-if="step > 0" @click="step--" theme="light">Previous</button>
+        <Button v-if="step < 5 + tabOffsetStart" @click="step++" :disabled="!shouldProceed(step)" theme="primary" class="px-6 py-2">Next</Button>
+        <Button v-else @click="submitEvaluation" theme="primary" class="px-6 py-2">Submit</Button>
       </div>
     </template>
   </modal-window>
@@ -197,6 +197,7 @@ import Box from '../../ui/Box.vue'
 import { notify } from 'notiwind'
 import { useQueryClient } from 'vue-query'
 import IconDone from '~icons/ion/happy-outline';
+import Button from '../../ui/Button.vue'
 
 const emit = defineEmits(['close']);
 const { courses } = defineProps({
@@ -295,12 +296,12 @@ const warnUserOnClose = async () => {
     actions: [
       {
         label: 'Yes',
-        class: 'is-primary',
+        theme: 'primary',
         answer: 'yes'
       },
       {
         label: 'No',
-        class: 'is-light',
+        theme: 'light',
         answer: 'no'
       }
     ],
@@ -319,12 +320,12 @@ const submitEvaluation = async () => {
     actions: [
       {
         label: 'Confirm',
-        class: 'is-primary',
+        theme: 'primary',
         answer: 'confirm'
       },
       {
         label: 'Cancel',
-        class: 'is-light',
+        theme: 'light',
         answer: 'cancel'
       }
     ]

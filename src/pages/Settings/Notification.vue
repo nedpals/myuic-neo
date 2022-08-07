@@ -6,7 +6,7 @@
         <p>Checks if the notification is working or not (for debugging)</p>
       </div>
 
-      <button @click="testNotify" class="button is-primary px-6">Test</button>
+      <Button @click="testNotify" theme="primary" class="px-6">Test</Button>
     </div>
     <div class="py-4 flex justify-between items-center">
       <div>
@@ -14,7 +14,7 @@
         <p>Clears all the pending notifications</p>
       </div>
 
-      <button @click="resetNotifs" class="button is-primary px-6">Clear</button>
+      <Button @click="resetNotifs" theme="primary" class="px-6">Clear</Button>
     </div>
     <div class="py-4 flex justify-between items-center">
       <div>
@@ -22,7 +22,7 @@
         <p>Activates sending course schedule notifications</p>
       </div>
 
-      <button @click="activateNotifications" class="button is-primary px-6">Activate</button>
+      <Button @click="activateNotifications" theme="primary" class="px-6">Activate</Button>
     </div>
   </div>
 </template>
@@ -33,6 +33,7 @@ import { LocalNotifications } from '@capacitor/local-notifications';
 import { useSchedulesQuery } from '../../stores/scheduleStore';
 import { currentSemesterIdKey } from '../../stores/studentStore';
 import { inject } from 'vue';
+import Button from '../../components/ui/Button.vue';
 
 const currentSemesterId = inject(currentSemesterIdKey)!;
 const { activateNotifications: activateScheduleNotifications } = useSchedulesQuery(currentSemesterId);

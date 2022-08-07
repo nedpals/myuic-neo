@@ -14,11 +14,8 @@
         </div>
 
         <div class="ml-auto flex items-center space-x-2 mr-4 md:mr-12">
-          <button @click="downloadDocument" class="button is-light h-full" v-tooltip="'Download'"><icon-download /></button>
-          <button v-if="supportsPrinting" @click="() => printDocument()" :disabled="hasError || isLoading" class="button is-light h-full space-x-2 flex items-center">
-            <icon-print />
-            <span>Print</span>
-          </button>
+          <Button theme="light" @click="downloadDocument" class="h-full" v-tooltip="'Download'" :icon="IconDownload" />
+          <Button theme="light" v-if="supportsPrinting" @click="() => printDocument()" :disabled="hasError || isLoading" class="h-full space-x-2 flex items-center" :icon="IconPrint" text="Print" />
         </div>
 
         <button
@@ -44,11 +41,8 @@
           <h2 class="text-3xl font-bold mb-2">Failed to load document</h2>
           <p class="text-xl mb-6">Something went wrong </p>
           <div class="flex space-x-2">
-            <button @click="downloadDocument" class="button is-light is-medium space-x-2 flex items-center">
-              <icon-download />
-              <span>Download</span>
-            </button>
-            <a v-if="typeof src == 'string'" :href="src" target="_blank" class="button is-primary is-medium">Open in New Tab</a>
+            <Button theme="light" size="medium" @click="downloadDocument" class="space-x-2 flex items-center" :icon="IconDownload" text="Download" />
+            <Button as="a" v-if="typeof src == 'string'" :href="src" target="_blank" theme="primary" size="medium" text="Open in New Tab" />
           </div>
         </div>
 
@@ -75,6 +69,7 @@ import IconDownload from '~icons/ion/download-outline';
 import IconClose from '~icons/ion/close';
 import IconBack from '~icons/ion/chevron-left';
 import IconFailed from '~icons/ion/alert-circle-outline';
+import Button from './Button.vue';
 import appEvents from "../../event";
 import debounce from 'debounce';
 
