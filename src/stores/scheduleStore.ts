@@ -1,6 +1,6 @@
 import { LocalNotifications, LocalNotificationSchema, Weekday } from "@capacitor/local-notifications";
-import { Schedule } from "@myuic-api/types";
-import { computed, isRef, Ref, ref } from "vue";
+import { CourseSchedule, Schedule } from "@myuic-api/types";
+import { computed, isRef, readonly, Ref, ref } from "vue";
 import { useQuery } from "vue-query";
 import { client } from "../client";
 import { compare12hTimesSort, IS_NATIVE } from "../utils";
@@ -12,6 +12,7 @@ interface NormalizedCourseSchedule {
   fromTime: string;
   toTime: string;
   day: string;
+  types: ['Lec' | 'Lab'] | ['Lab' | 'Lec', 'Lec' | 'Lab']
 }
 
 const roomRegex = /(?:OL-)?((?:2nd|1st)T)/;
@@ -34,14 +35,43 @@ const weekday: Weekday[] = [
   Weekday.Saturday
 ];
 
-export const useSchedulesQuery = (semesterId: Ref<string | number | undefined>) => {
+export interface UseScheduleQueryOptions {
+  term: '1stT' | '2ndT'
+  type: 'Lab' | 'Lec' | 'All'
+  isAlternate: boolean
+}
+
+function insertSchedule(c: CourseSchedule, scheduleList: Record<string, NormalizedCourseSchedule[]>) {
+  return (s: Schedule) => {
+    const existingIdx = scheduleList[s.day].findIndex((cc: any) => cc.name == c.name);
+    if (existingIdx !== -1) {
+      const existing = scheduleList[s.day][existingIdx];
+      scheduleList[s.day][existingIdx].types = [existing.types[0], c.type];
+      return;
+    }
+
+    scheduleList[s.day].push({
+      name: c.name,
+      instructor: c.instructor,
+      room: c.room,
+      fromTime: s.fromTime,
+      toTime: s.toTime,
+      day: s.day,
+      types: [c.type]
+    });
+  }
+}
+
+export const useSchedulesQuery = (semesterId: Ref<string | number | undefined>, options: UseScheduleQueryOptions = readonly({ term: '1stT', type: 'All', isAlternate: false })) => {
+  const isTermBased = computed(() => semesterId.value && semesterId.value >= 481 && semesterId.value <= 486);
+
   const query = useQuery(['class_schedule', semesterId], () => client.classSchedule(semesterId.value!.toString()), {
     enabled: computed(() => typeof semesterId.value !== 'undefined'),
   });
+
   const { isFetching, isIdle, data } = query;
   const isLoading = computed(() => isFetching.value || isIdle.value);
-  const isAlternate = ref(false);
-  const hasAlternates = ref(false);  
+  const hasAlternates = ref(false);
   const scheduleList = computed(() => {
     let scheduleList: Record<string, NormalizedCourseSchedule[]> = {
       'M': [],
@@ -60,56 +90,48 @@ export const useSchedulesQuery = (semesterId: Ref<string | number | undefined>) 
           room: '',
           fromTime: '',
           toTime: '',
-          day: ''
+          day: '',
+          types: ['Lab']
         }));
       }
 
       return scheduleList;
     }
 
-    const sch = data.value;
-    if (!sch) return null;
+    if (!data.value || data.value.courses.length === 0) {
+      return null;
+    }
 
-    const rawCourses = sch.courses;
-    if (rawCourses.length == 0) return null;
-
-    rawCourses.forEach(c => {
-      const { name, instructor, room } = c;
-      // TODO: remove code. check if term is in 2nd term or not
-      const termMatches = roomRegex.exec(room);
-      if (termMatches && termMatches[1] && termMatches[1] !== '2ndT') return;
-
-      const insertFn = (s: Schedule) => {
-        if (scheduleList[s.day].findIndex((cc: any) => cc.name == name) !== -1) return;
-        scheduleList[s.day].push({
-          name,
-          instructor,
-          room,
-          fromTime: s.fromTime,
-          toTime: s.toTime,
-          day: s.day
-        });
+    for (const rawCourse of data.value.courses) {
+      if (isTermBased.value && (roomRegex.exec(rawCourse.room)?.[1] !== options.term ?? false)) {
+        continue;
+      } else if (options.type !== 'All' && rawCourse.type !== options.type) {
+        continue;
       }
 
-      const nonAlts: Schedule[] = c.schedules.filter(cc => !cc.isAlternate);
-      const alts: Schedule[] = c.schedules.filter(cc => cc.isAlternate);
+      const nonAlts: Schedule[] = rawCourse.schedules.filter(cc => !cc.isAlternate);
+      const alts: Schedule[] = rawCourse.schedules.filter(cc => cc.isAlternate);
+
       if (!hasAlternates.value && alts.length !== 0) {
         hasAlternates.value = true;
       }
-      
-      if (isAlternate.value) {
+
+      const insertFn = insertSchedule(rawCourse, scheduleList);
+
+      if (options.isAlternate) {
         nonAlts
           .filter(cc => alts.findIndex(ss => ss.day === cc.day) === -1)
           .forEach(insertFn);
+        
         alts.forEach(insertFn);
       } else {
         nonAlts.forEach(insertFn);
       }
-    });
+    }
 
-    Object.keys(scheduleList).forEach(s => {
-      scheduleList[s].sort((a, b) => compare12hTimesSort(a.fromTime, b.fromTime));
-    });
+    for (const day in scheduleList) {
+      scheduleList[day].sort((a, b) => compare12hTimesSort(a.fromTime, b.fromTime));
+    }
 
     return scheduleList;
   });
@@ -156,10 +178,10 @@ export const useSchedulesQuery = (semesterId: Ref<string | number | undefined>) 
   return {
     query,
     isLoading,
+    isTermBased,
     scheduleList,
     activateNotifications,
     getScheduleByDay,
-    isAlternate,
     hasAlternates
   };
 };
