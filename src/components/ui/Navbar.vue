@@ -279,6 +279,13 @@ body.navbar-has-expanded {
 .ui-buttons button svg {
   @apply h-6 w-6 text-primary-500 dark:text-primary-300;
 }
+.main-navbar.is-expanded :deep(.semester-selector) {
+  @apply block;
+}
+
+.main-navbar:not(.is-expanded) :deep(.semester-selector) {
+  @apply @md:hidden;
+}
 
 .main-navbar .menu {
   @apply pt-6 pb-24 mt-2 md:pb-8 pl-4 md:h-[70%] flex flex-col space-y-5;

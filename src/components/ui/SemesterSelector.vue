@@ -1,5 +1,5 @@
 <template>
-  <listbox as="div" class="@md:hidden px-2" v-model="currentSemesterId">
+  <listbox as="div" class="semester-selector px-2" v-model="currentSemesterId">
     <div class="md:pt-4 relative">
       <listbox-button 
         :disabled="isLoading"
@@ -7,7 +7,7 @@
         class="flex items-center justify-between transition-colors relative w-full border dark:border-primary-700 rounded-md px-4 py-2 text-left focus:outline-none">
         <div
           :class="{ 'space-y-2': isLoading }"
-          class="flex-col flex md:hidden lg:flex">
+          class="flex-col flex lg:flex">
           <skeleton :delay="3 * 250" custom-class="h-4 w-36 bg-gray-200">
             <span class="font-semibold">{{ currentSemester.display.semester }}</span>
           </skeleton>
@@ -30,7 +30,7 @@
             <li :class="[currentSemesterId == semester.id ? 'bg-primary-100 dark:bg-primary-600' : '', 'hover:bg-gray-200 dark:hover:bg-primary-700 cursor-default select-none relative py-2 pl-3 pr-9']">
               <div
                 :class="{ 'space-y-2': isLoading }"
-                class="flex-col flex md:hidden lg:flex">
+                class="flex-col flex lg:flex">
                 <skeleton :delay="(4 + (si + 1)) * 250" custom-class="h-4 w-36 bg-gray-200">
                   <span class="font-semibold">{{ semester.display.semester }}</span>
                 </skeleton>
