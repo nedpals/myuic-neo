@@ -48,7 +48,7 @@
 
 <script setup lang="ts">
 import { computed, inject, onBeforeUnmount, ref, Ref, watch } from 'vue';
-import { currentSemesterIdKey, useSemesterQuery, useStudentQuery } from '../../stores/studentStore';
+import { currentSemesterIdKey, useAdditionalInfoQuery, useStudentQuery } from '../../stores/studentStore';
 
 import { Listbox, ListboxButton, ListboxOptions, ListboxOption } from '@headlessui/vue';
 import IconChevronRight from '~icons/ion/chevron-right';
@@ -57,7 +57,7 @@ import Skeleton from './Skeleton.vue';
 const emit = defineEmits(['update:semesterId']);
 const isLoading = inject<Ref<boolean>>('__loadState', ref(false));
 const currentSemesterId = inject(currentSemesterIdKey);
-const { semesterList, currentSemester, idQuery } = useSemesterQuery(currentSemesterId);
+const { semesterList, currentSemester, infoQuery } = useAdditionalInfoQuery(currentSemesterId);
 const { query: { data: student } } = useStudentQuery();
 const firstEnrolledYear = computed(() => 2000 + parseInt((student.value?.number ?? '20123').substring(0, 2)));
 const currentYear = new Date().getFullYear();
@@ -74,7 +74,7 @@ const filteredSemesterList = computed(() => {
       return false;
     } else if (s.fromYear < firstEnrolledYear.value || s.fromYear > lastEnrolledYear.value) {
       return false;
-    } else if (idQuery.data.value && s.id > idQuery.data.value) {
+    } else if (infoQuery.data.value && s.id > infoQuery.data.value.semesterId) {
       return false;
     }
     // else if (s.toYear && s.toYear > lastEnrolledYear.value) {

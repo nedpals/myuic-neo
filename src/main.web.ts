@@ -3,6 +3,8 @@ import { isMock } from './client';
 import { startApp } from './main.common';
 
 import printJS from 'print-js';
+import { analytics } from './firebase';
+import { logEvent, setUserId, setUserProperties } from 'firebase/analytics';
 
 async function initializeServer() {
   if (!import.meta.env.PROD || isMock) {
@@ -17,6 +19,12 @@ startApp(async () => {
     await registerSW({ immediate: true })(true);
   }
 }, {
+  async onAuthDestroy() {
+    if (!import.meta.env.PROD) return;
+    setUserId(analytics, '');
+    setUserProperties(analytics, {});
+  },
+
   async onDownloadURL({ url, data, fileName }) {
     var link = document.createElement("a");
     link.download = fileName;
@@ -39,5 +47,23 @@ startApp(async () => {
       printJS(url);
     }
     return false;
+  },
+  onLogEvent(name, params) {
+    if (!import.meta.env.PROD) return;
+
+    logEvent(analytics, name, params);
+  },
+  onReceiveStudentInfo({student, additionalInfo}) {
+    if (!import.meta.env.PROD) return;
+
+    setUserId(analytics, student.number);
+    setUserProperties(analytics, { 
+      gender: student.gender, 
+      religion: student.religion, 
+      nationality: student.nationality,
+      income_group: student.parentInformation.incomeGroup,
+      course: additionalInfo.course,
+      year: additionalInfo.year
+    });
   }
 });

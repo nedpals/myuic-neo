@@ -1,4 +1,5 @@
 import { Client } from '@myuic-api/client';
+import { AdditionalInfo, Student } from '@myuic-api/types';
 import { Ref } from 'vue';
 
 export type AppEvents = {
@@ -12,9 +13,13 @@ export type AppEvents = {
   onDestroyProfile: (params: { hasBiometrics: boolean }) => Promise<void>;
   onFetchCredentials: () => Promise<{ id: string, password: string }>
   onAuthenticateProfile: (params: { isSave: boolean, id?: string, password?: string }) => Promise<void>;
+  onLogEvent: (name: string, params: any) => void;
+  onReceiveStudentInfo: (params: { student: Student, additionalInfo: AdditionalInfo }) => void;
 }
 
 const appEvents: Partial<AppEvents> = {
-  onNavigationPop: () => () => Promise.resolve()
+  onNavigationPop: () => () => Promise.resolve(),
+  onLogEvent(name, params) {},
+  onReceiveStudentInfo(params) {},
 };
 export default appEvents;

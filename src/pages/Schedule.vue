@@ -106,7 +106,7 @@ import { Listbox, ListboxButton, ListboxOptions, ListboxOption } from '@headless
 import Box from '../components/ui/Box.vue';
 import LoadingContainer from '../components/ui/LoadingContainer.vue';
 import IconChevronDown from '~icons/ion/chevron-down';
-import { useSemesterQuery, currentSemesterIdKey } from '../stores/studentStore';
+import { useAdditionalInfoQuery, currentSemesterIdKey } from '../stores/studentStore';
 import {catchAndNotifyError, formatDatetime, now} from '../utils';
 import DashboardScaffold from '../components/ui/DashboardScaffold.vue';
 import Skeleton from '../components/ui/Skeleton.vue';
@@ -119,7 +119,7 @@ import Button from '../components/ui/Button.vue';
 
 const pdfViewer = ref<InstanceType<typeof PdfViewer>>();
 const currentSemesterId = inject(currentSemesterIdKey);
-const { currentSemester, hasSemesterId } = useSemesterQuery(currentSemesterId);
+const { currentSemester, hasSemesterId } = useAdditionalInfoQuery(currentSemesterId);
 const currentDay = ref(formatDatetime(now, 'EEE'));
 const currentDate = ref(formatDatetime(now, 'MMMM d, yyyy'));
 const scheduleQuerySettings = reactive<UseScheduleQueryOptions>({

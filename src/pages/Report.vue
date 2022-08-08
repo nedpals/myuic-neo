@@ -107,7 +107,7 @@ import { generateAcademicRecordsPDF, useAcademicRecordsQuery } from '../stores/a
 import { catchAndNotifyError } from '../utils';
 import { inject, readonly, ref } from 'vue';
 
-import { currentSemesterIdKey, useSemesterQuery } from '../stores/studentStore';
+import { currentSemesterIdKey, useAdditionalInfoQuery } from '../stores/studentStore';
 import { notify } from 'notiwind';
 
 import computationFormulaImg from '../assets/computation-formula.png';
@@ -115,7 +115,7 @@ import computationFormulaImg from '../assets/computation-formula.png';
 const isComputationModalOpen = ref(false);
 const pdfViewer = ref<InstanceType<typeof PdfViewer>>();
 const currentSemesterId = inject(currentSemesterIdKey);
-const { currentSemester } = useSemesterQuery(currentSemesterId);
+const { currentSemester } = useAdditionalInfoQuery(currentSemesterId);
 const {
   isLoading,
   reportData,

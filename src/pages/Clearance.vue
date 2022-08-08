@@ -110,7 +110,7 @@ import Loader from '../components/ui/Loader.vue';
 import LoadingContainer from '../components/ui/LoadingContainer.vue';
 import ModalWindow from '../components/ui/ModalWindow.vue';
 import Skeleton from '../components/ui/Skeleton.vue';
-import { currentSemesterIdKey, useSemesterQuery, useStudentQuery } from '../stores/studentStore';
+import { currentSemesterIdKey, useAdditionalInfoQuery, useStudentQuery } from '../stores/studentStore';
 import { catchAndNotifyError } from '../utils';
 import ClearanceStatusIcon from '../components/Clearance/ClearanceStatusIcon.vue';
 import { generateClearancePDF, useClearanceQuery } from '../stores/clearanceStore';
@@ -118,7 +118,7 @@ import { notify } from 'notiwind';
 import { computed, inject, ref } from 'vue';
 
 const currentSemesterId = inject(currentSemesterIdKey);
-const { hasSemesterId, currentSemester } = useSemesterQuery(currentSemesterId!);
+const { hasSemesterId, currentSemester } = useAdditionalInfoQuery(currentSemesterId!);
 const { query: { data }, isCleared, isLoading } = useClearanceQuery(currentSemesterId!);
 const { normalizedFirstName: studentFirstName } = useStudentQuery();
 const { data: fileUrl, isSuccess, refetch } = generateClearancePDF(currentSemesterId!);

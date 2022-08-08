@@ -20,6 +20,7 @@ import IconFeedbackOutline from '~icons/fluent/person-feedback-16-regular';
 import IconReport from '~icons/ion/stats-chart';
 import IconReportOutline from '~icons/ion/stats-chart-outline';
 import IconOnlineEnrollment from '~icons/fluent/compose-16-filled';
+import appEvents from './event';
 
 const router = createRouter({
   history: createWebHashHistory(),
@@ -265,6 +266,14 @@ router.beforeEach((to, from, next) => {
       return next({ name: 'login' });
     }
   }
+
+  if (appEvents.onLogEvent) {
+    appEvents.onLogEvent('screen_view', {
+      firebase_screen: to.name,
+      firebase_screen_class: to.name
+    });
+  }
+
   next();
 });
 

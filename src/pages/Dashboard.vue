@@ -16,7 +16,7 @@
 
 <script lang="ts" setup>
 import Navbar from '../components/ui/Navbar.vue'
-import { prefetchStudent, prefetchSemesterId, prefetchSemesterList, useSemesterQuery, currentSemesterIdKey } from '../stores/studentStore';
+import { prefetchStudent, prefetchSemesterId, prefetchSemesterList, useAdditionalInfoQuery, currentSemesterIdKey } from '../stores/studentStore';
 import LoadingContainer from '../components/ui/LoadingContainer.vue';
 import Loader from '../components/ui/Loader.vue';
 import { useQueryClient } from 'vue-query';
@@ -31,6 +31,6 @@ Promise.all([
 ]);
 
 const { isLoading: isLogoutProcessing } = useLogoutMutation();
-const { currentSemesterId, hasSemesterId } = useSemesterQuery();
+const { currentSemesterId, hasSemesterId } = useAdditionalInfoQuery();
 provide(currentSemesterIdKey, currentSemesterId);
 </script>

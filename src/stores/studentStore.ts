@@ -32,11 +32,11 @@ export const useStudentQuery = () => {
   }
 }
 
-const fetchSemesterId = () => client.semesterId();
+const fetchAdditionalInfo = () => client.additionalInfo();
 const fetchSemesterList = () => client.http.get(RoutePath('semesterList'));
 
 export const prefetchSemesterId = (queryClient: QueryClient) =>
-  queryClient.prefetchQuery('semester_id', fetchSemesterId);
+  queryClient.prefetchQuery('student_additional_info', fetchAdditionalInfo);
 
 export const prefetchSemesterList = (queryClient: QueryClient) =>
   queryClient.prefetchQuery('semester_list', fetchSemesterList);
@@ -51,8 +51,8 @@ const extractSemesterInfo = (label: string) => {
 
 export const currentSemesterIdKey: InjectionKey<ComputedRef<string | number | undefined>> = Symbol();
 
-export const useSemesterQuery = (existingSemesterId?: Ref<string | number | undefined>) => {
-  const idQuery = useQuery('semester_id', fetchSemesterId, { initialData: () => '' });
+export const useAdditionalInfoQuery = (existingSemesterId?: Ref<string | number | undefined>) => {
+  const infoQuery = useQuery('student_additional_info', fetchAdditionalInfo, { initialData: { semesterId: -1, course: '', year: '' } });
   const listQuery = useClientQuery('semester_list', fetchSemesterList, {
     select: (s) => {
       return s.data.map(d => ({
@@ -61,7 +61,7 @@ export const useSemesterQuery = (existingSemesterId?: Ref<string | number | unde
       })) ?? [];
     }
   });
-  const hasSemesterId = computed(() => !!idQuery.data.value);
+  const hasSemesterId = computed(() => !!infoQuery.data.value && infoQuery.data.value.semesterId > 1);
   const semesterList = computed<any[]>(() => listQuery.data.value as any[] ?? []);
   const getSemesterInfoByID = (semId: number | string): any => semesterList.value.find(s => s.id == semId);
   const rawCurrentSemesterId = ref<number | string>();
@@ -69,8 +69,8 @@ export const useSemesterQuery = (existingSemesterId?: Ref<string | number | unde
     get() {
       if (typeof existingSemesterId !== 'undefined') {
         return existingSemesterId.value;
-      } else if (!rawCurrentSemesterId.value && hasSemesterId) {
-        return idQuery.data.value;
+      } else if (!rawCurrentSemesterId.value && infoQuery.data.value && hasSemesterId) {
+        return infoQuery.data.value.semesterId;
       }
       return rawCurrentSemesterId.value;
     },
@@ -82,7 +82,7 @@ export const useSemesterQuery = (existingSemesterId?: Ref<string | number | unde
   const currentSemester = computed(() => semesterList.value.find(s => s.id == currentSemesterId.value) ?? { display: { semester: '', year: '' } });
 
   return {
-    idQuery,
+    infoQuery,
     listQuery,
     hasSemesterId,
     semesterList,

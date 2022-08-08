@@ -1233,7 +1233,7 @@ export const useMockServer = () => {
       this.get(RoutePath('nationalitiesList'), () => reduceKV(nationalities));
       this.get(RoutePath('parentRelationshipStatusesList'), () => reduceKV(parentRelationshipStatus));
       this.get(RoutePath('religionList'), () => reduceKV(religions, 100));
-      this.get(RoutePath('semesterId'), () => 486);
+      this.get(RoutePath('additionalStudentInfo'), () => ({ semesterId: 486, year: 'Second Year', course: 'Bachelor of Science in Computer Science' }));
     },
   });
 };

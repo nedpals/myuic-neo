@@ -64,8 +64,9 @@ import Button from './Button.vue';
 import { useTitle } from '@vueuse/core';
 import { computed, watch, defineEmits, defineProps, useSlots, onBeforeUnmount } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { useStudentQuery } from '../../stores/studentStore.js';
+import { useAdditionalInfoQuery, useStudentQuery } from '../../stores/studentStore.js';
 import { useProfileMutation, useProfiles } from '../../composables/auth.js';
+import appEvents from '../../event';
 
 defineEmits(['reload']);
 
@@ -87,6 +88,7 @@ const router = useRouter();
 const slots = useSlots();
 const actionsSlot = slots.actions?.() ?? [];
 const shouldActionsBeDropdown = computed(() => actionsSlot.length > 1);
+const { infoQuery: { data: additionalInfo } } = useAdditionalInfoQuery();
 
 const childRouteLinks = computed(() => {
   if (route.matched.length < 3) return [];
@@ -116,6 +118,12 @@ const { mutate: saveProfileSync } = useProfileMutation();
 const { data: profiles } = useProfiles();
 const { query: { data: student }, avatarUrl } = useStudentQuery();
 const unwatchProfile = watch(student, (student) => {
+  if (appEvents.onReceiveStudentInfo) {
+    if (student && additionalInfo.value) {
+      appEvents.onReceiveStudentInfo({ student: student!, additionalInfo: additionalInfo.value });
+    }
+  }
+
   if (student && profiles.value) {
     const existingProfile = profiles.value.find(p => p.id === student.number);
     if (existingProfile) {
@@ -125,12 +133,14 @@ const unwatchProfile = watch(student, (student) => {
         name: `${student.lastName}, ${student.firstName}`
       });
     }
+    
     unwatchProfile();
   }
 });
 
 onBeforeUnmount(() => {
   unwatchProfile();
+  unwatchTitle();
 })
 </script>
 
