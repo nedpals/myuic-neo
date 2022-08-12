@@ -2,9 +2,11 @@ import { registerSW } from 'virtual:pwa-register';
 import { isMock } from './client';
 import { startApp } from './main.common';
 
+import { loadAnalytics, loadFirebase, logEvent, setUserId, setUserProperties } from './firebase';
 import printJS from 'print-js';
-import { analytics } from './firebase';
-import { logEvent, setUserId, setUserProperties } from 'firebase/analytics';
+import type { Analytics } from 'firebase/analytics';
+
+let analytics: Analytics | null = null;
 
 async function initializeServer() {
   if (!import.meta.env.PROD || isMock) {
@@ -12,17 +14,25 @@ async function initializeServer() {
   }
 }
 
+async function startAnalytics() {
+  if (import.meta.env.PROD && import.meta.env.VITE_FIREBASE_ANALYTICS == 'true') {
+    await loadFirebase();
+    analytics = await loadAnalytics();
+  }
+}
+
 startApp(async () => {
   try {
     await initializeServer();
+    await startAnalytics();
   } finally {
     await registerSW({ immediate: true })(true);
   }
 }, {
   async onAuthDestroy() {
-    if (!import.meta.env.PROD) return;
-    setUserId(analytics, '');
-    setUserProperties(analytics, {});
+    if (!analytics) return;
+    setUserId!(analytics, '');
+    setUserProperties!(analytics, {});
   },
 
   async onDownloadURL({ url, data, fileName }) {
@@ -49,15 +59,15 @@ startApp(async () => {
     return false;
   },
   onLogEvent(name, params) {
-    if (!import.meta.env.PROD) return;
+    if (!analytics) return;
 
-    logEvent(analytics, name, params);
+    logEvent!(analytics, name, params);
   },
   onReceiveStudentInfo({student, additionalInfo}) {
-    if (!import.meta.env.PROD) return;
+    if (!analytics) return;
 
-    setUserId(analytics, student.number);
-    setUserProperties(analytics, { 
+    setUserId!(analytics, student.number);
+    setUserProperties!(analytics, { 
       gender: student.gender, 
       religion: student.religion, 
       nationality: student.nationality,
