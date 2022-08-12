@@ -1649,19 +1649,19 @@
   resolved "https://registry.yarnpkg.com/@miragejs/pretender-node-polyfill/-/pretender-node-polyfill-0.1.2.tgz#d26b6b7483fb70cd62189d05c95d2f67153e43f2"
   integrity sha512-M/BexG/p05C5lFfMunxo/QcgIJnMT2vDVCd00wNqK2ImZONIlEETZwWJu1QtLxtmYlSHlCFl3JNzp0tLe7OJ5g==
 
-"@myuic-api/client@^1.6.0":
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/@myuic-api/client/-/client-1.6.0.tgz#423238f153a3cf1871f8d43775346928ffd28e3b"
-  integrity sha512-MBvCsu4ohh8QoU6vaGT6HYCKFBHiCI/Kqrj0QuaVAEm3swTiL4vv4ixfBRc6xa8PxMGymW9lP33CHiKUr5V8Qg==
+"@myuic-api/client@^1.6.1":
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/@myuic-api/client/-/client-1.6.1.tgz#dba9bd49fb11bca90ff00603bae3e33410de9a50"
+  integrity sha512-FaUx6DxvXw8bGNNzP+h7CP4r15G2cMIJtr/H2AS1leFPRegZ6p7gilK2VdQyovVELe573LvECE7fRaPxPeVItg==
   dependencies:
-    "@myuic-api/types" "^1.6.0"
+    "@myuic-api/types" "^1.6.1"
     mitt "^3.0.0"
     url-parse "^1.5.1"
 
-"@myuic-api/types@^1.6.0":
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/@myuic-api/types/-/types-1.6.0.tgz#a9c0ab61464c1a5d1e33396e72cc436a05e8a1e6"
-  integrity sha512-JwY7LV78ovICcqVzXycm0oaLU3gUR2BqJ8rZZbbiBoPWGHqiCwtyTAaMRcPqLfmruEfDeV2zxmg/3TP/l/p9QQ==
+"@myuic-api/types@^1.6.1":
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/@myuic-api/types/-/types-1.6.1.tgz#38b8e2b762656ab1a7035079ff62af20a10ec5a3"
+  integrity sha512-c5ZqzaqyxJ9WmlP/tkEdE7rUrQZ8DDxfBtEbt5BUgf+vHXmHbfZUIWnn6HKx2MnhO8ywFXVe8Yp25GsER8hAyw==
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
