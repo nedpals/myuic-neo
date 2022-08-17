@@ -30,7 +30,7 @@
                 <icon-receipt-outline />
                 <span>Clearance</span>
               </router-link>
-              <a href="http://bit.ly/2xSkcLk" class="quick-link-item">
+              <a href="https://drive.google.com/file/d/1fzvEd1Y4SJK5CZyqWNMJbq-8tS_94-ba/view" class="quick-link-item">
                 <icon-book-outline />
                 <span>Handbook</span>
               </a>
@@ -146,7 +146,7 @@ const welcomeGreeting = computed(() => {
 });
 
 const todayDate = computed(() => formatDatetime(now, '\'Today is\' iiii, MMMM d, yyyy'));
-const isRLinksLoading = computed(() => isRLinksFetching.value || isRLinksIdle.value)
+const isRLinksLoading = computed(() => isRLinksFetching.value || isRLinksIdle.value);
 </script>
 
 <style lang="postcss" scoped>
