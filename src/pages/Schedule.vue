@@ -54,7 +54,7 @@
           :key="'sched_' + day">
 
             <span 
-              :class="[days[day] === currentDay ? 'bg-primary-500 dark:bg-primary-700 text-white' : 'bg-gray-200 dark:bg-primary-800']"
+              :class="[!isLoading && days[day] === currentDay ? 'bg-primary-500 dark:bg-primary-700 text-white' : 'bg-gray-200 dark:bg-primary-800']"
               class="flex items-start px-3 py-1 rounded-full md:rounded-xl w-full md:w-1/5">
               {{ days[day] }}
             </span>
@@ -65,27 +65,36 @@
               <box 
                 v-for="(sub, i) in courses" 
                 :key="`${day}_courses_${i}`" 
-                class="px-4 py-2"
                 no-padding>
-                <div class="flex flex-col h-full">
-                  <skeleton custom-class="h-4 w-24 mb-1 bg-gray-200">
-                    <h3 class="font-semibold">
-                      {{ sub.name }}
-                      <span 
-                        v-for="type in sub.types"
-                        class="ml-1 border rounded-full text-sm px-2 py-1" 
-                        :class="{ 
-                          'bg-primary-100 border-primary-400 text-primary-400': type === 'Lab', 
-                          'bg-success-100 border-success-400 text-success-400': type === 'Lec'
-                        }">{{ type }}</span>
-                    </h3>
-                  </skeleton>
-                  <skeleton custom-class="h-3.5 w-12 mb-4 bg-gray-200">
-                    <p class="text-sm mb-2">{{ sub.instructor }}</p>
-                  </skeleton>
-                  <skeleton custom-class="h-4 w-16 bg-gray-200">
-                    <p class="mt-auto">{{ sub.fromTime }} - {{ sub.toTime }}</p>
-                  </skeleton>
+                <div class="flex">
+                  <div 
+                    class="w-1/8 flex items-center justify-center px-4 rounded-l" 
+                    :class="[!isLoading && days[day] === currentDay ? 'bg-primary-100 dark:bg-primary-500' : 'bg-gray-100 dark:bg-primary-700']">
+                    <skeleton custom-class="h-4 w-24 mb-1 bg-gray-200">
+                      <p class="font-semibold">{{ sub.code }}</p>
+                    </skeleton>
+                  </div>
+                  
+                  <div class="w-7/8 flex flex-col h-full px-4 py-2">
+                    <skeleton custom-class="h-4 w-24 mb-1 bg-gray-200">
+                      <h3 class="font-semibold">
+                        {{ sub.name }}
+                        <span 
+                          v-for="type in sub.types"
+                          class="ml-1 border rounded-full text-sm px-2 py-1" 
+                          :class="{ 
+                            'bg-primary-100 border-primary-400 text-primary-400': type === 'Lab', 
+                            'bg-success-100 border-success-400 text-success-400': type === 'Lec'
+                          }">{{ type }}</span>
+                      </h3>
+                    </skeleton>
+                    <skeleton custom-class="h-3.5 w-12 mb-4 bg-gray-200">
+                      <p class="text-sm mb-2">{{ sub.instructor }}</p>
+                    </skeleton>
+                    <skeleton custom-class="h-4 w-16 bg-gray-200">
+                      <p class="mt-auto">{{ sub.fromTime }} - {{ sub.toTime }}</p>
+                    </skeleton>
+                  </div>
                 </div>
               </box>
             </div>

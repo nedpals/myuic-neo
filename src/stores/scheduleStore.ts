@@ -6,6 +6,7 @@ import { client } from "../client";
 import { compare12hTimesSort, IS_NATIVE } from "../utils";
 
 interface NormalizedCourseSchedule {
+  code: string;
   name: string;
   room: string;
   instructor: string;
@@ -51,6 +52,7 @@ function insertSchedule(c: CourseSchedule, scheduleList: Record<string, Normaliz
     }
 
     scheduleList[s.day].push({
+      code: c.code,
       name: c.name,
       instructor: c.instructor,
       room: c.room,
@@ -85,6 +87,7 @@ export const useSchedulesQuery = (semesterId: Ref<string | number | undefined>, 
     if (isLoading.value) {
       for (const day in scheduleList) {
         scheduleList[day] = [...Array(3).keys()].map<NormalizedCourseSchedule>(() => ({
+          code: '',
           instructor: '',
           name: '',
           room: '',
