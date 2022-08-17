@@ -21,7 +21,7 @@ defineProps({
         default: 'button'
     },
     icon: {
-        type: Function as PropType<FunctionalComponent>
+        type: [Function, Object] as PropType<FunctionalComponent>
     },
     withIcon: {
         type: Boolean,
