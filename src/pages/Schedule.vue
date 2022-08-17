@@ -68,14 +68,14 @@
                 no-padding>
                 <div class="flex">
                   <div 
-                    class="w-1/8 flex items-center justify-center px-4 rounded-l" 
+                    class="w-1/4 md:w-1/8 flex items-center justify-center px-4 rounded-l" 
                     :class="[!isLoading && days[day] === currentDay ? 'bg-primary-100 dark:bg-primary-500' : 'bg-gray-100 dark:bg-primary-700']">
                     <skeleton custom-class="h-4 w-24 mb-1 bg-gray-200">
                       <p class="font-semibold">{{ sub.code }}</p>
                     </skeleton>
                   </div>
                   
-                  <div class="w-7/8 flex flex-col h-full px-4 py-2">
+                  <div class="w-3/4 md:w-7/8 flex flex-col h-full px-4 py-2">
                     <skeleton custom-class="h-4 w-24 mb-1 bg-gray-200">
                       <h3 class="font-semibold">
                         {{ sub.name }}
