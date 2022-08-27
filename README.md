@@ -1,7 +1,7 @@
 <div align="center">
   <p><img width="20%" src="./resources/icon-square.jpg" /></p>
   <h1>MyUIC Neo</h1>
-  <p>A new student portal concept for UICians in the 21st century</p>
+  <p>An "unofficial", third-party student portal website for UICians.</p>
   <p><img src="https://pbs.twimg.com/media/FO8ZdXvUYAEpgGu?format=jpg&name=large" /></p>
 
 [Demo](https://myuic.nedpals.xyz) |
