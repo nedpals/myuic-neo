@@ -12,9 +12,18 @@
     <loading-container :is-loading="isLoading" v-slot="{ isLoading }">
       <div class="flex flex-col-reverse lg:flex-row lg:space-x-4">
         <div class="w-full lg:w-2/3 flex flex-col space-y-2">
-          <div class="border dark:border-primary-700 rounded-lg bg-white dark:bg-primary-800 shadow pt-4">
-            <div class="flex justify-between items-start px-6 pb-4">
-              <span class="text-gray-500 dark:text-primary-300 mb-2 block">Monthly Dues</span>
+          <div class="border dark:border-primary-700 rounded-lg bg-white dark:bg-primary-800 shadow">
+            <div class="flex border-b">
+              <button class="flex-1 px-2 pt-4 pb-3 hover:bg-gray-100" @click="isQuarterly = true">
+                <span class="pb-3" :class="{'border-b-3 border-primary-400 font-semibold': isQuarterly}">Quarterly</span>
+              </button>
+              <button class="flex-1 px-2 pt-4 pb-3 hover:bg-gray-100" @click="isQuarterly = false">
+                <span class="pb-3" :class="{'border-b-3 border-primary-400 font-semibold': !isQuarterly}">Monthly</span>
+              </button>
+            </div>
+            
+            <div class="flex justify-between items-start px-6 py-4">
+              <span class="text-gray-500 dark:text-primary-300 mb-2 block">{{ isQuarterly ? 'Quarterly' : 'Monthly' }} Dues</span>
               <div class="flex flex-col items-end">
                 <p>Paid Total</p>
                 <div v-if="isLoading" class="h-7.5 w-32 bg-gray-400 rounded-xl mt-2 mb-0.5 animate-pulse"></div>
@@ -25,15 +34,15 @@
             <div class="flex flex-col">
               <div
                 :key="'monthlyDue_' + i"
-                v-for="(mDue, i) in data!.monthlyDues"
-                @click="() => selectedMonthlyDueIdx = i"
+                v-for="(mDue, mDueLabel, i) in duesList"
+                @click="() => selectedDueIdx = mDueLabel"
                 class="flex px-6 py-3 border-t dark:border-primary-700"
                 :class="{
                   'bg-success-50 dark:bg-success-800 hover:bg-success-100 dark:hover:bg-success-900': !isLoading && mDue.status === 'Paid',
                   'bg-warning-50 dark:bg-warning-800 hover:bg-warning-100 dark:hover:bg-warning-900': !isLoading && mDue.status === 'Partially Paid',
                   'hover:bg-gray-100 dark:hover:bg-primary-800': !isLoading && mDue.status.length === 0,
                   'cursor-pointer': !isLoading,
-                  'rounded-b-lg': i === data!.monthlyDues.length - 1
+                  'rounded-b-lg': i === duesLength - 1
                 }">
                 
                 <skeleton :delay="(i + 1) * 350" custom-class="w-13 h-13 -ml-1 bg-gray-400 dark:bg-primary-600 rounded-full">
@@ -52,7 +61,7 @@
                   <div class="flex justify-between mb-1">
                     <div>
                       <skeleton :delay="(i + 1) * 350" custom-class="h-4 w-28 mb-2">
-                        <h2 class="font-semibold">Month {{ mDue.month }}</h2>
+                        <h2 class="font-semibold">{{ mDueLabel }}</h2>
                       </skeleton>
                       <skeleton :delay="(i + 1) * 350" custom-class="h-3 w-20">
                         <p :class="{ 
@@ -77,10 +86,10 @@
 
               <modal-window
                 open
-                v-if="selectedMonthlyDueIdx !== -1"
-                :key="'selectedMonthlyDue_' + selectedMonthlyDueIdx"
-                @update:open="() => selectedMonthlyDueIdx = -1"
-                :title="isLoading ? 'Loading...' : 'Month ' + selectedMonthlyDue.month">
+                v-if="selectedDueIdx !== null"
+                :key="'selectedDue_' + selectedDueIdx"
+                @update:open="() => selectedDueIdx = null"
+                :title="isLoading ? 'Loading...' : (selectedDueIdx ?? 'Loading...').toString()">
                 <div v-if="isLoading" class="flex flex-col items-center justify-center py-12">
                   <loader class="h-12 w-12" />
                 </div>
@@ -91,7 +100,7 @@
                         <p class="text-lg mb-1">Amount</p>
                       </skeleton>
                       <skeleton :delay="350" custom-class="w-8 h-3.5 bg-gray-200">
-                        <p class="font-semibold text-4xl">{{ moneyFormatter.format(selectedMonthlyDue.amount) }}</p>
+                        <p class="font-semibold text-4xl">{{ moneyFormatter.format(selectedDue.amount) }}</p>
                       </skeleton>
                     </div>
 
@@ -100,18 +109,18 @@
                         <p class="text-lg mb-1">Balance</p>
                       </skeleton>
                       <skeleton :delay="350" custom-class="w-8 h-3.5 bg-gray-200">
-                        <p class="font-semibold text-4xl">{{ moneyFormatter.format(selectedMonthlyDue.balance) }}</p>
+                        <p class="font-semibold text-4xl">{{ moneyFormatter.format(selectedDue.balance) }}</p>
                       </skeleton>
                     </div>
                   </div>
                   <div class="flex flex-col divide-y">
                     <div class="flex justify-between py-2">
                       <p>Status</p>
-                      <p class="font-bold">{{ selectedMonthlyDue.status.length ? selectedMonthlyDue.status : 'Pending' }}</p>
+                      <p class="font-bold">{{ selectedDue.status.length ? selectedDue.status : 'Pending' }}</p>
                     </div>
-                    <div v-if="selectedMonthlyDue.remarks.length" class="flex justify-between py-2">
+                    <div v-if="selectedDue.remarks.length" class="flex justify-between py-2">
                       <p>Remarks</p>
-                      <p class="font-bold">{{ selectedMonthlyDue.remarks }}</p>
+                      <p class="font-bold">{{ selectedDue.remarks }}</p>
                     </div>
                   </div>
                 </div>
@@ -190,14 +199,48 @@ import IconPaid from '~icons/ion/checkmark-circle';
 import IconPending from '~icons/ion/ios-circle-outline';
 import Loader from '../components/ui/Loader.vue';
 import Button from '../components/ui/Button.vue';
-import { computed, inject, ref } from 'vue';
+import { computed, ComputedRef, inject, Ref, ref } from 'vue';
 import PaymentHistory from '../components/Finance/PaymentHistory.vue';
 import { getBreakdownSubtotal, useFinancialRecordQuery } from '../stores/financialStore';
 import { pesoFormatter as moneyFormatter } from '../utils';
 import { currentSemesterIdKey } from '../stores/studentStore';
+import { PaymentDue } from '@myuic-api/types';
 
+const isQuarterly = ref(true);
 const currentSemesterId = inject(currentSemesterIdKey);
 const { query: { data }, isLoading, paidTotal, assessmentTotal } = useFinancialRecordQuery(currentSemesterId!);
+const duesList: ComputedRef<Record<string, PaymentDue>> = computed(() => {
+  if (!data.value || isLoading.value) {
+    return {};
+  }
+
+  const monthlyDues = data.value.monthlyDues;
+  if (isQuarterly.value) {
+    const prelims = monthlyDues.slice(0, 3).reduce((prev, curr) => {
+      return {
+        ...prev,
+        status: inferStatus(prev, curr),
+        amount: prev.amount + curr.amount,
+        balance: prev.balance + curr.balance,
+      }
+    });
+
+    const midterms = monthlyDues[3];
+    const finals = monthlyDues[4];
+
+    return {
+      'Prelims': prelims,
+      'Midterms': midterms,
+      'Finals': finals
+    }
+  }
+
+  return monthlyDues.reduce<Record<string, PaymentDue>>((p, v) => {
+    p[`Month ${v.month}`] = v;
+    return p;
+  }, {});
+});
+const duesLength = computed(() => Object.keys(duesList.value).length);
 const formKey = ref(0);
 const breakdownKeys = computed(() => {
   const keys = ['tuition', 'misc', 'others', 'receivables'];
@@ -205,9 +248,16 @@ const breakdownKeys = computed(() => {
   return keys.filter(k => data.value.assessments[k].length !== 0);
 });
 const breakdownLabels = computed(() => ['Tuition', 'Miscellanous', 'Other Fees', 'Back Account']);
-const selectedMonthlyDueIdx = ref(-1);
-const selectedMonthlyDue = computed(() => data.value!.monthlyDues[selectedMonthlyDueIdx.value]);
+const selectedDueIdx: Ref<number | string | null> = ref(null);
+const selectedDue = computed(() => duesList.value[selectedDueIdx.value ?? '-1']);
 const isPaymentModalOpen = ref(false);
+
+function inferStatus(prev: PaymentDue, curr: PaymentDue) {
+  if ((prev.status === 'Paid' && curr.status !== 'Paid') || (prev.status !== 'Paid' && curr.status !== 'Pending')) {
+    return 'Partially Paid'
+  }
+  return prev.status
+}
 
 function onPaymentFormOpenUpdate(isOpen: boolean) {
   isPaymentModalOpen.value = isOpen;
