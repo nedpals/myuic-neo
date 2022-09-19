@@ -34,7 +34,7 @@
 import Box from './Box.vue';
 import IconClose from '~icons/ion/close';
 import { isSlotVisible } from '../../utils';
-import { computed, onBeforeUnmount, defineEmits, defineProps, onMounted, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import { useModal } from '../../composables/modal';
 
 const emit = defineEmits(['update:open']);

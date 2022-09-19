@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineProps, provide } from 'vue';
+import { computed, provide } from 'vue';
 
 const props = defineProps({
   isLoading: {

@@ -62,7 +62,7 @@ import IconMore from '~icons/ion/more';
 import Button from './Button.vue';
 
 import { useTitle } from '@vueuse/core';
-import { computed, watch, defineEmits, defineProps, useSlots, onBeforeUnmount } from 'vue';
+import { computed, watch, useSlots, onBeforeUnmount } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useAdditionalInfoQuery, useStudentQuery } from '../../stores/studentStore.js';
 import { useProfileMutation, useProfiles } from '../../composables/auth.js';

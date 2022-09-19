@@ -10,7 +10,7 @@
 
 <script lang="ts" setup>
 import { RequirementStatus } from '@myuic-api/types';
-import { defineProps, PropType } from 'vue';
+import { PropType } from 'vue';
 import IconCheckmarkCircleOutline from '~icons/ion/ios-checkmark-circle-outline';
 import IconCloseCircleOutline from '~icons/ion/ios-close-circle-outline';
 import IconUnknownCircleOutline from '~icons/ion/remove-circle-outline';

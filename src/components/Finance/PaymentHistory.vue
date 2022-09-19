@@ -85,7 +85,7 @@ import { useFinancialRecordQuery } from '../../stores/financialStore';
 import Skeleton from '../ui/Skeleton.vue';
 import Box from '../ui/Box.vue';
 import LoadingContainer from '../ui/LoadingContainer.vue';
-import { inject, defineProps, ref, computed } from 'vue';
+import { inject, ref, computed } from 'vue';
 import { currentSemesterIdKey } from '../../stores/studentStore';
 import ModalWindow from '../ui/ModalWindow.vue';
 

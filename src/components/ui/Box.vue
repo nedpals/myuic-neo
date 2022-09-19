@@ -6,7 +6,7 @@
 </template>
 
 <script lang="ts" setup>
-import { inject, defineProps, Ref, ref } from 'vue';
+import { inject, Ref, ref } from 'vue';
 
 defineProps({
   title: {

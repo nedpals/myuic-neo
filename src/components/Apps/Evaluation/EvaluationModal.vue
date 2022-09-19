@@ -185,7 +185,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onBeforeUnmount, PropType, readonly, ref, watch, defineEmits, defineProps } from 'vue'
+import { computed, onBeforeUnmount, PropType, readonly, ref, watch } from 'vue'
 import ModalWindow from '../../ui/ModalWindow.vue'
 import { ratings, CourseEvaluationEntry } from '@myuic-api/types'
 import { useEvaluationMutation, useEvaluationQuery } from '../../../stores/evaluationStore'
