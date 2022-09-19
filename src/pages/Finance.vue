@@ -209,14 +209,25 @@ import { PaymentDue } from '@myuic-api/types';
 const isQuarterly = ref(true);
 const currentSemesterId = inject(currentSemesterIdKey);
 const { query: { data }, isLoading, paidTotal, assessmentTotal } = useFinancialRecordQuery(currentSemesterId!);
+
+const monthlyDues = computed(() => {
+  return data.value?.monthlyDues.map(due => {
+    return {
+      ...due,
+      status: due.balance === 0 
+        ? 'Paid' : due.balance !== due.amount 
+        ? 'Partially Paid' : due.status
+    }
+  }) ?? [];
+})
+
 const duesList: ComputedRef<Record<string, PaymentDue>> = computed(() => {
   if (!data.value || isLoading.value) {
     return {};
   }
 
-  const monthlyDues = data.value.monthlyDues;
   if (isQuarterly.value) {
-    const prelims = monthlyDues.slice(0, 3).reduce((prev, curr) => {
+    const prelims = monthlyDues.value.slice(0, 3).reduce((prev, curr) => {
       return {
         ...prev,
         status: inferStatus(prev, curr),
@@ -225,8 +236,8 @@ const duesList: ComputedRef<Record<string, PaymentDue>> = computed(() => {
       }
     });
 
-    const midterms = monthlyDues[3];
-    const finals = monthlyDues[4];
+    const midterms = monthlyDues.value[3];
+    const finals = monthlyDues.value[4];
 
     return {
       'Prelims': prelims,
@@ -235,7 +246,7 @@ const duesList: ComputedRef<Record<string, PaymentDue>> = computed(() => {
     }
   }
 
-  return monthlyDues.reduce<Record<string, PaymentDue>>((p, v) => {
+  return monthlyDues.value.reduce<Record<string, PaymentDue>>((p, v) => {
     p[`Month ${v.month}`] = v;
     return p;
   }, {});
@@ -253,7 +264,10 @@ const selectedDue = computed(() => duesList.value[selectedDueIdx.value ?? '-1'])
 const isPaymentModalOpen = ref(false);
 
 function inferStatus(prev: PaymentDue, curr: PaymentDue) {
-  if ((prev.status === 'Paid' && curr.status !== 'Paid') || (prev.status !== 'Paid' && curr.status !== 'Pending')) {
+  const totalBalance = prev.balance + curr.balance;
+  if (totalBalance === 0) {
+    return 'Paid';
+  } else if ((prev.status === 'Paid' && curr.status !== 'Paid') || (prev.status !== 'Paid' && curr.status !== 'Pending')) {
     return 'Partially Paid'
   }
   return prev.status
