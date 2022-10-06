@@ -103,6 +103,7 @@ export const useResourceLinkQuery = () => {
     () => client.http.get(RoutePath('resourceLinksList')),
     {
       select: ({ data }) => data[0].entries ?? [],
+      enabled: true
     }
   );
 }
