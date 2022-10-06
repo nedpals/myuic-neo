@@ -120,7 +120,7 @@ async function getProfiles(): Promise<Profile[]> {
 }
 
 export function useProfiles() {
-  return useQuery(['profiles'], getProfiles);
+  return useQuery(['profiles'], getProfiles, { enabled: true });
 }
 
 export function useProfileMutation() {

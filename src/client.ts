@@ -5,6 +5,7 @@ import { useQuery, UseQueryOptions, VueQueryPluginOptions } from 'vue-query';
 import { persistTokens } from './composables/auth';
 import { catchAndNotifyError, twentyFourHoursInMs } from './utils';
 import appEvents from './event';
+import { ref } from 'vue';
 
 export { eventbus } from '@myuic-api/client/lib/event';
 
@@ -13,6 +14,7 @@ export const backendUrl = import.meta.env.VITE_API_URL || mockBackendUrl;
 export const backendHost = new URL(backendUrl).hostname;
 export const isMock = backendUrl === mockBackendUrl;
 export const avatarBaseUrl = isMock ? backendUrl : import.meta.env.VITE_AVATAR_BASE_URL;
+export const isGloballyEnabled = ref(false);
 
 export const client = (() => {
   const client = newClient({ 
@@ -47,7 +49,8 @@ export const customClientOptions: VueQueryPluginOptions = {
         retry: false,
         refetchOnReconnect: false,
         staleTime: twentyFourHoursInMs,
-        onError: catchAndNotifyError
+        onError: catchAndNotifyError,
+        enabled: isGloballyEnabled
       },
       mutations: {
         onError: catchAndNotifyError

@@ -44,7 +44,17 @@
     </div>
   </notification-group>
   <main class="dark:bg-primary-900">
-    <router-view></router-view>
+    <div v-if="!isGloballyEnabled" class="flex flex-col space-y-32 items-center justify-center max-w-xl mx-auto h-screen">
+      <icon-logo class="text-primary-400 h-48 w-48 mb-4" />
+      <loader v-if="isLoading" class="w-16" />
+      <p v-else class="text-2xl text-center" v-html="healthErrorMessage"></p>
+      
+      <div v-if="isLoading" class="bg-gray-100 text-center rounded-lg p-2">
+        <p>Please be patient as UIC servers may be busy at this moment.</p>
+      </div>
+    </div>
+
+    <router-view v-else />
   </main>
 </template>
 
@@ -61,6 +71,10 @@ import { useModalManager } from './composables/modal';
 import DialogManager from './components/ui/DialogManager.vue';
 import appEvents from './event';
 import Button from './components/ui/Button.vue';
+import Loader from './components/ui/Loader.vue';
+import IconLogo from '~icons/custom/logo';
+import { useQuery } from 'vue-query';
+import { client, isGloballyEnabled } from './client';
 
 const router = useRouter();
 const feedbackUrl = computed(() => `${import.meta.env.VITE_FEEDBACK_URL ?? ''}`);
@@ -85,6 +99,37 @@ onBeforeUnmount(() => {
   unsubscribeAuth();
   if (destroyPopNavigation)
     destroyPopNavigation();
+});
+
+const { isLoading, error: healthError } = useQuery(['health'], async () => {
+  const status = await client.checkHealth();
+  if (!status.isAlive) {
+    if (status.status >= 500) {
+      throw new Error('Something is wrong when talking to UIC servers. Please try again later. Visit <a href="https://facebook.com/uicph">UIC Facebook Page</a> for more details.');
+    } else if (status.status >= 400) {
+      throw new Error('Might be a problem on our side. Please report this issue and try again later.');
+    }
+
+    throw new Error('Unknown error. Please report this issue and try again later.');
+  }
+
+  return status;
+}, { 
+  enabled: true,
+  onSuccess(data) {
+    isGloballyEnabled.value = data.isAlive;
+  },
+  onError() {
+    isGloballyEnabled.value = false;
+  }
+});
+
+const healthErrorMessage = computed(() => {
+  if (!healthError.value || !(healthError.value instanceof Error)) {
+    return 'Unknown error. Please report this issue and try again later.'
+  }
+
+  return healthError.value.message;
 });
 </script>
 
