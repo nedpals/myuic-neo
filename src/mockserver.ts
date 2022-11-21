@@ -22,6 +22,11 @@ export const useMockServer = () => {
 
       this.urlPrefix = backendUrl;
       this.timing = 2000;
+
+      this.get(RoutePath('checkHealth'), () => ({
+        isAlive: true,
+        status: 200
+      } as HealthStatus));
       
       this.post(RoutePath('login'), (schema, request) => {
         const creds = JSON.parse(request.requestBody);
