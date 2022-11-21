@@ -76,7 +76,7 @@
               <div class="w-1/9 px-2 md:px-4 py-2 md:py-3 <md:text-center flex flex-col">
                 <skeleton :delay="(i + 1) * 250" custom-class="w-6 md:w-11 h-5 md:h-7.5 mt-1 mb-3 bg-primary-400">
                   <p class="text-xl text-primary-800 dark:text-primary-200 md:text-3xl font-semibold <md:my-auto">
-                    {{ ar.overallGrade && typeof ar.overallGrade == 'number' ? ar.overallGrade : '--' }}
+                    {{ ar.overallGrade && typeof ar.overallGrade == 'number' && gradeMatchesOverall(ar) ? ar.overallGrade : '--' }}
                   </p>
                 </skeleton>
                 <skeleton :delay="(i + 1) * 250" custom-class="w-5 md:w-14 <md:h-3.5 h-4 bg-gray-200">
@@ -94,6 +94,8 @@
 </template>
 
 <script lang="ts" setup>
+import { CourseReport } from '@myuic-api/types';
+
 import DashboardScaffold from '../components/ui/DashboardScaffold.vue';
 import LoadingContainer from '../components/ui/LoadingContainer.vue';
 import IconPrint from '~icons/ion/print';
@@ -129,6 +131,15 @@ const gradeKeysAndLabels = readonly({
   'midtermGrade': 'Midterms',
   'finalsGrade': 'Finals'
 });
+
+function gradeMatchesOverall(ar: CourseReport) {
+  if (ar.prelimGrade === ar.midtermGrade && ar.midtermGrade === ar.finalsGrade && ar.prelimGrade === ar.finalsGrade) {
+    if (ar.prelimGrade !== ar.overallGrade) {
+      return false;
+    }
+  }
+  return true;
+}
 
 async function printPdf() {
   try {

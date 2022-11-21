@@ -1,4 +1,4 @@
-import { AcademicRecord, CourseEvaluationEntry, ethnicGroups, genders, incomeGroups, nationalities, Nationality, ParentRelationship, parentRelationshipStatus, questionnaires, Religion, religions, RoutePath } from "@myuic-api/types";
+import { AcademicRecord, CourseEvaluationEntry, ethnicGroups, genders, HealthStatus, incomeGroups, nationalities, Nationality, ParentRelationship, parentRelationshipStatus, questionnaires, Religion, religions, RoutePath } from "@myuic-api/types";
 import { createServer, Response as MirageResponse } from "miragejs";
 import { backendUrl, isMock } from "./client";
 
@@ -739,10 +739,10 @@ export const useMockServer = () => {
               type: "Lec",
               section: "ND-1A",
               school: "UIC-Davao",
-              prelimGrade: 90,
-              midtermGrade: 90,
-              finalsGrade: 90,
-              overallGrade: 90,
+              prelimGrade: 40,
+              midtermGrade: 40,
+              finalsGrade: 40,
+              overallGrade: 70,
             },
             {
               code: "GEC004",
@@ -752,9 +752,9 @@ export const useMockServer = () => {
               section: "BSIT-1B",
               school: "UIC-Davao",
               prelimGrade: 90,
-              midtermGrade: 90,
-              finalsGrade: 90,
-              overallGrade: 90
+              midtermGrade: 80,
+              finalsGrade: 95,
+              overallGrade: 88.33
             },
             {
               code: "GEC007",
