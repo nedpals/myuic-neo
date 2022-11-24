@@ -10,6 +10,20 @@ export const useClearanceQuery = (semesterId: Ref<string | number | undefined>) 
   );
 
   const isLoading = computed(() => query.isFetching.value || query.isIdle.value);
+
+  const remainingNotCleared = computed(() => {
+    // Add UI for unknown number
+    if (isLoading.value || !query.data.value) return -1;
+    let notClearedCount = 1;
+
+    for (const item of query.data.value.items) {
+      if (item.status === 'not_cleared') {
+        notClearedCount++;
+      }
+    }
+    return notClearedCount;
+  });
+
   const isCleared = computed(() => {
     if (isLoading.value || !query.data.value) return false;
     for (const item of query.data.value.items) {
@@ -21,7 +35,8 @@ export const useClearanceQuery = (semesterId: Ref<string | number | undefined>) 
   return {
     query,
     isCleared,
-    isLoading
+    isLoading,
+    remainingNotCleared
   }
 }
 

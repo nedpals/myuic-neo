@@ -84,9 +84,19 @@
             <div class="flex items-center justify-between w-full">
               <div class="flex items-center space-x-2">
                 <clearance-status-icon 
-                  :status="isLoading ? 'unknown' : isClearanceCleared ? 'cleared' : 'not_cleared'" class="text-xl" />
+                  :status="isLoading || remainingNotCleared == -1 ? 'unknown' : isClearanceCleared ? 'cleared' : 'not_cleared'" class="text-xl" />
                 <skeleton custom-class="h-4 w-48 bg-gray-200 dark:text-primary-700">
-                  <p>Clearance Status: <span class="font-bold">{{ isClearanceCleared ? 'Cleared' : 'Not cleared' }}</span></p>
+                  <div class="flex flex-col md:flex-row md:space-x-2">
+                    <span class="hidden md:block">Clearance:</span>
+                    <span class="font-bold">
+                      {{ remainingNotCleared == -1 
+                        ? 'Unable to get current clearance status' 
+                        :  isClearanceCleared 
+                        ? 'Cleared' 
+                        : `${remainingNotCleared} ${remainingNotCleared > 1 ? 'requirements' : 'requirement'} not yet complied.` }}
+                    </span>
+                    <span v-if="!isClearanceCleared" class="font-bold hidden md:block">Take action now.</span>
+                  </div>
                 </skeleton>
               </div>
               <icon-chevron-right class="text-lg text-gray-400 dark:text-primary-300" />
@@ -137,7 +147,7 @@ const isResourcesModalOpen = ref(false);
 const currentSemesterId = inject(currentSemesterIdKey);
 const { isLoading: isStudentLoading, query: { data: student }, avatarUrl, normalizedFirstName: studentFirstName } = useStudentQuery();
 const { isFetching: isRLinksFetching, isIdle: isRLinksIdle, data: resourceLinks } = useResourceLinkQuery();
-const { isCleared: isClearanceCleared, isLoading: isClearanceLoading } = useClearanceQuery(currentSemesterId!);
+const { isCleared: isClearanceCleared, remainingNotCleared, isLoading: isClearanceLoading } = useClearanceQuery(currentSemesterId!);
 
 const welcomeGreeting = computed(() => {
   const twelveHr = formatDatetime(now, 'hh:mm aa');
