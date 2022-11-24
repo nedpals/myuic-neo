@@ -1,23 +1,21 @@
 <template>
-  <dashboard-scaffold container-class="max-w-3xl mx-auto w-full px-4 md:px-5">
-    <div style="margin-top: var(--safe-area-inset-top)" class="text-center py-8 md:py-12 flex flex-col items-center">
+  <dashboard-scaffold>
+    <div 
+      class="text-white bg-gradient-to-tr from-primary-400 to-primary-500 dark:from-primary-700 dark:to-primary-500 text-center py-24 flex flex-col items-center">
       <loading-container :is-loading="isStudentLoading">
-        <div class="mb-4 md:mb-8">
-          <avatar class="h-32 w-32 md:h-42 md:w-42" :src="avatarUrl" :alt="student?.number" />
-        </div>
         <skeleton custom-class="h-9 min-w-64 max-w-90 w-full bg-gray-200 mb-5 rounded-2xl">
           <h1 class="text-4xl font-semibold mb-2">
             {{ welcomeGreeting }}, {{ studentFirstName }}!
           </h1>
         </skeleton>
         <skeleton custom-class="h-6 min-w-48 max-w-64 w-full bg-gray-200 rounded-xl">
-          <p class="text-2xl text-gray-600 dark:text-primary-200">{{ todayDate }}</p>
+          <p class="text-2xl text-white opacity-80 dark:text-primary-200">{{ todayDate }}</p>
         </skeleton>
       </loading-container>
     </div>
 
-    <div class="flex flex-col space-y-4">
-      <div class="w-full px-6">
+    <div class="max-w-3xl mx-auto w-full px-4 md:px-5 flex flex-col space-y-4">
+      <div class="w-full py-8 px-6">
         <loading-container :is-loading="isRLinksLoading" v-slot="{ isLoading }">
           <div 
             class="flex pt-2 flex-wrap justify-center flex-wrap">
