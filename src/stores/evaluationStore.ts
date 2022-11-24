@@ -1,7 +1,7 @@
 import { CourseEvaluation, CourseEvaluationEntry, EvaluationStatus, questionnaires, RoutePath } from "@myuic-api/types";
 import { computed } from "vue";
 import { useMutation, useQueries, useQuery } from "vue-query"
-import { client, useClientQuery } from "../client";
+import { client, isGloballyEnabled, useClientQuery } from "../client";
 
 export const useEvaluationQuery = (courses: {classId: string, classType: string}[]) => {
   const idQueries = useQueries(courses.map(({ classId, classType }) => ({
@@ -40,8 +40,9 @@ export const useEvaluationListQuery = () => {
         name: '',
         status: 'open',
         type: 'Lab'
-      }))
-    }
+      })),
+      enabled: isGloballyEnabled
+    },
   );
 
   const { isFetching, isIdle, data } = query;
