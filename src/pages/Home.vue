@@ -1,7 +1,7 @@
 <template>
   <dashboard-scaffold>
     <div 
-      class="text-white bg-gradient-to-tr from-primary-400 to-primary-500 dark:from-primary-700 dark:to-primary-500 text-center py-24 flex flex-col items-center">
+      class="mx-4 md:mx-8 rounded-b-xl text-white bg-gradient-to-tr from-primary-400 to-primary-500 dark:from-primary-700 dark:to-primary-500 text-center px-2 py-24 flex flex-col items-center">
       <loading-container :is-loading="isStudentLoading">
         <skeleton custom-class="h-9 min-w-64 max-w-90 w-full bg-gray-200 mb-5 rounded-2xl">
           <h1 class="text-4xl font-semibold mb-2">
