@@ -49,7 +49,7 @@
       <loader v-if="isLoading" class="w-16" />
       <p v-else class="text-2xl text-center" v-html="healthErrorMessage"></p>
       
-      <div v-if="isLoading" class="bg-gray-100 text-center rounded-lg p-2">
+      <div v-if="isLoading" class="bg-gray-100 dark:bg-primary-800 text-center rounded-lg p-2">
         <p>Please be patient as UIC servers may be busy at this moment.</p>
       </div>
     </div>
