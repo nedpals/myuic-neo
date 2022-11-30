@@ -13,7 +13,7 @@ export function useInfoQuery() {
     }
 
     return App.getInfo();
-  });
+  }, { enabled: true });
 }
 
 export const useMeta = () => {
