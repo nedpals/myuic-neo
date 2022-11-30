@@ -71,7 +71,7 @@ export const useAcademicRecordsQuery = (semesterId: Ref<string | number | undefi
 }
 
 export async function generateAcademicRecordsPDF(semesterId: string): Promise<Uint8Array> {
-  const blob = await client.classSchedulePDF(semesterId);
+  const blob = await client.academicRecordPDF(semesterId);
   if (blob instanceof Blob) {
     const pdfBuf = await blob.arrayBuffer();
     return new Uint8Array(pdfBuf);
