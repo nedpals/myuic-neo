@@ -359,6 +359,7 @@ const submitEvaluation = async () => {
         text: msg
       });
       isDone.value = true;
+      setTimeout(() => handleModal(false), 2000);
       await queryClient.refetchQueries({ 
         exact: true, 
         queryKey: 'evaluation' 
