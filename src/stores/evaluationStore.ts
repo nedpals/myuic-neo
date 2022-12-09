@@ -6,7 +6,8 @@ import { client, isGloballyEnabled, useClientQuery } from "../client";
 export const useEvaluationQuery = (courses: {classId: string, classType: string}[]) => {
   const idQueries = useQueries(courses.map(({ classId, classType }) => ({
     queryKey: ['evaluation_id', classId, classType],
-    queryFn: () => client.facultyEvaluationEntryId(classId, classType)
+    queryFn: () => client.facultyEvaluationEntryId(classId, classType),
+    enabled: true
   })))
   
   const questionnaireQuery = useClientQuery<typeof questionnaires>(
