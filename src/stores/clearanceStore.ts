@@ -24,13 +24,7 @@ export const useClearanceQuery = (semesterId: Ref<string | number | undefined>) 
     return notClearedCount;
   });
 
-  const isCleared = computed(() => {
-    if (isLoading.value || !query.data.value) return false;
-    for (const item of query.data.value.items) {
-      if (item.status === 'not_cleared') return false;
-    }
-    return true;
-  });
+  const isCleared = computed(() => remainingNotCleared.value == 0);
 
   return {
     query,
