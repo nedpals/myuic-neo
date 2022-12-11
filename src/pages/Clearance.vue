@@ -50,7 +50,7 @@
                     {{ `${clearedRequirementsCount(clearanceItem)} / ${clearanceItem.requirements.length}` }}
                   </template>
                   <span class="<md:hidden ml-1">
-                    {{ clearanceItem.status === 'not_cleared' ? 'requirements' : statusText(clearanceItem.status) }}
+                    {{ clearanceItem.status === 'not_cleared' ? 'Cleared' : statusText(clearanceItem.status) }}
                   </span>
                 </p>
 
