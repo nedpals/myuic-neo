@@ -14,12 +14,9 @@ export const useClearanceQuery = (semesterId: Ref<string | number | undefined>) 
   const remainingNotCleared = computed(() => {
     // Add UI for unknown number
     if (isLoading.value || !query.data.value) return -1;
-    let notClearedCount = 1;
-
+    let notClearedCount = 0;
     for (const item of query.data.value.items) {
-      if (item.status === 'not_cleared') {
-        notClearedCount++;
-      }
+      notClearedCount += item.requirements.filter(r => r.status === 'not_cleared').length;
     }
     return notClearedCount;
   });
