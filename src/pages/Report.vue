@@ -133,10 +133,8 @@ const gradeKeysAndLabels = readonly({
 });
 
 function gradeMatchesOverall(ar: CourseReport) {
-  if (ar.prelimGrade === ar.midtermGrade && ar.midtermGrade === ar.finalsGrade && ar.prelimGrade === ar.finalsGrade) {
-    if (ar.prelimGrade !== ar.overallGrade) {
-      return false;
-    }
+  if (ar.prelimGrade === 40 || ar.midtermGrade === 40 || ar.finalsGrade === 40) {
+    return false;
   }
   return true;
 }
