@@ -8,13 +8,6 @@
       <p>test</p>
     </div>
 
-    <template #footer>
-      <div v-if="shouldShowButtons" class="flex justify-end space-x-2">
-        <button v-if="step > 0" @click="step--" class="button is-light">Previous</button>
-        <button v-if="step < 5 + tabOffsetStart" @click="step++" :disabled="!shouldProceed(step)" class="button is-primary px-6 py-2">Next</button>
-        <button v-else @click="submitEvaluation" class="button is-primary px-6 py-2">Submit</button>
-      </div>
-    </template>
   </modal-window>
 </template>
 

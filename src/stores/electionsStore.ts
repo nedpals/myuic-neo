@@ -3,5 +3,8 @@ import { client } from "../client";
 
 export const useElectionCandidatesQuery = () => useQuery(
   'election_candidates',
-  () => client.electionCandidatesList()
+  () => client.electionCandidatesList(),
+  {
+    enabled: true
+  }
 );

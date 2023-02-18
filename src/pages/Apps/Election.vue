@@ -9,7 +9,7 @@
             <div class="text-7xl font-bold mb-6">
               00:00:00
             </div>
-            <button @click="voteModal.open()" class="button is-primary is-medium">Get started</button>
+            <button @click="voteModal?.open()" class="button is-primary is-medium">Get started</button>
             <vote-modal ref="voteModal" />
           </div>
           <div class="w-1/4 mt-14">
@@ -55,7 +55,7 @@
   </dashboard-scaffold>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import electionsSvg from '../../assets/election.svg';
 import DashboardScaffold from '../../components/ui/DashboardScaffold.vue';
 import { useElectionCandidatesQuery } from '../../stores/electionsStore';
@@ -68,32 +68,18 @@ import defaultAvatarUrl from '../../assets/default_avatar.png';
 import Skeleton from '../../components/ui/Skeleton.vue';
 import VoteModal from '../../components/Apps/Election/VoteModal.vue';
 
-export default {
-  components: { DashboardScaffold, NotificationContainer, Box, Skeleton, VoteModal },
-  setup() {
-    const voteModal = ref<InstanceType<typeof VoteModal>>();
-    const { data, isLoading } = useElectionCandidatesQuery();
-    const candidatesByPosition = computed(() => {
-      return (data.value ?? []).reduce<Record<string, Candidate[]>>((obj, c) => {
-        if (!obj[c.position]) {
-          obj[c.position] = [];
-        }
-
-        obj[c.position].push(c);
-        return obj; 
-      }, {});
-    });
-
-    return {
-      voteModal,
-      defaultAvatarUrl,
-      candidatesByPosition,
-      nameCase,
-      isLoading,
-      electionsSvg
+const voteModal = ref<InstanceType<typeof VoteModal> | null>(null);
+const { data, isLoading } = useElectionCandidatesQuery();
+const candidatesByPosition = computed(() => {
+  return (data.value ?? []).reduce<Record<string, Candidate[]>>((obj, c) => {
+    if (!obj[c.position]) {
+      obj[c.position] = [];
     }
-  }
-}
+
+    obj[c.position].push(c);
+    return obj; 
+  }, {});
+});
 </script>
 
 <style>
