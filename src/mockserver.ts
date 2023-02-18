@@ -1,4 +1,4 @@
-import { AcademicRecord, CourseEvaluationEntry, ethnicGroups, genders, HealthStatus, incomeGroups, nationalities, Nationality, ParentRelationship, parentRelationshipStatus, questionnaires, Religion, religions, RoutePath } from "@myuic-api/types";
+import { AcademicRecord, Candidate, CourseEvaluationEntry, ethnicGroups, genders, HealthStatus, incomeGroups, nationalities, Nationality, ParentRelationship, parentRelationshipStatus, questionnaires, Religion, religions, RoutePath } from "@myuic-api/types";
 import { createServer, Response as MirageResponse } from "miragejs";
 import { backendUrl, isMock } from "./client";
 
@@ -1239,6 +1239,7 @@ export const useMockServer = () => {
       this.get(RoutePath('parentRelationshipStatusesList'), () => reduceKV(parentRelationshipStatus));
       this.get(RoutePath('religionList'), () => reduceKV(religions, 100));
       this.get(RoutePath('additionalStudentInfo'), () => ({ semesterId: 486, year: 'Second Year', course: 'Bachelor of Science in Computer Science' }));
+      this.get(RoutePath("studentElectionsCandidates"), () => []);
     },
   });
 };

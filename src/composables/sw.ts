@@ -3,6 +3,10 @@ import { watch } from 'vue';
 import { notify } from 'notiwind';
 
 export default function() {
+  if (import.meta.env.DEV) {
+    return;
+  }
+
   const {
     offlineReady,
     needRefresh,

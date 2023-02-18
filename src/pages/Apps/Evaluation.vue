@@ -10,8 +10,8 @@
           <box 
             :key="'sub_' + sub.code + '_' + sub.type" v-for="(sub, sub_idx) in openedEvaluationList" 
             :disabled="isLoading"
-            :class="{'hover:bg-gray-100 dark:hover:bg-uic-900 hover:border-uic-500 dark:hover:border-uic-700 cursor-pointer': !isLoading}"
-            @click="evaluateCourse(sub)">
+            @click="evaluateCourse(sub)"
+            is-hoverable>
             <div class="flex flex-row justify-between items-center">
               <div class="flex space-x-4" :class="[isLoading ? 'items-center' : 'items-start']">
                 <div class="h-13 w-13 flex-shrink-0">

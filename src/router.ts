@@ -208,7 +208,7 @@ const router = createRouter({
         {
           name: 'election-app',
           path: '/apps/election',
-          component: () => import('./pages/App.vue'),
+          component: () => import('./pages/Apps/Election.vue'),
           meta: {
             pageTitle: 'Election',
             navLink: {
