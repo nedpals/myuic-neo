@@ -35,7 +35,7 @@
                         custom-class="bg-gray-200 dark:bg-uic-500 rounded-full h-full w-full">
                       <img 
                         :src="c.imageUrl" 
-                        @error="$event.target.src = defaultAvatarUrl" 
+                        @error="$event.target.src = '/default_avatar.png'" 
                         class="bg-gray-200 rounded-full h-full w-full object-center object-cover" 
                         :alt="c.name" />
                     </skeleton>
