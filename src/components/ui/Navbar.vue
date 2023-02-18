@@ -8,7 +8,7 @@
           <div class="logo-and-avatar">
             <div class="h-12 w-12 lg:h-13 lg:w-13">
               <icon-logo 
-                @click="isAboutModalOpen = true" 
+                @click="$router.push({name: 'about'})" 
                 class="cursor-pointer w-full h-full text-primary-400 hover:text-primary-500 transition-colors" />
             </div>
 
@@ -60,7 +60,7 @@
       <div class="block h-8 flex-shrink-0"></div>
 
       <div class="pb-4 space-y-3">
-        <button @click="isAboutModalOpen = true" class="menu-item" v-tooltip.right="menuExpandedTooltip('About')" >
+        <button @click="$router.push({name: 'about'})" class="menu-item" v-tooltip.right="menuExpandedTooltip('About')" >
             <icon-about-outline />
             <span>About</span>
         </button>
@@ -80,9 +80,7 @@
         </button>
       </div>
     </nav>
-  </aside>  
-
-  <about-modal v-model:open="isAboutModalOpen" />
+  </aside>
 
   <div class="menu is-mobile"> 
     <router-link 
@@ -113,7 +111,6 @@ import IconSettingsOutline from '~icons/ion/settings-outline';
 import DarkModeToggle from './DarkModeToggle.vue';
 import LoadingContainer from './LoadingContainer.vue';
 import Skeleton from './Skeleton.vue';
-import AboutModal from '../AboutModal.vue';
 import Avatar from './Avatar.vue';
 
 import { useStudentQuery } from '../../stores/studentStore';
@@ -126,7 +123,6 @@ import SemesterSelector from './SemesterSelector.vue';
 const router = useRouter();
 const route = useRoute();
 const isMenuOpen = ref(false);
-const isAboutModalOpen = ref(false);
 const isMenuExpanded = ref(false);
 const menuExpandedTooltip = (label: string) => !isMenuExpanded.value ? label : null;
 const { isLoading: isStudentLoading, avatarUrl, normalizedFirstName: studentFirstName, query: { data: student } } = useStudentQuery();

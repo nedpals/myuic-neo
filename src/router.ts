@@ -38,6 +38,11 @@ const router = createRouter({
       }
     },
     {
+      name: 'about',
+      path: '/about',
+      component: () => import('./pages/About.vue')
+    },
+    {
       name: 'dashboard',
       path: '/',
       component: () => import('./pages/Dashboard.vue'),
@@ -45,6 +50,11 @@ const router = createRouter({
         requiresAuth: true
       },
       children: [
+        {
+          name: 'about',
+          path: '/about',
+          component: () => import('./pages/About.vue')
+        },
         {
           name: 'home',
           path: '/',
