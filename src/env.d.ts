@@ -22,6 +22,7 @@ interface ImportMetaEnv {
   readonly VITE_FIREBASE_APP_ID: string;
   readonly VITE_FIREBASE_MEASUREMENT_ID: string;
   readonly VITE_FIREBASE_ANALYTICS: string | undefined;
+  readonly VITE_MOCKSERVER_TIMING: string | undefined;
 }
 
 interface ImportMeta {

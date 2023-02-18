@@ -21,7 +21,7 @@ export const useMockServer = () => {
       this.passthrough('/@windicss-devtools-update');
 
       this.urlPrefix = backendUrl;
-      this.timing = 2000;
+      this.timing = parseInt(import.meta.env.VITE_MOCKSERVER_TIMING ?? '2000');
 
       this.get(RoutePath('checkHealth'), () => ({
         isAlive: true,
