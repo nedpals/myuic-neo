@@ -1668,6 +1668,14 @@
     mitt "^3.0.0"
     url-parse "^1.5.1"
 
+"@myuic-api/mock@^1.8.2":
+  version "1.8.2"
+  resolved "https://registry.yarnpkg.com/@myuic-api/mock/-/mock-1.8.2.tgz#4a1411c7a88125ee116f15ce753bb3ee25520dcb"
+  integrity sha512-u6ijKeg5sqv1sIyZm8cNeXPgyCPCtNjwuuRqZDDfVLfj+rtgwZdQxkW+oFOAoJSlZ0+GA9gnw0nYSe4sFFZVUw==
+  dependencies:
+    "@myuic-api/types" "^1.7.0"
+    miragejs "^0.1.47"
+
 "@myuic-api/types@^1.7.0":
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/@myuic-api/types/-/types-1.7.0.tgz#556b7c43d0b8f1b556685911ddc95bff7aa2acc3"
@@ -4147,7 +4155,7 @@ minizlib@^2.1.1:
     minipass "^3.0.0"
     yallist "^4.0.0"
 
-miragejs@^0.1.43:
+miragejs@^0.1.47:
   version "0.1.47"
   resolved "https://registry.yarnpkg.com/miragejs/-/miragejs-0.1.47.tgz#c4a8dff21adfc0ce3181d78987f11848d74c6869"
   integrity sha512-99tuCbIAlMhNhyF3s5d3+5/FdJ7O4jSq/5e3e+sDv7L8dZdwJuwutXe0pobJ7hm6yRChTDjK+Nn8dZZd175wbg==
