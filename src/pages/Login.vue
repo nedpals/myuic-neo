@@ -1,7 +1,7 @@
 <template>
   <main style="padding-top: calc(var(--safe-area-inset-top) + 3rem)" class="relative flex flex-col h-screen max-w-7xl px-8 pb-8 mx-auto md:border-x border-gray-300 dark:border-primary-700">
-    <div 
-      v-if="isProcessing || isProfilesLoading" 
+    <div
+      v-if="isProcessing || isProfilesLoading"
       class="z-10 bg-white dark:bg-primary-900 bg-opacity-50 dark:bg-opacity-50 h-full max-w-7xl mx-auto absolute inset-0 rounded-lg flex items-center justify-center">
       <loader class="h-16 w-16" />
     </div>
@@ -20,12 +20,12 @@
       <form v-show="showForm" @submit.prevent="(e) => loginFromForm(e as SubmitEvent)" :ref="el => loginForm = el" class="flex flex-col">
         <div class="flex flex-col space-y-2 py-2">
           <label for="student_id" class="font-lg">Student ID</label>
-          <input 
-            type="text" 
+          <input
+            type="text"
             name="student_id"
-            id="student_id" 
-            placeholder="e.g. 20000000xxx" 
-            pattern="[0-9]{6,12}" required />
+            id="student_id"
+            placeholder="e.g. 20000000xxx"
+            pattern="[0-9]{6,13}" required />
         </div>
         <div class="flex flex-col space-y-2 py-2">
           <label for="password" class="font-lg">Password</label>
@@ -38,9 +38,9 @@
           <span>Login with biometrics</span>
         </Button>
 
-        <button 
-          v-if="profiles && profiles.length !== 0" type="button" 
-          @click="fillLoginForm(false, ''); showForm = false" 
+        <button
+          v-if="profiles && profiles.length !== 0" type="button"
+          @click="fillLoginForm(false, ''); showForm = false"
           class="self-start mt-12 mx-auto hover:underline text-primary-500">
           Login via profiles
         </button>
@@ -149,12 +149,12 @@ const loginFromForm = async (e: SubmitEvent) => {
   const fd = new FormData(e.target);
   const id = fd.get('student_id')?.toString()!;
   const password = fd.get('password')?.toString()!;
-  
+
   if (supportsBiometrics.value && !password) {
     await fillLoginForm(true, id);
     return;
   }
-  
+
   login({ id, password }, {
     onSuccess: async () => {
       (e.target! as HTMLFormElement).reset();
@@ -170,7 +170,7 @@ const loginFromForm = async (e: SubmitEvent) => {
 const fetchCredsFromBiometrics = async () => {
   if (!supportsBiometrics.value) return;
 
-  try {  
+  try {
     if (appEvents.onFetchCredentials) {
       await appEvents.onAuthenticateProfile?.({ isSave: false });
       return await appEvents.onFetchCredentials();
@@ -178,7 +178,7 @@ const fetchCredsFromBiometrics = async () => {
 
     throw Error();
   } catch(err) {
-    
+
     notify({
       type: 'error',
       //@ts-ignore
@@ -232,7 +232,7 @@ const maybePromptSaveProfile = async (id: string, password: string) => {
         hasBiometrics = false;
       }
     }
-    
+
     await saveProfile({
       avatarUrl: '',
       id: id,
