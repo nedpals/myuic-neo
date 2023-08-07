@@ -63,6 +63,17 @@
       <div class="block h-8 flex-shrink-0"></div>
 
       <div class="pb-4 space-y-3">
+        <a
+          :href="feedbackUrl"
+          target="_blank"
+          class="md:!hidden menu-item">
+          <icon-feedback />
+          <div className="flex flex-col space-y-0.5">
+            <span>Feedback</span>
+            <span class="text-sm text-zinc-400 dark:text-primary-600">We would like to hear your feedback!</span>
+          </div>
+        </a>
+
         <router-link :to="{ name: 'about' }"
           @click="isMenuOpen = false"
           :class="{ 'is-active': currentRouteName === 'about' }"
@@ -115,13 +126,14 @@ import IconLogo from '~icons/custom/logo';
 import IconAboutOutline from '~icons/ion/help-circle-outline';
 import IconSettings from '~icons/ion/settings';
 import IconSettingsOutline from '~icons/ion/settings-outline';
+import IconFeedback from '~icons/ion/chatbox-ellipses-outline';
 import DarkModeToggle from './DarkModeToggle.vue';
 import LoadingContainer from './LoadingContainer.vue';
 import Skeleton from './Skeleton.vue';
 import Avatar from './Avatar.vue';
 
 import { useStudentQuery } from '../../stores/studentStore';
-import { IS_NATIVE } from '../../utils';
+import { feedbackUrl, IS_NATIVE } from '../../utils';
 import { computed, FunctionalComponent, onBeforeUnmount, ref, watch } from 'vue';
 import { useLogoutMutation } from '../../composables/auth';
 import { RouteRecordName, RouteRecordNormalized, RouteRecordRaw, useRoute, useRouter } from 'vue-router';

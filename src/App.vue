@@ -1,5 +1,5 @@
 <template>
-  <div v-if="feedbackUrl" class="fixed bottom-[9%] md:bottom-[7%] right-[5%] z-10">
+  <div v-if="feedbackUrl" class="hidden md:block fixed bottom-[9%] md:bottom-[7%] right-[5%] z-10">
     <v-tooltip>
       <Button
         as="a"
@@ -75,9 +75,9 @@ import Loader from './components/ui/Loader.vue';
 import IconLogo from '~icons/custom/logo';
 import { useQuery } from 'vue-query';
 import { client, isGloballyEnabled } from './client';
+import { feedbackUrl } from './utils';
 
 const router = useRouter();
-const feedbackUrl = computed(() => `${import.meta.env.VITE_FEEDBACK_URL ?? ''}`);
 const { subscribeDarkMode } = useDarkMode();
 const unsubscribeDarkMode = subscribeDarkMode();
 const unsubscribeAuth = subscribeAuth();

@@ -1,7 +1,9 @@
 import { formatDistanceToNow, format } from 'date-fns';
-import { Comment, Slot } from 'vue';
+import { Comment, Slot, computed } from 'vue';
 import { notify } from 'notiwind';
 import { Capacitor } from '@capacitor/core'
+
+export const feedbackUrl = computed(() => `${import.meta.env.VITE_FEEDBACK_URL ?? ''}`);
 
 export const APP_PREFIX = '__myuic_neo__';
 
@@ -116,7 +118,7 @@ export function compare12hTimesSort(a: string, b: string) {
 
 // export function subtractTime(time: ParsedTime, howManySeconds: number): ParsedTime {
 //   const hrsToDeduct = Math.floor(howManySeconds / hours);
-//   const minsToDeduct = 
+//   const minsToDeduct =
 // }
 
 // Vue utilities
