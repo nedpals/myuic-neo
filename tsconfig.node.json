@@ -5,10 +5,10 @@
     "moduleResolution": "node"
   },
   "include": [
-    "vite.config.ts", 
-    "vite.mobile_app.config.ts", 
-    "vite.web.config.ts", 
-    "windi.config.ts", 
+    "vite.config.ts",
+    "vite.mobile_app.config.ts",
+    "vite.web.config.ts",
+    "tailwind.config.ts",
     "color_palette.ts"
   ]
 }

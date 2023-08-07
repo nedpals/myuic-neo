@@ -7,8 +7,8 @@
         </skeleton>
 
         <div class="flex flex-col space-y-4 py-8">
-          <box 
-            :key="'sub_' + sub.code + '_' + sub.type" v-for="(sub, sub_idx) in openedEvaluationList" 
+          <box
+            :key="'sub_' + sub.code + '_' + sub.type" v-for="(sub, sub_idx) in openedEvaluationList"
             :disabled="isLoading"
             @click="evaluateCourse(sub)"
             is-hoverable>
@@ -17,10 +17,10 @@
                 <div class="h-13 w-13 flex-shrink-0">
                   <skeleton
                       :delay="(sub_idx + 1) * 250"
-                      custom-class="bg-gray-200 dark:bg-uic-500 rounded-full h-full w-full">
-                    <div 
+                      custom-class="bg-zinc-200 dark:bg-uic-500 rounded-full h-full w-full">
+                    <div
                       :style="{ backgroundImage: `url(${sub.instructorImageUrl})` }"
-                      class="bg-gray-200 dark:bg-uic-500 rounded-full h-full w-full bg-cover bg-center"></div>
+                      class="bg-zinc-200 dark:bg-uic-500 rounded-full h-full w-full bg-cover bg-center"></div>
                   </skeleton>
                 </div>
                 <div>
@@ -42,7 +42,7 @@
               :class="{ 'animate-pulse': isLoading }"
               class="h-42 w-42 md:h-48 md:w-48 mb-4" />
 
-            <h2 class="text-3xl text-center text-gray-400">
+            <h2 class="text-3xl text-center text-zinc-400">
               {{
                 notOpenCount != 0 ? 'Evaluation is not yet open.'
                   : 'All courses have already been evaluated.'

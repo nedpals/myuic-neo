@@ -7,18 +7,18 @@
         <loading-container :is-loading="isStudentLoading" v-slot="{ isLoading }">
           <div class="logo-and-avatar">
             <div class="h-12 w-12 lg:h-13 lg:w-13">
-              <icon-logo 
-                @click="$router.push({name: 'about'})" 
+              <icon-logo
+                @click="isMenuOpen = false; $router.push({name: 'about'})"
                 class="cursor-pointer w-full h-full text-primary-400 hover:text-primary-500 transition-colors" />
             </div>
 
             <avatar class="h-12 w-12 lg:h-13 lg:w-13" :src="avatarUrl" :alt="student?.number" />
           </div>
           <div :class="{ 'space-y-2 pt-2': isLoading }" class="account-info">
-            <skeleton :delay="250" custom-class="h-4 w-36 bg-gray-200">
+            <skeleton :delay="250" custom-class="h-4 w-36 bg-zinc-200">
               <span class="font-semibold">{{ studentFirstName }}'s MyUIC</span>
             </skeleton>
-            <skeleton :delay="2 * 250" custom-class="h-3.5 w-24 bg-gray-200">
+            <skeleton :delay="2 * 250" custom-class="h-3.5 w-24 bg-zinc-200">
               <span class="text-sm">{{ student?.number }}</span>
             </skeleton>
           </div>
@@ -35,7 +35,10 @@
     </loading-container>
 
     <nav class="menu">
-      <button @click="isMenuExpanded = !isMenuExpanded" v-tooltip.right="menuExpandedTooltip('Expand menu')" class="hidden @md:flex menu-item">
+      <button
+        @click="isMenuExpanded = !isMenuExpanded"
+        v-tooltip.right="menuExpandedTooltip('Expand menu')"
+        class="!hidden md:!flex lg:!hidden menu-item">
         <icon-menu />
         <span>Collapse Menu</span>
       </button>
@@ -60,10 +63,14 @@
       <div class="block h-8 flex-shrink-0"></div>
 
       <div class="pb-4 space-y-3">
-        <button @click="$router.push({name: 'about'})" class="menu-item" v-tooltip.right="menuExpandedTooltip('About')" >
-            <icon-about-outline />
-            <span>About</span>
-        </button>
+        <router-link :to="{ name: 'about' }"
+          @click="isMenuOpen = false"
+          :class="{ 'is-active': currentRouteName === 'about' }"
+          class="menu-item"
+          v-tooltip.right="menuExpandedTooltip('About')" >
+          <icon-about-outline />
+          <span>About</span>
+        </router-link>
 
         <router-link v-if="IS_NATIVE" :to="{ name: 'settings' }"
           @click="isMenuOpen = false"
@@ -82,8 +89,8 @@
     </nav>
   </aside>
 
-  <div class="menu is-mobile"> 
-    <router-link 
+  <div class="menu is-mobile">
+    <router-link
       v-for="i in 4"
       :key="'link_' + i"
       :to="linkGroups.links[0][i - 1].to"
@@ -181,7 +188,7 @@ const unwatchIsExpanded = watch(isMenuExpanded, (newExpanded) => {
   } else {
     document.body.classList.remove('navbar-has-expanded');
   }
-  
+
   if (isMenuOpen.value !== newExpanded) {
     isMenuOpen.value = newExpanded;
   }
@@ -199,7 +206,7 @@ onBeforeUnmount(() => {
 
 <style lang="postcss">
 body.navbar-has-expanded {
-  @apply !@md:overflow-hidden;
+  @apply md:overflow-hidden lg:overflow-auto;
 }
 </style>
 
@@ -209,25 +216,25 @@ body.navbar-has-expanded {
 }
 
 .main-navbar {
-  @apply md:border-l md:border-r border-gray-300 dark:border-primary-700 md:h-full md:w-24 lg:w-64 fixed h-screen z-40 transition pt-2 bg-white dark:bg-primary-900 overflow-y-auto scrollbar-thin;
+  @apply md:border-l md:border-r border-zinc-300 dark:border-primary-700 md:h-full md:w-24 lg:w-64 fixed h-screen z-20 transition pt-2 bg-white dark:bg-primary-900 overflow-y-auto scrollbar-none;
   transition: width ease 150ms;
 }
 
 .main-navbar.is-open {
-  @apply <md:block <md:w-full;
+  @apply block w-full md:w-full;
 }
 
 .main-navbar:not(.is-open) {
-  @apply <md:hidden;
+  @apply hidden md:block;
 }
 
 .main-navbar.is-expanded {
-  @apply @md:w-1/2;
+  @apply md:w-1/2;
 }
 
 .main-navbar .padding-filler {
-  width: var(--safe-area-inset-top); 
-  height: var(--safe-area-inset-top)
+  width: var(--safe-area-inset-top);
+  height: var(--safe-area-inset-top);
 }
 
 .main-navbar .top-portion {
@@ -235,7 +242,7 @@ body.navbar-has-expanded {
 }
 
 .main-navbar.is-expanded .top-portion {
-  @apply flex-row
+  @apply flex-row;
 }
 
 .main-navbar .top-portion .account-header {
@@ -251,11 +258,11 @@ body.navbar-has-expanded {
 }
 
 .main-navbar:not(.is-expanded) .account-header .user-avatar {
-  @apply @md:hidden;
+  @apply md:max-md:hidden;
 }
 
 .main-navbar .account-header .account-info {
-  @apply flex-col flex @md:hidden;
+  @apply flex-col flex md:hidden lg:flex;
 }
 
 .main-navbar.is-expanded .account-header .account-info {
@@ -263,7 +270,7 @@ body.navbar-has-expanded {
 }
 
 .main-navbar .top-portion .ui-buttons {
-  @apply flex flex-col <lg:space-y-4 lg:flex-row self-start md:self-center md:mt-4 lg:mt-0 lg:self-start;
+  @apply flex flex-col space-y-4 lg:space-y-0 lg:flex-row self-start md:self-center md:mt-4 lg:mt-0 lg:self-start;
 }
 
 .main-navbar.is-expanded .top-portion .ui-buttons {
@@ -282,7 +289,7 @@ body.navbar-has-expanded {
 }
 
 .main-navbar:not(.is-expanded) :deep(.semester-selector) {
-  @apply @md:hidden;
+  @apply block md:hidden lg:block;
 }
 
 .main-navbar .menu {
@@ -290,11 +297,11 @@ body.navbar-has-expanded {
 }
 
 .menu .menu-group .group-name {
-  @apply uppercase text-sm font-bold pb-4 block pl-2 text-gray-500 dark:text-primary-200 md:hidden lg:block;
+  @apply uppercase text-sm font-bold pb-4 block pl-2 text-zinc-500 dark:text-primary-200 md:hidden lg:block;
 }
 
 .menu .menu-item {
-  @apply py-4 px-4 items-center max-h-12 space-x-4 rounded-l-full;
+  @apply py-4 px-4 items-center max-h-12 space-x-4 rounded-l-xl;
   transition: background-color 150ms ease;
 }
 
@@ -307,7 +314,7 @@ body.navbar-has-expanded {
 }
 
 .menu .menu-item svg {
-  @apply text-primary-500 text-[1.3rem];
+  @apply text-primary-400 text-[1.3rem];
 }
 
 .menu .menu-item span {
@@ -323,11 +330,11 @@ body.navbar-has-expanded {
 }
 
 .menu .menu-item.is-active svg {
-  @apply text-white dark:text-primary-300;
+  @apply text-white dark:text-primary-100;
 }
 
 .menu .menu-item:not(.is-active) {
-  @apply hover:bg-primary-100 dark:hover:bg-primary-800;
+  @apply hover:bg-zinc-100 dark:hover:bg-primary-800;
 }
 
 .menu .menu-item.is-logout {
@@ -339,16 +346,16 @@ body.navbar-has-expanded {
 }
 
 .menu.is-mobile {
-  @apply bg-white dark:bg-primary-900 border-t dark:border-primary-800 fixed bottom-0 inset-x-0 md:hidden z-50 flex;
+  @apply bg-white dark:bg-primary-800 border-t dark:border-primary-800 fixed bottom-0 inset-x-0 md:hidden z-50 flex;
   padding-bottom: var(--safe-area-inset-bottom);
 }
 
 .menu.is-mobile .menu-item {
-  @apply flex-1 max-h-none rounded-none flex-col justify-center items-center space-x-0 space-y-1 px-4 py-2;
+  @apply dark:hover:bg-primary-700 flex-1 max-h-none rounded-none flex-col justify-center items-center space-x-0 space-y-1 px-4 py-2;
 }
 
 .menu.is-mobile .menu-item svg {
-  @apply text-primary-600 text-[1.15rem] flex-shrink-0;
+  @apply text-primary-400 text-[1.15rem] flex-shrink-0;
 }
 
 .menu.is-mobile .menu-item span {
@@ -356,7 +363,7 @@ body.navbar-has-expanded {
 }
 
 .menu.is-mobile .menu-item.is-active {
-  @apply text-primary-600 dark:text-white bg-primary-100 !hover:bg-primary-200 dark:bg-primary-700 !dark:hover:bg-primary-800;
+  @apply text-primary-600 dark:text-white bg-primary-100 hover:!bg-primary-200 dark:bg-primary-700 dark:hover:!bg-primary-600;
 }
 
 .menu.is-mobile button.menu-item {

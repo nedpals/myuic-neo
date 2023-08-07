@@ -55,12 +55,6 @@ defineProps({
   @apply px-8 py-4;
 }
 
-@variants md {
-  .button.md\:is-medium {
-    @apply px-8 py-4;
-  }
-}
-
 .button.is-primary,
 .button.is-light {
   @apply shadow border;
@@ -72,7 +66,7 @@ defineProps({
 }
 
 .button.is-light {
-  @apply bg-gradient-to-t from-gray-100 to-white hover:from-gray-200 hover:to-gray-200 text-gray-900;
+  @apply bg-gradient-to-t from-zinc-100 to-white hover:from-zinc-200 hover:to-zinc-200 text-zinc-900;
 }
 
 .button.with-icon {

@@ -32,11 +32,11 @@
                 <box class="flex space-x-4" :class="[isLoading ? 'items-center' : 'items-start']">
                   <div class="h-13 w-13 flex-shrink-0">
                     <skeleton
-                        custom-class="bg-gray-200 dark:bg-uic-500 rounded-full h-full w-full">
-                      <img 
-                        :src="c.imageUrl" 
-                        @error="$event.target.src = '/default_avatar.png'" 
-                        class="bg-gray-200 rounded-full h-full w-full object-center object-cover" 
+                        custom-class="bg-zinc-200 dark:bg-uic-500 rounded-full h-full w-full">
+                      <img
+                        :src="c.imageUrl"
+                        @error="($event.target as HTMLImageElement).src = '/default_avatar.png'"
+                        class="bg-zinc-200 rounded-full h-full w-full object-center object-cover"
                         :alt="c.name" />
                     </skeleton>
                   </div>
@@ -77,7 +77,7 @@ const candidatesByPosition = computed(() => {
     }
 
     obj[c.position].push(c);
-    return obj; 
+    return obj;
   }, {});
 });
 </script>

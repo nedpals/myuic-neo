@@ -9,12 +9,12 @@
 
       <div class="flex items-center space-x-2">
         <div>
-          <Button :disabled="!scheduleList" @click="scheduleQuerySettings.type = 'Lec'" class="<md:text-sm !rounded-r-none !px-4" :theme="scheduleQuerySettings.type === 'Lec' ? 'primary' : 'light'" text="Lec" />
-          <Button :disabled="!scheduleList" @click="scheduleQuerySettings.type = 'Lab'" class="<md:text-sm !rounded-none !px-4" :theme="scheduleQuerySettings.type === 'Lab' ? 'primary' : 'light'" text="Lab" />
-          <Button :disabled="!scheduleList" @click="scheduleQuerySettings.type = 'All'" class="<md:text-sm !rounded-l-none !px-4" :theme="scheduleQuerySettings.type === 'All' ? 'primary' : 'light'" text="All" />
+          <Button :disabled="!scheduleList" @click="scheduleQuerySettings.type = 'Lec'" class="text-sm md:text-base !rounded-r-none !px-4" :theme="scheduleQuerySettings.type === 'Lec' ? 'primary' : 'light'" text="Lec" />
+          <Button :disabled="!scheduleList" @click="scheduleQuerySettings.type = 'Lab'" class="text-sm md:text-base !rounded-none !px-4" :theme="scheduleQuerySettings.type === 'Lab' ? 'primary' : 'light'" text="Lab" />
+          <Button :disabled="!scheduleList" @click="scheduleQuerySettings.type = 'All'" class="text-sm md:text-base !rounded-l-none !px-4" :theme="scheduleQuerySettings.type === 'All' ? 'primary' : 'light'" text="All" />
         </div>
         <Listbox as="div" class="relative" v-model="scheduleQuerySettings.term">
-          <ListboxButton :as="Button" class="<md:text-sm" :disabled="isLoading || !isTermBased" with-icon>
+          <ListboxButton :as="Button" class="text-sm md:text-base" :disabled="isLoading || !isTermBased" with-icon>
             <span>{{ availableTerms[scheduleQuerySettings.term] }}</span>
             <icon-chevron-down class="text-primary-400" />
           </ListboxButton>
@@ -28,16 +28,16 @@
           >
             <ListboxOptions class="absolute z-10 mt-1 w-full border dark:border-primary-700 bg-white dark:bg-primary-800 shadow-lg max-h-56 rounded-md py-1 text-base overflow-auto focus:outline-none sm:text-sm">
               <ListboxOption as="template" :key="`term_${term}`" :value="term" v-for="(termLabel, term) in availableTerms">
-                <li :class="[scheduleQuerySettings.term == term ? 'bg-primary-100 dark:bg-primary-600' : '', 'hover:bg-gray-200 dark:hover:bg-primary-700 cursor-default select-none relative py-2 pl-3 pr-9']">
+                <li :class="[scheduleQuerySettings.term == term ? 'bg-primary-100 dark:bg-primary-600' : '', 'hover:bg-zinc-200 dark:hover:bg-primary-700 cursor-default select-none relative py-2 pl-3 pr-9']">
                   {{ termLabel }}
                 </li>
               </ListboxOption>
             </ListboxOptions>
           </transition>
         </Listbox>
-        
+
         <Button
-          class="!ml-auto <md:text-sm"
+          class="!ml-auto text-sm md:text-base"
           :disabled="!hasAlternates || isLoading"
           @click="scheduleQuerySettings.isAlternate = !scheduleQuerySettings.isAlternate"
           :theme="scheduleQuerySettings.isAlternate ? 'primary' : 'light'">
@@ -49,12 +49,12 @@
     <loading-container :is-loading="isLoading">
       <div class="flex flex-col space-y-4">
         <div
-          class="w-full flex flex-col md:flex-row <md:space-y-2 md:space-x-2"
-          v-for="(courses, day) in scheduleList" 
+          class="w-full flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2"
+          v-for="(courses, day) in scheduleList"
           :key="'sched_' + day">
 
-            <span 
-              :class="[!isLoading && days[day] === currentDay ? 'bg-primary-500 dark:bg-primary-700 text-white' : 'bg-gray-200 dark:bg-primary-800']"
+            <span
+              :class="[!isLoading && days[day] === currentDay ? 'bg-primary-500 dark:bg-primary-700 text-white' : 'bg-zinc-200 dark:bg-primary-800']"
               class="flex items-start px-3 py-1 rounded-full md:rounded-xl w-full md:w-1/5">
               {{ days[day] }}
             </span>
@@ -62,36 +62,36 @@
             <div class="flex flex-col w-full md:w-4/5 space-y-2">
               <box v-if="courses.length === 0"><p>No Class</p></box>
 
-              <box 
-                v-for="(sub, i) in courses" 
-                :key="`${day}_courses_${i}`" 
+              <box
+                v-for="(sub, i) in courses"
+                :key="`${day}_courses_${i}`"
                 no-padding>
                 <div class="flex">
-                  <div 
-                    class="w-1/4 md:w-1/8 flex items-center justify-center px-4 rounded-l" 
-                    :class="[!isLoading && days[day] === currentDay ? 'bg-primary-100 dark:bg-primary-500' : 'bg-gray-100 dark:bg-primary-700']">
-                    <skeleton custom-class="h-4 w-24 mb-1 bg-gray-200">
+                  <div
+                    class="w-1/4 md:w-1/8 flex items-center justify-center px-4 rounded-l"
+                    :class="[!isLoading && days[day] === currentDay ? 'bg-primary-100 dark:bg-primary-500' : 'bg-zinc-100 dark:bg-primary-700']">
+                    <skeleton custom-class="h-4 w-24 mb-1 bg-zinc-200">
                       <p class="font-semibold">{{ sub.code }}</p>
                     </skeleton>
                   </div>
-                  
+
                   <div class="w-3/4 md:w-7/8 flex flex-col h-full px-4 py-2">
-                    <skeleton custom-class="h-4 w-24 mb-1 bg-gray-200">
+                    <skeleton custom-class="h-4 w-24 mb-1 bg-zinc-200">
                       <h3 class="font-semibold">
                         {{ sub.name }}
-                        <span 
+                        <span
                           v-for="type in sub.types"
-                          class="ml-1 border rounded-full text-sm px-2 py-1" 
-                          :class="{ 
-                            'bg-primary-100 border-primary-400 text-primary-400': type === 'Lab', 
+                          class="ml-1 border rounded-full text-sm px-2 py-1"
+                          :class="{
+                            'bg-primary-100 border-primary-400 text-primary-400': type === 'Lab',
                             'bg-success-100 border-success-400 text-success-400': type === 'Lec'
                           }">{{ type }}</span>
                       </h3>
                     </skeleton>
-                    <skeleton custom-class="h-3.5 w-12 mb-4 bg-gray-200">
+                    <skeleton custom-class="h-3.5 w-12 mb-4 bg-zinc-200">
                       <p class="text-sm mb-2">{{ sub.instructor }}</p>
                     </skeleton>
-                    <skeleton custom-class="h-4 w-16 bg-gray-200">
+                    <skeleton custom-class="h-4 w-16 bg-zinc-200">
                       <p class="mt-auto">{{ sub.fromTime }} - {{ sub.toTime }}</p>
                     </skeleton>
                   </div>
@@ -102,7 +102,7 @@
         </div>
 
         <div v-if="!scheduleList" class="py-14 flex items-center justify-center">
-          <span class="text-center text-gray-400 text-2xl">No schedule found.</span>
+          <span class="text-center text-zinc-400 text-2xl">No schedule found.</span>
         </div>
       </loading-container>
 
@@ -145,7 +145,7 @@ function determineTerm(): '1stT' | '2ndT' {
   if (!isTermBased.value || !currentSemester.value || currentSemester.value.label.startsWith('Summer')) {
     return '1stT';
   }
-  
+
   // end of 1st term is december (minus 5 months = august)
   // end of 2nd term is may (minus 5 months = january)
   let endingMonthIdx = 11;
@@ -160,7 +160,7 @@ function determineTerm(): '1stT' | '2ndT' {
   if (monthIdx >= centerIdx) {
     return '2ndT';
   }
-  
+
   return '1stT';
 }
 

@@ -1,12 +1,12 @@
 <template>
   <teleport to="body">
     <transition name="modal-overlay" @enter="showModal = true">
-      <div 
-        v-if="open" 
-        class="fixed inset-0 bg-white dark:bg-primary-900 bg-opacity-40 z-50 flex items-center justify-center" 
+      <div
+        v-if="open"
+        class="fixed inset-0 bg-white dark:bg-primary-900 bg-opacity-40 z-50 flex items-center justify-center"
         @click.self="partiallyCloseModal">
         <transition name="modal-window" @after-leave="closeModal">
-          <box v-if="showModal" class="flex flex-col <md:w-screen <md:rounded-none <md:h-full max-h-screen !shadow-lg" :class="modalClass" no-padding>
+          <box v-if="showModal" class="flex flex-col w-screen md:w-full rounded-none md:rounded-lg h-full md:h-[unset] max-h-screen !shadow-lg" :class="modalClass" no-padding>
             <div class="md:px-6" style="padding-top: var(--safe-area-inset-top);">
               <div class="py-3 md:py-4 border-b dark:border-primary-600 relative flex items-center md:justify-center">
                 <slot name="customTitle" :closeModal="partiallyCloseModal">
@@ -16,14 +16,14 @@
                   </div>
                   <button
                     @click="partiallyCloseModal"
-                    class="absolute <md:left-2 md:right-0 md:bg-gray-200 md:dark:bg-primary-600 hover:bg-gray-200 md:hover:bg-gray-300 dark:hover:bg-primary-600 md:dark:hover:bg-primary-700 rounded-full p-2">
+                    class="absolute left-2 md:left-[unset] md:right-0 md:bg-zinc-200 md:dark:bg-primary-600 hover:bg-zinc-200 md:hover:bg-zinc-300 dark:hover:bg-primary-600 md:dark:hover:bg-primary-700 rounded-full p-2">
                     <icon-back class="block md:hidden text-primary-600 dark:text-white text-lg" />
                     <icon-close class="hidden md:block" />
                   </button>
                 </slot>
               </div>
             </div>
-            <div class="w-full flex-1" :class="contentClass">
+            <div class="w-full flex-1 overflow-auto" :class="contentClass">
               <slot></slot>
             </div>
             <div class="border-t dark:border-primary-600" :class="footerClass" v-if="isSlotVisible($slots.footer)">
@@ -83,7 +83,7 @@ const partiallyCloseModal = () => {
 }
 
 const { closeModal, unsubscribe } = useModal(
-  computed(() => props.open), 
+  computed(() => props.open),
   (o) => emit('update:open', o)
 );
 

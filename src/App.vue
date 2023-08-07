@@ -3,11 +3,11 @@
     <v-tooltip>
       <Button
         as="a"
-        :href="feedbackUrl" 
+        :href="feedbackUrl"
         target="_blank"
         theme="primary"
-        class="<md:rounded-full <md:h-16 <md:w-16 md:is-medium flex items-center justify-center space-x-2">
-        <icon-feedback class="<md:text-xl" />
+        class="rounded-full md:rounded-none h-16 w-16 md:h-[unset] md:w-full md:is-medium flex items-center justify-center space-x-2">
+        <icon-feedback class="text-xl md:text-base" />
         <span class="hidden md:inline">Feedback</span>
       </Button>
 
@@ -48,8 +48,8 @@
       <icon-logo class="text-primary-400 h-48 w-48 mb-4" />
       <loader v-if="isLoading" class="w-16" />
       <p v-else class="text-2xl text-center" v-html="healthErrorMessage"></p>
-      
-      <div v-if="isLoading" class="bg-gray-100 dark:bg-primary-800 text-center rounded-lg p-2">
+
+      <div v-if="isLoading" class="bg-zinc-100 dark:bg-primary-800 text-center rounded-lg p-2">
         <p>Please be patient as UIC servers may be busy at this moment.</p>
       </div>
     </div>
@@ -87,10 +87,10 @@ const unsubscribeModalChange = subscribeModalChange();
 useReloadPrompt();
 useTitle('MyUIC Neo');
 
-const destroyPopNavigation = appEvents.onNavigationPop?.({ 
+const destroyPopNavigation = appEvents.onNavigationPop?.({
   modalCount,
-  closeModal: closeLastModal, 
-  goBack: router.back 
+  closeModal: closeLastModal,
+  goBack: router.back
 });
 
 onBeforeUnmount(() => {
@@ -114,7 +114,7 @@ const { isLoading, error: healthError } = useQuery(['health'], async () => {
   }
 
   return status;
-}, { 
+}, {
   enabled: true,
   onSuccess(data) {
     isGloballyEnabled.value = data.isAlive;
@@ -178,10 +178,6 @@ const healthErrorMessage = computed(() => {
   --safe-area-inset-right: 0px;
 }
 
-body {
-  @apply text-gray-700 font-sans-2 dark:text-white;
-}
-
 b {
   @apply font-bold;
 }
@@ -190,7 +186,7 @@ b {
 /* TODO: fix this */
 
 .skeleton {
-  @apply animate-pulse h-8 w-8 rounded-lg bg-gray-300;
+  @apply animate-pulse h-8 w-8 rounded-lg bg-zinc-300;
 }
 
 /* Button */
@@ -206,10 +202,8 @@ b {
   @apply px-8 py-4;
 }
 
-@variants md {
-  .button.md\:is-medium {
-    @apply px-8 py-4;
-  }
+.button.md\:is-medium {
+  @apply md:px-8 md:py-4;
 }
 
 .button.is-primary,
@@ -223,7 +217,7 @@ b {
 }
 
 .button.is-light {
-  @apply bg-gradient-to-t from-gray-100 to-white hover:from-gray-200 hover:to-gray-200 text-gray-900;
+  @apply bg-gradient-to-t from-zinc-100 to-white hover:from-zinc-200 hover:to-zinc-200 text-zinc-900;
 }
 
 /* Form Utilities */
@@ -248,7 +242,7 @@ b {
 }
 
 .form-group-info > .description {
-  @apply text-gray-600 dark:text-primary-400;
+  @apply text-zinc-600 dark:text-primary-200;
 }
 
 .form-control {
@@ -256,11 +250,11 @@ b {
 }
 
 .form-control > label {
-  @apply mb-2 text-gray-600 dark:text-primary-400;
+  @apply mb-2 text-zinc-600 dark:text-primary-100;
 }
 
 .form-control > .hint-text {
-  @apply text-gray-500 dark:text-primary-300 text-sm mt-2 inline-block;
+  @apply text-zinc-500 dark:text-primary-200 text-sm mt-2 inline-block;
 }
 
 .form-control.is-horizontal {
@@ -276,14 +270,14 @@ input[type='password'],
 input[type='email'],
 input[type='number'],
 input[type='url'] {
-  @apply !px-4 rounded-lg border border-gray-300 dark:border-primary-500 dark:bg-primary-900;
+  @apply !px-4 rounded-lg border border-zinc-300 dark:border-primary-400 dark:bg-primary-850;
 }
 
 textarea {
-  @apply !px-4 !py-2 !rounded-lg border !border-gray-300 !dark:border-primary-500 dark:bg-primary-900; 
+  @apply !px-4 !py-2 !rounded-lg border border-primary-400 dark:bg-primary-400;
 }
 
 select {
-  @apply !px-4 !py-2 !rounded-lg border !border-gray-300 !dark:border-primary-500 dark:bg-primary-900;
+  @apply !px-4 !py-2 !rounded-lg border !border-zinc-300 dark:!border-primary-400 dark:bg-primary-850;
 }
 </style>

@@ -8,6 +8,6 @@ export const useMockServer = () => {
   _useMockServer(mockBackendUrl, {
     ...mockServerDefaults,
     timing: import.meta.env.VITE_MOCKSERVER_TIMING ?? '2000',
-    passthroughs: ['/@windicss-devtools-update']
+    passthroughs: ['/@unocss-devtools-update']
   });
 }

@@ -1,11 +1,11 @@
 <template>
-  <component 
-    :is="statusIcon(status)" 
-    :class="[status == 'cleared' 
+  <component
+    :is="statusIcon(status)"
+    :class="[status == 'cleared'
       ? 'text-success-600 dark:text-success-400'
       : status == 'not_cleared'
       ? 'text-danger-400'
-      : 'text-gray-400']" />
+      : 'text-zinc-400']" />
 </template>
 
 <script lang="ts" setup>
@@ -23,7 +23,7 @@ defineProps({
 });
 
 const statusIcon = (status: RequirementStatus) => {
-  return status == 'cleared' 
+  return status == 'cleared'
     ? IconCheckmarkCircleOutline
     : status == 'not_cleared'
     ? IconCloseCircleOutline

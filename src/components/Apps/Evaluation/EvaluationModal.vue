@@ -1,7 +1,7 @@
 <template>
   <modal-window
     title="Evaluate Course"
-    :subtitle="course.name + ' / ' + course.code" 
+    :subtitle="course.name + ' / ' + course.code"
     :open="isOpen"
     :should-close="warnUserOnClose"
     @update:open="handleModal"
@@ -9,7 +9,7 @@
     modal-class="max-w-4xl w-full">
       <loading-container :is-loading="isLoading || isProcessing" v-slot="{ isLoading }">
         <div v-if="isLoading" class="w-full sticky left-0 inset-y-0 flex justify-center items-center py-32">
-          <loader class="h-14 w-14" />
+          <loader class="h-13 w-13" />
         </div>
 
         <div class="flex w-full h-full" v-else-if="!isDone">
@@ -35,7 +35,7 @@
               <tab-panel class="px-3 md:px-6">
                 <div class="mb-3 text-center">
                   <h3 class="text-2xl font-semibold">Reminders</h3>
-                  <p class="text-lg text-gray-600 dark:text-primary-200">
+                  <p class="text-lg text-zinc-600 dark:text-primary-200">
                     Please consider the following be considered when evaluating the teacher
                   </p>
                 </div>
@@ -65,7 +65,7 @@
                       <div class="h-13 w-13 flex-shrink-0">
                         <div
                           :style="{ backgroundImage: `url(${sub.instructorImageUrl})` }"
-                          class="bg-gray-200 dark:bg-uic-500 rounded-full h-full w-full bg-cover bg-center"></div>
+                          class="bg-zinc-200 dark:bg-uic-500 rounded-full h-full w-full bg-cover bg-center"></div>
                       </div>
                       <div>
                         <h3 class="text-xl font-semibold">{{ sub.name }}</h3>
@@ -81,33 +81,33 @@
                   </div>
                 </div>
               </tab-panel>
-          
+
               <tab-panel :key="cat.title" v-for="(cat, i) in data!.categories" class="flex flex-col divide divide-y">
                 <div class="flex flex-col">
                   <div class="mb-3 text-center px-3 md:px-6">
                     <h3 class="text-2xl font-semibold">{{ cat.title }}</h3>
-                    <p class="text-lg text-gray-600 dark:text-primary-200">{{ cat.description }}</p>
+                    <p class="text-lg text-zinc-600 dark:text-primary-200">{{ cat.description }}</p>
                   </div>
-                  <div 
-                    class="border-t flex" 
-                    :class="{ 'border-b': qi == cat.questions.length - 1 }" 
+                  <div
+                    class="border-t flex"
+                    :class="{ 'border-b': qi == cat.questions.length - 1 }"
                     :key="'q_' + i + '_' + qi" v-for="(q, qi) in cat.questions">
                     <div class="pl-4 py-4">
                       <span
-                        :class="{ 'border-primary-400 bg-primary-400 text-white': ratingAnswers[getQIndex(i, qi)] > 0 }" 
+                        :class="{ 'border-primary-400 bg-primary-400 text-white': ratingAnswers[getQIndex(i, qi)] > 0 }"
                         class="block text-center rounded-full p-2 border dark:border-primary-600 h-10 w-10">{{ qi + 1 }}</span>
                     </div>
-                    
+
                     <div class="flex flex-col flex-1 p-4">
                       <p class="pb-3">{{ q }}</p>
-                      
-                      <div 
-                        :disabled="qi != 0 && ratingAnswers[getQIndex(i, qi - 1)] == 0" 
-                        class="disabled:opacity-40 w-full flex md:space-x-2 <sm:space-y-2 <sm:flex-wrap">
-                        <Button 
-                          v-for="(rLabel, r) in ratings" 
+
+                      <div
+                        :disabled="qi != 0 && ratingAnswers[getQIndex(i, qi - 1)] == 0"
+                        class="disabled:opacity-40 w-full flex md:space-x-2 space-y-2 sm:space-y-0 flex-wrap sm:flex-nowrap">
+                        <Button
+                          v-for="(rLabel, r) in ratings"
                           @click="ratingAnswers[getQIndex(i, qi)] = r"
-                          :key="'r_' + r" 
+                          :key="'r_' + r"
                           :disabled="qi != 0 && ratingAnswers[getQIndex(i, qi - 1)] == 0"
                           :theme="ratingAnswers[getQIndex(i, qi)] === r  ? 'primary' : 'light'"
                           class="w-full md:flex-1">
@@ -140,14 +140,14 @@
                 <div class="flex flex-col">
                   <div class="mb-4 text-center px-3 md:px-6">
                     <h3 class="text-2xl font-semibold">Summary</h3>
-                    <p class="text-lg text-gray-600 dark:text-primary-200">Review first your inputs before submitting.</p>
+                    <p class="text-lg text-zinc-600 dark:text-primary-200">Review first your inputs before submitting.</p>
                   </div>
 
                   <section :key="cat.title" v-for="(cat, i) in data!.categories" class="border-t py-3 px-3 md:px-6">
                     <h3 class="font-semibold mb-2">{{ cat.title }}</h3>
                     <div class="flex flex-col space-y-4">
-                      <div 
-                        :key="'summary_q_' + i + '_' + qi" v-for="(q, qi) in cat.questions" 
+                      <div
+                        :key="'summary_q_' + i + '_' + qi" v-for="(q, qi) in cat.questions"
                         class="flex justify-between">
                         <p class="w-3/4">{{ q }}</p>
                         <p class="w-1/4 font-semibold text-right">
@@ -168,9 +168,9 @@
         </div>
 
         <div class="flex flex-col items-center justify-center w-full h-full py-16" v-else>
-          <icon-done class="w-36 h-36 text-gray-400 mb-4" />
+          <icon-done class="w-36 h-36 text-zinc-400 mb-4" />
           <h2 class="text-3xl font-semibold">Your evaluation is done!</h2>
-          <p class="text-xl text-gray-500">Please wait for the evaluation utility to close.</p>
+          <p class="text-xl text-zinc-500">Please wait for the evaluation utility to close.</p>
         </div>
       </loading-container>
 
@@ -204,7 +204,7 @@ const { courses } = defineProps({
   courses: {
     type: [Object, Array] as PropType<CourseEvaluationEntry[]>,
     required: true
-  } 
+  }
 });
 
 const panelRef = ref<typeof TabPanels>();
@@ -217,12 +217,12 @@ const tabOffsetStart = isSingle ? 1 : 2;
 const queryClient = useQueryClient();
 const isDone = ref(false);
 
-const { 
-  questionnaireQuery: { isFetching, isIdle, data, ...questionnaireQuery }, 
+const {
+  questionnaireQuery: { isFetching, isIdle, data, ...questionnaireQuery },
   idQueries
 } = useEvaluationQuery(
-  !Array.isArray(courses) 
-  ? [{classId: course.classID ?? course.code, classType: course.classType ?? '3'}] 
+  !Array.isArray(courses)
+  ? [{classId: course.classID ?? course.code, classType: course.classType ?? '3'}]
   : courses.map(c => ({classId: c.classID ?? course.code, classType: c.classType ?? '3'})));
 const isLoading = computed(() => isFetching.value || isIdle.value);
 const { mutateAsync, isLoading: isProcessing } = useEvaluationMutation();
@@ -230,7 +230,7 @@ const totalQuestionsCount = computed(() => {
   if (isLoading.value) {
     return 30;
   }
-  return data.value?.categories.map(c => 
+  return data.value?.categories.map(c =>
       c.questions.length).reduce((p,v) => p + v, 0);
 });
 
@@ -311,7 +311,7 @@ const warnUserOnClose = async () => {
 }
 
 // data
-const ratingAnswers = ref([...Array(29).keys()].map(() => 0)); 
+const ratingAnswers = ref([...Array(29).keys()].map(() => 0));
 const comments = ref<[string, string, string]>(['', '', '']);
 const submitEvaluation = async () => {
   const ans = await showDialog({
@@ -360,9 +360,9 @@ const submitEvaluation = async () => {
       });
       isDone.value = true;
       setTimeout(() => handleModal(false), 2000);
-      await queryClient.refetchQueries({ 
-        exact: true, 
-        queryKey: 'evaluation' 
+      await queryClient.refetchQueries({
+        exact: true,
+        queryKey: 'evaluation'
       });
     }
   }
@@ -381,7 +381,7 @@ onBeforeUnmount(() => {
 
 <style lang="postcss" scoped>
 .steps-nav {
-  @apply w-1/4 flex flex-col border-r <md:hidden;
+  @apply w-1/4 flex-col border-r hidden md:flex;
 }
 
 .steps-nav > div {
@@ -389,7 +389,7 @@ onBeforeUnmount(() => {
 }
 
 .tab-section-link {
-  @apply w-full px-6 py-4 font-semibold text-left disabled:cursor-default disabled:text-gray-300 not-disabled:hover:bg-gray-100;
+  @apply w-full px-6 py-4 font-semibold text-left disabled:cursor-default disabled:text-zinc-300 enabled:hover:bg-zinc-100;
 }
 
 .tab-section-link.is-selected, .steps-nav > div[aria-selected="true"] > .tab-section-link {

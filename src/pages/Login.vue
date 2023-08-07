@@ -1,5 +1,5 @@
 <template>
-  <main style="padding-top: calc(var(--safe-area-inset-top) + 3rem)" class="relative flex flex-col h-screen max-w-7xl px-8 pb-8 mx-auto md:border-x border-gray-300 dark:border-primary-700">
+  <main style="padding-top: calc(var(--safe-area-inset-top) + 3rem)" class="relative flex flex-col h-screen max-w-7xl px-8 pb-8 mx-auto md:border-x border-zinc-300 dark:border-primary-700">
     <div
       v-if="isProcessing || isProfilesLoading"
       class="z-10 bg-white dark:bg-primary-900 bg-opacity-50 dark:bg-opacity-50 h-full max-w-7xl mx-auto absolute inset-0 rounded-lg flex items-center justify-center">
@@ -48,22 +48,22 @@
 
       <div v-show="!showForm" class="flex flex-col divide-y-1 -mx-2">
         <div v-for="profile in profiles" :key="'profile_' + profile.id" class="py-1 flex">
-          <button @click="fillLoginForm(profile.hasBiometrics, profile.id)" class="hover:bg-gray-100 p-2 flex rounded-md w-full h-full flex-1">
+          <button @click="fillLoginForm(profile.hasBiometrics, profile.id)" class="hover:bg-zinc-100 p-2 flex rounded-md w-full h-full flex-1">
             <div class="aspect-square w-16">
               <avatar :src="profile.avatarUrl" />
             </div>
             <div class="flex-1 pl-3 flex flex-col h-full justify-center items-start">
               <span class="block text-xl font-bold">{{ profile.id }}</span>
-              <span class="block text-gray-500 dark:text-primary-300">{{ profile.name }}</span>
-              <span v-if="profile.hasBiometrics" class="block text-sm text-gray-400 dark:text-primary-400 italic">Supports biometrics</span>
+              <span class="block text-zinc-500 dark:text-primary-300">{{ profile.name }}</span>
+              <span v-if="profile.hasBiometrics" class="block text-sm text-zinc-400 dark:text-primary-400 italic">Supports biometrics</span>
             </div>
           </button>
 
-          <button v-tooltip="'Delete profile'" class="text-danger-500 px-2 hover:bg-gray-200 rounded-md" @click="deleteProfile(profile.id, profile.hasBiometrics)"><icon-trash /></button>
+          <button v-tooltip="'Delete profile'" class="text-danger-500 px-2 hover:bg-zinc-200 rounded-md" @click="deleteProfile(profile.id, profile.hasBiometrics)"><icon-trash /></button>
         </div>
 
         <div class="py-1">
-          <button @click="fillLoginForm(false, '')" class="hover:bg-gray-100 px-3 py-3 flex items-center justify-between rounded-md w-full h-full">
+          <button @click="fillLoginForm(false, '')" class="hover:bg-zinc-100 px-3 py-3 flex items-center justify-between rounded-md w-full h-full">
             <span>Login manually</span>
             <icon-right class="text-primary-400" />
           </button>
@@ -255,6 +255,6 @@ onBeforeUnmount(unsubscribe)
 
 <style lang="postcss" scoped>
 input[name="student_id"], input[name="password"] {
-  @apply px-4 py-3 rounded-lg !border-2  outline-primary-500 dark:outline-white focus:border-primary-500 border-gray-300 dark:focus:border-white dark:border-primary-700 dark:placeholder-primary-400;
+  @apply px-4 py-3 rounded-lg !border-2  outline-primary-500 dark:outline-white focus:border-primary-500 border-zinc-300 dark:focus:border-white dark:border-primary-700 dark:placeholder-primary-400;
 }
 </style>

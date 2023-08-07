@@ -14,7 +14,7 @@
               leave-from-class="transform scale-100 opacity-100"
               leave-to-class="transform scale-95 opacity-0"
             >
-              <menu-items 
+              <menu-items
                 class="dashboard-scaffold-actions-dropdown absolute right-0 z-10 mt-1 min-w-[60vw] md:min-w-[30vw] border dark:border-primary-700 bg-white dark:bg-primary-800 shadow-lg max-h-56 rounded-md py-1 text-base overflow-auto focus:outline-none sm:text-sm">
                 <menu-item v-for="(action, ai) in actionsSlot" :key="`actions_${ai}`" as="template">
                   <component :is="action" />
@@ -23,12 +23,12 @@
             </transition>
           </Menu>
 
-          <component 
+          <component
             v-for="(action, ai) in actionsSlot" :key="`actions_${ai}`"
             :is="action" />
         </div>
 
-        <div class="flex flex-col block <md:text-center">
+        <div class="flex flex-col text-center md:text-left">
           <span :class="[subtitle ? 'md:text-lg' : 'text-xl']" class="font-bold">
             {{ pageTitle ?? 'Unknown page name' }}
           </span>
@@ -40,17 +40,25 @@
           <li :key="r.name" v-for="r in childRouteLinks" class="inline-flex flex-shrink-0">
             <router-link
               :to="r"
-              style="transition: ease 150ms background-color"
-              exact-active-class="!bg-primary-200 !dark:bg-primary-700 !hover:bg-primary-300 !dark:hover:bg-primary-600"
-              class="px-4 py-2 md:py-3 bg-primary-50 hover:bg-primary-100 dark:bg-primary-800 dark:hover:bg-primary-700 rounded-lg">
-              {{ r.meta?.pageTitle ?? r.name }}
+              v-slot="{ isExactActive, href, navigate }"
+              custom>
+              <a
+                :href="href"
+                @click="navigate"
+                style="transition: ease 150ms background-color"
+                class="px-4 py-2 md:py-3 rounded-lg"
+                :class="[isExactActive ?
+                  'bg-primary-200 dark:bg-primary-700 hover:bg-primary-300 dark:hover:!bg-primary-600' :
+                  'bg-primary-50 hover:bg-primary-100 dark:bg-primary-800 dark:hover:bg-primary-700']">
+                  {{ r.meta?.pageTitle ?? r.name }}
+              </a>
             </router-link>
           </li>
         </ul>
       </div>
     </div>
   </div>
-  
+
   <main :class="containerClass">
     <slot></slot>
   </main>
@@ -133,7 +141,7 @@ const unwatchProfile = watch(student, (student) => {
         name: `${student.lastName}, ${student.firstName}`
       });
     }
-    
+
     unwatchProfile();
   }
 });
@@ -154,7 +162,7 @@ onBeforeUnmount(() => {
 }
 
 .dashboard-scaffold-actions-dropdown > :deep(.button) {
-  @apply justify-start w-full shadow-none bg-none border-none hover:bg-gray-200 dark:hover:bg-primary-700 dark:text-white cursor-default !py-2 !pl-3 !pr-9 rounded-none;
+  @apply justify-start w-full shadow-none bg-none border-none hover:bg-zinc-200 dark:hover:!bg-primary-700 dark:!text-white cursor-default !py-2 !pl-3 !pr-9 rounded-none;
 }
 
 .dashboard-scaffold-actions-dropdown > :deep(.button.with-icon) > svg {
@@ -162,7 +170,7 @@ onBeforeUnmount(() => {
 }
 
 .dashboard-scaffold-actions > :deep(.button.with-icon) span {
-  @apply <md:hidden;
+  @apply hidden md:flex dark:text-white;
 }
 
 .dashboard-scaffold-actions > :deep(.button.with-icon) > svg {
@@ -170,10 +178,10 @@ onBeforeUnmount(() => {
 }
 
 .dashboard-scaffold-actions > :deep(.button) {
-  @apply shadow-none rounded-lg bg-none border-none hover:bg-gray-100 dark:hover:bg-primary-600 dark:text-white p-3 -m-3 dark:hover:bg-opacity-20;
+  @apply shadow-none rounded-lg bg-none border-none hover:bg-zinc-100 dark:hover:!bg-primary-600 dark:text-white p-3 -m-3 dark:hover:bg-opacity-20;
 }
 
 .dashboard-scaffold-actions.has-more-button > :deep(.button:not(.more-button)) {
-  @apply <md:hidden;
+  @apply hidden md:flex;
 }
 </style>

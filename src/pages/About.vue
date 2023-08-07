@@ -3,7 +3,7 @@
     <div class="max-w-lg w-full mx-auto flex flex-col justify-center text-center items-center py-6">
       <icon-logo class="text-primary-400 h-36 w-36 mb-4" />
       <h1 class="text-4xl font-bold mb-2">MyUIC <span class="font-medium">Neo</span></h1>
-      <p class="max-w-sm text-gray-600 dark:text-primary-200 text-2xl">A new student portal concept for UICians in the
+      <p class="max-w-sm text-zinc-600 dark:text-primary-200 text-2xl">A new student portal concept for UICians in the
         21st century.</p>
 
       <div class="mt-24">

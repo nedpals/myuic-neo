@@ -11,10 +11,10 @@
       <div class="flex justify-between items-center">
         <p>{{ text }}</p>
         <div v-if="actions">
-          <button 
+          <button
             v-for="action in actions"
             @click="action.onClick"
-            class="-my-2 px-2 lg:px-3 py-2 hover:bg-gray-900 hover:bg-opacity-20 font-semibold cursor-pointer">
+            class="-my-2 px-2 lg:px-3 py-2 hover:bg-zinc-900 hover:bg-opacity-20 font-semibold cursor-pointer">
             {{ action.label }}
           </button>
         </div>

@@ -1,14 +1,14 @@
-import {avatarBaseUrl, client, useClientQuery} from '../client';
+import {avatarBaseUrl, backendUrl, client, useClientQuery} from '../client';
 import { nameCase } from '@foundernest/namecase';
 import { RoutePath } from '@myuic-api/types';
 import { semesterRegex } from '../utils';
 import { QueryClient, useMutation, useQuery } from 'vue-query';
-import { computed, ComputedRef, InjectionKey, Ref, ref } from 'vue';
+import { computed, ComputedRef, InjectionKey, Ref, ref, WritableComputedRef } from 'vue';
 import { notify } from 'notiwind';
 
 const fetchStudent = () => client.currentStudent();
 
-export const prefetchStudent = (queryClient: QueryClient) => 
+export const prefetchStudent = (queryClient: QueryClient) =>
   queryClient.prefetchQuery('student', fetchStudent);
 
 export const useStudentQuery = () => {
@@ -21,6 +21,10 @@ export const useStudentQuery = () => {
   });
 
   const avatarUrl = computed(() => {
+    if (import.meta.env.DEV) {
+      return '';
+    }
+
     return `${avatarBaseUrl}/images/100x102/${query.data.value?.number ?? '0'}.jpg`;
   });
 
@@ -49,7 +53,7 @@ const extractSemesterInfo = (label: string) => {
   }
 }
 
-export const currentSemesterIdKey: InjectionKey<ComputedRef<string | number | undefined>> = Symbol();
+export const currentSemesterIdKey: InjectionKey<WritableComputedRef<string | number | undefined>> = Symbol();
 
 export const useAdditionalInfoQuery = (existingSemesterId?: Ref<string | number | undefined>) => {
   const infoQuery = useQuery('student_additional_info', fetchAdditionalInfo, { initialData: { semesterId: -1, course: '', year: '' } });
@@ -110,7 +114,7 @@ export const useResourceLinkQuery = () => {
 
 export const useChangePasswordMutation = () => {
   return useMutation(
-    ({ newPassword, confirmNewPassword }: { newPassword: string, confirmNewPassword: string }) => 
+    ({ newPassword, confirmNewPassword }: { newPassword: string, confirmNewPassword: string }) =>
       client.updatePassword(newPassword, confirmNewPassword),
     {
       onSuccess: ({ message }) => {

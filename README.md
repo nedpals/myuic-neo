@@ -11,12 +11,12 @@
 
 ![Vercel](https://vercelbadge.vercel.app/api/nedpals/myuic-neo)
 [![mirror](https://github.com/nedpals/myuic-neo/actions/workflows/ci.yml/badge.svg)](https://github.com/nedpals/myuic-neo/actions/workflows/ci.yml)
-[![Twitter Follow](https://img.shields.io/twitter/follow/npned?style=social&logo=twitter)](https://twitter.com/npned) 
+[![Twitter Follow](https://img.shields.io/twitter/follow/npned?style=social&logo=twitter)](https://twitter.com/npned)
 [![GitHub Follow](https://img.shields.io/github/followers/nedpals?style=social&logo=github)](https://github.com/nedpals)
 </div>
 
 ## Description
-MyUIC Neo is a student-made implementation of MyUIC: the student portal web application of the [University of the Immaculate Conception](https://uic.edu.ph). The focus of MyUIC Neo is to provide **better user experience** and **better user interface** for UIC students by using modern web standards and design techniques. 
+MyUIC Neo is a student-made implementation of MyUIC: the student portal web application of the [University of the Immaculate Conception](https://uic.edu.ph). The focus of MyUIC Neo is to provide **better user experience** and **better user interface** for UIC students by using modern web standards and design techniques.
 
 It is both a [single-page application (SPA)](https://en.wikipedia.org/wiki/Single-page_application) and a [progressive web application (PWA)](https://web.dev/what-are-pwas/) for smooth native-app like experience on any device whether be on the phone, on the tablet, or on the desktop.
 
@@ -85,8 +85,7 @@ Wanna contribute? Here are the following resources you can use when working on t
 - ViteJS Docs: https://vitejs.dev/guide/
 - Vue Query Docs: https://vue-query.vercel.app/#/
 - Typescript Handbook: https://www.typescriptlang.org/docs/handbook/intro.html
-- WindiCSS Docs: https://windicss.org/guide/
-- TailwindCSS Docs (For additional information): https://tailwindcss.com/docs/aspect-ratio
+- TailwindCSS Docs (For additional information): https://tailwindcss.com
 - CapacitorJS Android Docs: https://capacitorjs.com/docs/android
 
 ## Contributing

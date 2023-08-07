@@ -8,23 +8,23 @@
             :key="'paymentHistory_' + i">
             <div
               @click="() => selectedIdx = i"
-              :class="{ 'hover:bg-gray-100 dark:hover:bg-primary-700': !isLoading }"
+              :class="{ 'hover:bg-zinc-100 dark:hover:bg-primary-700': !isLoading }"
               class="flex justify-between items-center rounded-lg -mx-3 px-3 py-3 cursor-pointer">
               <div>
-                <skeleton :delay="i * 250" :custom-class="isShort ? 'bg-gray-200 h-3.5 w-24' : 'w-16 h-4 bg-gray-200 mb-2'">
+                <skeleton :delay="i * 250" :custom-class="isShort ? 'bg-zinc-200 h-3.5 w-24' : 'w-16 h-4 bg-zinc-200 mb-2'">
                   <p class="font-semibold">{{ formattedAmount(entry) }}</p>
                 </skeleton>
-                <skeleton :delay="i * 250" v-if="!isShort" custom-class="w-8 h-3.5 bg-gray-200">
+                <skeleton :delay="i * 250" v-if="!isShort" custom-class="w-8 h-3.5 bg-zinc-200">
                   <p class="text-sm">{{ entry.cashier }}</p>
                 </skeleton>
               </div>
               <div :class="[isLoading ? 'space-y-2 flex flex-col items-end' : 'text-right']">
-                <skeleton :delay="i * 250" :custom-class="isShort ? 'bg-gray-200 h-3.5 w-16' : 'w-16 h-4 bg-gray-200'">
-                  <span class="text-gray-600 dark:text-primary-200 block">
+                <skeleton :delay="i * 250" :custom-class="isShort ? 'bg-zinc-200 h-3.5 w-16' : 'w-16 h-4 bg-zinc-200'">
+                  <span class="text-zinc-600 dark:text-primary-200 block">
                     {{ isShort ? formattedPaidAt(entry) : humanizedPaidAt(entry) }}
                   </span>
                 </skeleton>
-                <skeleton :delay="i * 250" v-if="!isShort" custom-class="bg-gray-200 w-8 h-3.5">
+                <skeleton :delay="i * 250" v-if="!isShort" custom-class="bg-zinc-200 w-8 h-3.5">
                   <span class="text-sm block">{{ paymentOr(entry) }}</span>
                 </skeleton>
               </div>
@@ -41,7 +41,7 @@
       </template>
 
       <div v-else class="py-4 w-full text-center">
-        <span class="text-gray-400 dark:text-primary-300 text-2xl text-center">No history.</span>
+        <span class="text-zinc-400 dark:text-primary-300 text-2xl text-center">No history.</span>
       </div>
     </box>
 
@@ -50,14 +50,14 @@
       open
       :key="'selectedPaymentHistory_' + selectedIdx"
       @update:open="() => selectedIdx = -1"
-      content-class="px-6 py-4 <md:h-[80vh]"
+      content-class="px-6 py-4 h-[80vh] md:h-[unset]"
       title="Payment Details">
       <div v-if="!isLoading" class="flex flex-col divide-y">
         <div class="pl-0 pb-4 text-center">
-          <skeleton custom-class="w-16 h-4 bg-gray-200 mb-2">
+          <skeleton custom-class="w-16 h-4 bg-zinc-200 mb-2">
             <p class="text-lg mb-1">Amount</p>
           </skeleton>
-          <skeleton custom-class="w-8 h-3.5 bg-gray-200">
+          <skeleton custom-class="w-8 h-3.5 bg-zinc-200">
             <p class="font-semibold text-4xl">{{ formattedAmount(selected) }}</p>
           </skeleton>
         </div>

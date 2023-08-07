@@ -7,8 +7,8 @@ import App from './App.vue'
 import router from './router'
 
 import 'floating-vue/dist/style.css'
-import 'virtual:windi.css'
-import 'virtual:windi-devtools'
+import './assets/style.css'
+// import 'virtual:unocss-devtools'
 
 import { APP_PREFIX } from './utils'
 import { Storage } from '@capacitor/storage'
@@ -39,7 +39,6 @@ export async function startApp(initialize: () => Promise<void>, customAppEvents?
       .use(Notifications)
       .use(FloatingVue);
 
-    app.config.unwrapInjectedRef = true;
     app.mount('#app');
   }
 }

@@ -28,10 +28,10 @@ export const days = {
 };
 
 const weekday: Weekday[] = [
-  Weekday.Monday, 
-  Weekday.Tuesday, 
-  Weekday.Wednesday, 
-  Weekday.Thursday, 
+  Weekday.Monday,
+  Weekday.Tuesday,
+  Weekday.Wednesday,
+  Weekday.Thursday,
   Weekday.Friday,
   Weekday.Saturday
 ];
@@ -65,7 +65,17 @@ function insertSchedule(c: CourseSchedule, scheduleList: Record<string, Normaliz
 }
 
 export const useSchedulesQuery = (semesterId: Ref<string | number | undefined>, options: UseScheduleQueryOptions = readonly({ term: '1stT', type: 'All', isAlternate: false })) => {
-  const isTermBased = computed(() => semesterId.value && semesterId.value >= 481 && semesterId.value <= 486);
+  const isTermBased = computed(() => {
+    if (semesterId.value) {
+      let semId = 0;
+
+      if (typeof semesterId.value == 'string') {
+        semId = parseInt(semesterId.value);
+      }
+
+      return semId >= 481 && semId <= 486;
+    }
+  });
 
   const query = useQuery(['class_schedule', semesterId], () => client.classSchedule(semesterId.value!.toString()), {
     enabled: computed(() => typeof semesterId.value !== 'undefined'),
@@ -125,7 +135,7 @@ export const useSchedulesQuery = (semesterId: Ref<string | number | undefined>, 
         nonAlts
           .filter(cc => alts.findIndex(ss => ss.day === cc.day) === -1)
           .forEach(insertFn);
-        
+
         alts.forEach(insertFn);
       } else {
         nonAlts.forEach(insertFn);
@@ -138,7 +148,7 @@ export const useSchedulesQuery = (semesterId: Ref<string | number | undefined>, 
 
     return scheduleList;
   });
-  
+
   const activateNotifications = () => {
     if (!IS_NATIVE || !scheduleList.value) return;
 

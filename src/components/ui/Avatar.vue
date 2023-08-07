@@ -1,6 +1,6 @@
 <template>
   <skeleton
-      :custom-class="(attrs.class ? attrs.class.toString() : '') + ' rounded-full bg-gray-200 dark:bg-uic-500'">
+      :custom-class="(attrs.class ? attrs.class.toString() : '') + ' rounded-full bg-zinc-200 dark:bg-uic-500'">
     <img
         @error="loadFallbackImage"
         :class="attrs.class ? attrs.class.toString() : ''"

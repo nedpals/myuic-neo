@@ -1,18 +1,13 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import WindiCSS from 'vite-plugin-windicss'
 import Icons from 'unplugin-icons/vite';
 import { FileSystemIconLoader } from 'unplugin-icons/loaders';
 import { readFileSync } from 'fs';
-import { execSync } from 'child_process';
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     vue(),
-    WindiCSS({
-      transformCSS: 'pre'
-    }),
     Icons({
       customCollections: {
         'custom': {

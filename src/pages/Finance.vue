@@ -4,29 +4,29 @@
       <Button @click="isPaymentModalOpen = true" :icon="IconPlus" text="New Payment" />
     </template>
 
-    <new-payment-modal 
+    <new-payment-modal
       :open="isPaymentModalOpen"
-      @update:open="onPaymentFormOpenUpdate" 
+      @update:open="onPaymentFormOpenUpdate"
       :key="'form_' + formKey" />
 
     <loading-container :is-loading="isLoading" v-slot="{ isLoading }">
       <div class="flex flex-col-reverse lg:flex-row lg:space-x-4">
         <div class="w-full lg:w-2/3 flex flex-col space-y-2">
           <div class="border dark:border-primary-700 rounded-lg bg-white dark:bg-primary-800 shadow">
-            <div class="flex border-b">
-              <button class="flex-1 px-2 pt-4 pb-3 hover:bg-gray-100" @click="isQuarterly = true">
-                <span class="pb-3" :class="{'border-b-3 border-primary-400 font-semibold': isQuarterly}">Quarterly</span>
+            <div class="flex border-b dark:border-primary-700">
+              <button class="flex-1 px-2 pt-4 pb-3 rounded-tl-lg hover:bg-zinc-100 dark:hover:bg-primary-700" @click="isQuarterly = true">
+                <span class="pb-3" :class="{'border-b-[3px] border-primary-400 font-semibold': isQuarterly}">Quarterly</span>
               </button>
-              <button class="flex-1 px-2 pt-4 pb-3 hover:bg-gray-100" @click="isQuarterly = false">
-                <span class="pb-3" :class="{'border-b-3 border-primary-400 font-semibold': !isQuarterly}">Monthly</span>
+              <button class="flex-1 px-2 pt-4 pb-3 rounded-tr-lg hover:bg-zinc-100 dark:hover:bg-primary-700" @click="isQuarterly = false">
+                <span class="pb-3" :class="{'border-b-[3px] border-primary-400 font-semibold': !isQuarterly}">Monthly</span>
               </button>
             </div>
-            
+
             <div class="flex justify-between items-start px-6 py-4">
-              <span class="text-gray-500 dark:text-primary-300 mb-2 block">{{ isQuarterly ? 'Quarterly' : 'Monthly' }} Dues</span>
+              <span class="text-zinc-500 dark:text-primary-300 mb-2 block">{{ isQuarterly ? 'Quarterly' : 'Monthly' }} Dues</span>
               <div class="flex flex-col items-end">
                 <p>Paid Total</p>
-                <div v-if="isLoading" class="h-7.5 w-32 bg-gray-400 rounded-xl mt-2 mb-0.5 animate-pulse"></div>
+                <div v-if="isLoading" class="h-7.5 w-32 bg-zinc-400 rounded-xl mt-2 mb-0.5 animate-pulse"></div>
                 <h3 v-else class="text-3xl font-bold">{{ paidTotal }}</h3>
               </div>
             </div>
@@ -40,20 +40,20 @@
                 :class="{
                   'bg-success-50 dark:bg-success-800 hover:bg-success-100 dark:hover:bg-success-900': !isLoading && mDue.status === 'Paid',
                   'bg-warning-50 dark:bg-warning-800 hover:bg-warning-100 dark:hover:bg-warning-900': !isLoading && mDue.status === 'Partially Paid',
-                  'hover:bg-gray-100 dark:hover:bg-primary-800': !isLoading && mDue.status.length === 0,
+                  'hover:bg-zinc-100 dark:hover:bg-primary-800': !isLoading && mDue.status.length === 0,
                   'cursor-pointer': !isLoading,
                   'rounded-b-lg': i === duesLength - 1
                 }">
-                
-                <skeleton :delay="(i + 1) * 350" custom-class="w-13 h-13 -ml-1 bg-gray-400 dark:bg-primary-600 rounded-full">
+
+                <skeleton :delay="(i + 1) * 350" custom-class="w-13 h-13 -ml-1 bg-zinc-400 dark:bg-primary-600 rounded-full">
                   <div class="w-16 h-16">
                     <component
                       :is="mDue.status === 'Paid' || mDue.status === 'Partially Paid' ? IconPaid : IconPending"
                       class="w-full h-full -ml-2"
-                      :class="{ 
-                        'text-success-400': mDue.status === 'Paid', 
-                        'text-warning-400': mDue.status === 'Partially Paid', 
-                        'text-gray-400 dark:text-primary-600': mDue.status.length === 0 
+                      :class="{
+                        'text-success-400': mDue.status === 'Paid',
+                        'text-warning-400': mDue.status === 'Partially Paid',
+                        'text-zinc-400 dark:text-primary-600': mDue.status.length === 0
                       }" />
                   </div>
                 </skeleton>
@@ -64,9 +64,9 @@
                         <h2 class="font-semibold">{{ mDueLabel }}</h2>
                       </skeleton>
                       <skeleton :delay="(i + 1) * 350" custom-class="h-3 w-20">
-                        <p :class="{ 
-                          'text-success-700 dark:text-success-400': mDue.status === 'Paid', 
-                          'text-amber-700 dark:text-amber-400': mDue.status === 'Partially Paid' 
+                        <p :class="{
+                          'text-success-700 dark:text-success-400': mDue.status === 'Paid',
+                          'text-amber-700 dark:text-amber-400': mDue.status === 'Partially Paid'
                         }" class="text-sm">
                           {{ mDue.status.length ? mDue.status : 'Pending' }}
                         </p>
@@ -78,7 +78,7 @@
                       </skeleton>
                     </div>
                   </div>
-                  <skeleton :delay="(i + 1) * 350" custom-class="h-3 w-full rounded-full bg-gray-200 mt-4">
+                  <skeleton :delay="(i + 1) * 350" custom-class="h-3 w-full rounded-full bg-zinc-200 mt-4">
                     <progress class="due-progress" :value="((mDue.amount - mDue.balance) / mDue.amount) * 100" max="100"></progress>
                   </skeleton>
                 </div>
@@ -96,19 +96,19 @@
                 <div v-else class="flex flex-col divide-y">
                   <div class="flex pt-3">
                     <div class="w-1/2 pl-0 pb-4 text-center">
-                      <skeleton custom-class="w-16 h-4 bg-gray-200 mb-2">
+                      <skeleton custom-class="w-16 h-4 bg-zinc-200 mb-2">
                         <p class="text-lg mb-1">Amount</p>
                       </skeleton>
-                      <skeleton :delay="350" custom-class="w-8 h-3.5 bg-gray-200">
+                      <skeleton :delay="350" custom-class="w-8 h-3.5 bg-zinc-200">
                         <p class="font-semibold text-4xl">{{ moneyFormatter.format(selectedDue.amount) }}</p>
                       </skeleton>
                     </div>
 
                     <div class="w-1/2 pl-0 pb-4 text-center">
-                      <skeleton custom-class="w-16 h-4 bg-gray-200 mb-2">
+                      <skeleton custom-class="w-16 h-4 bg-zinc-200 mb-2">
                         <p class="text-lg mb-1">Balance</p>
                       </skeleton>
-                      <skeleton :delay="350" custom-class="w-8 h-3.5 bg-gray-200">
+                      <skeleton :delay="350" custom-class="w-8 h-3.5 bg-zinc-200">
                         <p class="font-semibold text-4xl">{{ moneyFormatter.format(selectedDue.balance) }}</p>
                       </skeleton>
                     </div>
@@ -131,17 +131,17 @@
           <div class="border dark:border-primary-700 rounded-lg shadow">
             <div class="dark:border-primary-700 bg-white dark:bg-primary-800 border-b rounded-t-lg px-6 py-4">
               <div class="flex justify-between items-start">
-                <span class="text-gray-500 dark:text-primary-300 mb-2 block">Assessment</span>
+                <span class="text-zinc-500 dark:text-primary-300 mb-2 block">Assessment</span>
                 <div class="text-right flex flex-col items-end">
                   <p>Total</p>
-                  <skeleton 
-                    custom-class="h-7.5 w-32 bg-gray-400 rounded-xl mt-2 mb-0.5 animate-pulse">
+                  <skeleton
+                    custom-class="h-7.5 w-32 bg-zinc-400 rounded-xl mt-2 mb-0.5 animate-pulse">
                     <h3 class="text-3xl font-bold">{{ assessmentTotal }}</h3>
                   </skeleton>
                 </div>
               </div>
             </div>
-            <div class="bg-gray-50 dark:bg-primary-800 rounded-b-lg px-6 py-2">
+            <div class="bg-zinc-50 dark:bg-primary-800 rounded-b-lg px-6 py-2">
               <div class="flex flex-col divide-y dark:divide-primary-600">
                 <div v-if="breakdownKeys.length == 0">
                     <p class="text-center text-xl py-4">No breakdown found.</p>
@@ -149,10 +149,10 @@
 
                 <div :key="'breakdown_' + bKey" v-for="(bKey, bi) in breakdownKeys" class="flex flex-col py-2">
                   <div class="flex justify-between">
-                    <skeleton :delay="(bi + 1) * 350" custom-class="h-4 w-32 rounded-xl bg-gray-400">
+                    <skeleton :delay="(bi + 1) * 350" custom-class="h-4 w-32 rounded-xl bg-zinc-400">
                       <p class="mb-3">{{ breakdownLabels[bi] }}</p>
                     </skeleton>
-                    <skeleton :delay="(bi + 1) * 350" custom-class="h-4 w-24 rounded-xl bg-gray-400">
+                    <skeleton :delay="(bi + 1) * 350" custom-class="h-4 w-24 rounded-xl bg-zinc-400">
                       <p class="font-bold">
                         {{ !isLoading ? moneyFormatter.format(getBreakdownSubtotal(data!.assessments[bKey])) : '--' }}
                       </p>
@@ -168,7 +168,7 @@
                       </skeleton>
 
                       <skeleton :delay="(ai + bi + 1) * 350" custom-class="h-3.5 w-16 rounded-xl">
-                        <p class="text-gray-600 dark:text-primary-300 font-semibold">{{ moneyFormatter.format(aEntry.amount) }}</p>
+                        <p class="text-zinc-600 dark:text-primary-300 font-semibold">{{ moneyFormatter.format(aEntry.amount) }}</p>
                       </skeleton>
                     </div>
                   </div>
@@ -178,7 +178,7 @@
           </div>
         </div>
 
-        <div class="w-full lg:w-1/3 flex flex-col space-y-2 <lg:pb-4">
+        <div class="w-full lg:w-1/3 flex flex-col space-y-2 pb-4 lg:pb-0">
           <account-balance-widget />
           <payment-history />
         </div>
@@ -214,8 +214,8 @@ const monthlyDues = computed(() => {
   return data.value?.monthlyDues.map(due => {
     return {
       ...due,
-      status: due.balance === 0 
-        ? 'Paid' : due.balance !== due.amount 
+      status: due.balance === 0
+        ? 'Paid' : due.balance !== due.amount
         ? 'Partially Paid' : due.status
     }
   }) ?? [];
@@ -287,7 +287,7 @@ progress.due-progress {
 }
 
 progress.due-progress::-webkit-progress-bar {
-  @apply bg-gray-100 rounded-full;
+  @apply bg-zinc-100 rounded-full;
 }
 
 progress.due-progress::-webkit-progress-value {

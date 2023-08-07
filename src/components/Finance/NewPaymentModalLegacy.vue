@@ -2,7 +2,7 @@
   <modal-window :ref="(modalWindow as any)" content-class="max-h-[93vh] overflow-y-auto" title="New Payment">
     <loading-container :isLoading="formState == 'processing'" v-slot="{ isLoading }">
       <div v-if="isLoading" class="flex justify-center py-8">
-        <loader class="h-14 w-14" />
+        <loader class="h-13 w-13" />
       </div>
 
       <template v-else>
@@ -12,7 +12,7 @@
               :is="formState == 'success' ? IconCheckmarkCircleOutline : IconCloseCircleOutline"
               :class="[formState == 'success' ? 'text-success-400' : 'text-danger-400']"
               class="h-42 w-42 mb-2" />
-            
+
             <h2 class="font-semibold text-4xl mb-3">{{ formState == 'success' ? 'Success!' : 'Something went wrong.' }}</h2>
             <p class="text-lg">{{ formState == 'success' ? 'Payment details were submitted. You will be notified shortly.' : 'There was an issue while submitting. Please try again.' }}</p>
           </div>
@@ -55,15 +55,15 @@
                 <radio-group-option
                   class="w-1/2 md:w-1/3 p-1"
                   :key="'payment_center_' + pci"
-                  v-for="(pc, pci) in paymentCenters" 
+                  v-for="(pc, pci) in paymentCenters"
                   :value="pc"
                   v-slot="{ checked }">
-                  <div 
-                    :class="[checked ? 'border-primary-400 hover:border-primary-500' : 'hover:border-primary-400']" 
+                  <div
+                    :class="[checked ? 'border-primary-400 hover:border-primary-500' : 'hover:border-primary-400']"
                     class="border-2 rounded-lg px-2 py-3 cursor-pointer flex flex-row md:flex-col items-center justify-center">
-                    <component 
-                      :is="pc.icon" 
-                      class="text-xl <md:mr-2 md:text-3xl md:mb-2 md:mt-1"
+                    <component
+                      :is="pc.icon"
+                      class="text-xl mr-2 md:mr-0 md:text-3xl md:mb-2 md:mt-1"
                       :class="{ 'text-primary-600': checked }" />
                     <span class="text-center font-semibold text-sm block">{{ pc.name }}</span>
                   </div>
@@ -97,7 +97,7 @@
             <input type="hidden" name="department" :value="higherEducationDepartmentId" />
             <input type="hidden" name="payment_center" :value="miscData.paymentMethod" />
             <div class="form-control pt-8">
-              <p class="text-gray-500 dark:text-primary-200">
+              <p class="text-zinc-500 dark:text-primary-200">
                 By clicking "Submit", I acknowledge that I have read, understood, and agreed to the terms and conditions for the processing of my payment.
               </p>
             </div>
@@ -106,7 +106,7 @@
 
       </template>
     </loading-container>
-    
+
     <template #footer>
       <div class="flex">
         <Button theme="primary" v-if="formState !== 'success'" @click="triggerSubmitForm" class="ml-auto px-6" text="Submit" />

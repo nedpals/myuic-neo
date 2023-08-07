@@ -8,9 +8,9 @@
       @update:open="() => src = null">
     <template #customTitle="{ closeModal }">
       <div class="flex items-center w-full">
-        <div class="<md:ml-12 <md:w-3/4 overflow-ellipsis whitespace-nowrap overflow-hidden">
+        <div class="ml-12 md:ml-0 w-3/4 md:w-full overflow-ellipsis whitespace-nowrap overflow-hidden">
           <h2 class="text-lg font-bold text-left">PDF Preview</h2>
-          <span class="text-md">{{ isLoading ? 'Loading...' : pdfName }}</span>
+          <span class="text-base">{{ isLoading ? 'Loading...' : pdfName }}</span>
         </div>
 
         <div class="ml-auto flex items-center space-x-2 mr-4 md:mr-12">
@@ -20,7 +20,7 @@
 
         <button
             @click="closeModal"
-            class="absolute <md:left-2 md:right-0 md:bg-gray-200 md:dark:bg-primary-600 hover:bg-gray-200 md:hover:bg-gray-300 dark:hover:bg-primary-600 md:dark:hover:bg-primary-700 rounded-full p-2">
+            class="absolute left-2 md:left-[unset] md:right-0 md:bg-zinc-200 md:dark:bg-primary-600 hover:bg-zinc-200 md:hover:bg-zinc-300 dark:hover:bg-primary-600 md:dark:hover:bg-primary-700 rounded-full p-2">
           <icon-back class="block md:hidden text-primary-600 dark:text-white text-lg" />
           <icon-close class="hidden md:block" />
         </button>
@@ -36,7 +36,7 @@
         <div
             v-if="hasError"
             style="min-height: inherit; max-height: inherit;"
-            class="flex flex-col w-full h-full items-center justify-center text-gray-500">
+            class="flex flex-col w-full h-full items-center justify-center text-zinc-500">
           <icon-failed class="w-32 h-32" />
           <h2 class="text-3xl font-bold mb-2">Failed to load document</h2>
           <p class="text-xl mb-6">Something went wrong </p>
@@ -49,7 +49,7 @@
         <div
             v-show="!hasError"
             style="min-height: inherit; max-height: inherit"
-            class="flex flex-col items-center h-full w-full overflow-y-scroll py-4 space-y-4 bg-gray-100">
+            class="flex flex-col items-center h-full w-full overflow-y-scroll py-4 space-y-4 bg-zinc-100">
           <canvas v-for="_ in totalPage" ref="pdfViewers" class="shadow-lg pdf-viewer" />
         </div>
       </div>
