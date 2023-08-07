@@ -70,7 +70,7 @@
           <icon-feedback />
           <div className="flex flex-col space-y-0.5">
             <span>Feedback</span>
-            <span class="text-sm text-zinc-400 dark:text-primary-600">We would like to hear your feedback!</span>
+            <span class="text-sm text-zinc-400 dark:text-primary-400">We would like to hear your feedback!</span>
           </div>
         </a>
 
