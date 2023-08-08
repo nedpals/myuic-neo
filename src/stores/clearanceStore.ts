@@ -1,12 +1,25 @@
 import { computed, Ref } from "vue";
 import { useQuery } from "vue-query";
 import { client } from "../client";
+import { ClearanceItem } from "@myuic-api/types";
 
 export const useClearanceQuery = (semesterId: Ref<string | number | undefined>) => {
   const query = useQuery(
     ['clearance', semesterId],
     () => client.clearance(semesterId.value!.toString()),
-    { enabled: computed(() => typeof semesterId.value !== 'undefined') }
+    {
+      enabled: computed(() => typeof semesterId.value !== 'undefined'),
+      placeholderData: {
+        id: '',
+        items: [...Array(4)].map<ClearanceItem>(it => ({
+          id: 0,
+          label: '',
+          priority: 1,
+          requirements: [],
+          status: 'unknown'
+        }))
+      }
+    }
   );
 
   const isLoading = computed(() => query.isFetching.value || query.isIdle.value);

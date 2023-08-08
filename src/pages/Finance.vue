@@ -22,7 +22,13 @@
               </button>
             </div>
 
-            <div class="flex justify-between items-start px-6 py-4">
+            <div v-if="!isLoading && duesLength === 0" class="flex flex-col items-center py-8 px-8 text-center bg-zinc-50 dark:bg-primary-800 text-zinc-500 dark:text-primary-300 rounded-b-lg">
+              <icon-unknown class="text-9xl" />
+              <p class="text-2xl font-semibold text-zinc-600 dark:text-primary-200">No dues found.</p>
+              <p class="w-full md:w-1/2 xl:w-2/3">Either you are not enrolled yet or there is something wrong when fetching your information.</p>
+            </div>
+
+            <div v-else class="flex justify-between items-start px-6 py-4">
               <span class="text-zinc-500 dark:text-primary-300 mb-2 block">{{ isQuarterly ? 'Quarterly' : 'Monthly' }} Dues</span>
               <div class="flex flex-col items-end">
                 <p>Paid Total</p>
@@ -31,7 +37,7 @@
               </div>
             </div>
 
-            <div class="flex flex-col">
+            <div v-if="!isLoading && duesLength !== 0" class="flex flex-col">
               <div
                 :key="'monthlyDue_' + i"
                 v-for="(mDue, mDueLabel, i) in duesList"
@@ -129,7 +135,13 @@
           </div>
 
           <div class="border dark:border-primary-700 rounded-lg shadow">
-            <div class="dark:border-primary-700 bg-white dark:bg-primary-800 border-b rounded-t-lg px-6 py-4">
+            <div v-if="!isLoading && Object.keys(data?.assessments ?? {}).length === 0" class="flex flex-col items-center py-8 px-8 text-center bg-zinc-50 dark:bg-primary-800 text-zinc-500 dark:text-primary-300 rounded-b-lg">
+              <icon-unknown class="text-9xl" />
+              <p class="text-2xl font-semibold text-zinc-600 dark:text-primary-200">No assessment found.</p>
+              <p class="w-full md:w-1/2 xl:w-2/3">Either you are not enrolled yet or there is something wrong when fetching your information.</p>
+            </div>
+
+            <div v-else class="dark:border-primary-700 bg-white dark:bg-primary-800 border-b rounded-t-lg px-6 py-4">
               <div class="flex justify-between items-start">
                 <span class="text-zinc-500 dark:text-primary-300 mb-2 block">Assessment</span>
                 <div class="text-right flex flex-col items-end">
@@ -141,7 +153,8 @@
                 </div>
               </div>
             </div>
-            <div class="bg-zinc-50 dark:bg-primary-800 rounded-b-lg px-6 py-2">
+
+            <div v-if="!isLoading && Object.keys(data?.assessments ?? {}).length !== 0" class="bg-zinc-50 dark:bg-primary-800 rounded-b-lg px-6 py-2">
               <div class="flex flex-col divide-y dark:divide-primary-600">
                 <div v-if="breakdownKeys.length == 0">
                     <p class="text-center text-xl py-4">No breakdown found.</p>
@@ -197,6 +210,7 @@ import AccountBalanceWidget from '../components/Finance/AccountBalanceWidget.vue
 import IconPlus from '~icons/ion/plus';
 import IconPaid from '~icons/ion/checkmark-circle';
 import IconPending from '~icons/ion/ios-circle-outline';
+import IconUnknown from '~icons/ion/help-circle-outline';
 import Loader from '../components/ui/Loader.vue';
 import Button from '../components/ui/Button.vue';
 import { computed, ComputedRef, inject, Ref, ref } from 'vue';
@@ -222,7 +236,7 @@ const monthlyDues = computed(() => {
 })
 
 const duesList: ComputedRef<Record<string, PaymentDue>> = computed(() => {
-  if (!data.value || isLoading.value) {
+  if (!data.value || data.value.monthlyDues.length === 0 || isLoading.value) {
     return {};
   }
 

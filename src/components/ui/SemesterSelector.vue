@@ -81,7 +81,7 @@ const filteredSemesterList = computed(() => {
     //   return false;
     // }
     return true;
-  });
+  }).reverse();
 });
 
 const unwatch = watch(currentSemesterId!, (newId, oldId) => {

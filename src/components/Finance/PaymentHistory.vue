@@ -2,7 +2,7 @@
   <loading-container :is-loading="isLoading" v-slot="{ isLoading }">
     <box :title="!isRecent ? 'Payment History' : 'Recent Payments'">
       <template v-if="paymentHistory.length !== 0">
-        <div class="flex flex-col divide-y dark:divide-primary-300" :class="{ 'pb-2': hasLink }">
+        <div class="flex flex-col divide-y dark:divide-primary-600" :class="{ 'pb-2': hasLink }">
           <div
             v-for="(entry, i) in paymentHistory"
             :key="'paymentHistory_' + i">
@@ -52,7 +52,7 @@
       @update:open="() => selectedIdx = -1"
       content-class="px-6 py-4 h-[80vh] md:h-[unset]"
       title="Payment Details">
-      <div v-if="!isLoading" class="flex flex-col divide-y">
+      <div v-if="!isLoading" class="flex flex-col divide-y dark:divide-primary-600">
         <div class="pl-0 pb-4 text-center">
           <skeleton custom-class="w-16 h-4 bg-zinc-200 mb-2">
             <p class="text-lg mb-1">Amount</p>
@@ -61,7 +61,7 @@
             <p class="font-semibold text-4xl">{{ formattedAmount(selected) }}</p>
           </skeleton>
         </div>
-        <div class="flex flex-col divide-y">
+        <div class="flex flex-col divide-y dark:divide-primary-600">
           <div class="flex justify-between py-2">
             <p>OR Number</p>
             <p class="font-bold">{{ paymentOr(selected) }}</p>
@@ -109,7 +109,7 @@ const { isRecent, limit } = defineProps({
 
 const currentSemesterId = inject(currentSemesterIdKey);
 const { isLoading, humanizedPaidAt, paymentOr, formattedAmount, formattedPaidAt, getPaymentHistory } = useFinancialRecordQuery(currentSemesterId!);
-const paymentHistory = getPaymentHistory(isRecent, limit);
+const paymentHistory = getPaymentHistory(limit);
 const selectedIdx = ref(-1);
 const selected = computed(() => paymentHistory.value[selectedIdx.value]);
 </script>

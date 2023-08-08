@@ -381,7 +381,7 @@ onBeforeUnmount(() => {
 
 <style lang="postcss" scoped>
 .steps-nav {
-  @apply w-1/4 flex-col border-r hidden md:flex;
+  @apply w-1/4 flex-col border-r dark:border-primary-600 hidden md:flex;
 }
 
 .steps-nav > div {
@@ -389,10 +389,10 @@ onBeforeUnmount(() => {
 }
 
 .tab-section-link {
-  @apply w-full px-6 py-4 font-semibold text-left disabled:cursor-default disabled:text-zinc-300 enabled:hover:bg-zinc-100;
+  @apply w-full px-6 py-4 font-semibold text-left disabled:cursor-default disabled:text-zinc-300 dark:disabled:text-white dark:disabled:text-opacity-50 enabled:hover:bg-zinc-100;
 }
 
 .tab-section-link.is-selected, .steps-nav > div[aria-selected="true"] > .tab-section-link {
-  @apply text-primary-500 bg-gradient-to-r from-transparent to-primary-100;
+  @apply text-primary-500 dark:text-primary-100 bg-gradient-to-r from-transparent to-primary-100 dark:to-primary-600;
 }
 </style>

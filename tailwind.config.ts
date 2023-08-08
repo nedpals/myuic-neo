@@ -18,9 +18,17 @@ export default {
       },
       height: {
         '13': '3.25rem',
+        '42': '10.5rem',
+      },
+      maxWidth: {
+        '72': '18rem',
+        '96': '24rem'
       },
       width: {
         '13': '3.25rem',
+        '42': '10.5rem',
+        '1/8': `${(1 / 8) * 100}%`,
+        '7/8': `${(7 / 8) * 100}%`,
         '1/9': `${(1 / 9) * 100}%`,
         '5/9': `${(5 / 9) * 100}%`,
         '4/9': `${(4 / 9) * 100}%`
@@ -37,6 +45,9 @@ export default {
       white: colors.white,
       zinc: colors.zinc,
       transparent: colors.transparent,
+      amber: colors.amber,
+      orange: colors.orange,
+      sky: colors.sky
     },
   },
   plugins: [

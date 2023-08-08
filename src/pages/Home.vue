@@ -1,24 +1,36 @@
 <template>
   <dashboard-scaffold>
     <div
-      class="mx-4 md:mx-8 rounded-b-xl text-white bg-gradient-to-tr from-primary-400 to-primary-500 dark:from-primary-700 dark:to-primary-500 text-center px-2 py-24 flex flex-col items-center">
-      <loading-container :is-loading="isStudentLoading">
-        <skeleton custom-class="h-9 min-w-64 max-w-90 w-full bg-zinc-200 mb-5 rounded-2xl">
-          <h1 class="text-4xl font-semibold mb-2">
-            {{ welcomeGreeting }}, {{ studentFirstName }}!
-          </h1>
-        </skeleton>
-        <skeleton custom-class="h-6 min-w-48 max-w-64 w-full bg-zinc-200 rounded-xl">
-          <p class="text-2xl text-white opacity-80 dark:text-primary-200">{{ todayDate }}</p>
-        </skeleton>
-      </loading-container>
+    :class="[currentPeriod === 'evening' ? 'from-sky-50 dark:from-sky-900' : currentPeriod === 'afternoon' ? 'from-orange-50 dark:from-orange-900' : 'from-amber-50 dark:from-amber-900']"
+    class="pt-20 md:pt-24 pb-4 bg-gradient-to-b">
+      <div
+        class="px-8 max-w-3xl mx-auto flex flex-col md:flex-row md:items-center">
+        <loading-container :is-loading="isStudentLoading">
+          <component
+            :is="currentPeriod === 'evening' ? IconMoon : IconSun"
+            :class="[currentPeriod === 'evening' ? 'text-sky-400' : currentPeriod === 'afternoon' ? 'text-orange-400' : 'text-amber-400']"
+            class="h-32 w-32 pr-4" />
+
+          <div class="flex flex-col">
+            <skeleton custom-class="h-9 min-w-64 max-w-90 w-full bg-zinc-200 mb-5 rounded-2xl">
+              <h1 class="text-5xl font-semibold mb-4">
+                {{ welcomeGreeting }}, {{ studentFirstName }}!
+              </h1>
+            </skeleton>
+
+            <skeleton custom-class="h-6 min-w-48 max-w-64 w-full bg-zinc-200 rounded-xl">
+              <p class="text-2xl opacity-80 dark:text-white dark:text-opacity-80">{{ todayDate }}</p>
+            </skeleton>
+          </div>
+        </loading-container>
+    </div>
     </div>
 
-    <div class="max-w-3xl mx-auto w-full px-4 md:px-5 flex flex-col space-y-4">
-      <div class="w-full py-8 px-6">
+    <div class="max-w-3xl mx-auto w-full md:px-5 flex flex-col space-y-4">
+      <div class="w-full py-8 md:px-6">
         <loading-container :is-loading="isRLinksLoading" v-slot="{ isLoading }">
           <div
-            class="flex pt-2 flex-wrap justify-center">
+            class="flex pl-4 md:px-4 pt-2 md:justify-center overflow-x-scroll space-x-4 md:space-x-0 scrollbar-none">
             <template v-if="!isLoading">
               <router-link :to="{ name: 'finance' }" class="quick-link-item">
                 <icon-cash-outline />
@@ -40,7 +52,6 @@
                 <icon-g-classroom />
                 <span>Classroom</span>
               </a>
-
               <button @click="isResourcesModalOpen = true" class="quick-link-item">
                 <icon-bookmark-outline />
                 <span>Resources</span>
@@ -73,7 +84,7 @@
         </loading-container>
       </div>
 
-      <div class="w-full">
+      <div class="w-full px-4">
         <loading-container :is-loading="isClearanceLoading" v-slot="{ isLoading }">
           <box
             @click="$router.push({ name: 'clearance' })"
@@ -103,7 +114,7 @@
         </loading-container>
       </div>
 
-      <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+      <div class="px-4 flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
         <div class="w-full md:w-1/2 flex flex-col space-y-4">
           <account-balance-widget />
           <payment-history is-short is-recent has-link />
@@ -126,6 +137,9 @@ import IconReceiptOutline from '~icons/ion/receipt-outline';
 import IconCashOutline from '~icons/ion/cash-outline';
 import IconGClassroom from '~icons/custom/google-classroom';
 
+import IconSun from '~icons/ion/sunny-outline';
+import IconMoon from '~icons/ion/moon-outline';
+
 import { currentSemesterIdKey, useResourceLinkQuery, useStudentQuery } from '../stores/studentStore';
 import { formatDatetime, getPeriod, now } from '../utils';
 import DashboardScaffold from '../components/ui/DashboardScaffold.vue';
@@ -146,12 +160,13 @@ const { isLoading: isStudentLoading, normalizedFirstName: studentFirstName } = u
 const { isFetching: isRLinksFetching, isIdle: isRLinksIdle, data: resourceLinks } = useResourceLinkQuery();
 const { isCleared: isClearanceCleared, remainingNotCleared, isLoading: isClearanceLoading } = useClearanceQuery(currentSemesterId!);
 
-const welcomeGreeting = computed(() => {
+const currentPeriod = computed(() => {
   const twelveHr = formatDatetime(now, 'hh:mm aa');
   const period = getPeriod(twelveHr);
-  return `Good ${period}`;
-});
+  return period;
+})
 
+const welcomeGreeting = computed(() => `Good ${currentPeriod.value}`);
 const todayDate = computed(() => formatDatetime(now, '\'Today is\' iiii, MMMM d, yyyy'));
 const isRLinksLoading = computed(() => isRLinksFetching.value || isRLinksIdle.value);
 </script>

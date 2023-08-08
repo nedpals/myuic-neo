@@ -5,6 +5,9 @@
       class="z-10 bg-white dark:bg-primary-900 bg-opacity-50 dark:bg-opacity-50 h-full max-w-7xl mx-auto absolute inset-0 rounded-lg flex items-center justify-center">
       <loader class="h-16 w-16" />
     </div>
+    <div
+      class="z-[-1] bg-gradient-to-b from-primary-50 dark:from-primary-800 h-64 absolute inset-0">
+    </div>
     <div style="top: var(--safe-area-inset-top)" class="pt-6 pr-6 md:pr-8 absolute left-0 flex justify-end mb-8 w-full">
       <dark-mode-toggle class="self-start" />
     </div>
@@ -15,7 +18,9 @@
       <h1 class="text-3xl md:text-4xl font-bold mb-2">MyUIC <span class="font-medium">Neo</span></h1>
     </div>
     <div class="w-full max-w-lg mx-auto relative flex flex-col">
-      <h2 class="text-xl md:text-2xl font-bold pb-3 md:pb-6">Login</h2>
+      <h2 class="text-xl md:text-2xl font-bold pb-3 md:pb-6">
+        {{ showForm ? 'Login' : 'Login with existing account' }}
+      </h2>
 
       <form v-show="showForm" @submit.prevent="(e) => loginFromForm(e as SubmitEvent)" :ref="el => loginForm = el" class="flex flex-col">
         <div class="flex flex-col space-y-2 py-2">
@@ -38,17 +43,19 @@
           <span>Login with biometrics</span>
         </Button>
 
-        <button
+        <box
+          as="button"
+          no-padding
           v-if="profiles && profiles.length !== 0" type="button"
           @click="fillLoginForm(false, ''); showForm = false"
-          class="self-start mt-12 mx-auto hover:underline text-primary-500">
-          Login via profiles
-        </button>
+          class="self-start mt-4 w-full text-center py-3 hover:bg-zinc-100 dark:hover:bg-primary-700">
+          Login with existing account
+        </box>
       </form>
 
-      <div v-show="!showForm" class="flex flex-col divide-y-1 -mx-2">
-        <div v-for="profile in profiles" :key="'profile_' + profile.id" class="py-1 flex">
-          <button @click="fillLoginForm(profile.hasBiometrics, profile.id)" class="hover:bg-zinc-100 p-2 flex rounded-md w-full h-full flex-1">
+      <div v-show="!showForm" class="flex flex-col space-y-4 -mx-2">
+        <box v-for="profile in profiles" no-padding :key="'profile_' + profile.id" class="flex">
+          <button @click="fillLoginForm(profile.hasBiometrics, profile.id)" class="hover:bg-zinc-100 dark:hover:bg-primary-700 p-3 flex rounded-l-md w-full h-full flex-1">
             <div class="aspect-square w-16">
               <avatar :src="profile.avatarUrl" />
             </div>
@@ -59,14 +66,16 @@
             </div>
           </button>
 
-          <button v-tooltip="'Delete profile'" class="text-danger-500 px-2 hover:bg-zinc-200 rounded-md" @click="deleteProfile(profile.id, profile.hasBiometrics)"><icon-trash /></button>
-        </div>
-
-        <div class="py-1">
-          <button @click="fillLoginForm(false, '')" class="hover:bg-zinc-100 px-3 py-3 flex items-center justify-between rounded-md w-full h-full">
-            <span>Login manually</span>
-            <icon-right class="text-primary-400" />
+          <button v-tooltip="'Delete profile'" class="text-danger-500 px-3 hover:bg-zinc-100 dark:hover:bg-primary-700 rounded-r-md" @click="deleteProfile(profile.id, profile.hasBiometrics)">
+            <icon-trash />
           </button>
+        </box>
+
+        <div class="pt-8">
+          <box as="button" no-padding @click="fillLoginForm(false, '')" class="hover:bg-zinc-100 dark:hover:bg-primary-700 px-3 py-3 flex items-center justify-between rounded-md w-full h-full">
+            <span>Login with another account</span>
+            <icon-right class="text-primary-400" />
+          </box>
         </div>
       </div>
     </div>
@@ -92,6 +101,7 @@ import { showDialog } from '../composables/modal';
 import appEvents from '../event';
 import { notify } from 'notiwind';
 import { catchAndNotifyError } from '../utils.js';
+import Box from '../components/ui/Box.vue';
 
 const { data: profiles, isLoading: isProfilesLoading, refetch } = useProfiles();
 const showForm = ref(false);

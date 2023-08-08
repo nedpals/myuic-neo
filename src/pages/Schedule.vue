@@ -5,15 +5,22 @@
     </template>
 
     <div class="mb-4 text-center">
-      <p class="font-bold mb-4 text-xl">{{ currentDate }}</p>
-
       <div class="flex items-center space-x-2">
-        <div>
-          <Button :disabled="!scheduleList" @click="scheduleQuerySettings.type = 'Lec'" class="text-sm md:text-base !rounded-r-none !px-4" :theme="scheduleQuerySettings.type === 'Lec' ? 'primary' : 'light'" text="Lec" />
-          <Button :disabled="!scheduleList" @click="scheduleQuerySettings.type = 'Lab'" class="text-sm md:text-base !rounded-none !px-4" :theme="scheduleQuerySettings.type === 'Lab' ? 'primary' : 'light'" text="Lab" />
-          <Button :disabled="!scheduleList" @click="scheduleQuerySettings.type = 'All'" class="text-sm md:text-base !rounded-l-none !px-4" :theme="scheduleQuerySettings.type === 'All' ? 'primary' : 'light'" text="All" />
+        <div class="flex">
+          <Button
+            v-for="type in (['Lec', 'Lab', 'All'] as UseScheduleQueryOptions['type'][])"
+            :disabled="!scheduleList"
+            @click="scheduleQuerySettings.type = type"
+            class="text-sm md:text-base !px-4"
+            :class="{
+              '!rounded-r-none': type === 'Lec',
+              '!rounded-none': type === 'Lab',
+              '!rounded-l-none': type === 'All',
+            }"
+            :theme="scheduleQuerySettings.type === type ? 'primary' : 'light'"
+            :text="type" />
         </div>
-        <Listbox as="div" class="relative" v-model="scheduleQuerySettings.term">
+        <Listbox v-if="isLoading || isTermBased" as="div" class="relative" v-model="scheduleQuerySettings.term">
           <ListboxButton :as="Button" class="text-sm md:text-base" :disabled="isLoading || !isTermBased" with-icon>
             <span>{{ availableTerms[scheduleQuerySettings.term] }}</span>
             <icon-chevron-down class="text-primary-400" />
@@ -38,7 +45,7 @@
 
         <Button
           class="!ml-auto text-sm md:text-base"
-          :disabled="!hasAlternates || isLoading"
+          v-if="!hasAlternates || isLoading"
           @click="scheduleQuerySettings.isAlternate = !scheduleQuerySettings.isAlternate"
           :theme="scheduleQuerySettings.isAlternate ? 'primary' : 'light'">
           Alternate Schedule
@@ -81,7 +88,7 @@
                         {{ sub.name }}
                         <span
                           v-for="type in sub.types"
-                          class="ml-1 border rounded-full text-sm px-2 py-1"
+                          class="ml-1 border rounded-md text-sm px-2 py-1"
                           :class="{
                             'bg-primary-100 border-primary-400 text-primary-400': type === 'Lab',
                             'bg-success-100 border-success-400 text-success-400': type === 'Lec'
@@ -130,7 +137,6 @@ const pdfViewer = ref<InstanceType<typeof PdfViewer>>();
 const currentSemesterId = inject(currentSemesterIdKey);
 const { currentSemester, hasSemesterId } = useAdditionalInfoQuery(currentSemesterId);
 const currentDay = ref(formatDatetime(now, 'EEE'));
-const currentDate = ref(formatDatetime(now, 'MMMM d, yyyy'));
 const scheduleQuerySettings = reactive<UseScheduleQueryOptions>({
   isAlternate: false,
   term: '1stT',

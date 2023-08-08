@@ -43,14 +43,15 @@
       </notification>
     </div>
   </notification-group>
-  <main class="dark:bg-primary-900">
+  <main>
     <div v-if="!isGloballyEnabled" class="flex flex-col space-y-32 items-center justify-center max-w-xl mx-auto h-screen">
       <icon-logo class="text-primary-400 h-48 w-48 mb-4" />
       <loader v-if="isLoading" class="w-16" />
       <p v-else class="text-2xl text-center" v-html="healthErrorMessage"></p>
 
-      <div v-if="isLoading" class="bg-zinc-100 dark:bg-primary-800 text-center rounded-lg p-2">
-        <p>Please be patient as UIC servers may be busy at this moment.</p>
+      <div v-if="isLoading" class="text-center rounded-lg p-2">
+        <p class="text-lg">Connecting to UIC servers...</p>
+        <p class="text-sm text-zinc-500">Please be patient as they might be busy at the moment.</p>
       </div>
     </div>
 

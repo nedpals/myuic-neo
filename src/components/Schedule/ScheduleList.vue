@@ -1,6 +1,6 @@
 <template>
   <loading-container :is-loading="isLoading" v-slot="{ isLoading }">
-    <box title="This week's class schedule" class="h-full min-h-[23rem] flex flex-col">
+    <box title="This Week's class schedule" class="h-full min-h-[23rem] flex flex-col">
       <div class="flex flex-col flex-1">
         <div class="flex space-x-1 overflow-x-scroll disable-scrollbar">
           <skeleton

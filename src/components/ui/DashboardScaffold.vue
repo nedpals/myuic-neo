@@ -35,7 +35,7 @@
           <span v-if="subtitle" class="text-xs md:text-sm">{{ subtitle }}</span>
         </div>
       </div>
-      <div class="overflow-x-auto">
+      <div :class="childMenuClass" class="overflow-x-auto">
         <ul class="flex space-x-2">
           <li :key="r.name" v-for="r in childRouteLinks" class="inline-flex flex-shrink-0">
             <router-link
@@ -86,6 +86,9 @@ const { title, subtitle } = defineProps({
     type: String
   },
   containerClass: {
+    type: String
+  },
+  childMenuClass: {
     type: String
   }
 });

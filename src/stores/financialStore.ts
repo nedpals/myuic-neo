@@ -10,8 +10,8 @@ export function getBreakdownSubtotal(entries: Assessment[]) {
 
 export const useFinancialRecordQuery = (semesterId: Ref<string | number | undefined>) => {
   const query = useQuery(
-    ['financial_records', semesterId], 
-    () => client.financialRecord(semesterId.value!.toString()), 
+    ['financial_records', semesterId],
+    () => client.financialRecord(semesterId.value!.toString()),
     {
       placeholderData: {
         assessments: {
@@ -67,7 +67,7 @@ export const useFinancialRecordQuery = (semesterId: Ref<string | number | undefi
       enabled: computed(() => typeof semesterId.value !== 'undefined')
     }
   );
-  
+
   const isLoading = computed(() => query.isFetching.value || query.isIdle.value);
   const accountBalance = computed(() => pesoFormatter.format(
     query.data.value?.monthlyDues
@@ -90,14 +90,16 @@ export const useFinancialRecordQuery = (semesterId: Ref<string | number | undefi
 
   const assessmentTotal = computed(() => {
     return pesoFormatter.format(
-      Object.values(query.data.value?.assessments ?? {})
+      Object.entries(query.data.value?.assessments ?? {})
+        .filter(([k]) => k !== 'receivables')
+        .map(([_, v]) => v)
         .reduce((p, v) => p + getBreakdownSubtotal(v), 0)
     );
   });
 
-  const getPaymentHistory = (isRecent: boolean, limit?: number) => computed(() => {
+  const getPaymentHistory = (limit?: number) => computed(() => {
     let history = query.data.value?.paymentHistory.slice() ?? [];
-    if (!isLoading.value && isRecent) {
+    if (!isLoading.value) {
       history = history.sort((a, b) => {
         return (<string> <unknown> b.paidAt).localeCompare(<string> <unknown> a.paidAt);
       });

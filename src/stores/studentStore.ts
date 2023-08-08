@@ -1,9 +1,9 @@
-import {avatarBaseUrl, backendUrl, client, useClientQuery} from '../client';
+import {avatarBaseUrl, client, useClientQuery} from '../client';
 import { nameCase } from '@foundernest/namecase';
 import { RoutePath } from '@myuic-api/types';
 import { semesterRegex } from '../utils';
 import { QueryClient, useMutation, useQuery } from 'vue-query';
-import { computed, ComputedRef, InjectionKey, Ref, ref, WritableComputedRef } from 'vue';
+import { computed, InjectionKey, Ref, ref, WritableComputedRef } from 'vue';
 import { notify } from 'notiwind';
 
 const fetchStudent = () => client.currentStudent();
