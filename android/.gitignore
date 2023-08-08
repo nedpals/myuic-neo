@@ -101,6 +101,7 @@ app/src/main/res/*/splash.*
 app/src/main/res/*/ic_launcher_background.*
 app/src/main/res/*/ic_launcher_foreground.*
 app/src/main/res/*/ic_launcher_round.*
+app/src/main/res/*/ic_launcher_monochrome.*
 app/src/main/res/*/ic_launcher.*
 app/src/main/play_store_512.png
 !app/src/main/res/*/*.xml
