@@ -46,8 +46,11 @@
             v-for="(clearanceItem, i) in data!.items"
             :key="'item_' + i"
             class="w-1/2 p-2">
-            <div
-              @click="isLoading ? undefined : () => selectedClearanceItemIdx = i"
+            <div @click="() => {
+                if (!isLoading) {
+                  selectedClearanceItemIdx = i;
+                }
+              }"
               :class="{'hover:bg-zinc-100 dark:hover:bg-primary-700 shadow dark:hover:border-primary-700 transition-colors cursor-pointer': !isLoading}"
               class="bg-zinc-50  dark:bg-primary-800 dark:hover:bg-primary-700 border dark:border-primary-600  rounded-lg p-4 flex flex-col justify-between">
               <clearance-status-icon
