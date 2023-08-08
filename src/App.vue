@@ -20,19 +20,20 @@
   <dialog-manager />
 
   <notification-group>
-    <div class="fixed inset-x-0 flex flex-col" style="z-index: 9999999; top: var(--safe-area-inset-top);">
+    <div class="max-w-7xl mx-auto fixed inset-x-0 flex flex-col" style="z-index: 9999999; top: var(--safe-area-inset-top);">
       <notification
         v-slot="{ notifications, close }"
-        enter="transform ease-out transition-transform"
-        enter-from="scale-y-0 opacity-0"
-        enter-to="scale-y-100 opacity-100"
+        enter="translate ease transition-all"
+        enter-from="-translate-y-6 opacity-0"
+        enter-to="translate-y-0 opacity-100"
         leave="transition ease-in"
         leave-from="opacity-100"
         leave-to="opacity-0"
         move="transition duration-500"
-        move-delay="delay-300">
+        move-delay="delay-100">
         <notification-container
           v-for="notification in notifications"
+          class="rounded-lg mx-2 md:mx-0 my-2 origin-center"
           :key="notification.id"
           :type="notification.type"
           :text="notification.text"
@@ -51,7 +52,7 @@
 
       <div v-if="isLoading" class="text-center rounded-lg p-2">
         <p class="text-lg">Connecting to UIC servers...</p>
-        <p class="text-sm text-zinc-500">Please be patient as they might be busy at the moment.</p>
+        <p class="text-sm text-zinc-500 dark:text-primary-200">Please be patient as they might be busy at the moment.</p>
       </div>
     </div>
 
@@ -271,14 +272,14 @@ input[type='password'],
 input[type='email'],
 input[type='number'],
 input[type='url'] {
-  @apply !px-4 rounded-lg border border-zinc-300 dark:border-primary-400 dark:bg-primary-850;
+  @apply !px-4 rounded-lg border border-zinc-300 dark:border-primary-500 dark:bg-primary-850;
 }
 
 textarea {
-  @apply !px-4 !py-2 !rounded-lg border border-primary-400 dark:bg-primary-400;
+  @apply !px-4 !py-2 !rounded-lg border border-zinc-300 dark:border-primary-500 dark:bg-primary-850;
 }
 
 select {
-  @apply !px-4 !py-2 !rounded-lg border !border-zinc-300 dark:!border-primary-400 dark:bg-primary-850;
+  @apply !px-4 !py-2 !rounded-lg border !border-zinc-300 dark:!border-primary-500 dark:bg-primary-850;
 }
 </style>
