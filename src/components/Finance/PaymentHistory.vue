@@ -8,7 +8,7 @@
             :key="'paymentHistory_' + i">
             <div
               @click="() => selectedIdx = i"
-              :class="{ 'hover:bg-zinc-100 dark:hover:bg-primary-700': !isLoading }"
+              :class="{ 'hover:bg-zinc-100 dark:hover:bg-primary-700 transition-colors': !isLoading }"
               class="flex justify-between items-center rounded-lg -mx-3 px-3 py-3 cursor-pointer">
               <div>
                 <skeleton :delay="i * 250" :custom-class="isShort ? 'bg-zinc-200 h-3.5 w-24' : 'w-16 h-4 bg-zinc-200 mb-2'">
