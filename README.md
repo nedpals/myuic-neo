@@ -10,7 +10,7 @@
 
 
 ![Vercel](https://vercelbadge.vercel.app/api/nedpals/myuic-neo)
-[![mirror](https://github.com/nedpals/myuic-neo/actions/workflows/ci.yml/badge.svg)](https://github.com/nedpals/myuic-neo/actions/workflows/ci.yml)
+[![mirror](https://github.com/nedpals/myuic-neo/actions/workflows/android-build.yml/badge.svg)](https://github.com/nedpals/myuic-neo/actions/workflows/ci.yml)
 [![Twitter Follow](https://img.shields.io/twitter/follow/npned?style=social&logo=twitter)](https://twitter.com/npned)
 [![GitHub Follow](https://img.shields.io/github/followers/nedpals?style=social&logo=github)](https://github.com/nedpals)
 </div>
