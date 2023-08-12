@@ -26,7 +26,7 @@
       </div>
 
       <div class="ui-buttons">
-        <dark-mode-toggle v-tooltip.right="menuExpandedTooltip('Toggle dark mode')" />
+        <dark-mode-toggle v-tooltip.right="canExpandTooltip ? 'Toggle dark mode' : null" />
       </div>
     </section>
 
@@ -37,7 +37,7 @@
     <nav class="menu">
       <button
         @click="isMenuExpanded = !isMenuExpanded"
-        v-tooltip.right="menuExpandedTooltip('Expand menu')"
+        v-tooltip.right="canExpandTooltip ? 'Expand menu' : null"
         class="!hidden md:!flex lg:!hidden menu-item">
         <icon-menu />
         <span>Collapse Menu</span>
@@ -53,7 +53,7 @@
             @click="isMenuOpen = false"
             :class="{'is-active': link.to.name === currentRouteName}"
             class="menu-item"
-            v-tooltip.right="menuExpandedTooltip(link.title)" >
+            v-tooltip.right="canExpandTooltip ? link.title : null" >
             <component :is="link.to.name === currentRouteName ? link.activeIcon : link.icon" />
             <span>{{ link.title }}</span>
           </router-link>
@@ -78,7 +78,7 @@
           @click="isMenuOpen = false"
           :class="{ 'is-active': currentRouteName === 'about' }"
           class="menu-item"
-          v-tooltip.right="menuExpandedTooltip('About')" >
+          v-tooltip.right="canExpandTooltip ? 'About' : null" >
           <icon-about-outline />
           <span>About</span>
         </router-link>
@@ -87,12 +87,12 @@
           @click="isMenuOpen = false"
           :class="{ 'is-active': currentRouteName === 'settings' }"
           class="menu-item"
-          v-tooltip.right="menuExpandedTooltip('Settings')" >
+          v-tooltip.right="canExpandTooltip ? 'Settings' : null" >
           <component :is="currentRouteName === 'settings' ? IconSettings : IconSettingsOutline" />
           <span>Settings</span>
         </router-link>
 
-        <button @click="() => logout()" class="menu-item is-logout" v-tooltip.right="menuExpandedTooltip('Logout')" >
+        <button @click="() => logout()" class="menu-item is-logout" v-tooltip.right="canExpandTooltip ? 'Logout' : null" >
             <icon-logout-outline />
             <span>Logout</span>
         </button>
@@ -138,12 +138,15 @@ import { computed, FunctionalComponent, onBeforeUnmount, ref, watch } from 'vue'
 import { useLogoutMutation } from '../../composables/auth';
 import { RouteRecordName, RouteRecordNormalized, RouteRecordRaw, useRoute, useRouter } from 'vue-router';
 import SemesterSelector from './SemesterSelector.vue';
+import { breakpointsTailwind, useBreakpoints } from '@vueuse/core';
 
+const breakpoints = useBreakpoints(breakpointsTailwind);
+const isMd = breakpoints.smaller('lg');
 const router = useRouter();
 const route = useRoute();
 const isMenuOpen = ref(false);
 const isMenuExpanded = ref(false);
-const menuExpandedTooltip = (label: string) => !isMenuExpanded.value ? label : null;
+const canExpandTooltip = computed(() => isMd.value && !isMenuExpanded.value);
 const { isLoading: isStudentLoading, avatarUrl, normalizedFirstName: studentFirstName, query: { data: student } } = useStudentQuery();
 const { mutate: logout } = useLogoutMutation();
 
