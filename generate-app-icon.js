@@ -19,6 +19,15 @@ const androidAssets = [
 
 const androidMainFolder = (p) => path.join(__dirname, 'android', 'app', 'src', 'main', p);
 const iosMainFolder = (p) => path.join(__dirname, 'ios', 'App', p);
+const destAssetPaths = {
+    'ios': (p) => iosMainFolder(path.join('App', 'Assets.xcassets', 'AppIcon.appiconset', p)),
+    'android': androidMainFolder,
+    'web': (p) => path.join(__dirname, 'public', 'icons', p)
+}
+
+const destAssetsIgnoreList = {
+    'web': ['README.md']
+}
 
 const toBeDeletedWeb = [path.join('public', 'icons')];
 const toBeDeletedAndroid = androidAssets.map(androidMainFolder);
@@ -70,35 +79,27 @@ async function extractDownloadedAsset(downloadPath) {
 }
 
 async function copyAssets(extractedFolder) {
-    console.log('> Copying android assets...')
-    readdirSync(path.join(extractedFolder, 'android')).forEach((assetPath, i, arr) => {
-        const src = path.join(extractedFolder, 'android', assetPath);
-        const dest = androidMainFolder(assetPath);
-        console.log(`> (${i + 1}/${arr.length}) Copying ${src} to ${dest}...`);
-        cpSync(src, dest, { recursive: true });
-    });
-
-    readdirSync(path.join(extractedFolder, 'ios')).forEach((assetPath, i, arr) => {
-        const src = path.join(extractedFolder, 'ios', assetPath);
-        const dest = iosMainFolder(path.join('App', 'Assets.xcassets', 'AppIcon.appiconset', assetPath));
-        console.log(`> (${i + 1}/${arr.length}) Copying ${src} to ${dest}...`);
-        cpSync(src, dest, { recursive: true });
-    });
-
-    readdirSync(path.join(extractedFolder, 'web')).forEach((assetPath, i, arr) => {
-        if (assetPath === 'README.txt') return;
-        const src = path.join(extractedFolder, 'web', assetPath);
-        const dest = path.join(__dirname, 'public', 'icons', assetPath);
-        console.log(`> (${i + 1}/${arr.length}) Copying ${src} to ${dest}...`);
-        cpSync(src, dest, { recursive: true });
-    });
+    for (const platform in destAssetPaths) {
+        console.log(`> Copying ${platform} assets...`);
+        const assetPaths = readdirSync(path.join(extractedFolder, platform));
+        for (let i = 0; i < assetPaths.length; i++) {
+            const assetPath = assetPaths[i];
+            if (destAssetsIgnoreList[platform] && destAssetsIgnoreList[platform].includes(assetPath)) {
+                continue;
+            }
+            const src = path.join(extractedFolder, platform, assetPath);
+            const dest = destAssetPaths[platform](assetPath);
+            console.log(`> (${i + 1}/${assetPaths.length}) Copying ${src} to ${dest}...`);
+            cpSync(src, dest, { recursive: true });
+        }
+    }
 }
 
 (async () => {
     let success = true;
 
     await del(['.cache', ...toBeDeletedWeb, ...toBeDeletedAndroid, ...toBeDeletedIos], { cwd: __dirname });
-    
+
     try {
         const downloadPath = await downloadAsset({
             values: {
@@ -112,7 +113,7 @@ async function copyAssets(extractedFolder) {
             },
             modules: ['android', 'ios', 'web']
         });
-    
+
         const extractedFolder = await extractDownloadedAsset(downloadPath);
         copyAssets(extractedFolder);
     } catch (e) {
