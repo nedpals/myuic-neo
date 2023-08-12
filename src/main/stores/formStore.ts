@@ -4,7 +4,7 @@ import { client, useClientQuery } from '../client';
 
 function useFormListQuery<T>(routeName: RouteName) {
   return function() {
-    return readonly(useClientQuery<Record<string, T>>(routeName, () => client.http.get(RoutePath(routeName))));
+    return readonly(useClientQuery<Record<string, T>>([routeName], () => client.http.get(RoutePath(routeName))));
   }
 }
 

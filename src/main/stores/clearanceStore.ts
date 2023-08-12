@@ -1,7 +1,8 @@
 import { computed, Ref } from "vue";
-import { useQuery } from "vue-query";
+import { useQuery } from "@tanstack/vue-query";
 import { client } from "../client";
 import { ClearanceItem } from "@myuic-api/types";
+import { useLoadingFactory } from "../utils";
 
 export const useClearanceQuery = (semesterId: Ref<string | number | undefined>) => {
   const query = useQuery(
@@ -22,8 +23,7 @@ export const useClearanceQuery = (semesterId: Ref<string | number | undefined>) 
     }
   );
 
-  const isLoading = computed(() => query.isFetching.value || query.isIdle.value);
-
+  const isLoading = useLoadingFactory(query);
   const remainingNotCleared = computed(() => {
     // Add UI for unknown number
     if (isLoading.value || !query.data.value) return -1;

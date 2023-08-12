@@ -115,7 +115,7 @@ const { mutateAsync: saveProfile } = useProfileMutation();
 
 const deleteProfile = async (id: string, hasBiometrics: boolean) => {
   await removeProfile(id);
-  await refetch.value();
+  await refetch();
   await appEvents.onDestroyProfile?.({ hasBiometrics });
 }
 
@@ -249,7 +249,7 @@ const maybePromptSaveProfile = async (id: string, password: string) => {
       hasBiometrics
     });
 
-    await refetch.value();
+    await refetch();
   }
 }
 

@@ -142,7 +142,7 @@ const { data: fileUrl, isSuccess, refetch } = generateClearancePDF(currentSemest
 const printPdf = async () => {
   if (!hasSemesterId) return;
   const { close } = notify({ type: 'info', text: 'Downloading PDF...' }, Infinity);
-  await refetch.value();
+  await refetch();
   close();
   if (!isSuccess.value) return;
   const pdfPreviewTab = window.open(fileUrl.value, '_blank');

@@ -141,7 +141,7 @@ import IconSun from '~icons/ion/sunny-outline';
 import IconMoon from '~icons/ion/moon-outline';
 
 import { currentSemesterIdKey, useResourceLinkQuery, useStudentQuery } from '../stores/studentStore';
-import { formatDatetime, getPeriod, now } from '../utils';
+import { formatDatetime, getPeriod, now, useLoadingFactory } from '../utils';
 import DashboardScaffold from '../components/ui/DashboardScaffold.vue';
 import Skeleton from '../components/ui/Skeleton.vue';
 import AccountBalanceWidget from '../components/Finance/AccountBalanceWidget.vue';
@@ -157,7 +157,7 @@ import { useClearanceQuery } from '../stores/clearanceStore';
 const isResourcesModalOpen = ref(false);
 const currentSemesterId = inject(currentSemesterIdKey);
 const { isLoading: isStudentLoading, normalizedFirstName: studentFirstName } = useStudentQuery();
-const { isFetching: isRLinksFetching, isIdle: isRLinksIdle, data: resourceLinks } = useResourceLinkQuery();
+const { data: resourceLinks, ...rLinksQuery } = useResourceLinkQuery();
 const { isCleared: isClearanceCleared, remainingNotCleared, isLoading: isClearanceLoading } = useClearanceQuery(currentSemesterId!);
 
 const currentPeriod = computed(() => {
@@ -168,7 +168,7 @@ const currentPeriod = computed(() => {
 
 const welcomeGreeting = computed(() => `Good ${currentPeriod.value}`);
 const todayDate = computed(() => formatDatetime(now, '\'Today is\' iiii, MMMM d, yyyy'));
-const isRLinksLoading = computed(() => isRLinksFetching.value || isRLinksIdle.value);
+const isRLinksLoading = useLoadingFactory(rLinksQuery);
 </script>
 
 <style lang="postcss" scoped>

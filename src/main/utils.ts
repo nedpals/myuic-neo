@@ -1,7 +1,8 @@
 import { formatDistanceToNow, format } from 'date-fns';
-import { Comment, Ref, Slot, computed, inject, ref } from 'vue';
+import { Comment, Ref, Slot, computed, inject, readonly, ref } from 'vue';
 import { notify } from 'notiwind';
 import { Capacitor } from '@capacitor/core'
+import { FetchStatus, UseQueryReturnType } from '@tanstack/vue-query';
 
 export const feedbackUrl = computed(() => `${import.meta.env.VITE_FEEDBACK_URL ?? ''}`);
 
@@ -159,4 +160,15 @@ export function deepReactiveUpdate(src: Record<any, any>, dest: Record<any, any>
 
 export function useLoadState(defaultValue = false) {
   return inject<Ref<boolean>>('__loadState', ref(defaultValue));
+}
+
+export function useLoadingFactory<T = any, D = any>({ fetchStatus, status, isFetching }: {
+  fetchStatus: Ref<FetchStatus>,
+  status: UseQueryReturnType<T, D>['status'],
+  isFetching: UseQueryReturnType<T, D>['isFetching']
+}) {
+  if (fetchStatus && status && isFetching) {
+    return computed(() => isFetching.value || (status.value === 'loading' && fetchStatus.value === 'idle'));
+  }
+  return ref(false);
 }

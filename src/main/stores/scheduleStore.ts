@@ -1,8 +1,8 @@
 import { CourseSchedule, Schedule } from "@myuic-api/types";
 import { computed, isRef, readonly, Ref, ref } from "vue";
-import { useQuery } from "vue-query";
+import { useQuery } from "@tanstack/vue-query";
 import { client } from "../client";
-import { compare12hTimesSort } from "../utils";
+import { compare12hTimesSort, useLoadingFactory } from "../utils";
 import appEvents from "../event";
 
 export interface NormalizedCourseSchedule {
@@ -72,8 +72,8 @@ export const useSchedulesQuery = (semesterId: Ref<string | number | undefined>, 
     enabled: computed(() => typeof semesterId.value !== 'undefined'),
   });
 
-  const { isFetching, isIdle, data } = query;
-  const isLoading = computed(() => isFetching.value || isIdle.value);
+  const { data } = query;
+  const isLoading = useLoadingFactory(query);
   const hasAlternates = ref(false);
   const scheduleList = computed(() => {
     let scheduleList: Record<string, NormalizedCourseSchedule[]> = {

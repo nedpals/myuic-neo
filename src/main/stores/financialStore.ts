@@ -1,8 +1,8 @@
 import { Assessment, PaymentDue, PaymentRecord } from "@myuic-api/types";
 import { computed, Ref } from "vue";
-import { useQuery } from "vue-query";
+import { useQuery } from "@tanstack/vue-query";
 import { client } from "../client";
-import { formatDatetime, humanizeTime, pesoFormatter } from "../utils";
+import { formatDatetime, humanizeTime, pesoFormatter, useLoadingFactory } from "../utils";
 
 export function getBreakdownSubtotal(entries: Assessment[]) {
   return entries.reduce((p, v) => p + v.amount, 0);
@@ -68,7 +68,7 @@ export const useFinancialRecordQuery = (semesterId: Ref<string | number | undefi
     }
   );
 
-  const isLoading = computed(() => query.isFetching.value || query.isIdle.value);
+  const isLoading = useLoadingFactory(query);
   const accountBalance = computed(() => pesoFormatter.format(
     query.data.value?.monthlyDues
       .map((md) => md.balance)

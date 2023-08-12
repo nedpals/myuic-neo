@@ -13,7 +13,7 @@ import './assets/style.css'
 import { APP_PREFIX } from './utils'
 import { Storage } from '@capacitor/storage'
 
-import { VueQueryPlugin } from 'vue-query'
+import { VueQueryPlugin } from '@tanstack/vue-query'
 import { customClientOptions } from './client'
 
 import defaultAppEvents, { AppEvents } from './event'

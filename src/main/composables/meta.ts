@@ -1,7 +1,7 @@
 import { App, AppInfo } from "@capacitor/app";
 import { Capacitor } from "@capacitor/core";
 import { computed } from "vue";
-import { useQuery } from "vue-query";
+import { useQuery } from "@tanstack/vue-query";
 
 export function useInfoQuery() {
   return useQuery(['app_info'], async () => {
@@ -18,7 +18,7 @@ export function useInfoQuery() {
 
 export const useMeta = () => {
   const platform = Capacitor.getPlatform();
-  const { data, isLoading } = useInfoQuery(); 
+  const { data, isLoading } = useInfoQuery();
   const fullVersion = computed(() => {
     if (data.value) {
       if (platform === 'web') {

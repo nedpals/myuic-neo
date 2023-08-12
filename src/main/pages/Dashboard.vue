@@ -19,7 +19,7 @@ import Navbar from '../components/ui/Navbar.vue'
 import { prefetchStudent, prefetchSemesterId, prefetchSemesterList, useAdditionalInfoQuery, currentSemesterIdKey } from '../stores/studentStore';
 import LoadingContainer from '../components/ui/LoadingContainer.vue';
 import Loader from '../components/ui/Loader.vue';
-import { useQueryClient } from 'vue-query';
+import { useQueryClient } from '@tanstack/vue-query';
 import { useLogoutMutation } from '../composables/auth';
 import { provide } from 'vue';
 const queryClient = useQueryClient();

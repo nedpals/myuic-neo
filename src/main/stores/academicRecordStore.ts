@@ -1,7 +1,8 @@
 import { CourseReport } from "@myuic-api/types";
 import { computed, ref, Ref } from "vue";
-import { useQuery } from "vue-query"
+import { useQuery } from "@tanstack/vue-query"
 import { client } from "../client";
+import { useLoadingFactory } from "../utils";
 
 export const useAcademicRecordsQuery = (semesterId: Ref<string | number | undefined>) => {
   const query = useQuery(
@@ -29,8 +30,8 @@ export const useAcademicRecordsQuery = (semesterId: Ref<string | number | undefi
     }
   );
 
-  const { isFetching, isIdle, data: reportData } = query;
-  const isLoading = computed(() => isFetching.value || isIdle.value);
+  const { data: reportData } = query;
+  const isLoading = useLoadingFactory(query);
   const isIncomplete = ref(false);
 
   const overallAverage = computed(() => {

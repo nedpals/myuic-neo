@@ -50,7 +50,7 @@ import { useStudentQuery } from '../stores/studentStore';
 import { computed, provide, reactive, watch } from 'vue';
 import { Student } from '@myuic-api/types';
 import { notify } from 'notiwind';
-import { useMutation } from 'vue-query';
+import { useMutation } from '@tanstack/vue-query';
 import { client } from '../client';
 import { deepReactiveUpdate } from '../utils';
 import { studentInjectionKey } from '../keys';

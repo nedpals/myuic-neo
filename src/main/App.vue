@@ -75,7 +75,7 @@ import appEvents from './event';
 import Button from './components/ui/Button.vue';
 import Loader from './components/ui/Loader.vue';
 import IconLogo from '~icons/custom/logo';
-import { useQuery } from 'vue-query';
+import { useQuery } from '@tanstack/vue-query';
 import { client, isGloballyEnabled } from './client';
 import { feedbackUrl } from './utils';
 

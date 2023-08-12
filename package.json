@@ -37,6 +37,7 @@
     "@myuic-api/mock": "^1.8.2",
     "@myuic-api/types": "^1.7.0",
     "@robingenz/capacitor-android-dark-mode-support": "^1.0.1",
+    "@tanstack/vue-query": "^4.32.6",
     "@vueuse/core": "^10.3.0",
     "capacitor-blob-writer": "^1.1.0",
     "capacitor-native-biometric": "^3.1.1",
@@ -51,7 +52,6 @@
     "pdfjs-dist": "^2.14.305",
     "print-js": "^1.6.0",
     "vue": "^3.2.25",
-    "vue-query": "^1.22.3",
     "vue-router": "^4.0.12"
   },
   "devDependencies": {

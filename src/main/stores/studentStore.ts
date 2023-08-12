@@ -1,19 +1,19 @@
 import {avatarBaseUrl, client, useClientQuery} from '../client';
 import { nameCase } from '@foundernest/namecase';
 import { RoutePath } from '@myuic-api/types';
-import { semesterRegex } from '../utils';
-import { QueryClient, useMutation, useQuery } from 'vue-query';
+import { semesterRegex, useLoadingFactory } from '../utils';
+import { QueryClient, useMutation, useQuery } from '@tanstack/vue-query';
 import { computed, InjectionKey, Ref, ref, WritableComputedRef } from 'vue';
 import { notify } from 'notiwind';
 
 const fetchStudent = () => client.currentStudent();
 
 export const prefetchStudent = (queryClient: QueryClient) =>
-  queryClient.prefetchQuery('student', fetchStudent);
+  queryClient.prefetchQuery(['student'], fetchStudent);
 
 export const useStudentQuery = () => {
-  const query = useQuery('student', fetchStudent);
-  const isLoading = computed(() => query.isFetching.value || query.isIdle.value);
+  const query = useQuery(['student'], fetchStudent);
+  const isLoading = useLoadingFactory(query);
   const normalizedFirstName = computed(() => {
     if (isLoading.value || !query.data.value) return '';
     const splitted = query.data.value.firstName.split(' ');
@@ -40,10 +40,10 @@ const fetchAdditionalInfo = () => client.additionalInfo();
 const fetchSemesterList = () => client.http.get(RoutePath('semesterList'));
 
 export const prefetchSemesterId = (queryClient: QueryClient) =>
-  queryClient.prefetchQuery('student_additional_info', fetchAdditionalInfo);
+  queryClient.prefetchQuery(['student_additional_info'], fetchAdditionalInfo);
 
 export const prefetchSemesterList = (queryClient: QueryClient) =>
-  queryClient.prefetchQuery('semester_list', fetchSemesterList);
+  queryClient.prefetchQuery(['semester_list'], fetchSemesterList);
 
 const extractSemesterInfo = (label: string) => {
   const parsedSemResults = semesterRegex.exec(label);
@@ -56,8 +56,8 @@ const extractSemesterInfo = (label: string) => {
 export const currentSemesterIdKey: InjectionKey<WritableComputedRef<string | number | undefined>> = Symbol();
 
 export const useAdditionalInfoQuery = (existingSemesterId?: Ref<string | number | undefined>) => {
-  const infoQuery = useQuery('student_additional_info', fetchAdditionalInfo, { initialData: { semesterId: -1, course: '', year: '' } });
-  const listQuery = useClientQuery('semester_list', fetchSemesterList, {
+  const infoQuery = useQuery(['student_additional_info'], fetchAdditionalInfo, { initialData: { semesterId: -1, course: '', year: '' } });
+  const listQuery = useClientQuery(['semester_list'], fetchSemesterList, {
     select: (s) => {
       return s.data.map(d => ({
         ...d,
@@ -103,7 +103,7 @@ export const filterSemesterLabel = (label: string): string => {
 
 export const useResourceLinkQuery = () => {
   return useClientQuery(
-    'resource_links',
+    ['resource_links'],
     () => client.http.get(RoutePath('resourceLinksList')),
     {
       select: ({ data }) => data[0].entries ?? [],

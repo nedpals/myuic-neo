@@ -1,6 +1,6 @@
 import { client, eventbus } from '../client';
 import { Storage } from '@capacitor/storage';
-import { useMutation, useQuery, useQueryClient } from 'vue-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query';
 import { useRouter } from 'vue-router';
 import { notify } from 'notiwind';
 import appEvents from '../event';
@@ -42,7 +42,7 @@ export function subscribeAuth() {
     eventbus.off('sessionRefresh', handleSessionRefresh);
     eventbus.off('sessionExpired', handleSessionExpired);
   }
-} 
+}
 
 export function persistTokens(token: string, refreshToken: string) {
   if (token && refreshToken)
@@ -54,7 +54,7 @@ export function persistTokens(token: string, refreshToken: string) {
 
 export function useLoginMutation() {
   const { mutate, isLoading } = useMutation(
-    ({ id, password }:{ id: string, password: string }) => client.login(id, password), 
+    ({ id, password }:{ id: string, password: string }) => client.login(id, password),
   {
     onSuccess: async ({ token, refreshToken }, { id, password }) => {
       persistTokens(token, refreshToken);
@@ -70,7 +70,7 @@ export function useLoginMutation() {
 
 export async function retrieveFromStorage() {
   const { value: sessionCreds } = await Storage.get({ key: SESSION_NAME });
-  if (!sessionCreds) 
+  if (!sessionCreds)
     return { accessToken: '', refreshToken: '' };
 
   const [accessToken, refreshToken] = sessionCreds.split(SESSION_SEP);

@@ -195,9 +195,10 @@ import { TabGroup, Tab, TabList, TabPanels, TabPanel } from '@headlessui/vue'
 import { showDialog } from '../../../composables/modal'
 import Box from '../../ui/Box.vue'
 import { notify } from 'notiwind'
-import { useQueryClient } from 'vue-query'
+import { useQueryClient } from '@tanstack/vue-query'
 import IconDone from '~icons/ion/happy-outline';
 import Button from '../../ui/Button.vue'
+import { useLoadingFactory } from '../../../utils'
 
 const emit = defineEmits(['close']);
 const { courses } = defineProps({
@@ -218,13 +219,13 @@ const queryClient = useQueryClient();
 const isDone = ref(false);
 
 const {
-  questionnaireQuery: { isFetching, isIdle, data, ...questionnaireQuery },
+  questionnaireQuery: { data, ...questionnaireQuery },
   idQueries
 } = useEvaluationQuery(
   !Array.isArray(courses)
   ? [{classId: course.classID ?? course.code, classType: course.classType ?? '3'}]
   : courses.map(c => ({classId: c.classID ?? course.code, classType: c.classType ?? '3'})));
-const isLoading = computed(() => isFetching.value || isIdle.value);
+const isLoading = useLoadingFactory(questionnaireQuery);
 const { mutateAsync, isLoading: isProcessing } = useEvaluationMutation();
 const totalQuestionsCount = computed(() => {
   if (isLoading.value) {
@@ -362,7 +363,7 @@ const submitEvaluation = async () => {
       setTimeout(() => handleModal(false), 2000);
       await queryClient.refetchQueries({
         exact: true,
-        queryKey: 'evaluation'
+        queryKey: ['evaluation']
       });
     }
   }
@@ -374,7 +375,7 @@ const unwatchScroll = watch(step, () => {
 
 onBeforeUnmount(() => {
   idQueries.forEach(q => q.remove());
-  questionnaireQuery.remove.value();
+  questionnaireQuery.remove();
   unwatchScroll();
 });
 </script>

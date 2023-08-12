@@ -1,7 +1,6 @@
 import { newClient } from '@myuic-api/client';
 import { APIResponse, APIResponseError } from '@myuic-api/client/lib/fetch';
-import { QueryFunction, QueryKey } from 'react-query/types/core';
-import { useQuery, UseQueryOptions, VueQueryPluginOptions } from 'vue-query';
+import { QueryFunction, QueryKey, useQuery, UseQueryOptions, VueQueryPluginOptions } from '@tanstack/vue-query';
 import { persistTokens } from './composables/auth';
 import { catchAndNotifyError, twentyFourHoursInMs } from './utils';
 import appEvents from './event';
@@ -17,7 +16,7 @@ export const avatarBaseUrl = isMock ? backendUrl : import.meta.env.VITE_AVATAR_B
 export const isGloballyEnabled = ref(false);
 
 export const client = (() => {
-  const client = newClient({ 
+  const client = newClient({
     baseUrl: backendUrl,
   });
 
@@ -67,8 +66,8 @@ export function queryConfig<T>(config?: ClientConfig<T>): ClientConfig<T> {
 }
 
 export function useClientQuery<T>(
-  queryKey: QueryKey, 
-  queryFn: QueryFunction<APIResponse, QueryKey>, 
+  queryKey: QueryKey,
+  queryFn: QueryFunction<APIResponse, QueryKey>,
   config?: Omit<ClientConfig<T>, "queryKey" | "queryFn">
 ) {
   return useQuery(queryKey, queryFn, queryConfig(config));
