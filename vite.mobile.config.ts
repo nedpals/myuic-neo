@@ -7,7 +7,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '/src/main.ts': resolve(__dirname, join('.', 'src', 'mobile', 'main.ts')),
-      './composables/sw': resolve(__dirname, join('.', 'src', 'composables', 'sw_shim.ts'))
+      './composables/sw': resolve(__dirname, join('.', 'src', 'mobile', 'sw_shim.ts'))
     }
   },
   build: {

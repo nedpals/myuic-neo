@@ -9,7 +9,7 @@
     "dev": "cross-env-shell NODE_ENV=development \"npm run sync-version && vite -c vite.web.config.ts\"",
     "build": "cross-env-shell NODE_ENV=production \"npm run sync-version && vite -c vite.web.config.ts build\"",
     "preview": "vite -c vite.web.config.ts preview",
-    "build-mobile-app": "cross-env-shell NODE_ENV=production \"npm run sync-version && vite -c vite.mobile_app.config.ts build\"",
+    "build-mobile-app": "cross-env-shell NODE_ENV=production \"npm run sync-version && vite -c vite.mobile.config.ts build\"",
     "start-android": "npm run build-mobile-app && npm run build-app-assets && cap run android",
     "start-ios": "npm run build-mobile-app && npm run build-app-assets && cap run ios",
     "build-app-assets": "node generate-app-icon.js"
