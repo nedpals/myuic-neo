@@ -22,18 +22,24 @@ jobs:
             java-version: '11'
 
       - name: Setup Node.js
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2
         with:
           node-version: 16.x
 
       - name: Install app dependencies
+        env:
+          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: "true"
         run: npm install
 
       - name: Build app
         run: npm run build
 
       - name: Build app assets
-        run: npm run build-app-assets
+        uses: mujo-code/puppeteer-headful@16.6.0
+        env:
+          CI: "true"
+        with:
+          args: npm run build-app-assets
 
       - name: Capacitor sync
         run: npx cap sync
