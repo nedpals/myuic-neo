@@ -61,7 +61,7 @@ export function getPeriod(time: string) {
   const { hours, amPm } = parse12hour(time);
   if (amPm === 'am') {
     return 'morning';
-  } else if (hours >= 1 && hours <= 6 && amPm === 'pm') {
+  } else if (hours >= 1 && hours < 6 && amPm === 'pm') {
     return 'afternoon';
   } else if (amPm === 'pm') {
     return hours === 12 ? 'noon' : 'evening';
@@ -115,11 +115,6 @@ export function compare12hTimesSort(a: string, b: string) {
     return -1;
   }
 }
-
-// export function subtractTime(time: ParsedTime, howManySeconds: number): ParsedTime {
-//   const hrsToDeduct = Math.floor(howManySeconds / hours);
-//   const minsToDeduct =
-// }
 
 // Vue utilities
 export function isSlotVisible(slot: Slot | null | undefined): boolean {
