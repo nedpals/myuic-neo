@@ -26,6 +26,7 @@ dist-ssr
 .vercel
 .env
 .env.production
+.env.development
 
 # cordova-res
 resources/android
