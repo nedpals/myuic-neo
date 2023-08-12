@@ -1,6 +1,6 @@
 <template>
   <loading-container :is-loading="isLoading" v-slot="{ isLoading }">
-    <box title="This Week's class schedule" class="h-full min-h-[23rem] flex flex-col">
+    <box title="This week's class schedule" class="h-full min-h-[23rem] flex flex-col">
       <div class="flex flex-col flex-1">
         <div class="flex space-x-1 overflow-x-scroll disable-scrollbar">
           <skeleton
@@ -18,10 +18,11 @@
             class="flex-1 px-3 py-1 rounded-full">{{ day }}</button>
         </div>
 
-        <div v-if="currentSchedule.length == 0" class="text-zinc-400 dark:text-primary-300 flex flex-col items-center flex-1 justify-center space-y-2">
-          <icon-calendar class="text-7xl" />
-          <span class="text-2xl block text-center">No class!</span>
-        </div>
+        <empty-state
+          v-if="currentSchedule.length === 0"
+          class="my-auto"
+          :icon="IconCalendar"
+          title="No class" />
 
         <div v-else class="flex flex-col divide-y dark:divide-primary-400 py-2">
           <article :key="'sched_' + si" v-for="(sub, si) in currentSchedule">
@@ -57,6 +58,7 @@ import Skeleton from '../ui/Skeleton.vue';
 import { formatDatetime, now } from '../../utils';
 import IconCalendar from '~icons/ion/calendar-clear-outline';
 import { currentSemesterIdKey } from '../../stores/studentStore';
+import EmptyState from '../ui/EmptyState.vue';
 
 const currentSemesterId = inject(currentSemesterIdKey);
 const { getScheduleByDay, isLoading } = useSchedulesQuery(currentSemesterId!);

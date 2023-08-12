@@ -22,10 +22,12 @@
               </button>
             </div>
 
-            <div v-if="!isLoading && duesLength === 0" class="flex flex-col items-center py-8 px-8 text-center bg-zinc-50 dark:bg-primary-800 text-zinc-500 dark:text-primary-300 rounded-b-lg">
-              <icon-unknown class="text-9xl" />
-              <p class="text-2xl font-semibold text-zinc-600 dark:text-primary-200">No dues found.</p>
-              <p class="w-full md:w-1/2 xl:w-2/3">Either you are not enrolled yet or there is something wrong when fetching your information.</p>
+            <div v-if="!isLoading && duesLength === 0" class="py-8 px-8 bg-zinc-50 dark:bg-primary-800 rounded-b-lg">
+              <empty-state
+                :icon="IconUnknown"
+                title="No dues found."
+                class="w-2/3 md:w-3/4 mx-auto"
+                description="Either you are not enrolled yet or there is something wrong when fetching your information." />
             </div>
 
             <div v-else class="flex justify-between items-start px-6 py-4">
@@ -156,9 +158,11 @@
 
             <div v-if="!isLoading && Object.keys(data?.assessments ?? {}).length !== 0" class="bg-zinc-50 dark:bg-primary-800 rounded-b-lg px-6 py-2">
               <div class="flex flex-col divide-y dark:divide-primary-600">
-                <div v-if="breakdownKeys.length == 0">
-                    <p class="text-center text-xl py-4">No breakdown found.</p>
-                </div>
+                <empty-state
+                  v-if="breakdownKeys.length === 0"
+                  :icon="IconUnknown"
+                  title="No breakdown found."
+                  class="w-2/3 md:w-3/4 mx-auto py-6" />
 
                 <div :key="'breakdown_' + bKey" v-for="(bKey, bi) in breakdownKeys" class="flex flex-col py-2">
                   <div class="flex justify-between">
@@ -219,6 +223,7 @@ import { getBreakdownSubtotal, useFinancialRecordQuery } from '../stores/financi
 import { pesoFormatter as moneyFormatter } from '../utils';
 import { currentSemesterIdKey } from '../stores/studentStore';
 import { PaymentDue } from '@myuic-api/types';
+import EmptyState from '../components/ui/EmptyState.vue';
 
 const isQuarterly = ref(true);
 const currentSemesterId = inject(currentSemesterIdKey);
