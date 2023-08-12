@@ -1,11 +1,11 @@
-import { LocalNotifications, LocalNotificationSchema, Weekday } from "@capacitor/local-notifications";
 import { CourseSchedule, Schedule } from "@myuic-api/types";
 import { computed, isRef, readonly, Ref, ref } from "vue";
 import { useQuery } from "vue-query";
 import { client } from "../client";
-import { compare12hTimesSort, IS_NATIVE } from "../utils";
+import { compare12hTimesSort } from "../utils";
+import appEvents from "../event";
 
-interface NormalizedCourseSchedule {
+export interface NormalizedCourseSchedule {
   code: string;
   name: string;
   room: string;
@@ -26,15 +26,6 @@ export const days = {
   'F': 'Fri',
   'S': 'Sat'
 };
-
-const weekday: Weekday[] = [
-  Weekday.Monday,
-  Weekday.Tuesday,
-  Weekday.Wednesday,
-  Weekday.Thursday,
-  Weekday.Friday,
-  Weekday.Saturday
-];
 
 export interface UseScheduleQueryOptions {
   term: '1stT' | '2ndT'
@@ -150,23 +141,9 @@ export const useSchedulesQuery = (semesterId: Ref<string | number | undefined>, 
   });
 
   const activateNotifications = () => {
-    if (!IS_NATIVE || !scheduleList.value) return;
-
-    Object.values(scheduleList.value).forEach((s, i) => {
-      LocalNotifications.schedule({
-        notifications: s.map<LocalNotificationSchema>(c => ({
-          id: new Date().getTime(),
-          title: `Incoming: ${c.name}`,
-          body: `${c.fromTime}-${c.toTime}`,
-          schedule: {
-            every: 'week',
-            on: {
-              day: weekday[i],
-            },
-            allowWhileIdle: true,
-          }
-        }))
-      })
+    if (!scheduleList.value) return;
+    appEvents.onActivateScheduleNotifications?.({
+      scheduleList: scheduleList.value
     });
   }
 

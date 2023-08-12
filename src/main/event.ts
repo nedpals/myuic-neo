@@ -1,6 +1,7 @@
 import { Client } from '@myuic-api/client';
 import { AdditionalInfo, Student } from '@myuic-api/types';
 import { Ref } from 'vue';
+import { NormalizedCourseSchedule } from './stores/scheduleStore';
 
 export type AppEvents = {
   onAuthSuccess: (params: { id: string, password: string }) => Promise<void>;
@@ -15,6 +16,7 @@ export type AppEvents = {
   onAuthenticateProfile: (params: { isSave: boolean, id?: string, password?: string }) => Promise<void>;
   onLogEvent: (name: string, params: any) => void;
   onReceiveStudentInfo: (params: { student: Student, additionalInfo: AdditionalInfo }) => void;
+  onActivateScheduleNotifications: (params: { scheduleList: Record<string, NormalizedCourseSchedule[]> }) => void;
 }
 
 const appEvents: Partial<AppEvents> = {

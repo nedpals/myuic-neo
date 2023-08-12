@@ -1,11 +1,10 @@
 import {SafeArea} from 'capacitor-plugin-safe-area';
-import {SecureStoragePlugin} from 'capacitor-secure-storage-plugin';
 import {App} from '@capacitor/app';
 import {StatusBar, Style} from '@capacitor/status-bar';
 import {AppLauncher} from '@capacitor/app-launcher';
 import {Printer} from '@awesome-cordova-plugins/printer';
 import {Directory, Filesystem} from '@capacitor/filesystem';
-import {LocalNotifications} from "@capacitor/local-notifications";
+import {LocalNotificationSchema, LocalNotifications, Weekday} from "@capacitor/local-notifications";
 import writeBlob from 'capacitor-blob-writer';
 import {NavigationBar} from '@hugotomazi/capacitor-navigation-bar';
 import {NativeBiometric} from 'capacitor-native-biometric';
@@ -31,6 +30,15 @@ async function setupStatusBar() {
 }
 
 const credsConfig = { server: backendHost };
+
+const weekday: Weekday[] = [
+  Weekday.Monday,
+  Weekday.Tuesday,
+  Weekday.Wednesday,
+  Weekday.Thursday,
+  Weekday.Friday,
+  Weekday.Saturday
+];
 
 startApp(async () => {
   // disable zoom
@@ -162,5 +170,23 @@ startApp(async () => {
     if (hasBiometrics) {
       await NativeBiometric.deleteCredentials(credsConfig);
     }
+  },
+  onActivateScheduleNotifications({ scheduleList }) {
+    Promise.all(Object.values(scheduleList).map((s, i) =>
+      LocalNotifications.schedule({
+        notifications: s.map<LocalNotificationSchema>(c => ({
+          id: new Date().getTime(),
+          title: `Incoming: ${c.name}`,
+          body: `${c.fromTime}-${c.toTime}`,
+          schedule: {
+            every: 'week',
+            on: {
+              day: weekday[i],
+            },
+            allowWhileIdle: true,
+          }
+        }))
+      })
+    ));
   },
 })
