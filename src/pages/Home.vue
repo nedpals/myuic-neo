@@ -173,7 +173,7 @@ const isRLinksLoading = computed(() => isRLinksFetching.value || isRLinksIdle.va
 
 <style lang="postcss" scoped>
 .quick-link-item {
-  @apply w-1/4 md:w-1/6 cursor-pointer disabled:pointer-events-none rounded-lg p-3 flex flex-col items-center space-y-2;
+  @apply transition-colors w-1/4 md:w-1/6 cursor-pointer disabled:pointer-events-none rounded-lg p-3 flex flex-col items-center space-y-2;
 }
 
 .quick-link-item:not(:disabled) {
