@@ -1,4 +1,4 @@
-import { isMock, mockBackendUrl } from "./client";
+import { isMock, mockBackendUrl } from "../main/client";
 import { mockServerDefaults, useMockServer as _useMockServer } from "@myuic-api/mock";
 
 export const enableMockServer = isMock;

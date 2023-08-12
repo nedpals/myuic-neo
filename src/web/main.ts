@@ -1,6 +1,6 @@
 import { registerSW } from 'virtual:pwa-register';
-import { isMock } from './client';
-import { startApp } from './main.common';
+import { isMock } from '../main/client';
+import { startApp } from '../main';
 
 import { loadAnalytics, loadFirebase, logEvent, setUserId, setUserProperties } from './firebase';
 import printJS from 'print-js';
@@ -67,9 +67,9 @@ startApp(async () => {
     if (!analytics) return;
 
     setUserId!(analytics, student.number);
-    setUserProperties!(analytics, { 
-      gender: student.gender, 
-      religion: student.religion, 
+    setUserProperties!(analytics, {
+      gender: student.gender,
+      religion: student.religion,
       nationality: student.nationality,
       income_group: student.parentInformation.incomeGroup,
       course: additionalInfo.course,

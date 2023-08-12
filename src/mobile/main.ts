@@ -10,10 +10,10 @@ import writeBlob from 'capacitor-blob-writer';
 import {NavigationBar} from '@hugotomazi/capacitor-navigation-bar';
 import {NativeBiometric} from 'capacitor-native-biometric';
 
-import {startApp} from './main.common';
-import {darkModeQuery} from './composables/ui';
-import color_palette from '../color_palette';
-import { backendHost } from './client';
+import {startApp} from '../main';
+import {darkModeQuery} from '../main/composables/ui';
+import color_palette from '../../color_palette';
+import { backendHost } from '../main/client';
 
 const textDec = new TextDecoder('utf8');
 

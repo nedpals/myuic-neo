@@ -6,7 +6,7 @@
   },
   "include": [
     "vite.config.ts",
-    "vite.mobile_app.config.ts",
+    "vite.mobile.config.ts",
     "vite.web.config.ts",
     "tailwind.config.ts",
     "color_palette.ts"

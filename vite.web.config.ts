@@ -13,7 +13,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      'main': resolve(__dirname, join('.', 'src', 'main.web.ts'))
+      '/src/main.ts': resolve(__dirname, join('.', 'src', 'web', 'main.ts'))
     }
   },
   plugins: [
