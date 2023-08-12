@@ -24,7 +24,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 16.x
+          node-version: 19.x
 
       - name: Install app dependencies
         env:
@@ -32,7 +32,7 @@ jobs:
         run: npm install
 
       - name: Build app
-        run: npm run build
+        run: npm run build-mobile-app
 
       - name: Build app assets
         uses: mujo-code/puppeteer-headful@16.6.0
