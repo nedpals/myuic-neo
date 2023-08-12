@@ -252,7 +252,7 @@ b {
 }
 
 .form-control > label {
-  @apply mb-2 text-zinc-600 dark:text-primary-100;
+  @apply mb-2 text-zinc-600 dark:text-primary-50;
 }
 
 .form-control > .hint-text {
@@ -271,15 +271,13 @@ input[type='text'],
 input[type='password'],
 input[type='email'],
 input[type='number'],
-input[type='url'] {
-  @apply !px-4 rounded-lg border border-zinc-300 dark:border-primary-500 dark:bg-primary-850;
-}
-
-textarea {
-  @apply !px-4 !py-2 !rounded-lg border border-zinc-300 dark:border-primary-500 dark:bg-primary-850;
-}
-
+input[type='url'],
+textarea,
 select {
-  @apply !px-4 !py-2 !rounded-lg border !border-zinc-300 dark:!border-primary-500 dark:bg-primary-850;
+  @apply !px-4 !py-2 !rounded-lg border border-zinc-300 dark:border-primary-700 dark:bg-primary-850;
+
+  &:focus {
+    @apply ring-primary-500;
+  }
 }
 </style>
