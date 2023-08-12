@@ -4,9 +4,9 @@
 </template>
 
 <script lang="ts" setup>
-import { inject, ref, Ref } from 'vue';
+import { useLoadState } from '../../utils';
 
-const __loadState = inject<Ref<boolean>>('__loadState', ref(false));
+const __loadState = useLoadState();
 
 defineProps({
   isLoading: {

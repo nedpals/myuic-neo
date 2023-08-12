@@ -47,15 +47,16 @@
 </template>
 
 <script setup lang="ts">
-import { computed, inject, onBeforeUnmount, ref, Ref, watch } from 'vue';
+import { computed, inject, onBeforeUnmount, watch } from 'vue';
 import { currentSemesterIdKey, useAdditionalInfoQuery, useStudentQuery } from '../../stores/studentStore';
 
 import { Listbox, ListboxButton, ListboxOptions, ListboxOption } from '@headlessui/vue';
 import IconChevronRight from '~icons/ion/chevron-right';
 import Skeleton from './Skeleton.vue';
+import { useLoadState } from '../../utils';
 
 const emit = defineEmits(['update:semesterId']);
-const isLoading = inject<Ref<boolean>>('__loadState', ref(false));
+const isLoading = useLoadState();
 const currentSemesterId = inject(currentSemesterIdKey);
 const { semesterList, currentSemester, infoQuery } = useAdditionalInfoQuery(currentSemesterId);
 const { query: { data: student } } = useStudentQuery();

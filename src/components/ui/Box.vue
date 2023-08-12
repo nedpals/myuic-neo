@@ -9,12 +9,14 @@
     ]"
     class="shadow rounded-lg border dark:border-primary-700">
     <span v-if="title" class="mb-2 block" :class="titleClass">{{ title }}</span>
-    <slot :isLoading="__loadState || isLoading"></slot>
+    <slot :isLoading="existingLoadState || isLoading"></slot>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { inject, Ref, ref } from 'vue';
+import { useLoadState } from '../../utils';
+
+const existingLoadState = useLoadState();
 
 defineProps({
   isHoverable: {
@@ -40,6 +42,4 @@ defineProps({
     default: 'bg-white dark:bg-primary-800'
   }
 });
-
-const __loadState = inject<Ref<boolean>>('__loadState', ref(false));
 </script>

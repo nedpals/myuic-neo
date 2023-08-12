@@ -36,19 +36,17 @@
             </div>
           </box>
 
-          <div class="items-center justify-center flex flex-col h-[80vh]" v-if="openedEvaluationList.length === 0">
-            <clearance-status-icon
-              :status="notOpenCount != 0 ? 'not_cleared' : 'cleared'"
-              :class="{ 'animate-pulse': isLoading }"
-              class="h-42 w-42 md:h-48 md:w-48 mb-4" />
-
-            <h2 class="text-3xl text-center text-zinc-400">
-              {{
-                notOpenCount != 0 ? 'Evaluation is not yet open.'
-                  : 'All courses have already been evaluated.'
-              }}
-            </h2>
-          </div>
+          <empty-state
+            v-if="openedEvaluationList.length === 0"
+            class="h-[50vh]"
+            :title="notOpenCount != 0 ? 'Evaluation is not yet open.' : 'All courses have already been evaluated.'">
+            <template #icon>
+              <clearance-status-icon
+                :status="notOpenCount != 0 ? 'not_cleared' : 'cleared'"
+                :class="{ 'animate-pulse': isLoading }"
+                class="h-42 w-42 md:h-48 md:w-48 mb-4" />
+            </template>
+          </empty-state>
         </div>
       </loading-container>
     </main>
@@ -74,6 +72,7 @@ import EvaluationModal from '../../components/Apps/Evaluation/EvaluationModal.vu
 import ClearanceStatusIcon from '../../components/Clearance/ClearanceStatusIcon.vue';
 import { computed, ref } from 'vue';
 import { CourseEvaluationEntry } from '@myuic-api/types';
+import EmptyState from '../../components/ui/EmptyState.vue';
 
 type Entries = [CourseEvaluationEntry] | [CourseEvaluationEntry, CourseEvaluationEntry];
 

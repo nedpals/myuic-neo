@@ -1,5 +1,5 @@
 import { formatDistanceToNow, format } from 'date-fns';
-import { Comment, Slot, computed } from 'vue';
+import { Comment, Ref, Slot, computed, inject, ref } from 'vue';
 import { notify } from 'notiwind';
 import { Capacitor } from '@capacitor/core'
 
@@ -155,4 +155,8 @@ export function deepReactiveUpdate(src: Record<any, any>, dest: Record<any, any>
       dest[k] = src[k];
     }
   }
+}
+
+export function useLoadState(defaultValue = false) {
+  return inject<Ref<boolean>>('__loadState', ref(defaultValue));
 }
