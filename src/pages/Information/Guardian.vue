@@ -15,7 +15,7 @@
         </div>
         <div class="form-control w-full md:w-1/2">
           <label for="guardian_full_address">Guardian's Full Address</label>
-          <input type="text" name="guardian_full_address" id="guardian_full_address" v-model="student.guardianInformation.address" />
+          <input type="text" name="guardian_full_address" id="guardian_full_address" v-model="student.guardianInformation.address.address" />
         </div>
         <!-- <div class="form-control w-full md:w-1/2">
           <label for="guardian_address_city">City</label>
