@@ -1,5 +1,5 @@
 <template>
-  <dashboard-scaffold child-menu-class="lg:hidden">
+  <dashboard-scaffold child-menu-class="md:hidden">
     <template #actions>
       <Button v-if="$route.name !== 'account-information'" @click="saveInformation" :icon="IconSave" text="Save" />
     </template>
