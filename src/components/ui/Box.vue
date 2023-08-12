@@ -35,7 +35,7 @@ defineProps({
   },
   titleClass: {
     type: String,
-    default: 'text-zinc-500 dark:text-primary-200'
+    default: 'text-zinc-500 dark:text-primary-100'
   },
   bg: {
     type: String,
