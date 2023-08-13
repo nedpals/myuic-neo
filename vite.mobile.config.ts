@@ -1,6 +1,9 @@
 import { defineConfig } from 'vite'
 import baseConfig from './vite.config'
 import { resolve, join } from 'path'
+import legacy from '@vitejs/plugin-legacy'
+
+const plugins = baseConfig instanceof Promise || typeof baseConfig !== 'object' ? [] : baseConfig.plugins;
 
 export default defineConfig({
   ...baseConfig,
@@ -12,5 +15,11 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist_mobile_app'
-  }
+  },
+  plugins: [
+    ...plugins,
+    legacy({
+      targets: ['defaults', 'not IE 11']
+    })
+  ]
 });
