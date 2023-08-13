@@ -6,8 +6,8 @@
 
 <script lang="ts" setup>
 import { notify } from 'notiwind';
-import Button from '../../components/ui/Button.vue';
-import DashboardScaffold from '../../components/ui/DashboardScaffold.vue';
+import Button from '../../../main/components/ui/Button.vue';
+import DashboardScaffold from '../../../main/components/ui/DashboardScaffold.vue';
 import { LocalNotifications } from '@capacitor/local-notifications';
 
 const testNotify = async () => {

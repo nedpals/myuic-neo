@@ -70,28 +70,6 @@ const router = createRouter({
             }
           }
         },
-        // ...(IS_NATIVE ? [
-        //   {
-        //     name: 'settings',
-        //     path: '/settings',
-        //     component: () => import('./pages/Settings.vue'),
-        //     redirect: { name: 'notification-settings' },
-        //     meta: {
-        //       pageTitle: 'Settings',
-        //       nativeOnly: true
-        //     },
-        //     children: [
-        //       {
-        //         name: 'notification-settings',
-        //         path: 'notifications',
-        //         meta: {
-        //           pageTitle: 'Notifications',
-        //         },
-        //         component: () => import('./pages/Settings/Notification.vue')
-        //       }
-        //     ]
-        //   } as RouteRecordRaw,
-        // ] : []),
         {
           name: 'schedule',
           path: '/schedule',
@@ -247,17 +225,6 @@ const router = createRouter({
             }
           }
         },
-        // ...(IS_NATIVE ? [
-        //   {
-        //     name: 'test-app',
-        //     path: '/apps/test',
-        //     component: () => import('./pages/Apps/Test.vue'),
-        //     meta: {
-        //       pageTitle: 'Test Page',
-        //       nativeOnly: true,
-        //     }
-        //   }
-        // ] : [])
       ]
     }
   ]

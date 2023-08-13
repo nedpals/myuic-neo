@@ -7,5 +7,5 @@
 </template>
 
 <script lang="ts" setup>
-import DashboardScaffold from '../components/ui/DashboardScaffold.vue';
+import DashboardScaffold from '../../main/components/ui/DashboardScaffold.vue';
 </script>

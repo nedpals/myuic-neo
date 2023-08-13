@@ -30,10 +30,10 @@
 <script lang="ts" setup>
 import { notify } from 'notiwind';
 import { LocalNotifications } from '@capacitor/local-notifications';
-import { useSchedulesQuery } from '../../stores/scheduleStore';
-import { currentSemesterIdKey } from '../../stores/studentStore';
+import { useSchedulesQuery } from '../../../main/stores/scheduleStore';
+import { currentSemesterIdKey } from '../../../main/stores/studentStore';
 import { inject } from 'vue';
-import Button from '../../components/ui/Button.vue';
+import Button from '../../../main/components/ui/Button.vue';
 
 const currentSemesterId = inject(currentSemesterIdKey)!;
 const { activateNotifications: activateScheduleNotifications } = useSchedulesQuery(currentSemesterId);
