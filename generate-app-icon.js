@@ -4,7 +4,8 @@ const base64 = require('base64-js');
 const path = require('path');
 const extractZip = require('extract-zip');
 const del = require('del');
-const { readdirSync, cpSync } = require('fs');
+const { readdirSync } = require('fs');
+const { copySync: cpSync } = require('fs-extra');
 
 const textEncoder = new TextEncoder();
 const androidAssets = [
