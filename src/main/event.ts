@@ -2,6 +2,7 @@ import { Client } from '@myuic-api/client';
 import { AdditionalInfo, Student } from '@myuic-api/types';
 import { Ref } from 'vue';
 import { NormalizedCourseSchedule } from './stores/scheduleStore';
+import { NavigationGuardNext, RouteLocationNormalized, Router } from 'vue-router';
 
 export type AppEvents = {
   onAuthSuccess: (params: { id: string, password: string }) => Promise<void>;
@@ -17,6 +18,8 @@ export type AppEvents = {
   onLogEvent: (name: string, params: any) => void;
   onReceiveStudentInfo: (params: { student: Student, additionalInfo: AdditionalInfo }) => void;
   onActivateScheduleNotifications: (params: { scheduleList: Record<string, NormalizedCourseSchedule[]> }) => void;
+  onBeforeRouteChange: (params: { to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext }) => void | false;
+  onRouterInit: (params: { router: Router }) => void;
 }
 
 const appEvents: Partial<AppEvents> = {

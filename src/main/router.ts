@@ -263,28 +263,46 @@ const router = createRouter({
   ]
 });
 
-router.beforeEach((to, from, next) => {
-  if (to.meta.nativeOnly && !IS_NATIVE) {
-    return next({ name: 'home' });
-  }
-  if (client.isAuthenticated()) {
-    if (to.meta.guestOnly) {
-      return next({ name: 'home' });
-    }
-  } else {
-    if (to.meta.requiresAuth) {
-      return next({ name: 'login' });
-    }
+let routerInited = false;
+
+export function initRouter() {
+  if (routerInited) {
+    throw new Error('initRouter already called twice.');
   }
 
-  if (appEvents.onLogEvent) {
-    appEvents.onLogEvent('screen_view', {
-      firebase_screen: to.name,
-      firebase_screen_class: to.name
-    });
+  if (appEvents.onRouterInit) {
+    appEvents.onRouterInit({ router });
   }
 
-  next();
-});
+  router.beforeEach((to, from, next) => {
+    if (appEvents.onBeforeRouteChange) {
+      const res = appEvents.onBeforeRouteChange({ to, from, next });
+      if (typeof res !== 'boolean') {
+        return res;
+      }
+    }
+
+    if (client.isAuthenticated()) {
+      if (to.meta.guestOnly) {
+        return next({ name: 'home' });
+      }
+    } else {
+      if (to.meta.requiresAuth) {
+        return next({ name: 'login' });
+      }
+    }
+
+    if (appEvents.onLogEvent) {
+      appEvents.onLogEvent('screen_view', {
+        firebase_screen: to.name,
+        firebase_screen_class: to.name
+      });
+    }
+
+    next();
+  });
+
+  routerInited = true;
+}
 
 export default router;

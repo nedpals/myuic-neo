@@ -189,4 +189,9 @@ startApp(async () => {
       })
     ));
   },
+  onBeforeRouteChange({ to, next }) {
+    if (to.meta.nativeOnly) {
+      return next({ name: 'home' });
+    }
+  },
 })

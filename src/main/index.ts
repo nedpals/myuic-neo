@@ -4,11 +4,10 @@ import Notifications from 'notiwind'
 import FloatingVue from 'floating-vue'
 
 import App from './App.vue'
-import router from './router'
+import router, { initRouter } from './router'
 
 import 'floating-vue/dist/style.css'
 import './assets/style.css'
-// import 'virtual:unocss-devtools'
 
 import { APP_PREFIX } from './utils'
 import { Storage } from '@capacitor/storage'
@@ -33,6 +32,8 @@ export async function startApp(initialize: () => Promise<void>, customAppEvents?
   } catch (e) {
     console.error(e);
   } finally {
+    initRouter();
+
     const app = createApp(App)
       .use(VueQueryPlugin, customClientOptions)
       .use(router)
