@@ -1225,6 +1225,16 @@
     "@babel/helper-validator-identifier" "^7.22.5"
     to-fast-properties "^2.0.0"
 
+"@capacitor-firebase/analytics@^5.1.0":
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/@capacitor-firebase/analytics/-/analytics-5.1.0.tgz#0eeb4cb92039d4e7079d9c7125d778519fac26ff"
+  integrity sha512-X85ZL8du63vxYko8ufgH/CfWvwXApchTVeveiVTWsoSixP3/akgo2favX6W6USI0udGEa/60EX6YFGv6730BgQ==
+
+"@capacitor-firebase/crashlytics@^5.1.0":
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/@capacitor-firebase/crashlytics/-/crashlytics-5.1.0.tgz#d1af4e64b53235422e305e8d1c5158494ae811ae"
+  integrity sha512-vhQfChSE3/djTcLbfg9g+TASdbfaiGq8ulBYeeXhMCz3JTT3W+ohb6aECuY/4rKJuYa9FyeQ/3g+zSCpEsDzIQ==
+
 "@capacitor/android@^3.4.3":
   version "3.9.0"
   resolved "https://registry.yarnpkg.com/@capacitor/android/-/android-3.9.0.tgz#73032c49e0d6cdb4bdd1c01565e28f3913f25fee"

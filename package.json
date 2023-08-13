@@ -20,6 +20,8 @@
   "dependencies": {
     "@awesome-cordova-plugins/core": "^5.44.0",
     "@awesome-cordova-plugins/printer": "^6.4.0",
+    "@capacitor-firebase/analytics": "^5.1.0",
+    "@capacitor-firebase/crashlytics": "^5.1.0",
     "@capacitor/android": "^3.4.3",
     "@capacitor/app": "^1.1.1",
     "@capacitor/app-launcher": "^1.0.9",

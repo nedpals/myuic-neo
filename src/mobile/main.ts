@@ -16,6 +16,7 @@ import { backendHost } from '../main/client';
 
 import IconSettings from '~icons/ion/settings';
 import IconSettingsOutline from '~icons/ion/settings-outline';
+import { FirebaseAnalytics } from '@capacitor-firebase/analytics';
 
 const textDec = new TextDecoder('utf8');
 
@@ -173,6 +174,31 @@ startApp(async () => {
     if (hasBiometrics) {
       await NativeBiometric.deleteCredentials(credsConfig);
     }
+    await FirebaseAnalytics.resetAnalyticsData();
+  },
+  onLogEvent(name, params) {
+    if (name === 'screen_view') {
+      FirebaseAnalytics.setCurrentScreen({ screenName: params.firebase_screen })
+        .then(() => {});
+    } else {
+      FirebaseAnalytics.logEvent({ name, params })
+        .then(() => {});
+    }
+  },
+  onReceiveStudentInfo({ student, additionalInfo }) {
+    FirebaseAnalytics.setUserId({ userId: student.number })
+      .then(() => {
+        return Promise.all(Object.entries({
+          gender: student.gender,
+          religion: student.religion,
+          nationality: student.nationality,
+          income_group: student.parentInformation.incomeGroup,
+          course: additionalInfo.course,
+          year: additionalInfo.year
+        }).map(([key, value]) =>
+          FirebaseAnalytics.setUserProperty({ key, value })));
+      })
+      .then(() => {});
   },
   onActivateScheduleNotifications({ scheduleList }) {
     Promise.all(Object.values(scheduleList).map((s, i) =>
