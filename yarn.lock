@@ -44,10 +44,10 @@
   dependencies:
     "@types/cordova" latest
 
-"@awesome-cordova-plugins/printer@^5.44.0":
-  version "5.46.0"
-  resolved "https://registry.yarnpkg.com/@awesome-cordova-plugins/printer/-/printer-5.46.0.tgz#89fb285531dc780222d65f291fed33ffedd15084"
-  integrity sha512-lOPOL6ezqNR+NpcNkg5gWcQ+4VSXt7vbLeJ2dxwXxkkWlIJVjEGAr/02cTOqvskA9OeteHgU5GLrPif6uTMz2g==
+"@awesome-cordova-plugins/printer@^6.4.0":
+  version "6.4.0"
+  resolved "https://registry.yarnpkg.com/@awesome-cordova-plugins/printer/-/printer-6.4.0.tgz#60bab52298f39ae7e15ce4d0f3f77bfb38d9cd3c"
+  integrity sha512-oRqU3cpRSnCg9p1j+z7Be4jYLwmYqKAoGSxYAEYPrO9A00pHklvEsMc8pCA7DxIFNLxF6137YW1hYAGTdg47xw==
   dependencies:
     "@types/cordova" latest
 
