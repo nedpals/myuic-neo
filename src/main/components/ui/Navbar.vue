@@ -247,6 +247,10 @@ body.navbar-has-expanded {
   @apply md:w-1/2;
 }
 
+.main-navbar.is-open.is-expanded {
+  @apply lg:w-auto;
+}
+
 .main-navbar .padding-filler {
   width: var(--safe-area-inset-top);
   height: var(--safe-area-inset-top);
@@ -316,7 +320,7 @@ body.navbar-has-expanded {
 }
 
 .menu .menu-item {
-  @apply py-4 px-4 items-center max-h-12 space-x-4 rounded-l-xl;
+  @apply py-4 px-4 items-center max-h-12 space-x-4 rounded-l-xl cursor-pointer;
   transition: background-color 150ms ease;
 }
 
