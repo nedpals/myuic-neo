@@ -37,9 +37,9 @@
       </div>
       <div :class="childMenuClass" class="overflow-x-auto">
         <ul class="flex space-x-2">
-          <li :key="r.name" v-for="r in childRouteLinks" class="inline-flex flex-shrink-0">
+          <li :key="'child_' + entry.title" v-for="entry in childRouteLinks" class="inline-flex flex-shrink-0">
             <router-link
-              :to="r"
+              :to="entry.to"
               v-slot="{ isExactActive, href, navigate }"
               custom>
               <a
@@ -50,7 +50,7 @@
                 :class="[isExactActive ?
                   'bg-primary-200 dark:bg-primary-700 hover:bg-primary-300 dark:hover:!bg-primary-600' :
                   'bg-primary-50 hover:bg-primary-100 dark:bg-primary-800 dark:hover:bg-primary-700']">
-                  {{ r.meta?.pageTitle ?? r.name }}
+                  {{ entry.title }}
               </a>
             </router-link>
           </li>
@@ -71,10 +71,11 @@ import Button from './Button.vue';
 
 import { useTitle } from '@vueuse/core';
 import { computed, watch, useSlots, onBeforeUnmount } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 import { useAdditionalInfoQuery, useStudentQuery } from '../../stores/studentStore.js';
 import { useProfileMutation, useProfiles } from '../../composables/auth.js';
 import appEvents from '../../event';
+import { useNav } from '../../composables/nav';
 
 defineEmits(['reload']);
 
@@ -94,28 +95,21 @@ const { title, subtitle } = defineProps({
 });
 
 const route = useRoute();
-const router = useRouter();
-
 const slots = useSlots();
 const actionsSlot = slots.actions?.() ?? [];
 const shouldActionsBeDropdown = computed(() => actionsSlot.length > 1);
 const { infoQuery: { data: additionalInfo } } = useAdditionalInfoQuery();
 
+const { currentEntry, currentRoute } = useNav();
 const childRouteLinks = computed(() => {
   if (route.matched.length < 3) return [];
-  const routes = router.getRoutes();
-  const currentRouteData = routes.find(r => r.name === route.matched[route.matched.length - 2].name);
-  if (!currentRouteData) return [];
-  return currentRouteData.children;
-})
+  return currentEntry.value?.children ?? [];
+});
 
 const pageTitle = computed(() => {
   if (title) return title;
-  if (route.matched.length < 3) return route.meta.pageTitle;
-  const routes = router.getRoutes();
-  const currentRouteData = routes.find(r => r.name === route.matched[route.matched.length - 2].name);
-  if (!currentRouteData) return route.meta.pageTitle;
-  return currentRouteData.meta.pageTitle;
+  if (route.matched.length < 3 || !currentRoute.value) return route.meta.pageTitle;
+  return currentRoute.value.meta.pageTitle;
 })
 
 const unwatchTitle = watch(() => route.fullPath, () => {

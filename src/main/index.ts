@@ -9,7 +9,7 @@ import router, { initRouter } from './router'
 import 'floating-vue/dist/style.css'
 import './assets/style.css'
 
-import { APP_PREFIX } from './utils'
+import { APP_PREFIX, feedbackUrl } from './utils'
 import { Storage } from '@capacitor/storage'
 
 import { VueQueryPlugin } from '@tanstack/vue-query'
@@ -17,6 +17,9 @@ import { customClientOptions } from './client'
 
 import defaultAppEvents, { AppEvents } from './event'
 import { retrieve } from './composables/auth'
+import { defaultNavLinkEntries } from './composables/nav'
+
+import IconFeedback from '~icons/ion/chatbox-ellipses-outline'
 
 export async function startApp(initialize: () => Promise<void>, customAppEvents?: Partial<AppEvents>) {
   try {
@@ -25,6 +28,20 @@ export async function startApp(initialize: () => Promise<void>, customAppEvents?
         defaultAppEvents[event] = customAppEvents[event];
       }
     }
+
+    // THIS IS SUPER UGLY. find another way in the future
+    defaultNavLinkEntries.push({
+      icon: IconFeedback,
+      title: 'Feedback',
+      group: '_meta',
+      subtitle: 'We would like to hear your feedback!',
+      link: true,
+      to: feedbackUrl.value,
+      class: 'md:!hidden',
+      children: [],
+      isCurrent: false,
+      order: 10
+    });
 
     await Storage.configure({ group: APP_PREFIX });
     await retrieve();

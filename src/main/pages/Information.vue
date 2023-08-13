@@ -19,7 +19,7 @@
               'hover:bg-primary-100 dark:hover:bg-primary-700']"
             class="transition-colors rounded-md px-3 py-4 flex justify-between items-center">
 
-            <span>{{ r.meta?.pageTitle ?? r.name }}</span>
+            <span>{{ r.title }}</span>
             <icon-chevron-right class="text-primary-800 dark:text-primary-200" />
           </a>
         </router-link>
@@ -56,6 +56,7 @@ import { deepReactiveUpdate } from '../utils';
 import { studentInjectionKey } from '../keys';
 import { useRoute } from 'vue-router';
 import { useRouter } from 'vue-router';
+import { useNav } from '../composables/nav';
 
 const { isLoading, query: { data: originalStudentData, refetch: refetchStudent } } = useStudentQuery();
 const studentData = reactive<Student>({
@@ -162,7 +163,7 @@ const saveInformation = async () => {
         type: 'success',
         text: message,
       });
-      const { data: newData } = await refetchStudent.value();
+      const { data: newData } = await refetchStudent();
       replaceStudentData(newData!);
     }
   });
@@ -180,15 +181,7 @@ const unwatchOrigData = watch(originalStudentData, (newData) => {
   }
 });
 
-const route = useRoute();
-const router = useRouter();
-const childRouteLinks = computed(() => {
-  if (route.matched.length < 3) return [];
-  const routes = router.getRoutes();
-  const currentRouteData = routes.find(r => r.name === route.matched[route.matched.length - 2].name);
-  if (!currentRouteData) return [];
-  return currentRouteData.children;
-});
-
+const { currentEntry } = useNav();
+const childRouteLinks = computed(() => currentEntry.value?.children ?? []);
 provide(studentInjectionKey, studentData);
 </script>

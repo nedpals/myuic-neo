@@ -43,55 +43,38 @@
         <span>Collapse Menu</span>
       </button>
 
-      <div class="menu-group" :key="`links_${groupName}`" v-for="(groupName, groupIdx) in linkGroups.groups">
-        <span class="group-name">{{ groupName }}</span>
-        <div class="space-y-3">
-          <router-link
-            v-for="(link, i) in linkGroups.links[groupIdx]"
-            :key="`link_${groupName}_${i}`"
-            :to="link.to"
-            @click="isMenuOpen = false"
-            :class="{'is-active': link.to.name === currentRouteName}"
-            class="menu-item"
-            v-tooltip.right="canExpandTooltip ? link.title : null" >
-            <component :is="link.to.name === currentRouteName ? link.activeIcon : link.icon" />
-            <span>{{ link.title }}</span>
-          </router-link>
-        </div>
-      </div>
+      <template :key="`links_${group.name}`" v-for="(group) in groupedEntries">
+        <div v-if="group.name === '_meta'" class="block h-8 flex-shrink-0"></div>
 
-      <div class="block h-8 flex-shrink-0"></div>
+        <div :class="[group.name === '_meta' ? 'space-y-3' : 'menu-group']">
+          <span v-if="!group.name.startsWith('_')" class="group-name">
+            {{ group.name }}
+          </span>
+
+          <div class="space-y-3">
+            <component
+              v-for="(entry, i) in group.children"
+              :is="entry.link ? 'a' : 'router-link'"
+              :key="`link_${group.name}_${i}`"
+              :to="entry.link ? undefined : entry.to"
+              :href="entry.link ? entry.to : undefined"
+              :target="entry.link ? '_blank' : undefined"
+              @click="isMenuOpen = false"
+              :class="[{'is-active': entry.isCurrent}, entry.class]"
+              class="menu-item"
+              v-tooltip.right="canExpandTooltip ? entry.name : null" >
+              <component :is="entry.isCurrent ? entry.activeIcon : entry.icon" />
+              <div class="flex flex-col space-y-0.5">
+                <span>{{ entry.title }}</span>
+                <span v-if="entry.subtitle"
+                  class="text-sm text-zinc-400 dark:text-primary-400">{{ entry.subtitle }}</span>
+              </div>
+            </component>
+          </div>
+        </div>
+      </template>
 
       <div class="pb-4 space-y-3">
-        <a
-          :href="feedbackUrl"
-          target="_blank"
-          class="md:!hidden menu-item">
-          <icon-feedback />
-          <div className="flex flex-col space-y-0.5">
-            <span>Feedback</span>
-            <span class="text-sm text-zinc-400 dark:text-primary-400">We would like to hear your feedback!</span>
-          </div>
-        </a>
-
-        <router-link :to="{ name: 'about' }"
-          @click="isMenuOpen = false"
-          :class="{ 'is-active': currentRouteName === 'about' }"
-          class="menu-item"
-          v-tooltip.right="canExpandTooltip ? 'About' : null" >
-          <icon-about-outline />
-          <span>About</span>
-        </router-link>
-
-        <router-link v-if="IS_NATIVE" :to="{ name: 'settings' }"
-          @click="isMenuOpen = false"
-          :class="{ 'is-active': currentRouteName === 'settings' }"
-          class="menu-item"
-          v-tooltip.right="canExpandTooltip ? 'Settings' : null" >
-          <component :is="currentRouteName === 'settings' ? IconSettings : IconSettingsOutline" />
-          <span>Settings</span>
-        </router-link>
-
         <button @click="() => logout()" class="menu-item is-logout" v-tooltip.right="canExpandTooltip ? 'Logout' : null" >
             <icon-logout-outline />
             <span>Logout</span>
@@ -104,13 +87,13 @@
     <router-link
       v-for="i in 4"
       :key="'link_' + i"
-      :to="linkGroups.links[0][i - 1].to"
+      :to="entries[i - 1].to"
       @click="isMenuOpen = false"
       v-slot="{ isExactActive }"
       exact-active-class="is-active"
       class="menu-item">
-      <component :is="isExactActive ? linkGroups.links[0][i - 1].activeIcon : linkGroups.links[0][i - 1].icon" />
-      <span>{{ linkGroups.links[0][i - 1].title }}</span>
+      <component :is="isExactActive ? entries[i - 1].activeIcon : entries[i - 1].icon" />
+      <span>{{ entries[i - 1].title }}</span>
     </router-link>
     <button @click="isMenuOpen = !isMenuOpen" :class="{'is-active': isMenuOpen}" class="menu-item">
       <icon-menu />
@@ -123,79 +106,26 @@
 import IconMenu from '~icons/ion/menu';
 import IconLogoutOutline from '~icons/ion/log-out-outline';
 import IconLogo from '~icons/custom/logo';
-import IconAboutOutline from '~icons/ion/help-circle-outline';
-import IconSettings from '~icons/ion/settings';
-import IconSettingsOutline from '~icons/ion/settings-outline';
-import IconFeedback from '~icons/ion/chatbox-ellipses-outline';
 import DarkModeToggle from './DarkModeToggle.vue';
 import LoadingContainer from './LoadingContainer.vue';
 import Skeleton from './Skeleton.vue';
 import Avatar from './Avatar.vue';
 
 import { useStudentQuery } from '../../stores/studentStore';
-import { feedbackUrl, IS_NATIVE } from '../../utils';
-import { computed, FunctionalComponent, onBeforeUnmount, ref, watch } from 'vue';
+import { computed, onBeforeUnmount, ref, watch } from 'vue';
 import { useLogoutMutation } from '../../composables/auth';
-import { RouteRecordName, RouteRecordNormalized, RouteRecordRaw, useRoute, useRouter } from 'vue-router';
 import SemesterSelector from './SemesterSelector.vue';
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core';
+import { useNav } from '../../composables/nav';
 
 const breakpoints = useBreakpoints(breakpointsTailwind);
 const isMd = breakpoints.smaller('lg');
-const router = useRouter();
-const route = useRoute();
+const { groupedEntries, entries } = useNav();
 const isMenuOpen = ref(false);
 const isMenuExpanded = ref(false);
 const canExpandTooltip = computed(() => isMd.value && !isMenuExpanded.value);
 const { isLoading: isStudentLoading, avatarUrl, normalizedFirstName: studentFirstName, query: { data: student } } = useStudentQuery();
 const { mutate: logout } = useLogoutMutation();
-
-const getParentRouteName = () => {
-  if (route.matched.length < 2) return 'dashboard';
-  return route.matched[1].name;
-}
-
-const currentRouteName = computed(() => getParentRouteName()?.toString() ?? 'home');
-const collectNavLinks = (routes: (RouteRecordRaw | RouteRecordNormalized)[]) => {
-  const links: {
-    to: { name: RouteRecordName }
-    group: string
-    title: string
-    icon: FunctionalComponent
-    activeIcon: FunctionalComponent
-  }[] = [];
-
-  for (const route of routes) {
-    if (route.meta && route.meta.navLink) {
-      links.push({
-        ...route.meta.navLink,
-        to: { name: route.name ?? '' }
-      });
-    }
-  }
-
-  return links;
-}
-
-const linkGroups = (() => {
-  const links = collectNavLinks(router.getRoutes());
-  return links.sort((a, b) => b.group.localeCompare(a.group)).reduce<{
-    groups: string[],
-    links: ReturnType<typeof collectNavLinks>[]
-  }>((m, l) => {
-    let groupIdx = m.groups.indexOf(l.group);
-    if (groupIdx == -1) {
-      m.groups.push(l.group);
-      m.links.push([]);
-      groupIdx = m.groups.length - 1;
-    }
-    m.links[groupIdx].push(l);
-    return m;
-  }, {
-    groups: [],
-    links: []
-  });
-})();
 
 const unwatchIsExpanded = watch(isMenuExpanded, (newExpanded) => {
   if (newExpanded) {

@@ -20,6 +20,7 @@ import IconFeedbackOutline from '~icons/fluent/person-feedback-16-regular';
 import IconReport from '~icons/ion/stats-chart';
 import IconReportOutline from '~icons/ion/stats-chart-outline';
 import IconOnlineEnrollment from '~icons/fluent/compose-16-filled';
+import IconAboutOutline from '~icons/ion/help-circle-outline';
 import appEvents from './event';
 
 const router = createRouter({
@@ -51,11 +52,6 @@ const router = createRouter({
       },
       children: [
         {
-          name: 'about',
-          path: '/about',
-          component: () => import('./pages/About.vue')
-        },
-        {
           name: 'home',
           path: '/',
           component: () => import('./pages/Home.vue'),
@@ -64,6 +60,7 @@ const router = createRouter({
             useHeader: false,
             navLink: {
               group: 'Student',
+              order: 1,
               title: 'Home',
               icon: IconHomeOutline,
               activeIcon: IconHome,
@@ -79,6 +76,7 @@ const router = createRouter({
             navLink: {
               group: 'Student',
               title: 'Schedule',
+              order: 2,
               icon: IconCalendarOutline,
               activeIcon: IconCalendar,
             }
@@ -93,6 +91,7 @@ const router = createRouter({
             navLink: {
               group: 'Student',
               title: 'Reports',
+              order: 3,
               icon: IconReportOutline,
               activeIcon: IconReport,
             }
@@ -107,6 +106,7 @@ const router = createRouter({
             navLink: {
               group: 'Student',
               title: 'Finance',
+              order: 4,
               icon: IconCashOutline,
               activeIcon: IconCash,
             }
@@ -121,6 +121,7 @@ const router = createRouter({
             navLink: {
               group: 'Student',
               title: 'Clearance',
+              order: 5,
               icon: IconReceiptOutline,
               activeIcon: IconReceipt,
             }
@@ -136,6 +137,7 @@ const router = createRouter({
             navLink: {
               group: 'Student',
               title: 'Information',
+              order: 6,
               icon: IconPersonOutline,
               activeIcon: IconPerson,
             }
@@ -192,6 +194,7 @@ const router = createRouter({
             navLink: {
               group: 'Apps',
               title: 'Election',
+              order: 7,
               icon: IconBallotOutline,
               activeIcon: IconBallot,
             }
@@ -206,6 +209,7 @@ const router = createRouter({
             navLink: {
               group: 'Apps',
               title: 'Course Evaluation',
+              order: 8,
               icon: IconFeedbackOutline,
               activeIcon: IconFeedback,
             }
@@ -220,10 +224,25 @@ const router = createRouter({
             navLink: {
               group: 'Apps',
               title: 'Online Enrollment',
+              order: 9,
               icon: IconOnlineEnrollment,
               activeIcon: IconOnlineEnrollment,
             }
           }
+        },
+        {
+          name: 'about',
+          path: '/about',
+          meta: {
+            navLink: {
+              group: '_meta',
+              title: 'About',
+              icon: IconAboutOutline,
+              activeIcon: IconAboutOutline,
+              order: 11,
+            }
+          },
+          component: () => import('./pages/About.vue')
         },
       ]
     }

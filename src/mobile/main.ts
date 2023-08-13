@@ -14,6 +14,9 @@ import {darkModeQuery} from '../main/composables/ui';
 import color_palette from '../../color_palette';
 import { backendHost } from '../main/client';
 
+import IconSettings from '~icons/ion/settings';
+import IconSettingsOutline from '~icons/ion/settings-outline';
+
 const textDec = new TextDecoder('utf8');
 
 async function setDeviceSafeAreas() {
@@ -189,11 +192,6 @@ startApp(async () => {
       })
     ));
   },
-  onBeforeRouteChange({ to, next }) {
-    if (to.meta.nativeOnly) {
-      return next({ name: 'home' });
-    }
-  },
   onRouterInit({ router }) {
     // router.addRoute('dashboard', {
     //   name: 'test-app',
@@ -212,7 +210,14 @@ startApp(async () => {
       redirect: { name: 'notification-settings' },
       meta: {
         pageTitle: 'Settings',
-        nativeOnly: true
+        nativeOnly: true,
+        navLink: {
+          activeIcon: IconSettings,
+          icon: IconSettingsOutline,
+          group: '_meta',
+          order: 10,
+          title: 'Settings'
+        }
       },
       children: [
         {

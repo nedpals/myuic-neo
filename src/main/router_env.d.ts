@@ -10,8 +10,9 @@ declare module 'vue-router' {
     requiresAuth?: boolean
     useHeader?: boolean
     navLink?: {
-      group: 'Student' | 'Apps'
+      group: 'Student' | 'Apps' | '_meta'
       title: string
+      order: number
       icon: FunctionalComponent
       activeIcon: FunctionalComponent
     }
