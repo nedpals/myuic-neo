@@ -9,6 +9,9 @@ const config: CapacitorConfig = {
   webDir: 'dist_mobile_app',
   bundledWebRuntime: false,
   plugins: {
+    CapacitorHttp: {
+      enabled: true
+    },
     LocalNotifications: {
       smallIcon: "ic_stat_icon",
       iconColor: colorPalette.primary[500]
