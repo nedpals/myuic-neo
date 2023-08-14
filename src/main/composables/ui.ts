@@ -1,4 +1,4 @@
-import { Storage } from '@capacitor/storage';
+import { Preferences } from '@capacitor/preferences';
 import { ref, watch, Ref, isRef } from 'vue';
 import appEvents from "../event";
 
@@ -13,8 +13,8 @@ export const useDarkMode = () => {
     // 0 (off), 1 (on), or 2 (auto)
     const nextValue = parseInt(darkModeState.value)+1;
     darkModeState.value = (nextValue % 3).toString();
-    
-    Storage.set({
+
+    Preferences.set({
       key: DARK_MODE_KEY,
       value: darkModeState.value
     })
@@ -34,8 +34,8 @@ export const useDarkMode = () => {
   }
 
   const fetchDarkMode = async () => {
-    if ((await Storage.keys()).keys.includes(DARK_MODE_KEY)) {
-      darkModeState.value = (await Storage.get({ key: DARK_MODE_KEY })).value ?? '0';
+    if ((await Preferences.keys()).keys.includes(DARK_MODE_KEY)) {
+      darkModeState.value = (await Preferences.get({ key: DARK_MODE_KEY })).value ?? '0';
     } else if (darkModeQuery().matches) {
       darkModeState.value = '2';
     }

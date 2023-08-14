@@ -1,5 +1,5 @@
 import { client, eventbus } from '../client';
-import { Storage } from '@capacitor/storage';
+import { Preferences } from '@capacitor/preferences';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query';
 import { useRouter } from 'vue-router';
 import { notify } from 'notiwind';
@@ -46,7 +46,7 @@ export function subscribeAuth() {
 
 export function persistTokens(token: string, refreshToken: string) {
   if (token && refreshToken)
-    Storage.set({
+    Preferences.set({
       key: SESSION_NAME,
       value: token + SESSION_SEP + refreshToken
     });
@@ -69,7 +69,7 @@ export function useLoginMutation() {
 }
 
 export async function retrieveFromStorage() {
-  const { value: sessionCreds } = await Storage.get({ key: SESSION_NAME });
+  const { value: sessionCreds } = await Preferences.get({ key: SESSION_NAME });
   if (!sessionCreds)
     return { accessToken: '', refreshToken: '' };
 
@@ -89,7 +89,7 @@ export function useLogoutMutation() {
   return useMutation(() => client.logout(), {
     onSuccess: async () => {
       await appEvents.onAuthDestroy?.();
-      await Storage.remove({ key: SESSION_NAME });
+      await Preferences.remove({ key: SESSION_NAME });
       router.replace({ name: 'login' });
     }
   });
@@ -107,8 +107,8 @@ const profilesSuffixKey = 'profiles/'
 async function getProfiles(): Promise<Profile[]> {
   const profiles: Profile[] = [];
 
-  const { keys } = await Storage.keys();
-  const rawProfiles = await Promise.all(keys.filter(k => k.startsWith(profilesSuffixKey)).map(key => Storage.get({ key })));
+  const { keys } = await Preferences.keys();
+  const rawProfiles = await Promise.all(keys.filter(k => k.startsWith(profilesSuffixKey)).map(key => Preferences.get({ key })));
 
   for (const { value: rawProfile } of rawProfiles) {
     if (rawProfile) {
@@ -125,7 +125,7 @@ export function useProfiles() {
 
 export function useProfileMutation() {
   return useMutation(async (profile: Profile) => {
-    await Storage.set({
+    await Preferences.set({
       key: profilesSuffixKey + profile.id,
       value: JSON.stringify(profile)
     });
@@ -133,5 +133,5 @@ export function useProfileMutation() {
 }
 
 export async function removeProfile(id: string) {
-  await Storage.remove({ key: profilesSuffixKey + id });
+  await Preferences.remove({ key: profilesSuffixKey + id });
 }

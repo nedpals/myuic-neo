@@ -4,10 +4,6 @@
 		"classpath": "io.capawesome.capacitorjs.plugins.firebase.analytics.FirebaseAnalyticsPlugin"
 	},
 	{
-		"pkg": "@capacitor-firebase/crashlytics",
-		"classpath": "io.capawesome.capacitorjs.plugins.firebase.crashlytics.FirebaseCrashlyticsPlugin"
-	},
-	{
 		"pkg": "@capacitor/app",
 		"classpath": "com.capacitorjs.plugins.app.AppPlugin"
 	},
@@ -24,20 +20,16 @@
 		"classpath": "com.capacitorjs.plugins.localnotifications.LocalNotificationsPlugin"
 	},
 	{
+		"pkg": "@capacitor/preferences",
+		"classpath": "com.capacitorjs.plugins.preferences.PreferencesPlugin"
+	},
+	{
 		"pkg": "@capacitor/status-bar",
 		"classpath": "com.capacitorjs.plugins.statusbar.StatusBarPlugin"
 	},
 	{
-		"pkg": "@capacitor/storage",
-		"classpath": "com.capacitorjs.plugins.storage.StoragePlugin"
-	},
-	{
 		"pkg": "@hugotomazi/capacitor-navigation-bar",
 		"classpath": "br.com.tombus.capacitor.plugin.navigationbar.NavigationBarPlugin"
-	},
-	{
-		"pkg": "@robingenz/capacitor-android-dark-mode-support",
-		"classpath": "dev.robingenz.capacitor.androiddarkmodesupport.AndroidDarkModeSupportPlugin"
 	},
 	{
 		"pkg": "capacitor-blob-writer",
@@ -53,6 +45,6 @@
 	},
 	{
 		"pkg": "capacitor-secure-storage-plugin",
-		"classpath": "com.whitestein.securestorage.SecureStoragePlugin"
+		"classpath": "com.whitestein.securestorage.SecureStoragePluginPlugin"
 	}
 ]

@@ -296,7 +296,6 @@ body.navbar-has-expanded {
 
 .menu.is-mobile {
   @apply bg-white dark:bg-primary-800 border-t dark:border-primary-800 fixed bottom-0 inset-x-0 md:hidden z-50 flex;
-  padding-bottom: var(--safe-area-inset-bottom);
 }
 
 .menu.is-mobile .menu-item {

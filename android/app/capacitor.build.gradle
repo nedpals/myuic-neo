@@ -2,23 +2,21 @@
 
 android {
   compileOptions {
-      sourceCompatibility JavaVersion.VERSION_1_8
-      targetCompatibility JavaVersion.VERSION_1_8
+      sourceCompatibility JavaVersion.VERSION_11
+      targetCompatibility JavaVersion.VERSION_11
   }
 }
 
 apply from: "../capacitor-cordova-android-plugins/cordova.variables.gradle"
 dependencies {
     implementation project(':capacitor-firebase-analytics')
-    implementation project(':capacitor-firebase-crashlytics')
     implementation project(':capacitor-app')
     implementation project(':capacitor-app-launcher')
     implementation project(':capacitor-filesystem')
     implementation project(':capacitor-local-notifications')
+    implementation project(':capacitor-preferences')
     implementation project(':capacitor-status-bar')
-    implementation project(':capacitor-storage')
     implementation project(':hugotomazi-capacitor-navigation-bar')
-    implementation project(':robingenz-capacitor-android-dark-mode-support')
     implementation project(':capacitor-blob-writer')
     implementation project(':capacitor-native-biometric')
     implementation project(':capacitor-plugin-safe-area')

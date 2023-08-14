@@ -10,7 +10,7 @@ import 'floating-vue/dist/style.css'
 import './assets/style.css'
 
 import { APP_PREFIX, feedbackUrl } from './utils'
-import { Storage } from '@capacitor/storage'
+import { Preferences } from '@capacitor/preferences'
 
 import { VueQueryPlugin } from '@tanstack/vue-query'
 import { customClientOptions } from './client'
@@ -43,7 +43,7 @@ export async function startApp(initialize: () => Promise<void>, customAppEvents?
       order: 10
     });
 
-    await Storage.configure({ group: APP_PREFIX });
+    await Preferences.configure({ group: APP_PREFIX });
     await retrieve();
     await initialize();
   } catch (e) {
