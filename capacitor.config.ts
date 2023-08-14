@@ -10,7 +10,7 @@ const config: CapacitorConfig = {
   bundledWebRuntime: false,
   plugins: {
     CapacitorHttp: {
-      enabled: true
+      enabled: false
     },
     LocalNotifications: {
       smallIcon: "ic_stat_icon",
