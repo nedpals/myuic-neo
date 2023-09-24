@@ -44,3 +44,6 @@ public/icons
 private
 
 google-services.json
+
+# vite-pwa
+dev-dist

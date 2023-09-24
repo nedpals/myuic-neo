@@ -64,7 +64,7 @@
 import { subscribeAuth } from './composables/auth';
 import { useTitle } from '@vueuse/core';
 import { useDarkMode } from './composables/ui';
-import { computed, onBeforeUnmount } from 'vue';
+import { computed, onBeforeUnmount, onMounted, watch } from 'vue';
 import useReloadPrompt from './composables/sw';
 import NotificationContainer from './components/ui/NotificationContainer.vue';
 import IconFeedback from '~icons/ion/chatbox-ellipses';
@@ -95,15 +95,7 @@ const destroyPopNavigation = appEvents.onNavigationPop?.({
   goBack: router.back
 });
 
-onBeforeUnmount(() => {
-  unsubscribeModalChange();
-  unsubscribeDarkMode();
-  unsubscribeAuth();
-  if (destroyPopNavigation)
-    destroyPopNavigation();
-});
-
-const { isLoading, error: healthError } = useQuery(['health'], async () => {
+const { data, isLoading, status, error: healthError } = useQuery(['health'], async () => {
   const status = await client.checkHealth();
   if (!status.isAlive) {
     if (status.status >= 500) {
@@ -118,20 +110,32 @@ const { isLoading, error: healthError } = useQuery(['health'], async () => {
   return status;
 }, {
   enabled: true,
-  onSuccess(data) {
-    isGloballyEnabled.value = data.isAlive;
-  },
-  onError() {
-    isGloballyEnabled.value = false;
-  }
+  networkMode: 'always'
 });
 
 const healthErrorMessage = computed(() => {
   if (!healthError.value || !(healthError.value instanceof Error)) {
-    return 'Unknown error. Please report this issue and try again later.'
+    return 'Unknown error. Please report this issue and try again later.';
   }
 
   return healthError.value.message;
+});
+
+const unsubscribeHealthWatch = watch(status, (newStatus, _) => {
+  if (newStatus === 'success') {
+    isGloballyEnabled.value = data.value?.isAlive ?? false;
+  } else if (newStatus === 'error') {
+    isGloballyEnabled.value = false;
+  }
+});
+
+onBeforeUnmount(() => {
+  unsubscribeModalChange();
+  unsubscribeDarkMode();
+  unsubscribeAuth();
+  unsubscribeHealthWatch();
+  if (destroyPopNavigation)
+    destroyPopNavigation();
 });
 </script>
 
