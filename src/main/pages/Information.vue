@@ -47,18 +47,16 @@ import Button from '../components/ui/Button.vue';
 import IconChevronRight from '~icons/ion/chevron-right';
 
 import { useStudentQuery } from '../stores/studentStore';
-import { computed, provide, reactive, watch } from 'vue';
+import { computed, onMounted, provide, reactive, watch } from 'vue';
 import { Student } from '@myuic-api/types';
 import { notify } from 'notiwind';
 import { useMutation } from '@tanstack/vue-query';
 import { client } from '../client';
 import { deepReactiveUpdate } from '../utils';
 import { studentInjectionKey } from '../keys';
-import { useRoute } from 'vue-router';
-import { useRouter } from 'vue-router';
 import { useNav } from '../composables/nav';
 
-const { isLoading, query: { data: originalStudentData, refetch: refetchStudent } } = useStudentQuery();
+const { isLoading, query: { data, refetch: refetchStudent } } = useStudentQuery();
 const studentData = reactive<Student>({
   LRN: '',
   ACR: '',
@@ -163,8 +161,7 @@ const saveInformation = async () => {
         type: 'success',
         text: message,
       });
-      const { data: newData } = await refetchStudent();
-      replaceStudentData(newData!);
+      await refetchStudent();
     }
   });
 }
@@ -174,10 +171,15 @@ const replaceStudentData = (newData: Student) => {
 }
 
 // triggered only once student data is received.
-const unwatchOrigData = watch(originalStudentData, (newData) => {
-  if (typeof newData !== 'undefined') {
-    replaceStudentData(newData);
-    unwatchOrigData();
+watch(isLoading, () => {
+  if (typeof data.value !== 'undefined') {
+    replaceStudentData(data.value);
+  }
+});
+
+onMounted(() => {
+  if (typeof data.value !== 'undefined') {
+    replaceStudentData(data.value);
   }
 });
 
