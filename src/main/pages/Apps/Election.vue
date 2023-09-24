@@ -64,7 +64,6 @@ import NotificationContainer from '../../components/ui/NotificationContainer.vue
 import { computed, ref } from 'vue';
 import { Candidate } from '@myuic-api/types';
 import Box from '../../components/ui/Box.vue';
-import defaultAvatarUrl from '../../assets/default_avatar.png';
 import Skeleton from '../../components/ui/Skeleton.vue';
 import VoteModal from '../../components/Apps/Election/VoteModal.vue';
 

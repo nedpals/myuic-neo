@@ -37,7 +37,7 @@ const props = defineProps({
 });
 
 function loadFallbackImage(evt: Event) {
-  if (evt.target instanceof HTMLImageElement) {
+  if (evt.target instanceof HTMLImageElement && evt.target.src !== props.fallbackSrc) {
     evt.target.src = props.fallbackSrc;
   }
 }
