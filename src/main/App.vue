@@ -109,8 +109,7 @@ const { data, isLoading, status, error: healthError } = useQuery(['health'], asy
 
   return status;
 }, {
-  enabled: true,
-  networkMode: 'always'
+  enabled: true
 });
 
 const healthErrorMessage = computed(() => {
