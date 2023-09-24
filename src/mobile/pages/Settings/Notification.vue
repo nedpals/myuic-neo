@@ -39,6 +39,7 @@
       <empty-state
         v-if="!data || data.notifications.length === 0"
         :icon="IconUnknown"
+        class="py-8"
         title="No pending notifications." />
 
       <div v-for="notif in data?.notifications"
