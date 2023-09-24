@@ -37,6 +37,8 @@
     "@myuic-api/client": "^1.7.0",
     "@myuic-api/mock": "^1.8.2",
     "@myuic-api/types": "^1.7.0",
+    "@tanstack/query-persist-client-core": "^4.35.3",
+    "@tanstack/query-sync-storage-persister": "^4.35.3",
     "@tanstack/vue-query": "^4.32.6",
     "@vueuse/core": "^10.3.0",
     "capacitor-blob-writer": "^1.1.0",

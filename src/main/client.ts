@@ -5,6 +5,8 @@ import { persistTokens } from './composables/auth';
 import { catchAndNotifyError, twentyFourHoursInMs } from './utils';
 import appEvents from './event';
 import { ref } from 'vue';
+import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister';
+import { persistQueryClient } from '@tanstack/query-persist-client-core';
 
 export { eventbus } from '@myuic-api/client/lib/event';
 
@@ -43,6 +45,7 @@ export const customClientOptions: VueQueryPluginOptions = {
   queryClientConfig: {
     defaultOptions: {
       queries: {
+        cacheTime: 1000 * 60 * 60 * 24, // 24 hour caching
         refetchOnWindowFocus: false,
         refetchOnMount: false,
         retry: false,
@@ -55,7 +58,13 @@ export const customClientOptions: VueQueryPluginOptions = {
         onError: catchAndNotifyError
       }
     },
-  }
+  },
+  clientPersister(queryClient) {
+    return persistQueryClient({
+      queryClient,
+      persister: localStoragePersister
+    });
+  },
 }
 
 export function queryConfig<T>(config?: ClientConfig<T>): ClientConfig<T> {
@@ -72,3 +81,7 @@ export function useClientQuery<T>(
 ) {
   return useQuery(queryKey, queryFn, queryConfig(config));
 }
+
+export const localStoragePersister = createSyncStoragePersister({
+  storage: window.localStorage
+});
