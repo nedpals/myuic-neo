@@ -28,7 +28,8 @@
     </template>
 
     <template #default>
-      <div ref="pdfViewerContainer" style="min-height: inherit; max-height: inherit;" class="max-w-6xl h-full">
+      <div ref="pdfViewerContainer"
+           class="min-h-[inherit] max-h-[inherit] max-w-6xl h-full">
         <div v-if="isLoading" class="absolute top-0 inset-x-0 h-full w-full flex justify-center items-center bg-white bg-opacity-40">
           <loader class="h-13 w-13" />
         </div>
@@ -47,10 +48,10 @@
         </div>
 
         <div
-            v-show="!hasError"
-            style="min-height: inherit; max-height: inherit"
-            class="flex flex-col items-center h-full w-full overflow-y-scroll py-4 space-y-4 bg-zinc-100">
-          <canvas v-for="_ in totalPage" ref="pdfViewers" class="shadow-lg pdf-viewer" />
+          ref="pdfStageContainer"
+          :class="{'!hidden': hasError}"
+          class="min-h-[inherit] max-h-[inherit] flex flex-col items-center h-full w-full overflow-y-scroll py-4 space-y-4 bg-zinc-100">
+          <!-- <canvas v-for="_ in totalPage" ref="pdfViewers" class="shadow-lg pdf-viewer"></canvas> -->
         </div>
       </div>
     </template>
@@ -61,7 +62,8 @@
 import { getDocument, PDFDocumentProxy, PDFPageProxy, GlobalWorkerOptions } from 'pdfjs-dist';
 import pdfJsWorker from 'pdfjs-dist/build/pdf.worker.js?url';
 
-import {ref, computed, onMounted, onBeforeUnmount, markRaw} from 'vue';
+import { useMutation } from '@tanstack/vue-query';
+import {ref, computed, onMounted, onBeforeUnmount, markRaw, watch} from 'vue';
 import Loader from './Loader.vue';
 import ModalWindow from "./ModalWindow.vue";
 import IconPrint from '~icons/ion/print';
@@ -73,6 +75,8 @@ import Button from './Button.vue';
 import appEvents from "../../event";
 import debounce from 'debounce';
 
+import Konva from 'konva';
+
 const props = defineProps({
   defaultPdfName: {
     type: String,
@@ -80,10 +84,21 @@ const props = defineProps({
   }
 });
 
+// konva
+const pdfViewerContainer = ref<HTMLDivElement | null>(null);
+const pdfStageContainer = ref<HTMLDivElement | null>(null);
+const stage = ref<Konva.Stage>();
+const totalLayerHeight = computed(() => {
+  const layers = stage.value?.getLayers() ?? [];
+  let total = 0;
+  for (const layer of layers) {
+    total += layer.height();
+  }
+  return total;
+});
+
 const supportsPrinting = !!appEvents.onPrintPage;
 const src = ref<string | Uint8Array | null>(null);
-const isLoading = ref<boolean>(true);
-const hasError = ref<boolean>(false);
 const pdfRegex = /([a-zA-Z0-9_@]+\.pdf)/;
 const pdfName = computed(() => {
   if (!src.value || typeof src.value !== 'string' || !pdfRegex.test(src.value)) {
@@ -112,63 +127,135 @@ function downloadDocument() {
   } else {
     appEvents.onDownloadURL?.({ data: src.value as Uint8Array, fileName: pdfName.value });
   }
-
 }
 
-function resizeViewers() {
+function calculateViewports() {
   if (!pdfViewerContainer.value || pages.value.length === 0 || pdfViewers.value.length === 0) return;
 
   for (let i = 1; i <= totalPage.value; i++) {
-    resizeViewer(i);
+    calculateViewport(i);
   }
 }
 
-function resizeViewer(pageNumber: number): number {
-  if (!pdfViewerContainer.value || pageNumber > pages.value.length || pageNumber > pdfViewers.value.length) return 1;
-  const clientWidth = pdfViewerContainer.value.clientWidth;
+function calculateViewport(pageNumber: number) {
+  if (!stage.value || pageNumber > pages.value.length) return null;
+  const clientWidth = stage.value.width();
   const maxContainerWidth = clientWidth >= 1000 ? clientWidth * 0.75 : clientWidth * 0.95;
   const viewport = pages.value[pageNumber - 1].getViewport({
-    scale: maxContainerWidth / pages.value[pageNumber - 1].getViewport({ scale: 1 }).width
+    scale: maxContainerWidth / pages.value[pageNumber - 1].getViewport({ scale: stage.value.scaleX() }).width
   });
 
-  pdfViewers.value[pageNumber - 1].width = viewport.width;
-  pdfViewers.value[pageNumber - 1].height = viewport.height;
+  const layer = stage.value.findOne(`#page_${pageNumber}`);
+  layer.height(viewport.height);
 
-  return viewport.scale;
+  if (totalLayerHeight.value > stage.value.height()) {
+    stage.value.height(totalLayerHeight.value);
+  }
+
+  return viewport;
 }
 
 const resizeAndRender = debounce(() => {
-  resizeViewers();
-  void renderPage(pdfData.value!, currentPage.value);
-}, 1500);
+  if (!pdfStageContainer.value || !stage.value) return;
+  const containerWidth = pdfStageContainer.value.offsetWidth;
+  const scale = containerWidth / viewerWidth.value;
+
+  stage.value.width(viewerWidth.value * scale);
+  stage.value.height(viewerHeight.value * scale);
+  stage.value.scale({ x: scale, y: scale });
+
+  calculateViewports();
+  void renderPage(pdfData.value!, 1);
+}, 100);
 
 // pdf.js
-const pdfViewerContainer = ref<HTMLDivElement>();
 const pdfViewers = ref<HTMLCanvasElement[]>([]);
 const isRendering = ref(false);
 const pages = ref<PDFPageProxy[]>([]);
-const totalPage = ref(0);
-const currentPage = ref(1);
+const viewerWidth = ref(0);
+const viewerHeight = ref(0);
 const pdfData = ref<PDFDocumentProxy>();
 
 GlobalWorkerOptions.workerSrc = pdfJsWorker;
 
-async function renderPage(doc: PDFDocumentProxy, pageNumber: number) {
-  if (!doc || !pdfViewers.value || pageNumber > totalPage.value) return;
+const { mutateAsync: openPdf, isError: hasError, isLoading } = useMutation(async (newSrc: string | Uint8Array) => {
+  const doc = getDocument(newSrc);
+  const pdf = await doc.promise;
+  pdfData.value = markRaw(pdf);
+  return pdf;
+}, {
+  async onSuccess() {
+    await renderPage(pdfData.value!, 1);
+  },
+  onError(err) {
+    console.trace(err);
+  },
+  onSettled() {
+    isRendering.value = false;
+  },
+});
 
+const totalPage = computed(() => pdfData.value?.numPages ?? 0);
+
+async function renderPage(doc: PDFDocumentProxy, pageNumber: number) {
+  if (!stage.value || !doc || pageNumber > totalPage.value) return;
   if (pageNumber > pages.value.length) {
     pages.value.push(markRaw(await doc.getPage(pageNumber)));
   }
 
   if (!pages.value[pageNumber - 1]) return;
-
-  const scale = resizeViewer(pageNumber);
   isRendering.value = true;
 
+  const layers = stage.value.getLayers();
+  const lastLayer = layers[layers.length - 1];
+  let layer = layers.find(l => l.id() === `page_${pageNumber}`);
+  const isLayerExisting = typeof layer !== 'undefined';
+
+  if (!layer) {
+    layer = new Konva.Layer({
+      id:  `page_${pageNumber}`,
+      height: stage.value.height(),
+      width: stage.value.width(),
+      y: lastLayer?.height() ?? 0,
+      listening: false
+    });
+
+    stage.value.add(layer);
+  }
+
+  const viewport = calculateViewport(pageNumber);
+  if (!viewport) {
+    layer.destroy();
+    return;
+  }
+
+  let page = document.createElement('canvas');
+  page.width = viewport.width;
+  page.height = viewport.height;
+
+  let img = new Konva.Image({
+    id: 'img',
+    image: page
+  });
+
+  if (isLayerExisting) {
+    const found = layer.getChildren((it) => it.id() === 'img');
+    if (found.length !== 0) {
+      img = found[0] as Konva.Image;
+      img.clearCache();
+    }
+  }
+
+  img.width(viewport.width);
+  img.height(viewport.height);
+  img.x(Math.max((layer.width() / 2) - (viewport.width / 2), 0));
+
   await pages.value[pageNumber - 1].render({
-    canvasContext: pdfViewers.value[pageNumber - 1].getContext('2d')!,
-    viewport: pages.value[pageNumber - 1].getViewport({ scale })
+    canvasContext: page.getContext('2d')!,
+    viewport
   }).promise;
+
+  layer.add(img);
 
   // queueRenderPage
   await renderPage(doc, pageNumber + 1);
@@ -177,26 +264,21 @@ async function renderPage(doc: PDFDocumentProxy, pageNumber: number) {
 async function open(newSrc: string | Uint8Array) {
   if (newSrc === src.value) return;
   src.value = typeof newSrc === 'string' ? newSrc : markRaw(newSrc);
-
-  try {
-    hasError.value = false;
-    isLoading.value = true;
-    totalPage.value = 0;
-
-    const loadingDoc = getDocument(src.value);
-    pdfData.value = markRaw(await loadingDoc.promise);
-    totalPage.value = pdfData.value.numPages;
-
-    await new Promise(r => setTimeout(r, 250));
-    await renderPage(pdfData.value, 1);
-  } catch (e) {
-    console.trace(e);
-    hasError.value = true;
-  } finally {
-    isLoading.value = false;
-    isRendering.value = false;
-  }
+  await openPdf(newSrc);
 }
+
+const unwatch = watch([pdfViewerContainer, pdfStageContainer], ([viewerContainer, stageContainer]) => {
+  if (stage.value === undefined && viewerContainer && stageContainer) {
+    stage.value = new Konva.Stage({
+      container: stageContainer,
+      height: stageContainer.offsetHeight,
+      width: stageContainer.offsetWidth
+    });
+
+    viewerWidth.value = stageContainer.offsetWidth;
+    viewerHeight.value = stageContainer.offsetHeight;
+  }
+});
 
 onMounted(() => {
   window.addEventListener('resize', resizeAndRender);
@@ -204,6 +286,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   window.removeEventListener('resize', resizeAndRender);
+  unwatch();
 });
 
 defineExpose({ open })
