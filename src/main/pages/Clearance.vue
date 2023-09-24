@@ -42,6 +42,10 @@
         <h2 class="font-bold text-xl">Requirements</h2>
 
         <div class="flex flex-row flex-wrap -mx-2">
+          <div class="mt-4 mx-2 w-full h-full p-8 flex justify-center items-center text-center rounded-lg bg-gray-100 dark:bg-primary-800" v-if="!data || data.items.length === 0">
+            <p class="text-2xl">No requirements found.</p>
+          </div>
+
           <div
             v-for="(clearanceItem, i) in data!.items"
             :key="'item_' + i"
