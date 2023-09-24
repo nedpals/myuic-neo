@@ -12,13 +12,13 @@
             class="h-32 w-32 pr-4" />
 
           <div class="flex flex-col">
-            <skeleton custom-class="h-9 min-w-64 max-w-90 w-full bg-zinc-200 mb-5 rounded-2xl">
+            <skeleton custom-class="h-9 min-w-[24rem] max-w-[29rem] w-full bg-zinc-200 mb-5 rounded-2xl">
               <h1 class="text-5xl font-semibold mb-4">
                 {{ welcomeGreeting }}, {{ studentFirstName }}!
               </h1>
             </skeleton>
 
-            <skeleton custom-class="h-6 min-w-48 max-w-64 w-full bg-zinc-200 rounded-xl">
+            <skeleton custom-class="h-6 max-w-[18rem] w-full bg-zinc-200 rounded-xl">
               <p class="text-2xl opacity-80 dark:text-white dark:text-opacity-80">{{ todayDate }}</p>
             </skeleton>
           </div>
