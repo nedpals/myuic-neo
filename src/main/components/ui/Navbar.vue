@@ -62,7 +62,7 @@
               @click="isMenuOpen = false"
               :class="[{'is-active': entry.isCurrent}, entry.class]"
               class="menu-item"
-              v-tooltip.right="canExpandTooltip ? entry.name : null" >
+              v-tooltip.right="canExpandTooltip ? entry.title : null" >
               <component :is="entry.isCurrent ? entry.activeIcon : entry.icon" />
               <div class="flex flex-col space-y-0.5">
                 <span>{{ entry.title }}</span>
