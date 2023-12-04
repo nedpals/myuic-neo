@@ -25,10 +25,10 @@
                 <button class="tab-section-link" :disabled="ci + tabOffsetStart > step">{{ cat.title }}</button>
               </Tab>
               <Tab as="div">
-                <button class="tab-section-link" :disabled="data!.categories.length + tabOffsetStart > step">Comments</button>
+                <button class="tab-section-link" :disabled="categoriesLength + tabOffsetStart > step">Comments</button>
               </Tab>
               <Tab as="div">
-                <button class="tab-section-link" :disabled="data!.categories.length + tabOffsetStart + 1 > step">Summary</button>
+                <button class="tab-section-link" :disabled="categoriesLength + tabOffsetStart + 1 > step">Summary</button>
               </Tab>
             </tab-list>
             <tab-panels ref="panelRef" class="w-full lg:w-3/4 md:min-h-[60vh] md:max-h-[60vh] pt-3 pb-6 overflow-y-auto">
@@ -36,7 +36,7 @@
                 <div class="mb-3 text-center">
                   <h3 class="text-2xl font-semibold">Reminders</h3>
                   <p class="text-lg text-zinc-600 dark:text-primary-200">
-                    Please consider the following be considered when evaluating the teacher
+                    Please consider the following be considered when evaluating the teacher:
                   </p>
                 </div>
                 <ol class="list-inside list-decimal space-y-2">
@@ -45,10 +45,10 @@
                   <li>
                     Rate the faculty according to the rubric of the rating scale. The Rating Scale for this classroom evaluation instrument is as follows:
                     <ul class="mt-2 ml-2 list-inside list-disc space-y-1">
-                      <li class="font-bold">4 - Excellent</li>
-                      <li class="font-bold">3 - Very Good</li>
-                      <li class="font-bold">2 - Good</li>
-                      <li class="font-bold">1 - Fair</li>
+                      <li class="font-bold">4 - Very Evident</li>
+                      <li class="font-bold">3 - Evident</li>
+                      <li class="font-bold">2 - Slightly Evident</li>
+                      <li class="font-bold">1 - Not evident</li>
                     </ul>
                   </li>
                 </ol>
@@ -94,7 +94,7 @@
                     :key="'q_' + i + '_' + qi" v-for="(q, qi) in cat.questions">
                     <div class="pl-4 py-4">
                       <span
-                        :class="{ 'border-primary-400 bg-primary-400 text-white': ratingAnswers[getQIndex(i, qi)] > 0 }"
+                        :class="{ 'border-primary-400 bg-primary-400 text-white': isQuestionAnswered(i, qi) }"
                         class="block text-center rounded-full p-2 border dark:border-primary-600 h-10 w-10">{{ qi + 1 }}</span>
                     </div>
 
@@ -102,14 +102,14 @@
                       <p class="pb-3">{{ q }}</p>
 
                       <div
-                        :disabled="qi != 0 && ratingAnswers[getQIndex(i, qi - 1)] == 0"
+                        :disabled="qi != 0 && !isQuestionAnswered(i, qi - 1)"
                         class="disabled:opacity-40 w-full flex md:space-x-2 space-y-2 sm:space-y-0 flex-wrap sm:flex-nowrap">
                         <Button
                           v-for="(rLabel, r) in ratings"
-                          @click="ratingAnswers[getQIndex(i, qi)] = r"
+                          @click="setRatingAnswers(getQIndex(i, qi), r)"
                           :key="'r_' + r"
-                          :disabled="qi != 0 && ratingAnswers[getQIndex(i, qi - 1)] == 0"
-                          :theme="ratingAnswers[getQIndex(i, qi)] === r  ? 'primary' : 'light'"
+                          :disabled="qi != 0 && !isQuestionAnswered(i, qi - 1)"
+                          :theme="isQuestionEqualsTo(i, qi, r) ? 'primary' : 'light'"
                           class="w-full md:flex-1">
                           {{ rLabel }}
                         </Button>
@@ -151,7 +151,7 @@
                         class="flex justify-between">
                         <p class="w-3/4">{{ q }}</p>
                         <p class="w-1/4 font-semibold text-right">
-                          {{ ratingAnswers[getQIndex(i, qi)] === 0 ? 'None' : ratings[ratingAnswers[getQIndex(i, qi)]] }}
+                          {{ isQuestionEqualsTo(i, qi, 0) ? 'None' : ratings[ratingAnswers[getQIndex(i, qi)]] }}
                         </p>
                       </div>
                     </div>
@@ -177,7 +177,7 @@
     <template #footer>
       <div v-if="shouldShowButtons" class="flex justify-end space-x-2">
         <Button v-if="step > 0" @click="step--" theme="light">Previous</button>
-        <Button v-if="step < 5 + tabOffsetStart" @click="step++" :disabled="!shouldProceed(step)" theme="primary" class="px-6 py-2">Next</Button>
+        <Button v-if="step <= categoriesLength + tabOffsetStart" @click="step++" :disabled="!shouldProceed(step)" theme="primary" class="px-6 py-2">Next</Button>
         <Button v-else @click="submitEvaluation" theme="primary" class="px-6 py-2">Submit</Button>
       </div>
     </template>
@@ -250,9 +250,14 @@ const getQIndex = (cIndex: number, qIndex: number) => {
   return idx;
 }
 
+const categoriesLength = computed(() => data.value?.categories.length ?? 5);
+
 const shouldProceed = (catIdx: number) => {
   if (isLoading.value) return false;
-  return step.value < 4 + tabOffsetStart ? isCategoryHasAnswers(catIdx) : isCommentsFilledUp.value;
+  if (step.value < categoriesLength.value + tabOffsetStart) {
+    return isCategoryHasAnswers(catIdx);
+  }
+  return isCommentsFilledUp.value;
 }
 
 const shouldShowButtons = computed(() => {
@@ -262,11 +267,31 @@ const shouldShowButtons = computed(() => {
   return true;
 });
 
+const isQuestionAnswered = (idx: number, qi: number) => {
+  const qIdx = getQIndex(idx, qi);
+  if (qIdx >= ratingAnswers.value.length) {
+    // set the rating to 0 if it's not yet set
+    setRatingAnswers(qIdx, 0);
+  }
+  return ratingAnswers.value[qIdx] !== 0;
+}
+
+const isQuestionEqualsTo = (idx: number, qi: number, val: number) => {
+  const qIdx = getQIndex(idx, qi);
+  if (qIdx >= ratingAnswers.value.length) {
+    return false;
+  }
+  return ratingAnswers.value[qIdx] === val;
+}
+
 const isCategoryHasAnswers = (catIdx: number) => {
-  if (catIdx < tabOffsetStart || catIdx > (data.value?.categories.length ?? 0) + tabOffsetStart) return true;
+  if (catIdx < tabOffsetStart) {
+    return true;
+  }
+
   const idx = catIdx - tabOffsetStart;
   return data.value?.categories[idx]
-    .questions.every((_, qi) => ratingAnswers.value[getQIndex(idx, qi)] !== 0) ?? false;
+    .questions.every((_, qi) => isQuestionAnswered(idx, qi)) ?? false;
 }
 
 const isCommentsFilledUp = computed(() => {
@@ -274,9 +299,7 @@ const isCommentsFilledUp = computed(() => {
 });
 
 const commentQuestions = readonly([
-  'What do you believe the instructor has done especially well in conducting this course?',
-  'What might the instructor do to enhance the course?',
-  'Additional comments'
+  'Comments'
 ]);
 
 const handleModal = (newOpen: boolean) => {
@@ -312,8 +335,17 @@ const warnUserOnClose = async () => {
 }
 
 // data
-const ratingAnswers = ref([...Array(29).keys()].map(() => 0));
-const comments = ref<[string, string, string]>(['', '', '']);
+const ratingAnswers = ref<number[]>([]);
+const setRatingAnswers = (idx: number, val: number) => {
+  if (idx >= ratingAnswers.value.length) {
+    for (let i = ratingAnswers.value.length; i <= idx; i++) {
+      ratingAnswers.value.push(0);
+    }
+  }
+  ratingAnswers.value[idx] = val;
+}
+
+const comments = ref<[string]>(['']);
 const submitEvaluation = async () => {
   const ans = await showDialog({
     title: 'Confirmation',

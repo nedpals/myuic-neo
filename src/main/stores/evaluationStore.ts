@@ -17,7 +17,7 @@ export const useEvaluationQuery = (courses: {classId: string, classType: string}
     ['evaluation_questionnaires'],
     () => client.http.get(RoutePath('facultyEvaluationQuestionnaires')),
     {
-      enabled: computed(() => idQueries.every(q => !q.isFetching && q.fetchStatus !== 'idle'))
+      enabled: computed(() => idQueries.every(q => q.isFetched))
     }
   );
 

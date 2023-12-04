@@ -200,21 +200,21 @@ const router = createRouter({
             }
           }
         },
-        // {
-        //   name: 'course-evaluation-app',
-        //   path: '/apps/course-evaluation',
-        //   component: () => import('./pages/Apps/Evaluation.vue'),
-        //   meta: {
-        //     pageTitle: 'Course Evaluation',
-        //     navLink: {
-        //       group: 'Apps',
-        //       title: 'Course Evaluation',
-        //       order: 8,
-        //       icon: IconFeedbackOutline,
-        //       activeIcon: IconFeedback,
-        //     }
-        //   }
-        // },
+        {
+          name: 'course-evaluation-app',
+          path: '/apps/course-evaluation',
+          component: () => import('./pages/Apps/Evaluation.vue'),
+          meta: {
+            pageTitle: 'Course Evaluation',
+            navLink: {
+              group: 'Apps',
+              title: 'Course Evaluation',
+              order: 8,
+              icon: IconFeedbackOutline,
+              activeIcon: IconFeedback,
+            }
+          }
+        },
         {
           name: 'online-enrollment-app',
           path: '/apps/online-enrollment',

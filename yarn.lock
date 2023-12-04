@@ -2084,15 +2084,20 @@
     mitt "^3.0.0"
     url-parse "^1.5.1"
 
-"@myuic-api/mock@^1.8.2":
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/@myuic-api/mock/-/mock-1.9.0.tgz#4ab20fbf24475bcfa7cdeb0fe09d6b27c36ed856"
-  integrity sha512-OerPTOtFs75pu17P1EhdSrmUef2jWM+xaBDC/cstci01Uie8RZPyvU/a9Cs6Nr70dCAAAAY0TT/3rJ7f8koJWQ==
+"@myuic-api/mock@^1.10.2":
+  version "1.10.2"
+  resolved "https://registry.yarnpkg.com/@myuic-api/mock/-/mock-1.10.2.tgz#9ea17faf2c2d28f82d49f8f301601841fcd43420"
+  integrity sha512-a5PXSYNMOEKEIA7DWW+CxE0BYvBZITzAbRUwiBa1UwlPRg7hvRnSyeKwgUMMpNfccEnfPQTSTQBdQDXfz3sehg==
   dependencies:
-    "@myuic-api/types" "^1.9.0"
+    "@myuic-api/types" "^1.10.2"
     miragejs "^0.1.47"
 
-"@myuic-api/types@^1.7.0", "@myuic-api/types@^1.9.0":
+"@myuic-api/types@^1.10.2":
+  version "1.10.2"
+  resolved "https://registry.yarnpkg.com/@myuic-api/types/-/types-1.10.2.tgz#f1b0c83af1791547521f1f357350896d195db233"
+  integrity sha512-RJ7FEnzMSkCtFIdRkuFcq5HJC0g5aGIPZ35kG2xF8dmz2xD5k2lwbzjiFUGFIcgdOLcCXl5rJ9gj1wlOffi4dw==
+
+"@myuic-api/types@^1.9.0":
   version "1.9.0"
   resolved "https://registry.yarnpkg.com/@myuic-api/types/-/types-1.9.0.tgz#f2b4637be0f46d7e867bd88844df36452c565f5c"
   integrity sha512-K6rvQetXyVkfSUqR6Ye6dP/6lD+TYwpleEHZzjWS32BSOycdGiWwt0CfH7Q60WpduBr66gKFgAAD3nGYXhds+Q==
