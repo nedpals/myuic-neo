@@ -59,12 +59,12 @@ export const customClientOptions: VueQueryPluginOptions = {
       }
     },
   },
-  clientPersister(queryClient) {
-    return persistQueryClient({
-      queryClient,
-      persister: localStoragePersister
-    });
-  },
+  // clientPersister(queryClient) {
+  //   return persistQueryClient({
+  //     queryClient,
+  //     persister: localStoragePersister
+  //   });
+  // },
 }
 
 export function queryConfig<T>(config?: ClientConfig<T>): ClientConfig<T> {
