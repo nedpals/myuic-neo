@@ -98,7 +98,7 @@ const destroyPopNavigation = appEvents.onNavigationPop?.({
 const { data, isLoading, status, error: healthError } = useQuery(['health'], async () => {
   const status = await client.checkHealth();
   if (!status.isAlive) {
-    if (status.status >= 500) {
+    if (status.status >= 500 || status.status == 404) {
       throw new Error('Something is wrong when talking to UIC servers. Please try again later. Visit <a href="https://facebook.com/uicph">UIC Facebook Page</a> for more details.');
     } else if (status.status >= 400) {
       throw new Error('Might be a problem on our side. Please report this issue and try again later.');
